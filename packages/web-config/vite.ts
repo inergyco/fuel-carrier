@@ -3,9 +3,19 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { defineConfig, type UserConfig } from "vite";
 
+const defaultApiProxyTarget = "http://localhost:3000";
+
 export function createPanelViteConfig(overrides: UserConfig = {}) {
   return defineConfig({
     plugins: createPanelPlugins(),
+    server: {
+      proxy: {
+        "/api": {
+          target: defaultApiProxyTarget,
+          changeOrigin: true,
+        },
+      },
+    },
     ...overrides,
   });
 }
