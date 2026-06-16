@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { validateEnv } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
@@ -9,6 +10,7 @@ import { DatabaseModule } from './database/database.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
+      validate: validateEnv,
     }),
     DatabaseModule,
   ],

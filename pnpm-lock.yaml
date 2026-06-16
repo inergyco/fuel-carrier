@@ -4,6 +4,12 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    zod:
+      specifier: ^4.4.3
+      version: 4.4.3
+
 importers:
 
   .: {}
@@ -37,6 +43,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -131,6 +140,9 @@ importers:
       react-dom:
         specifier: ^19.2.6
         version: 19.2.7(react@19.2.7)
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
     devDependencies:
       '@fuel-carrier/web-config':
         specifier: workspace:*
@@ -168,6 +180,9 @@ importers:
       react-dom:
         specifier: ^19.2.6
         version: 19.2.7(react@19.2.7)
+      zod:
+        specifier: 'catalog:'
+        version: 4.4.3
     devDependencies:
       '@fuel-carrier/web-config':
         specifier: workspace:*
