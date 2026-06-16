@@ -1,0 +1,34 @@
+{
+  "name": "@fuel-carrier/web-config",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./vite": "./vite.ts",
+    "./eslint": "./eslint.config.js",
+    "./styles/entry.css": "./styles/entry.css",
+    "./tsconfig/app.json": "./tsconfig/app.json",
+    "./tsconfig/panel-app.json": "./tsconfig/panel-app.json",
+    "./tsconfig/lib.json": "./tsconfig/lib.json",
+    "./tsconfig/node.json": "./tsconfig/node.json"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "@tanstack/router-plugin": "^1.157.16",
+    "@vitejs/plugin-react": "^6.0.1",
+    "daisyui": "^5.5.23",
+    "tailwindcss": "^4.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^8.0.12"
+  },
+  "peerDependencies": {
+    "vite": "^8.0.0"
+  }
+}

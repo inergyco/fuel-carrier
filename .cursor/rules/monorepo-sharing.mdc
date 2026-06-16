@@ -1,0 +1,16 @@
+---
+description: Share duplicated config and setup across monorepo apps via packages
+alwaysApply: true
+---
+
+# Monorepo sharing
+
+Always extract shared configuration into `packages/` instead of duplicating it across apps.
+
+- **Tooling** (`@fuel-carrier/web-config`): Vite, ESLint, TypeScript bases, Tailwind/DaisyUI CSS
+- **Runtime** (`@fuel-carrier/web-ui`): React Query, TanStack Router helpers, shared providers
+- **Types** (`@fuel-carrier/shared-types`): shared TypeScript types
+
+Keep per-app only what truly differs: routes, env, branding, auth, and app-specific pages.
+
+When adding new cross-app setup (Tailwind, Router, Query, ESLint, etc.), add it to the shared package first, then wire thin app-level entry files.

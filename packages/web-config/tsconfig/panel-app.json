@@ -1,0 +1,9 @@
+{
+  "extends": "./app.json",
+  "compilerOptions": {
+    "paths": {
+      "@fuel-carrier/web-ui/*": ["../../web-ui/src/*"]
+    }
+  },
+  "files": ["../types/vite-env.d.ts"]
+}

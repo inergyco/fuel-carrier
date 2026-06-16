@@ -1,0 +1,30 @@
+{
+  "name": "@fuel-carrier/web-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./providers": "./src/providers/index.ts",
+    "./router": "./src/router/index.ts"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.90.12",
+    "@tanstack/react-router": "^1.157.16",
+    "@tanstack/react-router-devtools": "^1.157.16"
+  },
+  "scripts": {
+    "typecheck": "tsc -b --noEmit"
+  },
+  "devDependencies": {
+    "@fuel-carrier/web-config": "workspace:*",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.6",
+    "typescript": "~6.0.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
