@@ -6,10 +6,13 @@ export const envSchema = z.object({
     .string()
     .min(1, 'DATABASE_URL is required')
     .refine(
-      (url) =>
-        url.startsWith('postgresql://') || url.startsWith('postgres://'),
+      (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
       'DATABASE_URL must be a PostgreSQL connection string',
     ),
+  JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
+  JWT_EXPIRES_IN: z.string().default('7d'),
+  AUTH_COOKIE_NAME: z.string().min(1).default('auth_token'),
+  AUTH_COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
 });
 
 export type Env = z.infer<typeof envSchema>;
