@@ -32,10 +32,21 @@ const fa: Translation = {
       signIn: 'ورود',
     },
     home: {
-      title: 'پنل داخلی',
+      title: 'داشبورد',
+      welcome: 'خوش آمدید، {firstName}',
       signedInAs: 'وارد شده به عنوان {firstName} {lastName} ({username})',
       signingOut: 'در حال خروج…',
       signOut: 'خروج',
+    },
+    nav: {
+      dashboard: 'داشبورد',
+      openMenu: 'باز کردن منو',
+      signOut: 'خروج',
+      signingOut: 'در حال خروج…',
+    },
+    shell: {
+      brand: 'Fuel Carrier',
+      brandSubtitle: 'داخلی',
     },
   },
   externalPanel: {

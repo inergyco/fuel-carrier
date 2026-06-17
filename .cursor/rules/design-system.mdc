@@ -1,0 +1,30 @@
+---
+description: Futuristic, sleek, minimal, modern UI design language
+alwaysApply: true
+---
+
+# Design system
+
+All pages and components should feel **futuristic, sleek, minimal, and modern**.
+
+## Visual language
+
+- Dark-friendly glass surfaces: `bg-base-200/40`, `backdrop-blur-xl`, subtle borders (`border-base-content/8`)
+- Soft primary glow accents — never loud gradients or heavy shadows
+- Fine grid backgrounds and blurred orbs for depth (see login page)
+- Rounded corners: `rounded-lg` for controls, `rounded-2xl` for cards
+- Typography: tight tracking on headings, muted `text-base-content/40–60` for secondary text
+
+## Components
+
+- Use `lucide-react` via `@fuel-carrier/web-ui/icons` in apps — no per-app `lucide-react` dependency
+- Prefer shared primitives from `@fuel-carrier/web-ui` (Button, Input, PanelShell)
+- Minimal chrome — every element should earn its place
+- Consistent spacing scale (`gap-4`, `p-6`, `px-4 lg:px-8`)
+- Smooth transitions: `transition-all` on interactive elements
+
+## Layout
+
+- Authenticated pages use `PanelShell` with side navigation
+- Public pages (login) stay full-screen centered
+- Mobile-first responsive; side nav collapses to drawer on small screens

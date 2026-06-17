@@ -14,7 +14,7 @@ export type { ButtonVariant }
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
     'btn btn-primary btn-sm h-10 w-full rounded-lg text-xs font-semibold tracking-widest uppercase',
-  ghost: 'btn btn-ghost btn-sm h-9 min-h-9 w-auto px-2 font-mono text-xs normal-case tracking-normal',
+  ghost: 'btn btn-ghost btn-sm h-9 min-h-9 w-auto px-2 text-xs normal-case tracking-normal',
   icon: 'btn btn-ghost btn-sm btn-circle h-9 min-h-9 w-9',
 }
 

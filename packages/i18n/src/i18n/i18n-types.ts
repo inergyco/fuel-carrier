@@ -112,9 +112,14 @@ type RootTranslation = {
 		}
 		home: {
 			/**
-			 * I​n​t​e​r​n​a​l​ ​P​a​n​e​l
+			 * D​a​s​h​b​o​a​r​d
 			 */
 			title: string
+			/**
+			 * W​e​l​c​o​m​e​ ​b​a​c​k​,​ ​{​f​i​r​s​t​N​a​m​e​}
+			 * @param {string} firstName
+			 */
+			welcome: RequiredParams<'firstName'>
 			/**
 			 * S​i​g​n​e​d​ ​i​n​ ​a​s​ ​{​f​i​r​s​t​N​a​m​e​}​ ​{​l​a​s​t​N​a​m​e​}​ ​(​{​u​s​e​r​n​a​m​e​}​)
 			 * @param {string} firstName
@@ -130,6 +135,34 @@ type RootTranslation = {
 			 * S​i​g​n​ ​o​u​t
 			 */
 			signOut: string
+		}
+		nav: {
+			/**
+			 * D​a​s​h​b​o​a​r​d
+			 */
+			dashboard: string
+			/**
+			 * O​p​e​n​ ​m​e​n​u
+			 */
+			openMenu: string
+			/**
+			 * S​i​g​n​ ​o​u​t
+			 */
+			signOut: string
+			/**
+			 * S​i​g​n​i​n​g​ ​o​u​t​…
+			 */
+			signingOut: string
+		}
+		shell: {
+			/**
+			 * F​u​e​l​ ​C​a​r​r​i​e​r
+			 */
+			brand: string
+			/**
+			 * I​n​t​e​r​n​a​l
+			 */
+			brandSubtitle: string
 		}
 	}
 	externalPanel: {
@@ -244,9 +277,13 @@ export type TranslationFunctions = {
 		}
 		home: {
 			/**
-			 * Internal Panel
+			 * Dashboard
 			 */
 			title: () => LocalizedString
+			/**
+			 * Welcome back, {firstName}
+			 */
+			welcome: (arg: { firstName: string }) => LocalizedString
 			/**
 			 * Signed in as {firstName} {lastName} ({username})
 			 */
@@ -259,6 +296,34 @@ export type TranslationFunctions = {
 			 * Sign out
 			 */
 			signOut: () => LocalizedString
+		}
+		nav: {
+			/**
+			 * Dashboard
+			 */
+			dashboard: () => LocalizedString
+			/**
+			 * Open menu
+			 */
+			openMenu: () => LocalizedString
+			/**
+			 * Sign out
+			 */
+			signOut: () => LocalizedString
+			/**
+			 * Signing out…
+			 */
+			signingOut: () => LocalizedString
+		}
+		shell: {
+			/**
+			 * Fuel Carrier
+			 */
+			brand: () => LocalizedString
+			/**
+			 * Internal
+			 */
+			brandSubtitle: () => LocalizedString
 		}
 	}
 	externalPanel: {

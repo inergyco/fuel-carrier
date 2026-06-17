@@ -32,10 +32,21 @@ const en: BaseTranslation = {
       signIn: 'Sign in',
     },
     home: {
-      title: 'Internal Panel',
+      title: 'Dashboard',
+      welcome: 'Welcome back, {firstName:string}',
       signedInAs: 'Signed in as {firstName:string} {lastName:string} ({username:string})',
       signingOut: 'Signing out…',
       signOut: 'Sign out',
+    },
+    nav: {
+      dashboard: 'Dashboard',
+      openMenu: 'Open menu',
+      signOut: 'Sign out',
+      signingOut: 'Signing out…',
+    },
+    shell: {
+      brand: 'Fuel Carrier',
+      brandSubtitle: 'Internal',
     },
   },
   externalPanel: {

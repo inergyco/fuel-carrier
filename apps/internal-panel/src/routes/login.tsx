@@ -4,6 +4,7 @@ import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { Button, Input, LocaleControls } from '@fuel-carrier/web-ui/ui'
+import { Zap } from '@fuel-carrier/web-ui/icons'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/auth'
 import { sanitizeRedirectPath } from '../lib/redirect'
@@ -96,20 +97,7 @@ function LoginPage() {
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-base-content/10 bg-base-200/60 backdrop-blur-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-              />
-            </svg>
+            <Zap className="h-6 w-6 text-primary" aria-hidden />
           </div>
           <h1 className="text-xl font-semibold tracking-tight">
             {LL.internalPanel.login.title()}
