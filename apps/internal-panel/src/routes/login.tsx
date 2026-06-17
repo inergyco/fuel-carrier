@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
-import { Button, Input } from '@fuel-carrier/web-ui/ui'
+import { Button, Input, ThemeToggle } from '@fuel-carrier/web-ui/ui'
 import { useState } from 'react'
 import { login } from '../lib/auth'
 import { loginDtoSchema, type LoginDto } from '@fuel-carrier/shared-validation/admin/login'
@@ -35,6 +35,8 @@ function LoginPage() {
 
   return (
     <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-base-100 p-6">
+      <ThemeToggle className="absolute top-4 right-4" />
+
       {/* Background grid */}
       <div
         aria-hidden
