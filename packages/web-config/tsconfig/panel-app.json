@@ -2,7 +2,9 @@
   "extends": "./app.json",
   "compilerOptions": {
     "paths": {
-      "@fuel-carrier/web-ui/*": ["../../web-ui/src/*"]
+      "@fuel-carrier/web-ui/*": ["../../web-ui/src/*"],
+      "@fuel-carrier/shared-validation": ["../../shared-validation/src"],
+      "@fuel-carrier/shared-validation/*": ["../../shared-validation/src/*"]
     }
   },
   "files": ["../types/vite-env.d.ts"]

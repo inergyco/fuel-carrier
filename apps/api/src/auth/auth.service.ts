@@ -7,7 +7,7 @@ import { DATABASE } from '../database/database.tokens';
 import type { Database } from '../database/database.types';
 import { admins } from '../database/schema/admins';
 import { users } from '../database/schema/users';
-import { isValidUsername } from '../database/constants/username';
+import { isValidUsername } from '@fuel-carrier/shared-validation/username';
 import type { AdminSession } from './auth.types';
 import { getAuthCookieMaxAgeMs } from './cookie.utils';
 
@@ -24,11 +24,6 @@ export class AuthService {
     password: string,
   ): Promise<AdminSession | null> {
     if (!isValidUsername(username)) {
-      return null;
-    }
-
-    // TODO: Inforce complex passwords.
-    if (password.length < 8) {
       return null;
     }
 

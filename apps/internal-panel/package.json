@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fuel-carrier/shared-validation": "workspace:*",
     "@fuel-carrier/web-ui": "workspace:*",
     "@tanstack/react-router": "^1.157.16",
     "react": "^19.2.6",

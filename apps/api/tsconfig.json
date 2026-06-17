@@ -21,7 +21,10 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@fuel-carrier/shared-types": ["../../packages/shared-types/src"],
-      "@fuel-carrier/shared-types/*": ["../../packages/shared-types/src/*"]
+      "@fuel-carrier/shared-types/*": ["../../packages/shared-types/src/*"],
+      "@fuel-carrier/shared-validation": ["../../packages/shared-validation/src"],
+      "@fuel-carrier/shared-validation/*": ["../../packages/shared-validation/src/*"]
     }
-  }
+  },
+  "include": ["src", "../../packages/shared-validation/src"]
 }

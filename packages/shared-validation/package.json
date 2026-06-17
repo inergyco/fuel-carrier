@@ -1,0 +1,20 @@
+{
+  "name": "@fuel-carrier/shared-validation",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./username": "./src/username.ts",
+    "./password": "./src/password.ts",
+    "./admin/login": "./src/admin/login.dto.ts"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "scripts": {
+    "typecheck": "tsc -b --noEmit"
+  },
+  "devDependencies": {
+    "@fuel-carrier/web-config": "workspace:*",
+    "typescript": "~6.0.2"
+  }
+}
