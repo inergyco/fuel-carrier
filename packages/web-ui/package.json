@@ -5,16 +5,22 @@
   "type": "module",
   "exports": {
     "./api": "./src/api/index.ts",
+    "./form": "./src/form/index.ts",
     "./providers": "./src/providers/index.ts",
     "./query": "./src/query/index.ts",
-    "./router": "./src/router/index.ts"
+    "./router": "./src/router/index.ts",
+    "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
     "ky": "^1.14.3",
+    "@hookform/resolvers": "^3.10.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-query-devtools": "^5.90.12",
     "@tanstack/react-router": "^1.157.16",
-    "@tanstack/react-router-devtools": "^1.157.16"
+    "@tanstack/react-router-devtools": "^1.157.16",
+    "react-hook-form": "^7.57.0"
   },
   "scripts": {
     "typecheck": "tsc -b --noEmit"
