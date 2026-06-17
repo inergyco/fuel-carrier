@@ -1,5 +1,8 @@
 export { Input } from './Input'
 export { Button } from './Button'
+export type { ButtonVariant } from './Button'
 export { ThemeToggle } from './ThemeToggle'
+export { LanguageToggle } from './LanguageToggle'
+export { LocaleControls } from './LocaleControls'
 export { useTheme } from './useTheme'
 export type { Theme } from './useTheme'

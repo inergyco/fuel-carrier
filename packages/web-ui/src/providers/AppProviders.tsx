@@ -5,6 +5,7 @@ import {
   type RegisteredRouter,
 } from '@tanstack/react-router'
 import { queryClient } from '../query-client'
+import { I18nProvider } from './I18nProvider'
 
 type AppProvidersProps = {
   router: RegisteredRouter
@@ -12,9 +13,11 @@ type AppProvidersProps = {
 
 export function AppProviders({ router }: AppProvidersProps) {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <I18nProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </I18nProvider>
   )
 }

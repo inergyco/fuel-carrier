@@ -13,6 +13,7 @@
     "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
+    "@fuel-carrier/i18n": "workspace:*",
     "ky": "^1.14.3",
     "@hookform/resolvers": "^5.2.2",
     "clsx": "^2.1.1",

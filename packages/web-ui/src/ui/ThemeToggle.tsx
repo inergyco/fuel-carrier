@@ -1,21 +1,22 @@
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { Button } from './Button'
 import { useTheme } from './useTheme'
-import { cn } from '../utils'
 
-interface ThemeToggleProps {
-  className?: string
-}
-
-export function ThemeToggle({ className }: ThemeToggleProps) {
+export function ThemeToggle() {
   const { theme, toggle } = useTheme()
+  const { LL } = useI18nContext()
 
   return (
-    <button
+    <Button
+      type="button"
+      variant="icon"
       onClick={toggle}
-      className={cn('btn btn-ghost btn-sm btn-circle', className)}
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={
+        theme === 'dark' ? LL.common.switchToLightMode() : LL.common.switchToDarkMode()
+      }
     >
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-    </button>
+    </Button>
   )
 }
 

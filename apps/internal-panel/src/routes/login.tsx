@@ -1,9 +1,14 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
-import { Button, Input, ThemeToggle } from '@fuel-carrier/web-ui/ui'
-import { useState } from 'react'
+import { Button, Input, LocaleControls } from '@fuel-carrier/web-ui/ui'
+import { useMemo, useState } from 'react'
 import { login } from '../lib/auth'
-import { loginDtoSchema, type LoginDto } from '@fuel-carrier/shared-validation/admin/login'
+import {
+  createLoginDtoSchema,
+  type LoginDto,
+} from '@fuel-carrier/shared-validation/admin/login'
+import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -15,14 +20,33 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate()
   const { redirect } = useSearch({ from: '/login' })
+  const { LL } = useI18nContext()
   const [serverError, setServerError] = useState<string | null>(null)
+
+  const loginSchema = useMemo(
+    function createSchema() {
+      return createLoginDtoSchema({
+        usernameRequired: LL.validation.usernameRequired(),
+        usernameInvalid: LL.validation.usernameInvalid(),
+        passwordRequired: LL.validation.passwordRequired(),
+        passwordStrength: {
+          minLength: LL.validation.passwordMinLength({ min: PASSWORD_MIN_LENGTH }),
+          uppercase: LL.validation.passwordUppercase(),
+          lowercase: LL.validation.passwordLowercase(),
+          digit: LL.validation.passwordDigit(),
+          special: LL.validation.passwordSpecial(),
+        },
+      })
+    },
+    [LL],
+  )
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(loginDtoSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: { username: '', password: '' },
   })
 
@@ -32,13 +56,13 @@ function LoginPage() {
       await login(data)
       await navigate({ to: redirect ?? '/' })
     } catch {
-      setServerError('Invalid username or password.')
+      setServerError(LL.internalPanel.login.invalidCredentials())
     }
   }
 
   return (
     <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-base-100 p-6">
-      <ThemeToggle className="absolute top-4 right-4" />
+      <LocaleControls />
 
       {/* Background grid */}
       <div
@@ -71,25 +95,29 @@ function LoginPage() {
               />
             </svg>
           </div>
-          <h1 className="text-xl font-semibold tracking-tight">Internal Panel</h1>
-          <p className="mt-1 text-sm text-base-content/40">Authorized access only</p>
+          <h1 className="text-xl font-semibold tracking-tight">
+            {LL.internalPanel.login.title()}
+          </h1>
+          <p className="mt-1 text-sm text-base-content/40">
+            {LL.internalPanel.login.subtitle()}
+          </p>
         </div>
 
         {/* Card */}
         <div className="rounded-2xl border border-base-content/8 bg-base-200/50 p-6 shadow-xl backdrop-blur-md">
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
             <Input
-              label="Username"
+              label={LL.internalPanel.login.username()}
               type="text"
               autoComplete="username"
               autoFocus
-              placeholder="your_username"
+              placeholder={LL.internalPanel.login.usernamePlaceholder()}
               error={errors.username?.message}
               {...register('username')}
             />
 
             <Input
-              label="Password"
+              label={LL.internalPanel.login.password()}
               type="password"
               autoComplete="current-password"
               placeholder="••••••••"
@@ -106,10 +134,10 @@ function LoginPage() {
             <Button
               type="submit"
               loading={isSubmitting}
-              loadingText="Signing in"
+              loadingText={LL.internalPanel.login.signingIn()}
               className="mt-1"
             >
-              Sign in
+              {LL.internalPanel.login.signIn()}
             </Button>
           </form>
         </div>

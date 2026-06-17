@@ -1,0 +1,28 @@
+{
+  "name": "@fuel-carrier/i18n",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./react": "./src/i18n/i18n-react.tsx",
+    "./locale": "./src/locale.ts"
+  },
+  "scripts": {
+    "dev": "typesafe-i18n",
+    "typesafe-i18n": "typesafe-i18n",
+    "generate": "typesafe-i18n --no-watch",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "typesafe-i18n": "^5.27.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "react": "^19.2.6",
+    "typescript": "~6.0.2"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  }
+}

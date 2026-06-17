@@ -1,0 +1,1 @@
+{"root":["./src/index.ts","./src/locale.ts","./src/i18n/formatters.ts","./src/i18n/i18n-react.tsx","./src/i18n/i18n-types.ts","./src/i18n/i18n-util.async.ts","./src/i18n/i18n-util.sync.ts","./src/i18n/i18n-util.ts","./src/i18n/en/index.ts","./src/i18n/fa/index.ts"],"version":"6.0.3"}

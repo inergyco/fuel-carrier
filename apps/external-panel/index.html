@@ -12,6 +12,11 @@
           'data-theme',
           t || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
         );
+
+        var l = localStorage.getItem('locale');
+        var locale = l || (navigator.language.toLowerCase().indexOf('fa') === 0 ? 'fa' : 'en');
+        document.documentElement.lang = locale;
+        document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr';
       })();
     </script>
   </head>

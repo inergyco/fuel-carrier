@@ -1,4 +1,5 @@
 export {
+  createLoginDtoSchema,
   loginDtoSchema,
   type LoginDto,
 } from '@fuel-carrier/shared-validation/admin/login';
