@@ -9,6 +9,7 @@
     "./providers": "./src/providers/index.ts",
     "./query": "./src/query/index.ts",
     "./router": "./src/router/index.ts",
+    "./ui": "./src/ui/index.ts",
     "./utils": "./src/utils/index.ts"
   },
   "dependencies": {

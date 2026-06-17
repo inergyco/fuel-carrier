@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
-import { cn } from '@fuel-carrier/web-ui/utils'
+import { Button, Input } from '@fuel-carrier/web-ui/ui'
 import { useState } from 'react'
 import { login } from '../lib/auth'
 import { loginDtoSchema, type LoginDto } from '@fuel-carrier/shared-validation/admin/login'
@@ -73,48 +73,24 @@ function LoginPage() {
         {/* Card */}
         <div className="rounded-2xl border border-base-content/8 bg-base-200/50 p-6 shadow-xl backdrop-blur-md">
           <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-                Username
-              </label>
-              <input
-                type="text"
-                autoComplete="username"
-                autoFocus
-                placeholder="your_username"
-                className={cn(
-                  'input input-sm h-10 w-full rounded-lg border bg-base-100/60 px-3 font-mono text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
-                  errors.username
-                    ? 'border-error/60 focus:ring-error/40'
-                    : 'border-base-content/10 focus:ring-primary/40',
-                )}
-                {...register('username')}
-              />
-              {errors.username && (
-                <p className="text-xs text-error/80">{errors.username.message}</p>
-              )}
-            </div>
+            <Input
+              label="Username"
+              type="text"
+              autoComplete="username"
+              autoFocus
+              placeholder="your_username"
+              error={errors.username?.message}
+              {...register('username')}
+            />
 
-            <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-                Password
-              </label>
-              <input
-                type="password"
-                autoComplete="current-password"
-                placeholder="••••••••"
-                className={cn(
-                  'input input-sm h-10 w-full rounded-lg border bg-base-100/60 px-3 font-mono text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
-                  errors.password
-                    ? 'border-error/60 focus:ring-error/40'
-                    : 'border-base-content/10 focus:ring-primary/40',
-                )}
-                {...register('password')}
-              />
-              {errors.password && (
-                <p className="text-xs text-error/80">{errors.password.message}</p>
-              )}
-            </div>
+            <Input
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              placeholder="••••••••"
+              error={errors.password?.message}
+              {...register('password')}
+            />
 
             {serverError && (
               <div className="rounded-lg border border-error/20 bg-error/8 px-3 py-2 text-xs text-error">
@@ -122,23 +98,14 @@ function LoginPage() {
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
-              disabled={isSubmitting}
-              className={cn(
-                'btn btn-primary btn-sm mt-1 h-10 w-full rounded-lg text-xs font-semibold tracking-widest uppercase transition-all',
-                isSubmitting && 'opacity-60',
-              )}
+              loading={isSubmitting}
+              loadingText="Signing in"
+              className="mt-1"
             >
-              {isSubmitting ? (
-                <span className="flex items-center gap-2">
-                  <span className="loading loading-spinner loading-xs" />
-                  Signing in
-                </span>
-              ) : (
-                'Sign in'
-              )}
-            </button>
+              Sign in
+            </Button>
           </form>
         </div>
       </div>
