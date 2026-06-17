@@ -21,7 +21,10 @@ function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginDto>({ resolver: zodResolver(loginDtoSchema) })
+  } = useForm({
+    resolver: zodResolver(loginDtoSchema),
+    defaultValues: { username: '', password: '' },
+  })
 
   async function onSubmit(data: LoginDto) {
     setServerError(null)

@@ -40,10 +40,8 @@ export function assertStrongPassword(password: string): void {
   }
 }
 
-export const strongPasswordSchema: z.ZodType<string> = z
-  .string()
-  .superRefine((password, ctx) => {
-    for (const message of getPasswordStrengthErrors(password)) {
-      ctx.addIssue({ code: 'custom', message });
-    }
-  });
+export const strongPasswordSchema = z.string().superRefine((password, ctx) => {
+  for (const message of getPasswordStrengthErrors(password)) {
+    ctx.addIssue({ code: 'custom', message });
+  }
+});
