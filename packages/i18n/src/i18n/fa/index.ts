@@ -43,6 +43,11 @@ const fa: Translation = {
       openMenu: 'باز کردن منو',
       signOut: 'خروج',
       signingOut: 'در حال خروج…',
+      signOutConfirmTitle: 'خروج از حساب؟',
+      signOutConfirmDescription:
+        'برای دسترسی مجدد به پنل داخلی باید دوباره وارد شوید.',
+      signOutConfirm: 'خروج',
+      cancel: 'انصراف',
     },
     shell: {
       brand: 'Fuel Carrier',

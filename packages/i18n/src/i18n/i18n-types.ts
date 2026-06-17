@@ -153,6 +153,22 @@ type RootTranslation = {
 			 * S​i​g​n​i​n​g​ ​o​u​t​…
 			 */
 			signingOut: string
+			/**
+			 * S​i​g​n​ ​o​u​t​?
+			 */
+			signOutConfirmTitle: string
+			/**
+			 * Y​o​u​ ​w​i​l​l​ ​n​e​e​d​ ​t​o​ ​s​i​g​n​ ​i​n​ ​a​g​a​i​n​ ​t​o​ ​a​c​c​e​s​s​ ​t​h​e​ ​i​n​t​e​r​n​a​l​ ​p​a​n​e​l​.
+			 */
+			signOutConfirmDescription: string
+			/**
+			 * S​i​g​n​ ​o​u​t
+			 */
+			signOutConfirm: string
+			/**
+			 * C​a​n​c​e​l
+			 */
+			cancel: string
 		}
 		shell: {
 			/**
@@ -314,6 +330,22 @@ export type TranslationFunctions = {
 			 * Signing out…
 			 */
 			signingOut: () => LocalizedString
+			/**
+			 * Sign out?
+			 */
+			signOutConfirmTitle: () => LocalizedString
+			/**
+			 * You will need to sign in again to access the internal panel.
+			 */
+			signOutConfirmDescription: () => LocalizedString
+			/**
+			 * Sign out
+			 */
+			signOutConfirm: () => LocalizedString
+			/**
+			 * Cancel
+			 */
+			cancel: () => LocalizedString
 		}
 		shell: {
 			/**

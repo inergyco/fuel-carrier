@@ -43,6 +43,11 @@ const en: BaseTranslation = {
       openMenu: 'Open menu',
       signOut: 'Sign out',
       signingOut: 'Signing out…',
+      signOutConfirmTitle: 'Sign out?',
+      signOutConfirmDescription:
+        'You will need to sign in again to access the internal panel.',
+      signOutConfirm: 'Sign out',
+      cancel: 'Cancel',
     },
     shell: {
       brand: 'Fuel Carrier',
