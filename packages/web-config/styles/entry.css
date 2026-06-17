@@ -1,3 +1,4 @@
 @import "./tailwind.css";
+@import "./fonts/iransans-x.css";
 @import "./base.css";
 @source "../../web-ui/src/**/*.{ts,tsx}";
