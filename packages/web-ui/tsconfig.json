@@ -4,7 +4,9 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "paths": {
       "@fuel-carrier/i18n": ["../i18n/src"],
-      "@fuel-carrier/i18n/*": ["../i18n/src/*"]
+      "@fuel-carrier/i18n/*": ["../i18n/src/*"],
+      "@fuel-carrier/shared-types": ["../shared-types/src"],
+      "@fuel-carrier/shared-types/*": ["../shared-types/src/*"]
     }
   },
   "include": ["src"]

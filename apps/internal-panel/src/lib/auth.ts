@@ -4,7 +4,7 @@ import { api } from "./api";
 
 export type { AdminSession };
 
-type AuthResponse = {
+type AuthPayload = {
   user: AdminSession;
 };
 
@@ -13,17 +13,17 @@ export const authKeys = {
 };
 
 export async function fetchMe(): Promise<AdminSession> {
-  const { user } = await api.get("auth/me").json<AuthResponse>();
+  const { user } = await api.get("auth/me").json<AuthPayload>();
   return user;
 }
 
 export async function login(credentials: LoginDto): Promise<AdminSession> {
   const { user } = await api
     .post("auth/login", { json: credentials })
-    .json<AuthResponse>();
+    .json<AuthPayload>();
   return user;
 }
 
 export async function logout(): Promise<void> {
-  await api.post("auth/logout");
+  await api.post("auth/logout").json();
 }

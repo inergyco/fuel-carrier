@@ -15,8 +15,11 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the company payload', () => {
+      expect(appController.getHello()).toEqual({
+        id: '1',
+        name: 'Fuel Carrier',
+      });
     });
   });
 });

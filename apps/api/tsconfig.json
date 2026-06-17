@@ -19,6 +19,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "types": ["jest", "node"],
     "paths": {
       "@fuel-carrier/shared-types": ["../../packages/shared-types/src"],
       "@fuel-carrier/shared-types/*": ["../../packages/shared-types/src/*"],
@@ -26,5 +27,5 @@
       "@fuel-carrier/shared-validation/*": ["../../packages/shared-validation/src/*"]
     }
   },
-  "include": ["src", "../../packages/shared-validation/src"]
+  "include": ["src", "test", "../../packages/shared-validation/src"]
 }

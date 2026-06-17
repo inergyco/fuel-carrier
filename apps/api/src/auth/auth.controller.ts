@@ -5,6 +5,10 @@ import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAuthGuard } from './local-auth.guard';
 
+type AuthPayload = {
+  user: AdminSession;
+};
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -14,7 +18,7 @@ export class AuthController {
   login(
     @Req() req: FastifyRequest & { user: AdminSession },
     @Res({ passthrough: true }) res: FastifyReply,
-  ): { user: AdminSession } {
+  ): AuthPayload {
     const user = req.user;
     const token = this.authService.signAdminToken(user);
 
@@ -30,16 +34,16 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: FastifyReply): { ok: true } {
+  logout(@Res({ passthrough: true }) res: FastifyReply): null {
     void res.clearCookie(this.authService.getAuthCookieName(), {
       path: '/api',
     });
-    return { ok: true };
+    return null;
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  me(@Req() req: FastifyRequest & { user: AdminSession }): { user: AdminSession } {
+  me(@Req() req: FastifyRequest & { user: AdminSession }): AuthPayload {
     const user = req.user;
     return { user };
   }

@@ -1,6 +1,8 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
+import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { Button, Input, LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/auth'
@@ -56,7 +58,20 @@ function LoginPage() {
     try {
       await login(data)
       await navigate({ to: sanitizeRedirectPath(redirect) })
-    } catch {
+    } catch (error) {
+      if (
+        isApiClientError(error) &&
+        error.apiError.code === ApiErrorCode.UNAUTHORIZED
+      ) {
+        setServerError(LL.internalPanel.login.invalidCredentials())
+        return
+      }
+
+      if (isApiClientError(error)) {
+        setServerError(error.apiError.message)
+        return
+      }
+
       setServerError(LL.internalPanel.login.invalidCredentials())
     }
   }

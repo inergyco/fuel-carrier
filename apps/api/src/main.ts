@@ -6,6 +6,8 @@ import {
 } from '@nestjs/platform-fastify';
 import fastifyCookie from '@fastify/cookie';
 import { AppModule } from './app.module';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter';
+import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -16,6 +18,8 @@ async function bootstrap() {
 
   await app.register(fastifyCookie);
   app.setGlobalPrefix('api');
+  app.useGlobalInterceptors(new ApiResponseInterceptor());
+  app.useGlobalFilters(new ApiExceptionFilter());
   await app.listen(configService.getOrThrow<number>('PORT'), '0.0.0.0');
 }
 void bootstrap();
