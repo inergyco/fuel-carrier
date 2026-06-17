@@ -1,0 +1,30 @@
+---
+description: Build responsive layouts for mobile, tablet, and desktop
+alwaysApply: true
+---
+
+# Responsive UI
+
+This application must work well on mobile, tablet, and desktop. Treat responsiveness as a default requirement for every page and shared UI component.
+
+## Layout
+
+- Use mobile-first Tailwind breakpoints (`sm:`, `md:`, `lg:`) when layout or spacing should change by screen size.
+- Prefer fluid widths (`w-full`, `max-w-*`) over fixed pixel widths.
+- Use `min-h-svh` for full-height pages; avoid layouts that break on short viewports.
+- Keep touch targets at least ~44px; avoid hover-only interactions on mobile.
+
+## RTL and i18n
+
+- Test both `dir="rtl"` (fa) and `dir="ltr"` (en) at narrow and wide widths.
+- Use logical properties when possible (`ms-*`, `me-*`, `ps-*`, `pe-*`) instead of hard-coded left/right.
+
+## Shared components
+
+- Put reusable responsive patterns in `@fuel-carrier/web-ui` when both panels need them.
+- `LocaleControls`, forms, nav, and tables must remain usable on small screens (stack, scroll, or collapse as needed).
+
+## Before finishing UI work
+
+- Verify at ~375px, ~768px, and ~1280px widths.
+- Check overflow: no horizontal scroll from fixed widths or long unbroken text.
