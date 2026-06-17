@@ -2,6 +2,8 @@ import type { Locales } from './i18n/i18n-types.js'
 
 export const LOCALE_STORAGE_KEY = 'locale'
 
+export const DEFAULT_LOCALE: Locales = 'fa'
+
 export const locales = ['en', 'fa'] as const satisfies readonly Locales[]
 
 export function isLocale(value: string): value is Locales {
@@ -15,11 +17,11 @@ export function detectLocale(): Locales {
   }
 
   const browserLocale = navigator.language.toLowerCase()
-  if (browserLocale.startsWith('fa')) {
-    return 'fa'
+  if (browserLocale.startsWith('en')) {
+    return 'en'
   }
 
-  return 'en'
+  return DEFAULT_LOCALE
 }
 
 export function getDirection(locale: Locales): 'ltr' | 'rtl' {

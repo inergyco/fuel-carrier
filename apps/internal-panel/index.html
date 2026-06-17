@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fa" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -14,7 +14,9 @@
         );
 
         var l = localStorage.getItem('locale');
-        var locale = l || (navigator.language.toLowerCase().indexOf('fa') === 0 ? 'fa' : 'en');
+        var locale =
+          l ||
+          (navigator.language.toLowerCase().indexOf('en') === 0 ? 'en' : 'fa');
         document.documentElement.lang = locale;
         document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr';
       })();
