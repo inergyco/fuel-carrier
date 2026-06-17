@@ -1,9 +1,4 @@
-export type AdminSession = {
-  adminId: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-};
+export type { AdminSession } from '@fuel-carrier/shared-types';
 
 export type JwtPayload = {
   sub: string;
