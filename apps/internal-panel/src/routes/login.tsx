@@ -4,6 +4,7 @@ import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
 import { Button, Input, LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/auth'
+import { sanitizeRedirectPath } from '../lib/redirect'
 import {
   createLoginDtoSchema,
   type LoginDto,
@@ -54,7 +55,7 @@ function LoginPage() {
     setServerError(null)
     try {
       await login(data)
-      await navigate({ to: redirect ?? '/' })
+      await navigate({ to: sanitizeRedirectPath(redirect) })
     } catch {
       setServerError(LL.internalPanel.login.invalidCredentials())
     }

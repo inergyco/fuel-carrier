@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { authKeys, fetchMe } from '../lib/auth'
+import { sanitizeRedirectPath } from '../lib/redirect'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async ({ context, location }) => {
@@ -14,7 +15,7 @@ export const Route = createFileRoute('/_authenticated')({
     } catch {
       throw redirect({
         to: '/login',
-        search: { redirect: location.href },
+        search: { redirect: sanitizeRedirectPath(location.href) },
       })
     }
   },

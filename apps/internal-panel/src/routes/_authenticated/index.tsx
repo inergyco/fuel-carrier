@@ -8,6 +8,7 @@ import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import { LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { useState } from 'react'
 import { authKeys, logout } from '../../lib/auth'
+import { sanitizeRedirectPath } from '../../lib/redirect'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
 
@@ -28,7 +29,10 @@ function HomePage() {
     try {
       await logout()
       queryClient.removeQueries({ queryKey: authKeys.me })
-      await navigate({ to: '/login', search: { redirect: location.href } })
+      await navigate({
+        to: '/login',
+        search: { redirect: sanitizeRedirectPath(location.href) },
+      })
     } finally {
       setIsLoggingOut(false)
     }
