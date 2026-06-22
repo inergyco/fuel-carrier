@@ -14,7 +14,7 @@ import {
   type CreateCompanyDto,
 } from '@fuel-carrier/shared-validation/company/create'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
-import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
+import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import { FormInput, FormTextarea, Modal, ModalActions } from '@fuel-carrier/web-ui/ui'
 import {
@@ -92,7 +92,7 @@ export function CompanyFormModal({
     },
   })
 
-  async function onSubmit(data: CreateCompanyDto) {
+  const onSubmit: SubmitHandler<CreateCompanyDto> = async function onSubmit(data) {
     setServerError(null)
 
     try {
