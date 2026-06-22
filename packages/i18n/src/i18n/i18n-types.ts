@@ -441,9 +441,17 @@ type RootTranslation = {
 				 */
 				driver: string
 				/**
+				 * C​a​r
+				 */
+				car: string
+				/**
 				 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​e​d
 				 */
 				noDriver: string
+				/**
+				 * N​o​ ​c​a​r​ ​a​s​s​i​g​n​e​d
+				 */
+				noCar: string
 				/**
 				 * A​d​d​ ​c​o​m​p​a​n​y​ ​u​s​e​r
 				 */
@@ -961,9 +969,17 @@ export type TranslationFunctions = {
 				 */
 				driver: () => LocalizedString
 				/**
+				 * Car
+				 */
+				car: () => LocalizedString
+				/**
 				 * No driver assigned
 				 */
 				noDriver: () => LocalizedString
+				/**
+				 * No car assigned
+				 */
+				noCar: () => LocalizedString
 				/**
 				 * Add company user
 				 */

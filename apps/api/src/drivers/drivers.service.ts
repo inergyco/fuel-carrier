@@ -3,6 +3,7 @@ import { desc, eq } from 'drizzle-orm';
 import type { Driver, TenantContext } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
 import {
   POSTGRES_FOREIGN_KEY_VIOLATION,
@@ -42,22 +43,21 @@ export class DriversService {
 
   async list(context: TenantContext): Promise<Driver[]> {
     return this.tenantDb.run(context, async (tx) => {
-      const rows = await tx
-        .select()
-        .from(drivers)
-        .orderBy(desc(drivers.createdAt));
+      const rows = await tx.query.drivers.findMany({
+        with: { car: true },
+        orderBy: desc(drivers.createdAt),
+      });
 
-      return rows.map(_mapDriver);
+      return rows.map(_mapDriverWithCar);
     });
   }
 
   async getById(context: TenantContext, id: string): Promise<Driver> {
     return this.tenantDb.run(context, async (tx) => {
-      const [row] = await tx
-        .select()
-        .from(drivers)
-        .where(eq(drivers.id, id))
-        .limit(1);
+      const row = await tx.query.drivers.findFirst({
+        where: eq(drivers.id, id),
+        with: { car: true },
+      });
 
       if (!row) {
         throw createApiException(
@@ -67,7 +67,7 @@ export class DriversService {
         );
       }
 
-      return _mapDriver(row);
+      return _mapDriverWithCar(row);
     });
   }
 
@@ -142,6 +142,17 @@ export class DriversService {
   }
 }
 
+type DriverWithCar = typeof drivers.$inferSelect & {
+  car: typeof cars.$inferSelect | null;
+};
+
 function _mapDriver(row: typeof drivers.$inferSelect): Driver {
   return row;
+}
+
+function _mapDriverWithCar(row: DriverWithCar): Driver {
+  return {
+    ..._mapDriver(row),
+    car: row.car,
+  };
 }

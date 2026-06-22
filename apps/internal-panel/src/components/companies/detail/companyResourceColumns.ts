@@ -4,8 +4,12 @@ import type { ResourceColumn } from './ResourceSection'
 
 interface CompanyResourceColumnOptions {
   LL: TranslationFunctions
-  emptyCell: string
+  emptyCell?: string
   driverNameById?: Map<string, string>
+}
+
+function formatCarLabel(car: Car): string {
+  return car.name ? `${car.name} (${car.licensePlate})` : car.licensePlate
 }
 
 export function getUserColumns({
@@ -56,6 +60,14 @@ export function getDriverColumns({
       header: LL.internalPanel.companies.nationalId(),
       cell: (driver) => driver.nationalId,
       className: 'font-mono text-sm',
+    },
+    {
+      key: 'car',
+      header: LL.internalPanel.companies.detail.car(),
+      cell: (driver) =>
+        driver.car
+          ? formatCarLabel(driver.car)
+          : LL.internalPanel.companies.detail.noCar(),
     },
   ]
 }

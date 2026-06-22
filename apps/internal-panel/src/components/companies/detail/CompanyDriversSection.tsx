@@ -12,7 +12,6 @@ interface CompanyDriversSectionProps {
 export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps) {
   const { LL } = useI18nContext()
   const drivers = useCompanyDrivers(companyId)
-  const emptyCell = LL.internalPanel.companies.emptyCell()
 
   return (
     <>
@@ -23,7 +22,7 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         emptyLabel={LL.internalPanel.companies.detail.driversEmpty()}
         loading={drivers.driversQuery.isLoading}
         items={drivers.companyDrivers}
-        columns={getDriverColumns({ LL, emptyCell })}
+        columns={getDriverColumns({ LL })}
         onAdd={function openCreateDriver() {
           drivers.setDriverModal({ mode: 'create' })
         }}
