@@ -1,89 +1,104 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, desc, eq, ne } from 'drizzle-orm';
 import type { Company, CompanyInput } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
-import { DATABASE } from '../database/database.tokens';
-import type { Database } from '../database/database.types';
+import { internalTenantContext } from '../database/tenant-context.utils';
 import { companies } from '../database/schema/companies';
+import { TenantDbService } from '../database/tenant-db.service';
+import type { TenantTransaction } from '../database/tenant-db.types';
 
+/**
+ * Companies are not tenant-owned rows, but all database access still flows
+ * through TenantDbService so the pattern is consistent across the codebase.
+ */
 @Injectable()
 export class CompaniesService {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
+  constructor(private readonly tenantDb: TenantDbService) {}
 
   async list(): Promise<Company[]> {
-    const rows = await this.db
-      .select()
-      .from(companies)
-      .orderBy(desc(companies.createdAt));
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      const rows = await tx
+        .select()
+        .from(companies)
+        .orderBy(desc(companies.createdAt));
 
-    return rows.map(_mapCompany);
+      return rows.map(_mapCompany);
+    });
   }
 
   async getById(id: string): Promise<Company> {
-    const [row] = await this.db
-      .select()
-      .from(companies)
-      .where(eq(companies.id, id))
-      .limit(1);
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      const [row] = await tx
+        .select()
+        .from(companies)
+        .where(eq(companies.id, id))
+        .limit(1);
 
-    if (!row) {
-      throw createApiException(
-        HttpStatus.NOT_FOUND,
-        ApiErrorCode.NOT_FOUND,
-        'Company not found',
-      );
-    }
+      if (!row) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Company not found',
+        );
+      }
 
-    return _mapCompany(row);
+      return _mapCompany(row);
+    });
   }
 
   async create(dto: CompanyInput): Promise<Company> {
-    await this._assertNationalIdAvailable(dto.nationalId);
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      await this._assertNationalIdAvailable(tx, dto.nationalId);
 
-    const [row] = await this.db.insert(companies).values(dto).returning();
-
-    return _mapCompany(row);
+      const [row] = await tx.insert(companies).values(dto).returning();
+      return _mapCompany(row);
+    });
   }
 
   async update(id: string, dto: CompanyInput): Promise<Company> {
-    await this._assertNationalIdAvailable(dto.nationalId, id);
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      await this._assertNationalIdAvailable(tx, dto.nationalId, id);
 
-    const [row] = await this.db
-      .update(companies)
-      .set(dto)
-      .where(eq(companies.id, id))
-      .returning();
+      const [row] = await tx
+        .update(companies)
+        .set(dto)
+        .where(eq(companies.id, id))
+        .returning();
 
-    if (!row) {
-      throw createApiException(
-        HttpStatus.NOT_FOUND,
-        ApiErrorCode.NOT_FOUND,
-        'Company not found',
-      );
-    }
+      if (!row) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Company not found',
+        );
+      }
 
-    return _mapCompany(row);
+      return _mapCompany(row);
+    });
   }
 
   async delete(id: string): Promise<null> {
-    const [row] = await this.db
-      .delete(companies)
-      .where(eq(companies.id, id))
-      .returning({ id: companies.id });
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      const [row] = await tx
+        .delete(companies)
+        .where(eq(companies.id, id))
+        .returning({ id: companies.id });
 
-    if (!row) {
-      throw createApiException(
-        HttpStatus.NOT_FOUND,
-        ApiErrorCode.NOT_FOUND,
-        'Company not found',
-      );
-    }
+      if (!row) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Company not found',
+        );
+      }
 
-    return null;
+      return null;
+    });
   }
 
   private async _assertNationalIdAvailable(
+    tx: TenantTransaction,
     nationalId: string,
     excludeId?: string,
   ): Promise<void> {
@@ -91,7 +106,7 @@ export class CompaniesService {
       ? and(eq(companies.nationalId, nationalId), ne(companies.id, excludeId))
       : eq(companies.nationalId, nationalId);
 
-    const [existing] = await this.db
+    const [existing] = await tx
       .select({ id: companies.id })
       .from(companies)
       .where(whereClause)

@@ -1,18 +1,18 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategyBase } from 'passport-local';
+import type { AuthSession } from '@fuel-carrier/shared-types';
 import { parseZodDto } from '../common/validation/zod.utils';
-import type { AdminSession } from './auth.types';
-import { AuthService } from './auth.service';
 import {
   loginDtoSchema,
   type LoginDto,
 } from '@fuel-carrier/shared-validation/admin/login';
+import { AuthService } from './auth.service';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(
+export class LocalAdminStrategy extends PassportStrategy(
   LocalStrategyBase,
-  'local',
+  'local-admin',
 ) {
   constructor(private readonly authService: AuthService) {
     super({
@@ -21,21 +21,21 @@ export class LocalStrategy extends PassportStrategy(
     });
   }
 
-  async validate(username: string, password: string): Promise<AdminSession> {
+  async validate(username: string, password: string): Promise<AuthSession> {
     const credentials: LoginDto = parseZodDto(loginDtoSchema, {
       username,
       password,
     });
 
-    const admin = await this.authService.validateAdminCredentials(
+    const session = await this.authService.validateAdminCredentials(
       credentials.username,
       credentials.password,
     );
 
-    if (!admin) {
+    if (!session) {
       throw new UnauthorizedException();
     }
 
-    return admin;
+    return session;
   }
 }

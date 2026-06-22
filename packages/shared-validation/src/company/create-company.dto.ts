@@ -1,5 +1,6 @@
 import type { CompanyInput } from '@fuel-carrier/shared-types';
 import { z } from 'zod';
+import { optionalTextField } from '../optional-text-field';
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
   COMPANY_NAME_MAX_LENGTH,
@@ -18,16 +19,6 @@ export type CreateCompanyValidationMessages = {
   addressTooLong: string;
   noteTooLong: string;
 };
-
-function optionalTextField(maxLength: number, tooLongMessage: string) {
-  return z
-    .string()
-    .max(maxLength, tooLongMessage)
-    .transform(function toNullableText(value) {
-      const trimmed = value.trim();
-      return trimmed.length > 0 ? trimmed : null;
-    });
-}
 
 export function createCreateCompanyDtoSchema(
   messages: CreateCompanyValidationMessages,

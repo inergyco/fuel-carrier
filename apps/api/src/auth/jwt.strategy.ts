@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy as JwtStrategyBase } from 'passport-jwt';
-import type { AdminSession, JwtPayload } from './auth.types';
+import { type AuthSession } from '@fuel-carrier/shared-types';
+import type { JwtPayload } from './auth.types';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -17,9 +18,11 @@ export class JwtStrategy extends PassportStrategy(JwtStrategyBase, 'jwt') {
     });
   }
 
-  validate(payload: JwtPayload): AdminSession {
+  validate(payload: JwtPayload): AuthSession {
     return {
-      adminId: payload.sub,
+      userId: payload.sub,
+      role: payload.role,
+      companyId: payload.companyId,
       username: payload.username,
       firstName: payload.firstName,
       lastName: payload.lastName,

@@ -19,7 +19,7 @@ import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAdminAuthGuard } from './local-admin-auth.guard';
+import { LocalCompanyAuthGuard } from './local-company-auth.guard';
 
 type AuthPayload = {
   user: AuthSession;
@@ -27,13 +27,13 @@ type AuthPayload = {
 
 @ApiTags('auth')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
-@Controller('internal/auth')
-export class InternalAuthController {
+@Controller('external/auth')
+export class ExternalAuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @UseGuards(LocalAdminAuthGuard)
-  @ApiOperation({ summary: 'Sign in with internal admin credentials' })
+  @UseGuards(LocalCompanyAuthGuard)
+  @ApiOperation({ summary: 'Sign in with company user credentials' })
   @ApiBody({ type: LoginRequestDto })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
   @ApiEnvelopeBadRequestResponse()
@@ -67,7 +67,7 @@ export class InternalAuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get the current internal admin session' })
+  @ApiOperation({ summary: 'Get the current company user session' })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
   @ApiEnvelopeUnauthorizedResponse()
   me(@CurrentUser() user: AuthSession): AuthPayload {

@@ -4,6 +4,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import { DATABASE } from './database.tokens';
 import type { Database } from './database.types';
+import { TenantDbService } from './tenant-db.service';
 import * as schema from './schema';
 
 @Global()
@@ -19,7 +20,8 @@ import * as schema from './schema';
         return drizzle(pool, { schema });
       },
     },
+    TenantDbService,
   ],
-  exports: [DATABASE],
+  exports: [DATABASE, TenantDbService],
 })
 export class DatabaseModule {}
