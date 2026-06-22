@@ -101,6 +101,7 @@ const fa: Translation = {
       notFound: 'شرکت یافت نشد.',
       notFoundDescription: 'این شرکت حذف شده یا لینک نامعتبر است.',
       detail: {
+        overviewTitle: 'جزئیات شرکت',
         usersTitle: 'کاربران شرکت',
         usersSubtitle: 'حساب‌های ورود به پنل خارجی این شرکت',
         driversTitle: 'رانندگان',

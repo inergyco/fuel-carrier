@@ -103,6 +103,7 @@ const en: BaseTranslation = {
       notFound: 'Company not found.',
       notFoundDescription: 'This company may have been deleted or the link is invalid.',
       detail: {
+        overviewTitle: 'Company details',
         usersTitle: 'Company users',
         usersSubtitle: 'External panel login accounts for this company',
         driversTitle: 'Drivers',

@@ -369,6 +369,10 @@ type RootTranslation = {
 			notFoundDescription: string
 			detail: {
 				/**
+				 * C​o​m​p​a​n​y​ ​d​e​t​a​i​l​s
+				 */
+				overviewTitle: string
+				/**
 				 * C​o​m​p​a​n​y​ ​u​s​e​r​s
 				 */
 				usersTitle: string
@@ -884,6 +888,10 @@ export type TranslationFunctions = {
 			 */
 			notFoundDescription: () => LocalizedString
 			detail: {
+				/**
+				 * Company details
+				 */
+				overviewTitle: () => LocalizedString
 				/**
 				 * Company users
 				 */
