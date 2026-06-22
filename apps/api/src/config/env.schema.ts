@@ -13,6 +13,12 @@ export const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default('7d'),
   AUTH_COOKIE_NAME: z.string().min(1).default('auth_token'),
   AUTH_COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
+  SWAGGER_ENABLED: z
+    .enum(['true', 'false'])
+    .default('true')
+    .describe(
+      'Expose OpenAPI docs at /api/docs/internal and /api/docs/external',
+    ),
 });
 
 export type Env = z.infer<typeof envSchema>;

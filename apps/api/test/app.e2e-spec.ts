@@ -29,21 +29,31 @@ describe('AppController (e2e)', () => {
     await app.getHttpAdapter().getInstance().ready();
   });
 
-  it('/api (GET) returns a success envelope', () => {
+  it('/api/internal (GET) returns a success envelope', () => {
     return request(app.getHttpServer())
-      .get('/api')
+      .get('/api/internal')
       .expect(200)
       .expect({
         data: {
-          id: '1',
-          name: 'Fuel Carrier',
+          status: 'ok',
         },
       });
   });
 
-  it('/api/auth/me (GET) returns an unauthorized error envelope', () => {
+  it('/api/external (GET) returns a success envelope', () => {
     return request(app.getHttpServer())
-      .get('/api/auth/me')
+      .get('/api/external')
+      .expect(200)
+      .expect({
+        data: {
+          status: 'ok',
+        },
+      });
+  });
+
+  it('/api/internal/auth/me (GET) returns an unauthorized error envelope', () => {
+    return request(app.getHttpServer())
+      .get('/api/internal/auth/me')
       .expect(401)
       .expect({
         error: {
