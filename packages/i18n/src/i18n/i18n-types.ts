@@ -299,6 +299,10 @@ type RootTranslation = {
 			 */
 			edit: string
 			/**
+			 * V​i​e​w
+			 */
+			view: string
+			/**
 			 * D​e​l​e​t​e
 			 */
 			'delete': string
@@ -351,6 +355,18 @@ type RootTranslation = {
 			 * —
 			 */
 			emptyCell: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​c​o​m​p​a​n​i​e​s
+			 */
+			backToList: string
+			/**
+			 * C​o​m​p​a​n​y​ ​n​o​t​ ​f​o​u​n​d​.
+			 */
+			notFound: string
+			/**
+			 * T​h​i​s​ ​c​o​m​p​a​n​y​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​o​r​ ​t​h​e​ ​l​i​n​k​ ​i​s​ ​i​n​v​a​l​i​d​.
+			 */
+			notFoundDescription: string
 		}
 	}
 	externalPanel: {
@@ -643,6 +659,10 @@ export type TranslationFunctions = {
 			 */
 			edit: () => LocalizedString
 			/**
+			 * View
+			 */
+			view: () => LocalizedString
+			/**
 			 * Delete
 			 */
 			'delete': () => LocalizedString
@@ -694,6 +714,18 @@ export type TranslationFunctions = {
 			 * —
 			 */
 			emptyCell: () => LocalizedString
+			/**
+			 * Back to companies
+			 */
+			backToList: () => LocalizedString
+			/**
+			 * Company not found.
+			 */
+			notFound: () => LocalizedString
+			/**
+			 * This company may have been deleted or the link is invalid.
+			 */
+			notFoundDescription: () => LocalizedString
 		}
 	}
 	externalPanel: {

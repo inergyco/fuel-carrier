@@ -56,6 +56,16 @@ export class InternalCompaniesController {
     return this.companiesService.list();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a company by ID' })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(CompanyDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  getById(@Param('id') id: string): Promise<Company> {
+    return this.companiesService.getById(id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a company' })
   @ApiBody({ type: CreateCompanyRequestDto })

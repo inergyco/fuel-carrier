@@ -20,6 +20,24 @@ export class CompaniesService {
     return rows.map(_mapCompany);
   }
 
+  async getById(id: string): Promise<Company> {
+    const [row] = await this.db
+      .select()
+      .from(companies)
+      .where(eq(companies.id, id))
+      .limit(1);
+
+    if (!row) {
+      throw createApiException(
+        HttpStatus.NOT_FOUND,
+        ApiErrorCode.NOT_FOUND,
+        'Company not found',
+      );
+    }
+
+    return _mapCompany(row);
+  }
+
   async create(dto: CompanyInput): Promise<Company> {
     await this._assertNationalIdAvailable(dto.nationalId);
 

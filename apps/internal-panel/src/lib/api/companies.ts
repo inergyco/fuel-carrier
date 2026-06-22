@@ -5,6 +5,7 @@ import { api } from './api';
 
 export const companyKeys = {
   all: ['companies'] as const,
+  detail: (id: string) => ['companies', id] as const,
 };
 
 export type CompanyFormValues = {
@@ -27,6 +28,10 @@ export function companyToFormValues(company?: Company): CompanyFormValues {
 
 export async function fetchCompanies(): Promise<Company[]> {
   return api.get('companies').json<Company[]>();
+}
+
+export async function fetchCompany(id: string): Promise<Company> {
+  return api.get(`companies/${id}`).json<Company>();
 }
 
 export async function createCompany(dto: CreateCompanyDto): Promise<Company> {

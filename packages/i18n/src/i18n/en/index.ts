@@ -84,6 +84,7 @@ const en: BaseTranslation = {
       updating: 'Saving…',
       updateFailed: 'Could not update company. Please try again.',
       edit: 'Edit',
+      view: 'View',
       delete: 'Delete',
       operations: 'Operations',
       createTitle: 'Add company',
@@ -98,6 +99,9 @@ const en: BaseTranslation = {
       empty: 'No companies yet. Add your first company.',
       duplicateNationalId: 'A company with this national ID already exists.',
       emptyCell: '—',
+      backToList: 'Back to companies',
+      notFound: 'Company not found.',
+      notFoundDescription: 'This company may have been deleted or the link is invalid.',
     },
   },
   externalPanel: {

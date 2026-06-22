@@ -1,7 +1,8 @@
 import type { Company } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { Link } from '@tanstack/react-router'
 import { Button } from '@fuel-carrier/web-ui/ui'
-import { Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
+import { Eye, Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
 
 interface CompanyOperationsProps {
   company: Company
@@ -34,6 +35,20 @@ export function CompanyOperations({
           : 'flex flex-wrap items-center gap-2'
       }
     >
+      <Link
+        to="/companies/$companyId"
+        params={{ companyId: company.id }}
+        className={
+          layout === 'stacked'
+            ? 'btn btn-ghost btn-sm flex h-9 min-h-9 w-full items-center justify-center border border-base-content/8 bg-base-100/30 px-3 text-xs normal-case tracking-normal transition-all'
+            : 'btn btn-ghost btn-sm inline-flex h-9 min-h-9 items-center border border-base-content/8 bg-base-100/30 px-3 text-xs normal-case tracking-normal transition-all'
+        }
+      >
+        <span className="flex items-center gap-2">
+          <Eye className="h-3.5 w-3.5" aria-hidden />
+          {LL.internalPanel.companies.view()}
+        </span>
+      </Link>
       <Button
         type="button"
         variant="ghost"

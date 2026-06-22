@@ -82,6 +82,7 @@ const fa: Translation = {
       updating: 'در حال ذخیره…',
       updateFailed: 'به‌روزرسانی شرکت انجام نشد. لطفاً دوباره تلاش کنید.',
       edit: 'ویرایش',
+      view: 'مشاهده',
       delete: 'حذف',
       operations: 'عملیات',
       createTitle: 'افزودن شرکت',
@@ -96,6 +97,9 @@ const fa: Translation = {
       empty: 'هنوز شرکتی ثبت نشده است. اولین شرکت را اضافه کنید.',
       duplicateNationalId: 'شرکتی با این شناسه ملی از قبل وجود دارد.',
       emptyCell: '—',
+      backToList: 'بازگشت به شرکت‌ها',
+      notFound: 'شرکت یافت نشد.',
+      notFoundDescription: 'این شرکت حذف شده یا لینک نامعتبر است.',
     },
   },
   externalPanel: {
