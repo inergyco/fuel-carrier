@@ -16,7 +16,7 @@ export function CompaniesTable({
   const { LL } = useI18nContext();
 
   return (
-    <div className="hidden overflow-x-auto rounded-2xl border border-base-content/8 bg-base-200/40 backdrop-blur-sm md:block">
+    <div className="overflow-x-auto rounded-2xl border border-base-content/8 bg-base-200/40 backdrop-blur-sm">
       <table className="table table-sm w-full">
         <thead>
           <tr className="border-b border-base-content/8 text-xs tracking-widest text-base-content/40 uppercase">

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, ConfirmModal } from '@fuel-carrier/web-ui/ui'
+import { Button, ConfirmModal, MEDIA_QUERIES, useMediaQuery } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
@@ -25,6 +25,7 @@ type FormModalState =
 
 function CompaniesPage() {
   const { LL } = useI18nContext()
+  const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const queryClient = useQueryClient()
   const [formModal, setFormModal] = useState<FormModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null)
@@ -112,18 +113,19 @@ function CompaniesPage() {
             {LL.internalPanel.companies.empty()}
           </p>
         ) : (
-          <>
-            <CompaniesCardList
-              companies={companies}
-              onEdit={handleEditCompany}
-              onDelete={handleDeleteCompany}
-            />
+          isMdUp ? (
             <CompaniesTable
               companies={companies}
               onEdit={handleEditCompany}
               onDelete={handleDeleteCompany}
             />
-          </>
+          ) : (
+            <CompaniesCardList
+              companies={companies}
+              onEdit={handleEditCompany}
+              onDelete={handleDeleteCompany}
+            />
+          )
         )}
       </section>
 

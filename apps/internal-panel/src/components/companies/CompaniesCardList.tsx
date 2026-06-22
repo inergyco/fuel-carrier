@@ -16,7 +16,7 @@ export function CompaniesCardList({
   const { LL } = useI18nContext()
 
   return (
-    <ul className="flex flex-col gap-3 md:hidden">
+    <ul className="flex flex-col gap-3">
       {companies.map(function renderCompanyCard(company) {
         return (
           <li
