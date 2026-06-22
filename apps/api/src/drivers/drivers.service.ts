@@ -4,6 +4,12 @@ import type { Driver, TenantContext } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import { drivers } from '../database/schema/drivers';
+import {
+  POSTGRES_FOREIGN_KEY_VIOLATION,
+  POSTGRES_UNIQUE_VIOLATION,
+  type PostgresConstraintMapping,
+  rethrowPostgresError,
+} from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 
 type CreateDriverPayload = {
@@ -14,6 +20,21 @@ type CreateDriverPayload = {
 };
 
 type UpdateDriverPayload = Partial<CreateDriverPayload>;
+
+const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
+  {
+    code: POSTGRES_UNIQUE_VIOLATION,
+    constraint: 'drivers_national_id_unique',
+    field: 'nationalId',
+    message: 'A driver with this national ID already exists',
+  },
+  {
+    code: POSTGRES_FOREIGN_KEY_VIOLATION,
+    constraint: 'drivers_company_id_companies_id_fk',
+    field: 'companyId',
+    message: 'Company not found',
+  },
+];
 
 @Injectable()
 export class DriversService {
@@ -54,10 +75,23 @@ export class DriversService {
     context: TenantContext,
     dto: CreateDriverPayload,
   ): Promise<Driver> {
-    return this.tenantDb.run(context, async (tx) => {
-      const [row] = await tx.insert(drivers).values(dto).returning();
-      return _mapDriver(row);
-    });
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const [row] = await tx.insert(drivers).values(dto).returning();
+
+        if (!row) {
+          throw createApiException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ApiErrorCode.INTERNAL_ERROR,
+            'Failed to create driver',
+          );
+        }
+
+        return _mapDriver(row);
+      });
+    } catch (error) {
+      rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
+    }
   }
 
   async update(
@@ -65,23 +99,27 @@ export class DriversService {
     id: string,
     dto: UpdateDriverPayload,
   ): Promise<Driver> {
-    return this.tenantDb.run(context, async (tx) => {
-      const [row] = await tx
-        .update(drivers)
-        .set(dto)
-        .where(eq(drivers.id, id))
-        .returning();
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const [row] = await tx
+          .update(drivers)
+          .set(dto)
+          .where(eq(drivers.id, id))
+          .returning();
 
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Driver not found',
-        );
-      }
+        if (!row) {
+          throw createApiException(
+            HttpStatus.NOT_FOUND,
+            ApiErrorCode.NOT_FOUND,
+            'Driver not found',
+          );
+        }
 
-      return _mapDriver(row);
-    });
+        return _mapDriver(row);
+      });
+    } catch (error) {
+      rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
+    }
   }
 
   async delete(context: TenantContext, id: string): Promise<null> {

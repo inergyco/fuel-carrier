@@ -15,4 +15,16 @@
     text-transform: none;
     letter-spacing: normal;
   }
+
+  html[data-theme='dark'] {
+    color-scheme: dark;
+  }
+
+  html[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  select option {
+    @apply bg-base-200 text-base-content;
+  }
 }

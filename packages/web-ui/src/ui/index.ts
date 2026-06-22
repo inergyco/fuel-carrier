@@ -1,5 +1,7 @@
 export { Input } from './Input'
 export { FormInput } from './FormInput'
+export { Select } from './Select'
+export { FormSelect } from './FormSelect'
 export { Textarea } from './Textarea'
 export { FormTextarea } from './FormTextarea'
 export { Button } from './Button'

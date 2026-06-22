@@ -5,6 +5,12 @@ import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
+import {
+  POSTGRES_FOREIGN_KEY_VIOLATION,
+  POSTGRES_UNIQUE_VIOLATION,
+  type PostgresConstraintMapping,
+  rethrowPostgresError,
+} from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
@@ -17,6 +23,21 @@ type CreateCarPayload = {
 };
 
 type UpdateCarPayload = Partial<CreateCarPayload>;
+
+const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
+  {
+    code: POSTGRES_UNIQUE_VIOLATION,
+    constraint: 'cars_license_plate_unique',
+    field: 'licensePlate',
+    message: 'A car with this license plate already exists',
+  },
+  {
+    code: POSTGRES_FOREIGN_KEY_VIOLATION,
+    constraint: 'cars_company_id_companies_id_fk',
+    field: 'companyId',
+    message: 'Company not found',
+  },
+];
 
 @Injectable()
 export class CarsService {
@@ -51,24 +72,36 @@ export class CarsService {
   }
 
   async create(context: TenantContext, dto: CreateCarPayload): Promise<Car> {
-    return this.tenantDb.run(context, async (tx) => {
-      if (dto.driverId) {
-        await this._assertDriverAccessible(tx, dto.driverId);
-      }
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        if (dto.driverId) {
+          await this._assertDriverAccessible(tx, dto.driverId);
+        }
 
-      const [row] = await tx
-        .insert(cars)
-        .values({
-          name: dto.name ?? null,
-          licensePlate: dto.licensePlate,
-          companyId: dto.companyId,
-          driverId: dto.driverId ?? null,
-          note: dto.note ?? null,
-        })
-        .returning();
+        const [row] = await tx
+          .insert(cars)
+          .values({
+            name: dto.name ?? null,
+            licensePlate: dto.licensePlate,
+            companyId: dto.companyId,
+            driverId: dto.driverId ?? null,
+            note: dto.note ?? null,
+          })
+          .returning();
 
-      return _mapCar(row);
-    });
+        if (!row) {
+          throw createApiException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ApiErrorCode.INTERNAL_ERROR,
+            'Failed to create car',
+          );
+        }
+
+        return _mapCar(row);
+      });
+    } catch (error) {
+      rethrowPostgresError(error, CAR_POSTGRES_MAPPINGS);
+    }
   }
 
   async update(

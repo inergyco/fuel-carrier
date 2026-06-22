@@ -367,6 +367,163 @@ type RootTranslation = {
 			 * T​h​i​s​ ​c​o​m​p​a​n​y​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​o​r​ ​t​h​e​ ​l​i​n​k​ ​i​s​ ​i​n​v​a​l​i​d​.
 			 */
 			notFoundDescription: string
+			detail: {
+				/**
+				 * C​o​m​p​a​n​y​ ​u​s​e​r​s
+				 */
+				usersTitle: string
+				/**
+				 * E​x​t​e​r​n​a​l​ ​p​a​n​e​l​ ​l​o​g​i​n​ ​a​c​c​o​u​n​t​s​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y
+				 */
+				usersSubtitle: string
+				/**
+				 * D​r​i​v​e​r​s
+				 */
+				driversTitle: string
+				/**
+				 * D​r​i​v​e​r​s​ ​a​s​s​i​g​n​e​d​ ​t​o​ ​t​h​i​s​ ​c​o​m​p​a​n​y
+				 */
+				driversSubtitle: string
+				/**
+				 * C​a​r​s
+				 */
+				carsTitle: string
+				/**
+				 * V​e​h​i​c​l​e​s​ ​r​e​g​i​s​t​e​r​e​d​ ​t​o​ ​t​h​i​s​ ​c​o​m​p​a​n​y
+				 */
+				carsSubtitle: string
+				/**
+				 * A​d​d​ ​u​s​e​r
+				 */
+				addUser: string
+				/**
+				 * A​d​d​ ​d​r​i​v​e​r
+				 */
+				addDriver: string
+				/**
+				 * A​d​d​ ​c​a​r
+				 */
+				addCar: string
+				/**
+				 * F​i​r​s​t​ ​n​a​m​e
+				 */
+				firstName: string
+				/**
+				 * L​a​s​t​ ​n​a​m​e
+				 */
+				lastName: string
+				/**
+				 * U​s​e​r​n​a​m​e
+				 */
+				username: string
+				/**
+				 * E​m​a​i​l
+				 */
+				email: string
+				/**
+				 * P​a​s​s​w​o​r​d
+				 */
+				password: string
+				/**
+				 * N​e​w​ ​p​a​s​s​w​o​r​d​ ​(​l​e​a​v​e​ ​b​l​a​n​k​ ​t​o​ ​k​e​e​p​ ​c​u​r​r​e​n​t​)
+				 */
+				passwordOptional: string
+				/**
+				 * L​i​c​e​n​s​e​ ​p​l​a​t​e
+				 */
+				licensePlate: string
+				/**
+				 * D​r​i​v​e​r
+				 */
+				driver: string
+				/**
+				 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​e​d
+				 */
+				noDriver: string
+				/**
+				 * A​d​d​ ​c​o​m​p​a​n​y​ ​u​s​e​r
+				 */
+				userCreateTitle: string
+				/**
+				 * E​d​i​t​ ​c​o​m​p​a​n​y​ ​u​s​e​r
+				 */
+				userEditTitle: string
+				/**
+				 * A​d​d​ ​d​r​i​v​e​r
+				 */
+				driverCreateTitle: string
+				/**
+				 * E​d​i​t​ ​d​r​i​v​e​r
+				 */
+				driverEditTitle: string
+				/**
+				 * A​d​d​ ​c​a​r
+				 */
+				carCreateTitle: string
+				/**
+				 * E​d​i​t​ ​c​a​r
+				 */
+				carEditTitle: string
+				/**
+				 * N​o​ ​u​s​e​r​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
+				 */
+				usersEmpty: string
+				/**
+				 * N​o​ ​d​r​i​v​e​r​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
+				 */
+				driversEmpty: string
+				/**
+				 * N​o​ ​c​a​r​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
+				 */
+				carsEmpty: string
+				/**
+				 * D​e​l​e​t​e​ ​u​s​e​r​?
+				 */
+				deleteUserTitle: string
+				/**
+				 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​e​y​ ​w​i​l​l​ ​n​o​ ​l​o​n​g​e​r​ ​b​e​ ​a​b​l​e​ ​t​o​ ​s​i​g​n​ ​i​n​.
+				 * @param {string} name
+				 */
+				deleteUserDescription: RequiredParams<'name'>
+				/**
+				 * D​e​l​e​t​e​ ​d​r​i​v​e​r​?
+				 */
+				deleteDriverTitle: string
+				/**
+				 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+				 * @param {string} name
+				 */
+				deleteDriverDescription: RequiredParams<'name'>
+				/**
+				 * D​e​l​e​t​e​ ​c​a​r​?
+				 */
+				deleteCarTitle: string
+				/**
+				 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+				 * @param {string} licensePlate
+				 */
+				deleteCarDescription: RequiredParams<'licensePlate'>
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				createFailed: string
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​d​e​l​e​t​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				deleteFailed: string
+				/**
+				 * T​h​i​s​ ​u​s​e​r​n​a​m​e​ ​i​s​ ​a​l​r​e​a​d​y​ ​t​a​k​e​n​.
+				 */
+				duplicateUsername: string
+				/**
+				 * A​ ​u​s​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+				 */
+				duplicateNationalId: string
+				/**
+				 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+				 */
+				duplicateDriverNationalId: string
+			}
 		}
 	}
 	externalPanel: {
@@ -726,6 +883,160 @@ export type TranslationFunctions = {
 			 * This company may have been deleted or the link is invalid.
 			 */
 			notFoundDescription: () => LocalizedString
+			detail: {
+				/**
+				 * Company users
+				 */
+				usersTitle: () => LocalizedString
+				/**
+				 * External panel login accounts for this company
+				 */
+				usersSubtitle: () => LocalizedString
+				/**
+				 * Drivers
+				 */
+				driversTitle: () => LocalizedString
+				/**
+				 * Drivers assigned to this company
+				 */
+				driversSubtitle: () => LocalizedString
+				/**
+				 * Cars
+				 */
+				carsTitle: () => LocalizedString
+				/**
+				 * Vehicles registered to this company
+				 */
+				carsSubtitle: () => LocalizedString
+				/**
+				 * Add user
+				 */
+				addUser: () => LocalizedString
+				/**
+				 * Add driver
+				 */
+				addDriver: () => LocalizedString
+				/**
+				 * Add car
+				 */
+				addCar: () => LocalizedString
+				/**
+				 * First name
+				 */
+				firstName: () => LocalizedString
+				/**
+				 * Last name
+				 */
+				lastName: () => LocalizedString
+				/**
+				 * Username
+				 */
+				username: () => LocalizedString
+				/**
+				 * Email
+				 */
+				email: () => LocalizedString
+				/**
+				 * Password
+				 */
+				password: () => LocalizedString
+				/**
+				 * New password (leave blank to keep current)
+				 */
+				passwordOptional: () => LocalizedString
+				/**
+				 * License plate
+				 */
+				licensePlate: () => LocalizedString
+				/**
+				 * Driver
+				 */
+				driver: () => LocalizedString
+				/**
+				 * No driver assigned
+				 */
+				noDriver: () => LocalizedString
+				/**
+				 * Add company user
+				 */
+				userCreateTitle: () => LocalizedString
+				/**
+				 * Edit company user
+				 */
+				userEditTitle: () => LocalizedString
+				/**
+				 * Add driver
+				 */
+				driverCreateTitle: () => LocalizedString
+				/**
+				 * Edit driver
+				 */
+				driverEditTitle: () => LocalizedString
+				/**
+				 * Add car
+				 */
+				carCreateTitle: () => LocalizedString
+				/**
+				 * Edit car
+				 */
+				carEditTitle: () => LocalizedString
+				/**
+				 * No users yet for this company.
+				 */
+				usersEmpty: () => LocalizedString
+				/**
+				 * No drivers yet for this company.
+				 */
+				driversEmpty: () => LocalizedString
+				/**
+				 * No cars yet for this company.
+				 */
+				carsEmpty: () => LocalizedString
+				/**
+				 * Delete user?
+				 */
+				deleteUserTitle: () => LocalizedString
+				/**
+				 * This will permanently delete {name}. They will no longer be able to sign in.
+				 */
+				deleteUserDescription: (arg: { name: string }) => LocalizedString
+				/**
+				 * Delete driver?
+				 */
+				deleteDriverTitle: () => LocalizedString
+				/**
+				 * This will permanently delete {name}. This action cannot be undone.
+				 */
+				deleteDriverDescription: (arg: { name: string }) => LocalizedString
+				/**
+				 * Delete car?
+				 */
+				deleteCarTitle: () => LocalizedString
+				/**
+				 * This will permanently delete {licensePlate}. This action cannot be undone.
+				 */
+				deleteCarDescription: (arg: { licensePlate: string }) => LocalizedString
+				/**
+				 * Could not save. Please try again.
+				 */
+				createFailed: () => LocalizedString
+				/**
+				 * Could not delete. Please try again.
+				 */
+				deleteFailed: () => LocalizedString
+				/**
+				 * This username is already taken.
+				 */
+				duplicateUsername: () => LocalizedString
+				/**
+				 * A user with this national ID already exists.
+				 */
+				duplicateNationalId: () => LocalizedString
+				/**
+				 * A driver with this national ID already exists.
+				 */
+				duplicateDriverNationalId: () => LocalizedString
+			}
 		}
 	}
 	externalPanel: {

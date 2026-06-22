@@ -7,6 +7,7 @@ import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Button } from '@fuel-carrier/web-ui/ui'
 import { ArrowLeft } from '@fuel-carrier/web-ui/icons'
 import { CompanyDetailCard } from '../../components/companies/CompanyDetailCard'
+import { CompanyDetailResources } from '../../components/companies/detail/CompanyDetailResources'
 import { companyKeys, fetchCompany } from '../../lib/api/companies'
 
 export const Route = createFileRoute('/_authenticated/companies/$companyId')({
@@ -35,7 +36,7 @@ function CompanyDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-6xl">
       <div className="mb-6">
         <Link
           to="/companies"
@@ -79,9 +80,12 @@ function CompanyDetailPage() {
       </div>
 
       {companyQuery.data && (
-        <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
-          <CompanyDetailCard company={companyQuery.data} />
-        </section>
+        <>
+          <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
+            <CompanyDetailCard company={companyQuery.data} />
+          </section>
+          <CompanyDetailResources companyId={companyId} />
+        </>
       )}
     </div>
   )
