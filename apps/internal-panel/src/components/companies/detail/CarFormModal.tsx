@@ -14,7 +14,7 @@ import {
   type SubmitHandler,
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, FormSelect, FormTextarea, Modal, ModalActions } from '@fuel-carrier/web-ui/ui'
+import { FormInput, FormSelect, FormTextarea, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
 import { z } from 'zod'
 import {
   carToFormValues,
@@ -45,6 +45,7 @@ export function CarFormModal({
   onSuccess,
 }: CarFormModalProps) {
   const { LL } = useI18nContext()
+  const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const form = useForm<CarFormInput, unknown, CreateExternalCarDto>({
@@ -71,6 +72,11 @@ export function CarFormModal({
       return createCar(payload)
     },
     onSuccess: function handleSaveSuccess() {
+      toast.success(
+        mode === 'edit'
+          ? LL.internalPanel.toast.carUpdated()
+          : LL.internalPanel.toast.carCreated(),
+      )
       onSuccess()
       onClose()
     },

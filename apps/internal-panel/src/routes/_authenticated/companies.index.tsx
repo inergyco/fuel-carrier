@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, ConfirmModal, MEDIA_QUERIES, useMediaQuery } from '@fuel-carrier/web-ui/ui'
+import { Button, ConfirmModal, MEDIA_QUERIES, useMediaQuery, useToast } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
@@ -25,6 +25,7 @@ type FormModalState =
 
 function CompaniesPage() {
   const { LL } = useI18nContext()
+  const toast = useToast()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const queryClient = useQueryClient()
   const [formModal, setFormModal] = useState<FormModalState>(null)
@@ -40,6 +41,10 @@ function CompaniesPage() {
     onSuccess: async function onDeleteSuccess() {
       await queryClient.invalidateQueries({ queryKey: companyKeys.all })
       setDeleteTarget(null)
+      toast.success(LL.internalPanel.toast.companyDeleted())
+    },
+    onError: function onDeleteError() {
+      toast.error(LL.internalPanel.companies.deleteFailed())
     },
   })
 

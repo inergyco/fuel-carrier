@@ -16,7 +16,7 @@ import {
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, FormTextarea, Modal, ModalActions } from '@fuel-carrier/web-ui/ui'
+import { FormInput, FormTextarea, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
 import {
   companyToFormValues,
   createCompany,
@@ -40,6 +40,7 @@ export function CompanyFormModal({
   onSuccess,
 }: CompanyFormModalProps) {
   const { LL } = useI18nContext()
+  const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const companySchema = useMemo(
@@ -87,6 +88,11 @@ export function CompanyFormModal({
       return createCompany(data)
     },
     onSuccess: function handleSaveSuccess() {
+      toast.success(
+        mode === 'edit'
+          ? LL.internalPanel.toast.companyUpdated()
+          : LL.internalPanel.toast.companyCreated(),
+      )
       onSuccess()
       onClose()
     },

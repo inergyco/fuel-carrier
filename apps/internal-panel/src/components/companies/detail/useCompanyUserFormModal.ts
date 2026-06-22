@@ -4,6 +4,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { zodResolver, useForm, type SubmitHandler, type UseFormReturn } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
+import { useToast } from '@fuel-carrier/web-ui/ui'
 import {
   companyUserToFormValues,
   createCompanyUser,
@@ -43,6 +44,7 @@ export function useCompanyUserFormModal({
   onSuccess,
 }: UseCompanyUserFormModalOptions): UseCompanyUserFormModalResult {
   const { LL } = useI18nContext()
+  const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const schema = useMemo(
@@ -86,6 +88,11 @@ export function useCompanyUserFormModal({
       })
     },
     onSuccess: function handleSaveSuccess() {
+      toast.success(
+        mode === 'edit'
+          ? LL.internalPanel.toast.userUpdated()
+          : LL.internalPanel.toast.userCreated(),
+      )
       onSuccess()
       onClose()
     },

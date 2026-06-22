@@ -1,11 +1,15 @@
 import { useMemo, useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
+import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, deleteCar, fetchCars } from '../../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
 
 export function useCompanyCars(companyId: string) {
+  const { LL } = useI18nContext()
+  const toast = useToast()
   const queryClient = useQueryClient()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
@@ -53,6 +57,10 @@ export function useCompanyCars(companyId: string) {
     onSuccess: async function onCarDeleted() {
       await queryClient.invalidateQueries({ queryKey: carKeys.all })
       setDeleteTarget(null)
+      toast.success(LL.internalPanel.toast.carDeleted())
+    },
+    onError: function onCarDeleteError() {
+      toast.error(LL.internalPanel.companies.detail.deleteFailed())
     },
   })
 

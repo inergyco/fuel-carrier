@@ -221,6 +221,60 @@ type RootTranslation = {
 			 */
 			brandSubtitle: string
 		}
+		toast: {
+			/**
+			 * C​o​m​p​a​n​y​ ​a​d​d​e​d​.
+			 */
+			companyCreated: string
+			/**
+			 * C​o​m​p​a​n​y​ ​u​p​d​a​t​e​d​.
+			 */
+			companyUpdated: string
+			/**
+			 * C​o​m​p​a​n​y​ ​d​e​l​e​t​e​d​.
+			 */
+			companyDeleted: string
+			/**
+			 * U​s​e​r​ ​a​d​d​e​d​.
+			 */
+			userCreated: string
+			/**
+			 * U​s​e​r​ ​u​p​d​a​t​e​d​.
+			 */
+			userUpdated: string
+			/**
+			 * U​s​e​r​ ​d​e​l​e​t​e​d​.
+			 */
+			userDeleted: string
+			/**
+			 * D​r​i​v​e​r​ ​a​d​d​e​d​.
+			 */
+			driverCreated: string
+			/**
+			 * D​r​i​v​e​r​ ​u​p​d​a​t​e​d​.
+			 */
+			driverUpdated: string
+			/**
+			 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d​.
+			 */
+			driverDeleted: string
+			/**
+			 * C​a​r​ ​a​d​d​e​d​.
+			 */
+			carCreated: string
+			/**
+			 * C​a​r​ ​u​p​d​a​t​e​d​.
+			 */
+			carUpdated: string
+			/**
+			 * C​a​r​ ​d​e​l​e​t​e​d​.
+			 */
+			carDeleted: string
+			/**
+			 * S​i​g​n​e​d​ ​o​u​t​.
+			 */
+			signedOut: string
+		}
 		companies: {
 			/**
 			 * C​o​m​p​a​n​i​e​s
@@ -749,6 +803,60 @@ export type TranslationFunctions = {
 			 * Internal
 			 */
 			brandSubtitle: () => LocalizedString
+		}
+		toast: {
+			/**
+			 * Company added.
+			 */
+			companyCreated: () => LocalizedString
+			/**
+			 * Company updated.
+			 */
+			companyUpdated: () => LocalizedString
+			/**
+			 * Company deleted.
+			 */
+			companyDeleted: () => LocalizedString
+			/**
+			 * User added.
+			 */
+			userCreated: () => LocalizedString
+			/**
+			 * User updated.
+			 */
+			userUpdated: () => LocalizedString
+			/**
+			 * User deleted.
+			 */
+			userDeleted: () => LocalizedString
+			/**
+			 * Driver added.
+			 */
+			driverCreated: () => LocalizedString
+			/**
+			 * Driver updated.
+			 */
+			driverUpdated: () => LocalizedString
+			/**
+			 * Driver deleted.
+			 */
+			driverDeleted: () => LocalizedString
+			/**
+			 * Car added.
+			 */
+			carCreated: () => LocalizedString
+			/**
+			 * Car updated.
+			 */
+			carUpdated: () => LocalizedString
+			/**
+			 * Car deleted.
+			 */
+			carDeleted: () => LocalizedString
+			/**
+			 * Signed out.
+			 */
+			signedOut: () => LocalizedString
 		}
 		companies: {
 			/**

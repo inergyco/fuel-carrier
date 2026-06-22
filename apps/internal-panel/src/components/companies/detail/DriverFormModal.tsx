@@ -8,7 +8,7 @@ import {
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, Modal, ModalActions } from '@fuel-carrier/web-ui/ui'
+import { FormInput, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
 import { z } from 'zod'
 import {
   createDriver,
@@ -37,6 +37,7 @@ export function DriverFormModal({
   onSuccess,
 }: DriverFormModalProps) {
   const { LL } = useI18nContext()
+  const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const form = useForm<DriverFormInput, unknown, CreateExternalDriverDto>({
@@ -58,6 +59,11 @@ export function DriverFormModal({
       return createDriver({ ...data, companyId })
     },
     onSuccess: function handleSaveSuccess() {
+      toast.success(
+        mode === 'edit'
+          ? LL.internalPanel.toast.driverUpdated()
+          : LL.internalPanel.toast.driverCreated(),
+      )
       onSuccess()
       onClose()
     },
