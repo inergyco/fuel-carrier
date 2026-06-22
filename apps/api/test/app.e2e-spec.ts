@@ -51,6 +51,18 @@ describe('AppController (e2e)', () => {
       });
   });
 
+  it('/api/internal/companies (GET) returns an unauthorized error envelope', () => {
+    return request(app.getHttpServer())
+      .get('/api/internal/companies')
+      .expect(401)
+      .expect({
+        error: {
+          code: 'UNAUTHORIZED',
+          message: 'Unauthorized',
+        },
+      });
+  });
+
   it('/api/internal/auth/me (GET) returns an unauthorized error envelope', () => {
     return request(app.getHttpServer())
       .get('/api/internal/auth/me')

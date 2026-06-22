@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cn } from '../utils'
 
-type ButtonVariant = 'primary' | 'ghost' | 'icon'
+type ButtonVariant = 'primary' | 'ghost' | 'icon' | 'danger'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
@@ -16,6 +16,8 @@ const variantClasses: Record<ButtonVariant, string> = {
     'btn btn-primary btn-sm h-10 w-full rounded-lg text-xs font-semibold tracking-widest uppercase',
   ghost: 'btn btn-ghost btn-sm h-9 min-h-9 w-auto px-2 text-xs normal-case tracking-normal',
   icon: 'btn btn-ghost btn-sm btn-circle h-9 min-h-9 w-9',
+  danger:
+    'btn btn-error btn-sm h-10 w-full rounded-lg text-xs font-semibold tracking-widest uppercase',
 }
 
 export function Button({

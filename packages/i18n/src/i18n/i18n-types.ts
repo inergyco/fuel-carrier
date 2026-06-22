@@ -74,6 +74,43 @@ type RootTranslation = {
 		 * P​a​s​s​w​o​r​d​ ​m​u​s​t​ ​c​o​n​t​a​i​n​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​s​p​e​c​i​a​l​ ​c​h​a​r​a​c​t​e​r
 		 */
 		passwordSpecial: string
+		/**
+		 * C​o​m​p​a​n​y​ ​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		companyNameRequired: string
+		/**
+		 * C​o​m​p​a​n​y​ ​n​a​m​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyNameTooLong: RequiredParams<'max'>
+		/**
+		 * N​a​t​i​o​n​a​l​ ​I​D​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		companyNationalIdRequired: string
+		/**
+		 * N​a​t​i​o​n​a​l​ ​I​D​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyNationalIdTooLong: RequiredParams<'max'>
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		companyPhoneNumberRequired: string
+		/**
+		 * P​h​o​n​e​ ​n​u​m​b​e​r​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyPhoneNumberTooLong: RequiredParams<'max'>
+		/**
+		 * A​d​d​r​e​s​s​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyAddressTooLong: RequiredParams<'max'>
+		/**
+		 * N​o​t​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyNoteTooLong: RequiredParams<'max'>
 	}
 	internalPanel: {
 		login: {
@@ -142,6 +179,10 @@ type RootTranslation = {
 			 */
 			dashboard: string
 			/**
+			 * C​o​m​p​a​n​i​e​s
+			 */
+			companies: string
+			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
 			openMenu: string
@@ -179,6 +220,137 @@ type RootTranslation = {
 			 * I​n​t​e​r​n​a​l
 			 */
 			brandSubtitle: string
+		}
+		companies: {
+			/**
+			 * C​o​m​p​a​n​i​e​s
+			 */
+			title: string
+			/**
+			 * C​r​e​a​t​e​ ​a​n​d​ ​m​a​n​a​g​e​ ​c​a​r​r​i​e​r​ ​c​o​m​p​a​n​i​e​s
+			 */
+			subtitle: string
+			/**
+			 * N​a​m​e
+			 */
+			name: string
+			/**
+			 * N​a​t​i​o​n​a​l​ ​I​D
+			 */
+			nationalId: string
+			/**
+			 * P​h​o​n​e​ ​n​u​m​b​e​r
+			 */
+			phoneNumber: string
+			/**
+			 * A​d​d​r​e​s​s
+			 */
+			address: string
+			/**
+			 * N​o​t​e
+			 */
+			note: string
+			/**
+			 * A​c​m​e​ ​L​o​g​i​s​t​i​c​s
+			 */
+			namePlaceholder: string
+			/**
+			 * 1​2​3​4​5​6​7​8​9​0​1
+			 */
+			nationalIdPlaceholder: string
+			/**
+			 * +​9​8​ ​2​1​ ​1​2​3​4​ ​5​6​7​8
+			 */
+			phoneNumberPlaceholder: string
+			/**
+			 * 1​2​3​ ​M​a​i​n​ ​S​t​,​ ​T​e​h​r​a​n
+			 */
+			addressPlaceholder: string
+			/**
+			 * A​d​d​i​t​i​o​n​a​l​ ​n​o​t​e​s​ ​a​b​o​u​t​ ​t​h​i​s​ ​c​o​m​p​a​n​y
+			 */
+			notePlaceholder: string
+			/**
+			 * A​d​d​ ​c​o​m​p​a​n​y
+			 */
+			create: string
+			/**
+			 * A​d​d​i​n​g​…
+			 */
+			creating: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​c​r​e​a​t​e​ ​c​o​m​p​a​n​y​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			createFailed: string
+			/**
+			 * S​a​v​e​ ​c​h​a​n​g​e​s
+			 */
+			update: string
+			/**
+			 * S​a​v​i​n​g​…
+			 */
+			updating: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​c​o​m​p​a​n​y​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			updateFailed: string
+			/**
+			 * E​d​i​t
+			 */
+			edit: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			'delete': string
+			/**
+			 * O​p​e​r​a​t​i​o​n​s
+			 */
+			operations: string
+			/**
+			 * A​d​d​ ​c​o​m​p​a​n​y
+			 */
+			createTitle: string
+			/**
+			 * E​d​i​t​ ​c​o​m​p​a​n​y
+			 */
+			editTitle: string
+			/**
+			 * D​e​l​e​t​e​ ​c​o​m​p​a​n​y​?
+			 */
+			deleteConfirmTitle: string
+			/**
+			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+			 * @param {string} name
+			 */
+			deleteConfirmDescription: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e
+			 */
+			deleteConfirm: string
+			/**
+			 * D​e​l​e​t​i​n​g​…
+			 */
+			deleting: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​d​e​l​e​t​e​ ​c​o​m​p​a​n​y​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			deleteFailed: string
+			/**
+			 * L​o​a​d​i​n​g​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​c​o​m​p​a​n​y​.
+			 */
+			empty: string
+			/**
+			 * A​ ​c​o​m​p​a​n​y​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateNationalId: string
+			/**
+			 * —
+			 */
+			emptyCell: string
 		}
 	}
 	externalPanel: {
@@ -255,6 +427,38 @@ export type TranslationFunctions = {
 		 * Password must contain at least one special character
 		 */
 		passwordSpecial: () => LocalizedString
+		/**
+		 * Company name is required
+		 */
+		companyNameRequired: () => LocalizedString
+		/**
+		 * Company name must be at most {max} characters
+		 */
+		companyNameTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * National ID is required
+		 */
+		companyNationalIdRequired: () => LocalizedString
+		/**
+		 * National ID must be at most {max} characters
+		 */
+		companyNationalIdTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Phone number is required
+		 */
+		companyPhoneNumberRequired: () => LocalizedString
+		/**
+		 * Phone number must be at most {max} characters
+		 */
+		companyPhoneNumberTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Address must be at most {max} characters
+		 */
+		companyAddressTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Note must be at most {max} characters
+		 */
+		companyNoteTooLong: (arg: { max: number }) => LocalizedString
 	}
 	internalPanel: {
 		login: {
@@ -319,6 +523,10 @@ export type TranslationFunctions = {
 			 */
 			dashboard: () => LocalizedString
 			/**
+			 * Companies
+			 */
+			companies: () => LocalizedString
+			/**
 			 * Open menu
 			 */
 			openMenu: () => LocalizedString
@@ -356,6 +564,136 @@ export type TranslationFunctions = {
 			 * Internal
 			 */
 			brandSubtitle: () => LocalizedString
+		}
+		companies: {
+			/**
+			 * Companies
+			 */
+			title: () => LocalizedString
+			/**
+			 * Create and manage carrier companies
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Name
+			 */
+			name: () => LocalizedString
+			/**
+			 * National ID
+			 */
+			nationalId: () => LocalizedString
+			/**
+			 * Phone number
+			 */
+			phoneNumber: () => LocalizedString
+			/**
+			 * Address
+			 */
+			address: () => LocalizedString
+			/**
+			 * Note
+			 */
+			note: () => LocalizedString
+			/**
+			 * Acme Logistics
+			 */
+			namePlaceholder: () => LocalizedString
+			/**
+			 * 12345678901
+			 */
+			nationalIdPlaceholder: () => LocalizedString
+			/**
+			 * +98 21 1234 5678
+			 */
+			phoneNumberPlaceholder: () => LocalizedString
+			/**
+			 * 123 Main St, Tehran
+			 */
+			addressPlaceholder: () => LocalizedString
+			/**
+			 * Additional notes about this company
+			 */
+			notePlaceholder: () => LocalizedString
+			/**
+			 * Add company
+			 */
+			create: () => LocalizedString
+			/**
+			 * Adding…
+			 */
+			creating: () => LocalizedString
+			/**
+			 * Could not create company. Please try again.
+			 */
+			createFailed: () => LocalizedString
+			/**
+			 * Save changes
+			 */
+			update: () => LocalizedString
+			/**
+			 * Saving…
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Could not update company. Please try again.
+			 */
+			updateFailed: () => LocalizedString
+			/**
+			 * Edit
+			 */
+			edit: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Operations
+			 */
+			operations: () => LocalizedString
+			/**
+			 * Add company
+			 */
+			createTitle: () => LocalizedString
+			/**
+			 * Edit company
+			 */
+			editTitle: () => LocalizedString
+			/**
+			 * Delete company?
+			 */
+			deleteConfirmTitle: () => LocalizedString
+			/**
+			 * This will permanently delete {name}. This action cannot be undone.
+			 */
+			deleteConfirmDescription: (arg: { name: string }) => LocalizedString
+			/**
+			 * Delete
+			 */
+			deleteConfirm: () => LocalizedString
+			/**
+			 * Deleting…
+			 */
+			deleting: () => LocalizedString
+			/**
+			 * Could not delete company. Please try again.
+			 */
+			deleteFailed: () => LocalizedString
+			/**
+			 * Loading…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No companies yet. Add your first company.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * A company with this national ID already exists.
+			 */
+			duplicateNationalId: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
 		}
 	}
 	externalPanel: {

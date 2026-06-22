@@ -8,6 +8,13 @@
       "when": 1781610516797,
       "tag": "0000_quiet_pixie",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782121089660,
+      "tag": "0001_omniscient_xavin",
+      "breakpoints": true
     }
   ]
 }

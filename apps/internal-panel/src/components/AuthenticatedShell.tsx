@@ -8,10 +8,10 @@ import {
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
-import { Home, Zap } from '@fuel-carrier/web-ui/icons'
+import { Home, Zap, Building2 } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
-import { authKeys, logout } from '../lib/auth'
+import { authKeys, logout } from '../lib/api/auth'
 import { sanitizeRedirectPath } from '../lib/redirect'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
@@ -35,6 +35,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         label: LL.internalPanel.nav.dashboard(),
         icon: <Home className="h-4 w-4" aria-hidden />,
         exact: true,
+      },
+      {
+        to: '/companies',
+        label: LL.internalPanel.nav.companies(),
+        icon: <Building2 className="h-4 w-4" aria-hidden />,
       },
     ]
   }, [LL])

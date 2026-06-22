@@ -7,11 +7,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
-import type { AdminSession } from '../auth/auth.types';
-import { AuthService } from '../auth/auth.service';
-import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeOkResponse,
@@ -19,6 +14,11 @@ import {
 } from '../swagger/decorators/api-envelope.decorator';
 import { AuthPayloadDto } from '../swagger/dto/auth-payload.dto';
 import { LoginRequestDto } from '../swagger/dto/login-request.dto';
+import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import type { AdminSession } from './auth.types';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
+import { LocalAuthGuard } from './local-auth.guard';
 
 type AuthPayload = {
   user: AdminSession;

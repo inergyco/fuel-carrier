@@ -5,9 +5,13 @@
   "exports": {
     "./username": "./src/username.ts",
     "./password": "./src/password.ts",
-    "./admin/login": "./src/admin/login.dto.ts"
+    "./admin/login": "./src/admin/login.dto.ts",
+    "./company/create": "./src/company/create-company.dto.ts",
+    "./company/update": "./src/company/update-company.dto.ts",
+    "./company/constants": "./src/company/constants.ts"
   },
   "dependencies": {
+    "@fuel-carrier/shared-types": "workspace:*",
     "zod": "catalog:"
   },
   "scripts": {

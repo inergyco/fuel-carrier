@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
-import { InternalAuthController } from './internal-auth.controller';
+import { CompaniesModule } from '../companies/companies.module';
 import { InternalHealthController } from './internal-health.controller';
 
 @Module({
-  imports: [AuthModule],
-  controllers: [InternalAuthController, InternalHealthController],
+  imports: [AuthModule, CompaniesModule],
+  controllers: [InternalHealthController],
 })
 export class InternalModule {}

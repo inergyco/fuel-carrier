@@ -2,6 +2,7 @@ import { applyDecorators, type Type } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExtraModels,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiUnauthorizedResponse,
   getSchemaPath,
@@ -17,6 +18,24 @@ export function ApiEnvelopeOkResponse<T extends Type>(model: T) {
         required: ['data'],
         properties: {
           data: { $ref: getSchemaPath(model) },
+        },
+      },
+    }),
+  );
+}
+
+export function ApiEnvelopeOkListResponse<T extends Type>(model: T) {
+  return applyDecorators(
+    ApiExtraModels(model),
+    ApiOkResponse({
+      schema: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: {
+            type: 'array',
+            items: { $ref: getSchemaPath(model) },
+          },
         },
       },
     }),
@@ -42,6 +61,21 @@ export function ApiEnvelopeBadRequestResponse() {
   return applyDecorators(
     ApiExtraModels(ApiErrorBodyDto),
     ApiBadRequestResponse({
+      schema: {
+        type: 'object',
+        required: ['error'],
+        properties: {
+          error: { $ref: getSchemaPath(ApiErrorBodyDto) },
+        },
+      },
+    }),
+  );
+}
+
+export function ApiEnvelopeNotFoundResponse() {
+  return applyDecorators(
+    ApiExtraModels(ApiErrorBodyDto),
+    ApiNotFoundResponse({
       schema: {
         type: 'object',
         required: ['error'],

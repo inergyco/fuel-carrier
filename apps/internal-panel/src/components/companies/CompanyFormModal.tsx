@@ -1,0 +1,236 @@
+import { useMemo, useState } from 'react'
+import type { Company } from '@fuel-carrier/shared-types'
+import { ApiErrorCode } from '@fuel-carrier/shared-types'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import {
+  COMPANY_ADDRESS_MAX_LENGTH,
+  COMPANY_NAME_MAX_LENGTH,
+  COMPANY_NATIONAL_ID_MAX_LENGTH,
+  COMPANY_NOTE_MAX_LENGTH,
+  COMPANY_PHONE_MAX_LENGTH,
+} from '@fuel-carrier/shared-validation/company/constants'
+import {
+  createCreateCompanyDtoSchema,
+  type CreateCompanyDto,
+} from '@fuel-carrier/shared-validation/company/create'
+import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
+import { useMutation } from '@fuel-carrier/web-ui/query'
+import { Input, Modal, ModalActions, Textarea } from '@fuel-carrier/web-ui/ui'
+import {
+  companyToFormValues,
+  createCompany,
+  updateCompany,
+} from '../../lib/api/companies'
+
+type CompanyFormModalMode = 'create' | 'edit'
+
+interface CompanyFormModalProps {
+  mode: CompanyFormModalMode
+  company?: Company
+  onClose: () => void
+  onSuccess: () => void
+}
+
+export function CompanyFormModal({
+  mode,
+  company,
+  onClose,
+  onSuccess,
+}: CompanyFormModalProps) {
+  const { LL } = useI18nContext()
+  const [serverError, setServerError] = useState<string | null>(null)
+
+  const companySchema = useMemo(
+    function createSchema() {
+      return createCreateCompanyDtoSchema({
+        nameRequired: LL.validation.companyNameRequired(),
+        nameTooLong: LL.validation.companyNameTooLong({
+          max: COMPANY_NAME_MAX_LENGTH,
+        }),
+        nationalIdRequired: LL.validation.companyNationalIdRequired(),
+        nationalIdTooLong: LL.validation.companyNationalIdTooLong({
+          max: COMPANY_NATIONAL_ID_MAX_LENGTH,
+        }),
+        phoneNumberRequired: LL.validation.companyPhoneNumberRequired(),
+        phoneNumberTooLong: LL.validation.companyPhoneNumberTooLong({
+          max: COMPANY_PHONE_MAX_LENGTH,
+        }),
+        addressTooLong: LL.validation.companyAddressTooLong({
+          max: COMPANY_ADDRESS_MAX_LENGTH,
+        }),
+        noteTooLong: LL.validation.companyNoteTooLong({
+          max: COMPANY_NOTE_MAX_LENGTH,
+        }),
+      })
+    },
+    [LL],
+  )
+
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(companySchema),
+    defaultValues: companyToFormValues(company),
+  })
+
+  const saveMutation = useMutation<Company, Error, CreateCompanyDto>({
+    mutationFn: function saveCompany(data) {
+      if (mode === 'edit' && company) {
+        return updateCompany(company.id, data)
+      }
+
+      return createCompany(data)
+    },
+    onSuccess: function handleSaveSuccess() {
+      onSuccess()
+      onClose()
+    },
+  })
+
+  async function onSubmit(data: CreateCompanyDto) {
+    setServerError(null)
+
+    try {
+      await saveMutation.mutateAsync(data)
+    } catch (error) {
+      handleFormError(error)
+    }
+  }
+
+  function handleFormError(error: unknown) {
+    if (isApiClientError(error)) {
+      if (error.apiError.fields?.length) {
+        for (const fieldError of error.apiError.fields) {
+          if (
+            fieldError.field === 'name' ||
+            fieldError.field === 'nationalId' ||
+            fieldError.field === 'phoneNumber' ||
+            fieldError.field === 'address' ||
+            fieldError.field === 'note'
+          ) {
+            setError(fieldError.field, { message: fieldError.message })
+          }
+        }
+      }
+
+      if (
+        error.apiError.code === ApiErrorCode.VALIDATION_ERROR &&
+        error.apiError.fields?.some((field) => field.field === 'nationalId')
+      ) {
+        setServerError(LL.internalPanel.companies.duplicateNationalId())
+        return
+      }
+
+      setServerError(error.apiError.message)
+      return
+    }
+
+    setServerError(
+      mode === 'edit'
+        ? LL.internalPanel.companies.updateFailed()
+        : LL.internalPanel.companies.createFailed(),
+    )
+  }
+
+  function handleClose() {
+    if (!isSubmitting && !saveMutation.isPending) {
+      onClose()
+    }
+  }
+
+  const isSaving = isSubmitting || saveMutation.isPending
+  const title =
+    mode === 'edit'
+      ? LL.internalPanel.companies.editTitle()
+      : LL.internalPanel.companies.createTitle()
+
+  return (
+    <Modal
+      open
+      title={title}
+      onClose={handleClose}
+      closeDisabled={isSaving}
+      footer={
+        <ModalActions
+          cancelLabel={LL.internalPanel.nav.cancel()}
+          confirmLabel={
+            mode === 'edit'
+              ? LL.internalPanel.companies.update()
+              : LL.internalPanel.companies.create()
+          }
+          confirmType="submit"
+          confirmForm="company-form"
+          loading={isSaving}
+          loadingLabel={
+            mode === 'edit'
+              ? LL.internalPanel.companies.updating()
+              : LL.internalPanel.companies.creating()
+          }
+          onCancel={handleClose}
+          cancelDisabled={isSaving}
+        />
+      }
+    >
+      <form
+        id="company-form"
+        onSubmit={handleSubmit(onSubmit)}
+        noValidate
+        className="flex flex-col gap-4"
+      >
+        <Input
+          label={LL.internalPanel.companies.name()}
+          type="text"
+          autoComplete="organization"
+          placeholder={LL.internalPanel.companies.namePlaceholder()}
+          error={errors.name?.message}
+          {...register('name')}
+        />
+
+        <Input
+          label={LL.internalPanel.companies.nationalId()}
+          type="text"
+          inputMode="numeric"
+          placeholder={LL.internalPanel.companies.nationalIdPlaceholder()}
+          error={errors.nationalId?.message}
+          {...register('nationalId')}
+        />
+
+        <Input
+          label={LL.internalPanel.companies.phoneNumber()}
+          type="tel"
+          autoComplete="tel"
+          placeholder={LL.internalPanel.companies.phoneNumberPlaceholder()}
+          error={errors.phoneNumber?.message}
+          {...register('phoneNumber')}
+        />
+
+        <Input
+          label={LL.internalPanel.companies.address()}
+          type="text"
+          autoComplete="street-address"
+          placeholder={LL.internalPanel.companies.addressPlaceholder()}
+          error={errors.address?.message}
+          {...register('address')}
+        />
+
+        <Textarea
+          label={LL.internalPanel.companies.note()}
+          rows={4}
+          placeholder={LL.internalPanel.companies.notePlaceholder()}
+          error={errors.note?.message}
+          {...register('note')}
+        />
+
+        {serverError && (
+          <div className="rounded-lg border border-error/20 bg-error/8 px-3 py-2 text-xs text-error">
+            {serverError}
+          </div>
+        )}
+      </form>
+    </Modal>
+  )
+}

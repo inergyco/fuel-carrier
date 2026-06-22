@@ -3,6 +3,8 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "paths": {
+      "@fuel-carrier/shared-types": ["../shared-types/src"],
+      "@fuel-carrier/shared-types/*": ["../shared-types/src/*"],
       "@fuel-carrier/shared-validation": ["./src"],
       "@fuel-carrier/shared-validation/*": ["./src/*"]
     }
