@@ -14,13 +14,14 @@ import {
   type CreateCompanyDto,
 } from '@fuel-carrier/shared-validation/company/create'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
-import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
+import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { Input, Modal, ModalActions, Textarea } from '@fuel-carrier/web-ui/ui'
+import { FormInput, FormTextarea, Modal, ModalActions } from '@fuel-carrier/web-ui/ui'
 import {
   companyToFormValues,
   createCompany,
   updateCompany,
+  type CompanyFormValues,
 } from '../../lib/api/companies'
 
 type CompanyFormModalMode = 'create' | 'edit'
@@ -67,15 +68,15 @@ export function CompanyFormModal({
     [LL],
   )
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm({
+  const form = useForm<CompanyFormValues, unknown, CreateCompanyDto>({
     resolver: zodResolver(companySchema),
     defaultValues: companyToFormValues(company),
   })
+
+  const {
+    setError,
+    formState: { isSubmitting },
+  } = form
 
   const saveMutation = useMutation<Company, Error, CreateCompanyDto>({
     mutationFn: function saveCompany(data) {
@@ -175,54 +176,50 @@ export function CompanyFormModal({
         />
       }
     >
-      <form
+      <Form
+        form={form}
         id="company-form"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={onSubmit}
         noValidate
         className="flex flex-col gap-4"
       >
-        <Input
+        <FormInput
+          name="name"
           label={LL.internalPanel.companies.name()}
           type="text"
           autoComplete="organization"
           placeholder={LL.internalPanel.companies.namePlaceholder()}
-          error={errors.name?.message}
-          {...register('name')}
         />
 
-        <Input
+        <FormInput
+          name="nationalId"
           label={LL.internalPanel.companies.nationalId()}
           type="text"
           inputMode="numeric"
           placeholder={LL.internalPanel.companies.nationalIdPlaceholder()}
-          error={errors.nationalId?.message}
-          {...register('nationalId')}
         />
 
-        <Input
+        <FormInput
+          name="phoneNumber"
           label={LL.internalPanel.companies.phoneNumber()}
           type="tel"
           autoComplete="tel"
           placeholder={LL.internalPanel.companies.phoneNumberPlaceholder()}
-          error={errors.phoneNumber?.message}
-          {...register('phoneNumber')}
         />
 
-        <Input
+        <FormInput
+          name="address"
           label={LL.internalPanel.companies.address()}
           type="text"
           autoComplete="street-address"
           placeholder={LL.internalPanel.companies.addressPlaceholder()}
-          error={errors.address?.message}
-          {...register('address')}
         />
 
-        <Textarea
+        <FormTextarea
+          name="note"
           label={LL.internalPanel.companies.note()}
           rows={4}
           placeholder={LL.internalPanel.companies.notePlaceholder()}
-          error={errors.note?.message}
-          {...register('note')}
         />
 
         {serverError && (
@@ -230,7 +227,7 @@ export function CompanyFormModal({
             {serverError}
           </div>
         )}
-      </form>
+      </Form>
     </Modal>
   )
 }

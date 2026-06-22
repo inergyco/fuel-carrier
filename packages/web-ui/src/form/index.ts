@@ -1,4 +1,5 @@
 export { useForm, useFormContext, useWatch, useFieldArray, FormProvider, Controller } from 'react-hook-form'
+export { Form } from './Form'
 
 export type {
   FieldErrors,

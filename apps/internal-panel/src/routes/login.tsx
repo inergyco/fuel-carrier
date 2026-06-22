@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
-import { zodResolver, useForm } from '@fuel-carrier/web-ui/form'
+import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
-import { Button, Input, LocaleControls } from '@fuel-carrier/web-ui/ui'
+import { Button, FormInput, LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { Zap } from '@fuel-carrier/web-ui/icons'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/api/auth'
@@ -45,14 +45,12 @@ function LoginPage() {
     [LL],
   )
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: { username: '', password: '' },
   })
+
+  const { formState: { isSubmitting } } = form
 
   async function onSubmit(data: LoginDto) {
     setServerError(null)
@@ -109,24 +107,27 @@ function LoginPage() {
 
         {/* Card */}
         <div className="rounded-2xl border border-base-content/8 bg-base-200/50 p-6 shadow-xl backdrop-blur-md">
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
-            <Input
+          <Form
+            form={form}
+            onSubmit={onSubmit}
+            noValidate
+            className="flex flex-col gap-4"
+          >
+            <FormInput
+              name="username"
               label={LL.internalPanel.login.username()}
               type="text"
               autoComplete="username"
               autoFocus
               placeholder={LL.internalPanel.login.usernamePlaceholder()}
-              error={errors.username?.message}
-              {...register('username')}
             />
 
-            <Input
+            <FormInput
+              name="password"
               label={LL.internalPanel.login.password()}
               type="password"
               autoComplete="current-password"
               placeholder="••••••••"
-              error={errors.password?.message}
-              {...register('password')}
             />
 
             {serverError && (
@@ -143,7 +144,7 @@ function LoginPage() {
             >
               {LL.internalPanel.login.signIn()}
             </Button>
-          </form>
+          </Form>
         </div>
       </div>
     </main>
