@@ -8,7 +8,7 @@ interface CompanyResourceNavProps {
 }
 
 const navLinkClassName =
-  'flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border border-base-content/8 bg-base-100/30 px-3 py-2 text-sm font-medium transition-all text-base-content/60 hover:border-base-content/15 hover:bg-base-100/50 hover:text-base-content sm:flex-none sm:px-4'
+  'flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-base-content/8 bg-base-100/30 px-3 py-2 text-sm font-medium transition-all text-base-content/60 hover:border-base-content/15 hover:bg-base-100/50 hover:text-base-content sm:px-4'
 
 const activeNavLinkClassName =
   'border-primary/20 bg-primary/10 text-primary shadow-[0_0_24px_-8px] shadow-primary/30'
@@ -44,7 +44,7 @@ export function CompanyResourceNav({ companyId }: CompanyResourceNavProps) {
   ]
 
   return (
-    <nav className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+    <nav className="-mx-1 flex flex-nowrap gap-2 overflow-x-auto overscroll-x-contain px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
       {items.map(function renderNavItem(item) {
         const Icon = item.icon
 
