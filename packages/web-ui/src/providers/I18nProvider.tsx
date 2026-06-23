@@ -10,25 +10,36 @@ import {
 loadAllLocales()
 
 type I18nProviderProps = {
+  localeStorageKey?: string
   children: React.ReactNode
 }
 
-export function I18nProvider({ children }: I18nProviderProps) {
+export function I18nProvider({
+  localeStorageKey = LOCALE_STORAGE_KEY,
+  children,
+}: I18nProviderProps) {
   return (
-    <TypesafeI18n locale={detectLocale()}>
-      <LocaleSync />
+    <TypesafeI18n locale={detectLocale(localeStorageKey)}>
+      <LocaleSync localeStorageKey={localeStorageKey} />
       {children}
     </TypesafeI18n>
   )
 }
 
-function LocaleSync() {
+type LocaleSyncProps = {
+  localeStorageKey: string
+}
+
+function LocaleSync({ localeStorageKey }: LocaleSyncProps) {
   const { locale } = useI18nContext()
 
-  useEffect(function syncDocumentLocale() {
-    applyDocumentLocale(locale)
-    localStorage.setItem(LOCALE_STORAGE_KEY, locale)
-  }, [locale])
+  useEffect(
+    function syncDocumentLocale() {
+      applyDocumentLocale(locale)
+      localStorage.setItem(localeStorageKey, locale)
+    },
+    [locale, localeStorageKey],
+  )
 
   return null
 }

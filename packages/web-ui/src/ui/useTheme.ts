@@ -1,19 +1,23 @@
 import { useState } from 'react'
+import {
+  applyThemeMode,
+  persistThemeMode,
+  resolveThemeMode,
+  type ThemeMode,
+  useThemeConfig,
+} from './theme-context'
 
-export type Theme = 'light' | 'dark'
-
-function resolveInitialTheme(): Theme {
-  const attr = document.documentElement.getAttribute('data-theme')
-  if (attr === 'light' || attr === 'dark') return attr
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-}
+export type Theme = ThemeMode
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>(resolveInitialTheme)
+  const { names: themeNames, storageKey } = useThemeConfig()
+  const [theme, setThemeState] = useState<ThemeMode>(() =>
+    resolveThemeMode(themeNames, storageKey),
+  )
 
-  function setTheme(next: Theme) {
-    document.documentElement.setAttribute('data-theme', next)
-    localStorage.setItem('theme', next)
+  function setTheme(next: ThemeMode) {
+    applyThemeMode(themeNames, next)
+    persistThemeMode(storageKey, next)
     setThemeState(next)
   }
 

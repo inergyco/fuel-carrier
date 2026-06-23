@@ -1,4 +1,11 @@
-import { check, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  check,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { companies } from './companies';
 import { users } from './users';
@@ -25,6 +32,7 @@ export const companyUsers = pgTable(
     nationalId: varchar('national_id', { length: 32 }).unique(),
     email: varchar('email', { length: 254 }),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+    mustChangePassword: boolean('must_change_password').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

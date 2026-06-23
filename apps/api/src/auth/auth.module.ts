@@ -8,6 +8,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalAdminStrategy } from './local-admin.strategy';
 import { LocalCompanyStrategy } from './local-company.strategy';
 import { RolesGuard } from './roles.guard';
+import { MustChangePasswordGuard } from './must-change-password.guard';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { RolesGuard } from './roles.guard';
     LocalCompanyStrategy,
     JwtStrategy,
     RolesGuard,
+    MustChangePasswordGuard,
   ],
-  exports: [AuthService, RolesGuard],
+  exports: [AuthService, RolesGuard, MustChangePasswordGuard],
 })
 export class AuthModule {}

@@ -176,6 +176,12 @@ importers:
       '@fuel-carrier/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@fuel-carrier/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
+      '@fuel-carrier/shared-validation':
+        specifier: workspace:*
+        version: link:../../packages/shared-validation
       '@fuel-carrier/web-ui':
         specifier: workspace:*
         version: link:../../packages/web-ui

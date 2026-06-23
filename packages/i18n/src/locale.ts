@@ -10,8 +10,10 @@ export function isLocale(value: string): value is Locales {
   return locales.includes(value as Locales)
 }
 
-export function detectLocale(): Locales {
-  const stored = localStorage.getItem(LOCALE_STORAGE_KEY)
+export function detectLocale(
+  storageKey: string = LOCALE_STORAGE_KEY,
+): Locales {
+  const stored = localStorage.getItem(storageKey)
   if (stored && isLocale(stored)) {
     return stored
   }

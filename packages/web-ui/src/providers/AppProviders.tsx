@@ -10,11 +10,12 @@ import { I18nProvider } from './I18nProvider'
 
 type AppProvidersProps = {
   router: RegisteredRouter
+  localeStorageKey?: string
 }
 
-export function AppProviders({ router }: AppProvidersProps) {
+export function AppProviders({ router, localeStorageKey }: AppProvidersProps) {
   return (
-    <I18nProvider>
+    <I18nProvider localeStorageKey={localeStorageKey}>
       <ToastProvider>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />

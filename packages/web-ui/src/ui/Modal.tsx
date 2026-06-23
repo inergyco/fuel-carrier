@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '../utils'
 import { Button, type ButtonVariant } from './Button'
 
@@ -44,8 +45,8 @@ export function Modal({
 
   const hasBody = children != null
 
-  return (
-    <dialog className={cn('modal modal-open')} aria-labelledby={titleId}>
+  return createPortal(
+    <dialog className={cn('modal modal-open z-50')} aria-labelledby={titleId}>
       <div
         className={cn(
           'modal-box rounded-2xl border border-base-content/8 bg-base-200/80 p-0 shadow-xl backdrop-blur-xl',
@@ -80,7 +81,8 @@ export function Modal({
           close
         </button>
       </form>
-    </dialog>
+    </dialog>,
+    document.body,
   )
 }
 

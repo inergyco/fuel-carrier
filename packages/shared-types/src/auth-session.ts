@@ -8,4 +8,6 @@ export type AuthSession = {
   username: string;
   firstName: string;
   lastName: string;
+  /** Present for company users; true until they set their own password. */
+  mustChangePassword?: boolean;
 };

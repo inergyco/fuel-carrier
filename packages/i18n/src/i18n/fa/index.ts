@@ -164,9 +164,54 @@ const fa: Translation = {
     },
   },
   externalPanel: {
+    login: {
+      title: 'پرتال شرکت',
+      subtitle: 'دسترسی امن برای شرکای حمل‌ونقل',
+      username: 'نام کاربری',
+      password: 'رمز عبور',
+      usernamePlaceholder: 'نام_کاربری',
+      invalidCredentials: 'نام کاربری یا رمز عبور نادرست است.',
+      signingIn: 'در حال ورود',
+      signIn: 'ورود',
+    },
+    changePassword: {
+      title: 'رمز عبور خود را تنظیم کنید',
+      subtitle:
+        'حساب شما با رمز عبور موقت ایجاد شده است. برای ادامه، رمز جدیدی انتخاب کنید.',
+      currentPassword: 'رمز عبور فعلی',
+      newPassword: 'رمز عبور جدید',
+      confirmPassword: 'تأیید رمز عبور جدید',
+      currentPasswordPlaceholder: 'رمز عبور موقت',
+      newPasswordPlaceholder: 'یک رمز قوی انتخاب کنید',
+      confirmPasswordPlaceholder: 'رمز جدید را تکرار کنید',
+      submit: 'به‌روزرسانی رمز عبور',
+      submitting: 'در حال به‌روزرسانی…',
+      incorrectCurrentPassword: 'رمز عبور فعلی نادرست است.',
+      failed: 'به‌روزرسانی رمز عبور انجام نشد. دوباره تلاش کنید.',
+      passwordsMustMatch: 'رمزهای عبور یکسان نیستند.',
+      newPasswordMustDiffer:
+        'رمز عبور جدید باید با رمز فعلی متفاوت باشد.',
+    },
     home: {
-      title: 'پنل خارجی',
-      description: 'TanStack Router و React Query پیکربندی شده‌اند.',
+      title: 'داشبورد',
+      welcome: 'خوش آمدید، {firstName}',
+      signedInAs:
+        'وارد شده به عنوان {firstName} {lastName} ({username})',
+    },
+    nav: {
+      dashboard: 'داشبورد',
+      openMenu: 'باز کردن منو',
+      signOut: 'خروج',
+      signingOut: 'در حال خروج…',
+      signOutConfirmTitle: 'خروج از حساب؟',
+      signOutConfirmDescription:
+        'برای دسترسی مجدد به پرتال شرکت باید دوباره وارد شوید.',
+      signOutConfirm: 'خروج',
+      cancel: 'انصراف',
+    },
+    shell: {
+      brand: 'Fuel Carrier',
+      brandSubtitle: 'پرتال شرکت',
     },
   },
 }

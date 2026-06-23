@@ -4,21 +4,26 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>external-panel</title>
+    <title>Fuel Carrier — Company Portal</title>
     <script>
       (function () {
-        var t = localStorage.getItem('theme');
+        var themeKey = "fuel-carrier:external-panel:theme";
+        var localeKey = "fuel-carrier:external-panel:locale";
+        var t = localStorage.getItem(themeKey);
+
+        var prefersDark = matchMedia("(prefers-color-scheme:dark)").matches;
+        var isDark = t === "dark" || ((!t || t === "system") && prefersDark);
         document.documentElement.setAttribute(
-          'data-theme',
-          t || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
+          "data-theme",
+          isDark ? "external-dark" : "external-light",
         );
 
-        var l = localStorage.getItem('locale');
+        var l = localStorage.getItem(localeKey);
         var locale =
           l ||
-          (navigator.language.toLowerCase().indexOf('en') === 0 ? 'en' : 'fa');
+          (navigator.language.toLowerCase().indexOf("en") === 0 ? "en" : "fa");
         document.documentElement.lang = locale;
-        document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr';
+        document.documentElement.dir = locale === "fa" ? "rtl" : "ltr";
       })();
     </script>
   </head>

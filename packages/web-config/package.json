@@ -7,6 +7,8 @@
     "./vite": "./vite.ts",
     "./eslint": "./eslint.config.js",
     "./styles/entry.css": "./styles/entry.css",
+    "./styles/internal-entry.css": "./styles/internal-entry.css",
+    "./styles/external-entry.css": "./styles/external-entry.css",
     "./tsconfig/app.json": "./tsconfig/app.json",
     "./tsconfig/panel-app.json": "./tsconfig/panel-app.json",
     "./tsconfig/lib.json": "./tsconfig/lib.json",

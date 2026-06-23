@@ -1,2 +1,2 @@
-@import "@fuel-carrier/web-config/styles/entry.css";
+@import "@fuel-carrier/web-config/styles/internal-entry.css";
 @source "./**/*.{ts,tsx}";

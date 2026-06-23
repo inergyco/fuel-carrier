@@ -7,13 +7,19 @@
     <title>internal-panel</title>
     <script>
       (function () {
-        var t = localStorage.getItem('theme');
+        var themeKey = 'fuel-carrier:internal-panel:theme';
+        var localeKey = 'fuel-carrier:internal-panel:locale';
+        var t = localStorage.getItem(themeKey);
+        var prefersDark = matchMedia('(prefers-color-scheme:dark)').matches;
+        var isDark =
+          t === 'dark' ||
+          ((!t || t === 'system') && prefersDark);
         document.documentElement.setAttribute(
           'data-theme',
-          t || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light')
+          isDark ? 'internal-dark' : 'internal-light'
         );
 
-        var l = localStorage.getItem('locale');
+        var l = localStorage.getItem(localeKey);
         var locale =
           l ||
           (navigator.language.toLowerCase().indexOf('en') === 0 ? 'en' : 'fa');

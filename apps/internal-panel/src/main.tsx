@@ -1,11 +1,22 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AppProviders } from '@fuel-carrier/web-ui/providers'
+import {
+  AppProviders,
+  getPanelStorageKeys,
+  ThemeProvider,
+} from '@fuel-carrier/web-ui/providers'
 import './index.css'
 import { router } from './router'
 
+const storageKeys = getPanelStorageKeys('internal')
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AppProviders router={router} />
+    <ThemeProvider
+      themeNames={{ light: 'internal-light', dark: 'internal-dark' }}
+      storageKey={storageKeys.theme}
+    >
+      <AppProviders router={router} localeStorageKey={storageKeys.locale} />
+    </ThemeProvider>
   </StrictMode>,
 )

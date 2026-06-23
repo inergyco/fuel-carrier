@@ -166,9 +166,54 @@ const en: BaseTranslation = {
     },
   },
   externalPanel: {
+    login: {
+      title: 'Company Portal',
+      subtitle: 'Secure access for carrier partners',
+      username: 'Username',
+      password: 'Password',
+      usernamePlaceholder: 'your_username',
+      invalidCredentials: 'Invalid username or password.',
+      signingIn: 'Signing in',
+      signIn: 'Sign in',
+    },
+    changePassword: {
+      title: 'Set your password',
+      subtitle:
+        'Your account was created with a temporary password. Choose a new one to continue.',
+      currentPassword: 'Current password',
+      newPassword: 'New password',
+      confirmPassword: 'Confirm new password',
+      currentPasswordPlaceholder: 'Temporary password',
+      newPasswordPlaceholder: 'Choose a strong password',
+      confirmPasswordPlaceholder: 'Repeat your new password',
+      submit: 'Update password',
+      submitting: 'Updating…',
+      incorrectCurrentPassword: 'Current password is incorrect.',
+      failed: 'Could not update password. Please try again.',
+      passwordsMustMatch: 'Passwords do not match.',
+      newPasswordMustDiffer:
+        'New password must be different from your current password.',
+    },
     home: {
-      title: 'External Panel',
-      description: 'TanStack Router and React Query are configured.',
+      title: 'Dashboard',
+      welcome: 'Welcome back, {firstName:string}',
+      signedInAs:
+        'Signed in as {firstName:string} {lastName:string} ({username:string})',
+    },
+    nav: {
+      dashboard: 'Dashboard',
+      openMenu: 'Open menu',
+      signOut: 'Sign out',
+      signingOut: 'Signing out…',
+      signOutConfirmTitle: 'Sign out?',
+      signOutConfirmDescription:
+        'You will need to sign in again to access the company portal.',
+      signOutConfirm: 'Sign out',
+      cancel: 'Cancel',
+    },
+    shell: {
+      brand: 'Fuel Carrier',
+      brandSubtitle: 'Company Portal',
     },
   },
 }

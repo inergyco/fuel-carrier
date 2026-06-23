@@ -133,7 +133,7 @@ export class CompanyUsersService {
             ? { nationalId: dto.nationalId }
             : {}),
           ...(dto.email !== undefined ? { email: dto.email } : {}),
-          ...(passwordHash ? { passwordHash } : {}),
+          ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
         })
         .where(eq(companyUsers.id, id));
 

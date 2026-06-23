@@ -593,15 +593,159 @@ type RootTranslation = {
 		}
 	}
 	externalPanel: {
-		home: {
+		login: {
 			/**
-			 * E​x​t​e​r​n​a​l​ ​P​a​n​e​l
+			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
 			 */
 			title: string
 			/**
-			 * T​a​n​S​t​a​c​k​ ​R​o​u​t​e​r​ ​a​n​d​ ​R​e​a​c​t​ ​Q​u​e​r​y​ ​a​r​e​ ​c​o​n​f​i​g​u​r​e​d​.
+			 * S​e​c​u​r​e​ ​a​c​c​e​s​s​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s
 			 */
-			description: string
+			subtitle: string
+			/**
+			 * U​s​e​r​n​a​m​e
+			 */
+			username: string
+			/**
+			 * P​a​s​s​w​o​r​d
+			 */
+			password: string
+			/**
+			 * y​o​u​r​_​u​s​e​r​n​a​m​e
+			 */
+			usernamePlaceholder: string
+			/**
+			 * I​n​v​a​l​i​d​ ​u​s​e​r​n​a​m​e​ ​o​r​ ​p​a​s​s​w​o​r​d​.
+			 */
+			invalidCredentials: string
+			/**
+			 * S​i​g​n​i​n​g​ ​i​n
+			 */
+			signingIn: string
+			/**
+			 * S​i​g​n​ ​i​n
+			 */
+			signIn: string
+		}
+		changePassword: {
+			/**
+			 * S​e​t​ ​y​o​u​r​ ​p​a​s​s​w​o​r​d
+			 */
+			title: string
+			/**
+			 * Y​o​u​r​ ​a​c​c​o​u​n​t​ ​w​a​s​ ​c​r​e​a​t​e​d​ ​w​i​t​h​ ​a​ ​t​e​m​p​o​r​a​r​y​ ​p​a​s​s​w​o​r​d​.​ ​C​h​o​o​s​e​ ​a​ ​n​e​w​ ​o​n​e​ ​t​o​ ​c​o​n​t​i​n​u​e​.
+			 */
+			subtitle: string
+			/**
+			 * C​u​r​r​e​n​t​ ​p​a​s​s​w​o​r​d
+			 */
+			currentPassword: string
+			/**
+			 * N​e​w​ ​p​a​s​s​w​o​r​d
+			 */
+			newPassword: string
+			/**
+			 * C​o​n​f​i​r​m​ ​n​e​w​ ​p​a​s​s​w​o​r​d
+			 */
+			confirmPassword: string
+			/**
+			 * T​e​m​p​o​r​a​r​y​ ​p​a​s​s​w​o​r​d
+			 */
+			currentPasswordPlaceholder: string
+			/**
+			 * C​h​o​o​s​e​ ​a​ ​s​t​r​o​n​g​ ​p​a​s​s​w​o​r​d
+			 */
+			newPasswordPlaceholder: string
+			/**
+			 * R​e​p​e​a​t​ ​y​o​u​r​ ​n​e​w​ ​p​a​s​s​w​o​r​d
+			 */
+			confirmPasswordPlaceholder: string
+			/**
+			 * U​p​d​a​t​e​ ​p​a​s​s​w​o​r​d
+			 */
+			submit: string
+			/**
+			 * U​p​d​a​t​i​n​g​…
+			 */
+			submitting: string
+			/**
+			 * C​u​r​r​e​n​t​ ​p​a​s​s​w​o​r​d​ ​i​s​ ​i​n​c​o​r​r​e​c​t​.
+			 */
+			incorrectCurrentPassword: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​p​a​s​s​w​o​r​d​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			failed: string
+			/**
+			 * P​a​s​s​w​o​r​d​s​ ​d​o​ ​n​o​t​ ​m​a​t​c​h​.
+			 */
+			passwordsMustMatch: string
+			/**
+			 * N​e​w​ ​p​a​s​s​w​o​r​d​ ​m​u​s​t​ ​b​e​ ​d​i​f​f​e​r​e​n​t​ ​f​r​o​m​ ​y​o​u​r​ ​c​u​r​r​e​n​t​ ​p​a​s​s​w​o​r​d​.
+			 */
+			newPasswordMustDiffer: string
+		}
+		home: {
+			/**
+			 * D​a​s​h​b​o​a​r​d
+			 */
+			title: string
+			/**
+			 * W​e​l​c​o​m​e​ ​b​a​c​k​,​ ​{​f​i​r​s​t​N​a​m​e​}
+			 * @param {string} firstName
+			 */
+			welcome: RequiredParams<'firstName'>
+			/**
+			 * S​i​g​n​e​d​ ​i​n​ ​a​s​ ​{​f​i​r​s​t​N​a​m​e​}​ ​{​l​a​s​t​N​a​m​e​}​ ​(​{​u​s​e​r​n​a​m​e​}​)
+			 * @param {string} firstName
+			 * @param {string} lastName
+			 * @param {string} username
+			 */
+			signedInAs: RequiredParams<'firstName' | 'lastName' | 'username'>
+		}
+		nav: {
+			/**
+			 * D​a​s​h​b​o​a​r​d
+			 */
+			dashboard: string
+			/**
+			 * O​p​e​n​ ​m​e​n​u
+			 */
+			openMenu: string
+			/**
+			 * S​i​g​n​ ​o​u​t
+			 */
+			signOut: string
+			/**
+			 * S​i​g​n​i​n​g​ ​o​u​t​…
+			 */
+			signingOut: string
+			/**
+			 * S​i​g​n​ ​o​u​t​?
+			 */
+			signOutConfirmTitle: string
+			/**
+			 * Y​o​u​ ​w​i​l​l​ ​n​e​e​d​ ​t​o​ ​s​i​g​n​ ​i​n​ ​a​g​a​i​n​ ​t​o​ ​a​c​c​e​s​s​ ​t​h​e​ ​c​o​m​p​a​n​y​ ​p​o​r​t​a​l​.
+			 */
+			signOutConfirmDescription: string
+			/**
+			 * S​i​g​n​ ​o​u​t
+			 */
+			signOutConfirm: string
+			/**
+			 * C​a​n​c​e​l
+			 */
+			cancel: string
+		}
+		shell: {
+			/**
+			 * F​u​e​l​ ​C​a​r​r​i​e​r
+			 */
+			brand: string
+			/**
+			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
+			 */
+			brandSubtitle: string
 		}
 	}
 }
@@ -1172,15 +1316,155 @@ export type TranslationFunctions = {
 		}
 	}
 	externalPanel: {
-		home: {
+		login: {
 			/**
-			 * External Panel
+			 * Company Portal
 			 */
 			title: () => LocalizedString
 			/**
-			 * TanStack Router and React Query are configured.
+			 * Secure access for carrier partners
 			 */
-			description: () => LocalizedString
+			subtitle: () => LocalizedString
+			/**
+			 * Username
+			 */
+			username: () => LocalizedString
+			/**
+			 * Password
+			 */
+			password: () => LocalizedString
+			/**
+			 * your_username
+			 */
+			usernamePlaceholder: () => LocalizedString
+			/**
+			 * Invalid username or password.
+			 */
+			invalidCredentials: () => LocalizedString
+			/**
+			 * Signing in
+			 */
+			signingIn: () => LocalizedString
+			/**
+			 * Sign in
+			 */
+			signIn: () => LocalizedString
+		}
+		changePassword: {
+			/**
+			 * Set your password
+			 */
+			title: () => LocalizedString
+			/**
+			 * Your account was created with a temporary password. Choose a new one to continue.
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Current password
+			 */
+			currentPassword: () => LocalizedString
+			/**
+			 * New password
+			 */
+			newPassword: () => LocalizedString
+			/**
+			 * Confirm new password
+			 */
+			confirmPassword: () => LocalizedString
+			/**
+			 * Temporary password
+			 */
+			currentPasswordPlaceholder: () => LocalizedString
+			/**
+			 * Choose a strong password
+			 */
+			newPasswordPlaceholder: () => LocalizedString
+			/**
+			 * Repeat your new password
+			 */
+			confirmPasswordPlaceholder: () => LocalizedString
+			/**
+			 * Update password
+			 */
+			submit: () => LocalizedString
+			/**
+			 * Updating…
+			 */
+			submitting: () => LocalizedString
+			/**
+			 * Current password is incorrect.
+			 */
+			incorrectCurrentPassword: () => LocalizedString
+			/**
+			 * Could not update password. Please try again.
+			 */
+			failed: () => LocalizedString
+			/**
+			 * Passwords do not match.
+			 */
+			passwordsMustMatch: () => LocalizedString
+			/**
+			 * New password must be different from your current password.
+			 */
+			newPasswordMustDiffer: () => LocalizedString
+		}
+		home: {
+			/**
+			 * Dashboard
+			 */
+			title: () => LocalizedString
+			/**
+			 * Welcome back, {firstName}
+			 */
+			welcome: (arg: { firstName: string }) => LocalizedString
+			/**
+			 * Signed in as {firstName} {lastName} ({username})
+			 */
+			signedInAs: (arg: { firstName: string, lastName: string, username: string }) => LocalizedString
+		}
+		nav: {
+			/**
+			 * Dashboard
+			 */
+			dashboard: () => LocalizedString
+			/**
+			 * Open menu
+			 */
+			openMenu: () => LocalizedString
+			/**
+			 * Sign out
+			 */
+			signOut: () => LocalizedString
+			/**
+			 * Signing out…
+			 */
+			signingOut: () => LocalizedString
+			/**
+			 * Sign out?
+			 */
+			signOutConfirmTitle: () => LocalizedString
+			/**
+			 * You will need to sign in again to access the company portal.
+			 */
+			signOutConfirmDescription: () => LocalizedString
+			/**
+			 * Sign out
+			 */
+			signOutConfirm: () => LocalizedString
+			/**
+			 * Cancel
+			 */
+			cancel: () => LocalizedString
+		}
+		shell: {
+			/**
+			 * Fuel Carrier
+			 */
+			brand: () => LocalizedString
+			/**
+			 * Company Portal
+			 */
+			brandSubtitle: () => LocalizedString
 		}
 	}
 }

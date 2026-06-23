@@ -25,6 +25,7 @@ import {
 } from '@fuel-carrier/shared-validation/driver/create';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
@@ -42,7 +43,7 @@ import { DriversService } from './drivers.service';
 
 @ApiTags('drivers')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, MustChangePasswordGuard)
 @Roles(UserRole.COMPANY_USER)
 @Controller('external/drivers')
 export class ExternalDriversController {

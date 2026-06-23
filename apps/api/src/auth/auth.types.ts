@@ -12,4 +12,5 @@ export type JwtPayload = {
   username: string;
   firstName: string;
   lastName: string;
+  mustChangePassword?: boolean;
 };

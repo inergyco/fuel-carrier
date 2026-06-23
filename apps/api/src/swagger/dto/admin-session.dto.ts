@@ -19,4 +19,7 @@ export class AuthSessionDto {
 
   @ApiProperty({ example: 'Admin' })
   lastName!: string;
+
+  @ApiPropertyOptional({ example: true })
+  mustChangePassword?: boolean;
 }

@@ -1,9 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { UserRole, type AuthSession } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  UserRole,
+  type AuthSession,
+} from '@fuel-carrier/shared-types';
 import { isValidUsername } from '@fuel-carrier/shared-validation/username';
 import { DATABASE } from '../database/database.tokens';
 import type { Database } from '../database/database.types';
@@ -11,6 +15,8 @@ import { admins } from '../database/schema/admins';
 import { companyUsers } from '../database/schema/company-users';
 import type { JwtPayload } from './auth.types';
 import { getAuthCookieMaxAgeMs } from './cookie.utils';
+import { createApiException } from '../common/exceptions/api.exception';
+import { hashPassword } from './password.utils';
 
 @Injectable()
 export class AuthService {
@@ -80,6 +86,76 @@ export class AuthService {
       username: companyUser.username,
       firstName: companyUser.user.firstName,
       lastName: companyUser.user.lastName,
+      mustChangePassword: companyUser.mustChangePassword,
+    };
+  }
+
+  async getCompanyUserSession(userId: string): Promise<AuthSession | null> {
+    const companyUser = await this.db.query.companyUsers.findFirst({
+      where: eq(companyUsers.userId, userId),
+      with: { user: true },
+    });
+
+    if (!companyUser?.user) {
+      return null;
+    }
+
+    return {
+      userId: companyUser.userId,
+      role: UserRole.COMPANY_USER,
+      companyId: companyUser.companyId,
+      username: companyUser.username,
+      firstName: companyUser.user.firstName,
+      lastName: companyUser.user.lastName,
+      mustChangePassword: companyUser.mustChangePassword,
+    };
+  }
+
+  async changeCompanyUserPassword(
+    session: AuthSession,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<AuthSession> {
+    const companyUser = await this.db.query.companyUsers.findFirst({
+      where: eq(companyUsers.userId, session.userId),
+      with: { user: true },
+    });
+
+    if (!companyUser?.user) {
+      throw createApiException(
+        HttpStatus.NOT_FOUND,
+        ApiErrorCode.NOT_FOUND,
+        'Company user not found',
+      );
+    }
+
+    const isValid = await bcrypt.compare(
+      currentPassword,
+      companyUser.passwordHash,
+    );
+    if (!isValid) {
+      throw createApiException(
+        HttpStatus.UNAUTHORIZED,
+        ApiErrorCode.UNAUTHORIZED,
+        'Current password is incorrect',
+      );
+    }
+
+    const passwordHash = await hashPassword(newPassword);
+
+    await this.db
+      .update(companyUsers)
+      .set({ passwordHash, mustChangePassword: false })
+      .where(eq(companyUsers.userId, session.userId));
+
+    return {
+      userId: companyUser.userId,
+      role: UserRole.COMPANY_USER,
+      companyId: companyUser.companyId,
+      username: companyUser.username,
+      firstName: companyUser.user.firstName,
+      lastName: companyUser.user.lastName,
+      mustChangePassword: false,
     };
   }
 
@@ -109,14 +185,10 @@ export class AuthService {
       username: session.username,
       firstName: session.firstName,
       lastName: session.lastName,
+      mustChangePassword: session.mustChangePassword,
     };
 
     return this.jwtService.sign(payload);
-  }
-
-  /** @deprecated Use signToken instead. */
-  signAdminToken(session: AuthSession): string {
-    return this.signToken(session);
   }
 
   getAuthCookieMaxAgeMs(): number {
