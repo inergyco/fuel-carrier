@@ -717,6 +717,10 @@ type RootTranslation = {
 			 */
 			drivers: string
 			/**
+			 * V​e​h​i​c​l​e​s
+			 */
+			cars: string
+			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
 			openMenu: string
@@ -780,6 +784,18 @@ type RootTranslation = {
 			 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d​.
 			 */
 			driverDeleted: string
+			/**
+			 * V​e​h​i​c​l​e​ ​a​d​d​e​d​.
+			 */
+			carCreated: string
+			/**
+			 * V​e​h​i​c​l​e​ ​u​p​d​a​t​e​d​.
+			 */
+			carUpdated: string
+			/**
+			 * V​e​h​i​c​l​e​ ​d​e​l​e​t​e​d​.
+			 */
+			carDeleted: string
 		}
 		users: {
 			/**
@@ -1006,6 +1022,109 @@ type RootTranslation = {
 			 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
 			duplicateNationalId: string
+		}
+		cars: {
+			/**
+			 * V​e​h​i​c​l​e​s
+			 */
+			title: string
+			/**
+			 * M​a​n​a​g​e​ ​v​e​h​i​c​l​e​s​ ​f​o​r​ ​y​o​u​r​ ​c​o​m​p​a​n​y
+			 */
+			subtitle: string
+			/**
+			 * N​a​m​e
+			 */
+			name: string
+			/**
+			 * L​i​c​e​n​s​e​ ​p​l​a​t​e
+			 */
+			licensePlate: string
+			/**
+			 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
+			 */
+			driver: string
+			/**
+			 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​e​d
+			 */
+			noDriver: string
+			/**
+			 * N​o​t​e
+			 */
+			note: string
+			/**
+			 * A​d​d​ ​v​e​h​i​c​l​e
+			 */
+			addCar: string
+			/**
+			 * A​d​d​ ​v​e​h​i​c​l​e
+			 */
+			createTitle: string
+			/**
+			 * E​d​i​t​ ​v​e​h​i​c​l​e
+			 */
+			editTitle: string
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​v​e​h​i​c​l​e​.
+			 */
+			empty: string
+			/**
+			 * L​o​a​d​i​n​g​…
+			 */
+			loading: string
+			/**
+			 * —
+			 */
+			emptyCell: string
+			/**
+			 * E​d​i​t
+			 */
+			edit: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			'delete': string
+			/**
+			 * O​p​e​r​a​t​i​o​n​s
+			 */
+			operations: string
+			/**
+			 * S​a​v​e​ ​c​h​a​n​g​e​s
+			 */
+			update: string
+			/**
+			 * S​a​v​i​n​g​…
+			 */
+			updating: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			createFailed: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​d​e​l​e​t​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			deleteFailed: string
+			/**
+			 * D​e​l​e​t​e​ ​v​e​h​i​c​l​e​?
+			 */
+			deleteTitle: string
+			/**
+			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+			 * @param {string} licensePlate
+			 */
+			deleteDescription: RequiredParams<'licensePlate'>
+			/**
+			 * D​e​l​e​t​e
+			 */
+			deleteConfirm: string
+			/**
+			 * D​e​l​e​t​i​n​g​…
+			 */
+			deleting: string
+			/**
+			 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateLicensePlate: string
 		}
 	}
 }
@@ -1696,6 +1815,10 @@ export type TranslationFunctions = {
 			 */
 			drivers: () => LocalizedString
 			/**
+			 * Vehicles
+			 */
+			cars: () => LocalizedString
+			/**
 			 * Open menu
 			 */
 			openMenu: () => LocalizedString
@@ -1759,6 +1882,18 @@ export type TranslationFunctions = {
 			 * Driver deleted.
 			 */
 			driverDeleted: () => LocalizedString
+			/**
+			 * Vehicle added.
+			 */
+			carCreated: () => LocalizedString
+			/**
+			 * Vehicle updated.
+			 */
+			carUpdated: () => LocalizedString
+			/**
+			 * Vehicle deleted.
+			 */
+			carDeleted: () => LocalizedString
 		}
 		users: {
 			/**
@@ -1983,6 +2118,108 @@ export type TranslationFunctions = {
 			 * A driver with this national ID already exists.
 			 */
 			duplicateNationalId: () => LocalizedString
+		}
+		cars: {
+			/**
+			 * Vehicles
+			 */
+			title: () => LocalizedString
+			/**
+			 * Manage vehicles for your company
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Name
+			 */
+			name: () => LocalizedString
+			/**
+			 * License plate
+			 */
+			licensePlate: () => LocalizedString
+			/**
+			 * Assigned driver
+			 */
+			driver: () => LocalizedString
+			/**
+			 * No driver assigned
+			 */
+			noDriver: () => LocalizedString
+			/**
+			 * Note
+			 */
+			note: () => LocalizedString
+			/**
+			 * Add vehicle
+			 */
+			addCar: () => LocalizedString
+			/**
+			 * Add vehicle
+			 */
+			createTitle: () => LocalizedString
+			/**
+			 * Edit vehicle
+			 */
+			editTitle: () => LocalizedString
+			/**
+			 * No vehicles yet. Add your first vehicle.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Loading…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
+			/**
+			 * Edit
+			 */
+			edit: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Operations
+			 */
+			operations: () => LocalizedString
+			/**
+			 * Save changes
+			 */
+			update: () => LocalizedString
+			/**
+			 * Saving…
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Could not save. Please try again.
+			 */
+			createFailed: () => LocalizedString
+			/**
+			 * Could not delete. Please try again.
+			 */
+			deleteFailed: () => LocalizedString
+			/**
+			 * Delete vehicle?
+			 */
+			deleteTitle: () => LocalizedString
+			/**
+			 * This will permanently delete {licensePlate}. This action cannot be undone.
+			 */
+			deleteDescription: (arg: { licensePlate: string }) => LocalizedString
+			/**
+			 * Delete
+			 */
+			deleteConfirm: () => LocalizedString
+			/**
+			 * Deleting…
+			 */
+			deleting: () => LocalizedString
+			/**
+			 * A vehicle with this license plate already exists.
+			 */
+			duplicateLicensePlate: () => LocalizedString
 		}
 	}
 }

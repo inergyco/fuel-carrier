@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
+import { Route as AuthenticatedCarsRouteImport } from './routes/_authenticated/cars'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -45,17 +46,24 @@ const AuthenticatedDriversRoute = AuthenticatedDriversRouteImport.update({
   path: '/drivers',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedCarsRoute = AuthenticatedCarsRouteImport.update({
+  id: '/cars',
+  path: '/cars',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
+  '/cars': typeof AuthenticatedCarsRoute
   '/drivers': typeof AuthenticatedDriversRoute
   '/users': typeof AuthenticatedUsersRoute
 }
 export interface FileRoutesByTo {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
+  '/cars': typeof AuthenticatedCarsRoute
   '/drivers': typeof AuthenticatedDriversRoute
   '/users': typeof AuthenticatedUsersRoute
   '/': typeof AuthenticatedIndexRoute
@@ -65,20 +73,28 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
+  '/_authenticated/cars': typeof AuthenticatedCarsRoute
   '/_authenticated/drivers': typeof AuthenticatedDriversRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/change-password' | '/login' | '/drivers' | '/users'
+  fullPaths:
+    | '/'
+    | '/change-password'
+    | '/login'
+    | '/cars'
+    | '/drivers'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/change-password' | '/login' | '/drivers' | '/users' | '/'
+  to: '/change-password' | '/login' | '/cars' | '/drivers' | '/users' | '/'
   id:
     | '__root__'
     | '/_authenticated'
     | '/change-password'
     | '/login'
+    | '/_authenticated/cars'
     | '/_authenticated/drivers'
     | '/_authenticated/users'
     | '/_authenticated/'
@@ -134,16 +150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDriversRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/cars': {
+      id: '/_authenticated/cars'
+      path: '/cars'
+      fullPath: '/cars'
+      preLoaderRoute: typeof AuthenticatedCarsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedCarsRoute: typeof AuthenticatedCarsRoute
   AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedCarsRoute: AuthenticatedCarsRoute,
   AuthenticatedDriversRoute: AuthenticatedDriversRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
