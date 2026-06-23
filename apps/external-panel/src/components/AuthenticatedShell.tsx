@@ -7,7 +7,7 @@ import {
   PanelShell,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
-import { Home, Shield } from "@fuel-carrier/web-ui/icons";
+import { Home, Shield, Users, Car } from "@fuel-carrier/web-ui/icons";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
@@ -32,6 +32,16 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
           label: LL.externalPanel.nav.dashboard(),
           icon: <Home className="h-4 w-4" aria-hidden />,
           exact: true,
+        },
+        {
+          to: "/users",
+          label: LL.externalPanel.nav.users(),
+          icon: <Users className="h-4 w-4" aria-hidden />,
+        },
+        {
+          to: "/drivers",
+          label: LL.externalPanel.nav.drivers(),
+          icon: <Car className="h-4 w-4" aria-hidden />,
         },
       ];
     },

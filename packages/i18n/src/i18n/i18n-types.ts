@@ -709,6 +709,14 @@ type RootTranslation = {
 			 */
 			dashboard: string
 			/**
+			 * C​o​m​p​a​n​y​ ​u​s​e​r​s
+			 */
+			users: string
+			/**
+			 * D​r​i​v​e​r​s
+			 */
+			drivers: string
+			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
 			openMenu: string
@@ -746,6 +754,258 @@ type RootTranslation = {
 			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
 			 */
 			brandSubtitle: string
+		}
+		toast: {
+			/**
+			 * U​s​e​r​ ​a​d​d​e​d​.
+			 */
+			userCreated: string
+			/**
+			 * U​s​e​r​ ​u​p​d​a​t​e​d​.
+			 */
+			userUpdated: string
+			/**
+			 * U​s​e​r​ ​d​e​l​e​t​e​d​.
+			 */
+			userDeleted: string
+			/**
+			 * D​r​i​v​e​r​ ​a​d​d​e​d​.
+			 */
+			driverCreated: string
+			/**
+			 * D​r​i​v​e​r​ ​u​p​d​a​t​e​d​.
+			 */
+			driverUpdated: string
+			/**
+			 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d​.
+			 */
+			driverDeleted: string
+		}
+		users: {
+			/**
+			 * C​o​m​p​a​n​y​ ​u​s​e​r​s
+			 */
+			title: string
+			/**
+			 * M​a​n​a​g​e​ ​l​o​g​i​n​ ​a​c​c​o​u​n​t​s​ ​f​o​r​ ​y​o​u​r​ ​c​o​m​p​a​n​y
+			 */
+			subtitle: string
+			/**
+			 * N​a​m​e
+			 */
+			name: string
+			/**
+			 * N​a​t​i​o​n​a​l​ ​I​D
+			 */
+			nationalId: string
+			/**
+			 * F​i​r​s​t​ ​n​a​m​e
+			 */
+			firstName: string
+			/**
+			 * L​a​s​t​ ​n​a​m​e
+			 */
+			lastName: string
+			/**
+			 * U​s​e​r​n​a​m​e
+			 */
+			username: string
+			/**
+			 * E​m​a​i​l
+			 */
+			email: string
+			/**
+			 * P​a​s​s​w​o​r​d
+			 */
+			password: string
+			/**
+			 * N​e​w​ ​p​a​s​s​w​o​r​d​ ​(​l​e​a​v​e​ ​b​l​a​n​k​ ​t​o​ ​k​e​e​p​ ​c​u​r​r​e​n​t​)
+			 */
+			passwordOptional: string
+			/**
+			 * A​d​d​ ​u​s​e​r
+			 */
+			addUser: string
+			/**
+			 * A​d​d​ ​c​o​m​p​a​n​y​ ​u​s​e​r
+			 */
+			createTitle: string
+			/**
+			 * E​d​i​t​ ​c​o​m​p​a​n​y​ ​u​s​e​r
+			 */
+			editTitle: string
+			/**
+			 * N​o​ ​u​s​e​r​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​c​o​m​p​a​n​y​ ​u​s​e​r​.
+			 */
+			empty: string
+			/**
+			 * L​o​a​d​i​n​g​…
+			 */
+			loading: string
+			/**
+			 * —
+			 */
+			emptyCell: string
+			/**
+			 * E​d​i​t
+			 */
+			edit: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			'delete': string
+			/**
+			 * O​p​e​r​a​t​i​o​n​s
+			 */
+			operations: string
+			/**
+			 * S​a​v​e​ ​c​h​a​n​g​e​s
+			 */
+			update: string
+			/**
+			 * S​a​v​i​n​g​…
+			 */
+			updating: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			createFailed: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​d​e​l​e​t​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			deleteFailed: string
+			/**
+			 * D​e​l​e​t​e​ ​u​s​e​r​?
+			 */
+			deleteTitle: string
+			/**
+			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​e​y​ ​w​i​l​l​ ​n​o​ ​l​o​n​g​e​r​ ​b​e​ ​a​b​l​e​ ​t​o​ ​s​i​g​n​ ​i​n​.
+			 * @param {string} name
+			 */
+			deleteDescription: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e
+			 */
+			deleteConfirm: string
+			/**
+			 * D​e​l​e​t​i​n​g​…
+			 */
+			deleting: string
+			/**
+			 * T​h​i​s​ ​u​s​e​r​n​a​m​e​ ​i​s​ ​a​l​r​e​a​d​y​ ​t​a​k​e​n​.
+			 */
+			duplicateUsername: string
+			/**
+			 * A​ ​u​s​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateNationalId: string
+		}
+		drivers: {
+			/**
+			 * D​r​i​v​e​r​s
+			 */
+			title: string
+			/**
+			 * M​a​n​a​g​e​ ​d​r​i​v​e​r​s​ ​f​o​r​ ​y​o​u​r​ ​c​o​m​p​a​n​y
+			 */
+			subtitle: string
+			/**
+			 * N​a​m​e
+			 */
+			name: string
+			/**
+			 * N​a​t​i​o​n​a​l​ ​I​D
+			 */
+			nationalId: string
+			/**
+			 * F​i​r​s​t​ ​n​a​m​e
+			 */
+			firstName: string
+			/**
+			 * L​a​s​t​ ​n​a​m​e
+			 */
+			lastName: string
+			/**
+			 * A​s​s​i​g​n​e​d​ ​v​e​h​i​c​l​e
+			 */
+			car: string
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​ ​a​s​s​i​g​n​e​d
+			 */
+			noCar: string
+			/**
+			 * A​d​d​ ​d​r​i​v​e​r
+			 */
+			addDriver: string
+			/**
+			 * A​d​d​ ​d​r​i​v​e​r
+			 */
+			createTitle: string
+			/**
+			 * E​d​i​t​ ​d​r​i​v​e​r
+			 */
+			editTitle: string
+			/**
+			 * N​o​ ​d​r​i​v​e​r​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​d​r​i​v​e​r​.
+			 */
+			empty: string
+			/**
+			 * L​o​a​d​i​n​g​…
+			 */
+			loading: string
+			/**
+			 * —
+			 */
+			emptyCell: string
+			/**
+			 * E​d​i​t
+			 */
+			edit: string
+			/**
+			 * D​e​l​e​t​e
+			 */
+			'delete': string
+			/**
+			 * O​p​e​r​a​t​i​o​n​s
+			 */
+			operations: string
+			/**
+			 * S​a​v​e​ ​c​h​a​n​g​e​s
+			 */
+			update: string
+			/**
+			 * S​a​v​i​n​g​…
+			 */
+			updating: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			createFailed: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​d​e​l​e​t​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			deleteFailed: string
+			/**
+			 * D​e​l​e​t​e​ ​d​r​i​v​e​r​?
+			 */
+			deleteTitle: string
+			/**
+			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​A​n​y​ ​v​e​h​i​c​l​e​ ​a​s​s​i​g​n​m​e​n​t​ ​w​i​l​l​ ​b​e​ ​r​e​m​o​v​e​d​.
+			 * @param {string} name
+			 */
+			deleteDescription: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e
+			 */
+			deleteConfirm: string
+			/**
+			 * D​e​l​e​t​i​n​g​…
+			 */
+			deleting: string
+			/**
+			 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateNationalId: string
 		}
 	}
 }
@@ -1428,6 +1688,14 @@ export type TranslationFunctions = {
 			 */
 			dashboard: () => LocalizedString
 			/**
+			 * Company users
+			 */
+			users: () => LocalizedString
+			/**
+			 * Drivers
+			 */
+			drivers: () => LocalizedString
+			/**
 			 * Open menu
 			 */
 			openMenu: () => LocalizedString
@@ -1465,6 +1733,256 @@ export type TranslationFunctions = {
 			 * Company Portal
 			 */
 			brandSubtitle: () => LocalizedString
+		}
+		toast: {
+			/**
+			 * User added.
+			 */
+			userCreated: () => LocalizedString
+			/**
+			 * User updated.
+			 */
+			userUpdated: () => LocalizedString
+			/**
+			 * User deleted.
+			 */
+			userDeleted: () => LocalizedString
+			/**
+			 * Driver added.
+			 */
+			driverCreated: () => LocalizedString
+			/**
+			 * Driver updated.
+			 */
+			driverUpdated: () => LocalizedString
+			/**
+			 * Driver deleted.
+			 */
+			driverDeleted: () => LocalizedString
+		}
+		users: {
+			/**
+			 * Company users
+			 */
+			title: () => LocalizedString
+			/**
+			 * Manage login accounts for your company
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Name
+			 */
+			name: () => LocalizedString
+			/**
+			 * National ID
+			 */
+			nationalId: () => LocalizedString
+			/**
+			 * First name
+			 */
+			firstName: () => LocalizedString
+			/**
+			 * Last name
+			 */
+			lastName: () => LocalizedString
+			/**
+			 * Username
+			 */
+			username: () => LocalizedString
+			/**
+			 * Email
+			 */
+			email: () => LocalizedString
+			/**
+			 * Password
+			 */
+			password: () => LocalizedString
+			/**
+			 * New password (leave blank to keep current)
+			 */
+			passwordOptional: () => LocalizedString
+			/**
+			 * Add user
+			 */
+			addUser: () => LocalizedString
+			/**
+			 * Add company user
+			 */
+			createTitle: () => LocalizedString
+			/**
+			 * Edit company user
+			 */
+			editTitle: () => LocalizedString
+			/**
+			 * No users yet. Add your first company user.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Loading…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
+			/**
+			 * Edit
+			 */
+			edit: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Operations
+			 */
+			operations: () => LocalizedString
+			/**
+			 * Save changes
+			 */
+			update: () => LocalizedString
+			/**
+			 * Saving…
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Could not save. Please try again.
+			 */
+			createFailed: () => LocalizedString
+			/**
+			 * Could not delete. Please try again.
+			 */
+			deleteFailed: () => LocalizedString
+			/**
+			 * Delete user?
+			 */
+			deleteTitle: () => LocalizedString
+			/**
+			 * This will permanently delete {name}. They will no longer be able to sign in.
+			 */
+			deleteDescription: (arg: { name: string }) => LocalizedString
+			/**
+			 * Delete
+			 */
+			deleteConfirm: () => LocalizedString
+			/**
+			 * Deleting…
+			 */
+			deleting: () => LocalizedString
+			/**
+			 * This username is already taken.
+			 */
+			duplicateUsername: () => LocalizedString
+			/**
+			 * A user with this national ID already exists.
+			 */
+			duplicateNationalId: () => LocalizedString
+		}
+		drivers: {
+			/**
+			 * Drivers
+			 */
+			title: () => LocalizedString
+			/**
+			 * Manage drivers for your company
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Name
+			 */
+			name: () => LocalizedString
+			/**
+			 * National ID
+			 */
+			nationalId: () => LocalizedString
+			/**
+			 * First name
+			 */
+			firstName: () => LocalizedString
+			/**
+			 * Last name
+			 */
+			lastName: () => LocalizedString
+			/**
+			 * Assigned vehicle
+			 */
+			car: () => LocalizedString
+			/**
+			 * No vehicle assigned
+			 */
+			noCar: () => LocalizedString
+			/**
+			 * Add driver
+			 */
+			addDriver: () => LocalizedString
+			/**
+			 * Add driver
+			 */
+			createTitle: () => LocalizedString
+			/**
+			 * Edit driver
+			 */
+			editTitle: () => LocalizedString
+			/**
+			 * No drivers yet. Add your first driver.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Loading…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
+			/**
+			 * Edit
+			 */
+			edit: () => LocalizedString
+			/**
+			 * Delete
+			 */
+			'delete': () => LocalizedString
+			/**
+			 * Operations
+			 */
+			operations: () => LocalizedString
+			/**
+			 * Save changes
+			 */
+			update: () => LocalizedString
+			/**
+			 * Saving…
+			 */
+			updating: () => LocalizedString
+			/**
+			 * Could not save. Please try again.
+			 */
+			createFailed: () => LocalizedString
+			/**
+			 * Could not delete. Please try again.
+			 */
+			deleteFailed: () => LocalizedString
+			/**
+			 * Delete driver?
+			 */
+			deleteTitle: () => LocalizedString
+			/**
+			 * This will permanently delete {name}. Any vehicle assignment will be removed.
+			 */
+			deleteDescription: (arg: { name: string }) => LocalizedString
+			/**
+			 * Delete
+			 */
+			deleteConfirm: () => LocalizedString
+			/**
+			 * Deleting…
+			 */
+			deleting: () => LocalizedString
+			/**
+			 * A driver with this national ID already exists.
+			 */
+			duplicateNationalId: () => LocalizedString
 		}
 	}
 }

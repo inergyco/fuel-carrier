@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, desc, eq, ne } from 'drizzle-orm';
-import type { CompanyUser } from '@fuel-carrier/shared-types';
+import type { CompanyUser, TenantContext } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { hashPassword } from '../auth/password.utils';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -15,18 +15,22 @@ import type { TenantTransaction } from '../database/tenant-db.types';
 export class CompanyUsersService {
   constructor(private readonly tenantDb: TenantDbService) {}
 
-  async listByCompany(companyId: string): Promise<CompanyUser[]> {
+  async list(
+    context: TenantContext,
+    companyId: string,
+  ): Promise<CompanyUser[]> {
+    this._assertCompanyAccess(context, companyId);
     await this._assertCompanyExists(companyId);
 
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+    return this.tenantDb.run(context, async (tx) => {
       const rows = await _findCompanyUsersByCompanyId(tx, companyId);
       return rows.map(_mapCompanyUser);
     });
   }
 
-  async getById(id: string): Promise<CompanyUser> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const row = await _findCompanyUserById(tx, id);
+  async getById(context: TenantContext, id: string): Promise<CompanyUser> {
+    return this.tenantDb.run(context, async (tx) => {
+      const row = await _findCompanyUserForContext(tx, context, id);
 
       if (!row) {
         throw createApiException(
@@ -40,12 +44,16 @@ export class CompanyUsersService {
     });
   }
 
-  async create(dto: CreateCompanyUserPayload): Promise<CompanyUser> {
+  async create(
+    context: TenantContext,
+    dto: CreateCompanyUserPayload,
+  ): Promise<CompanyUser> {
+    this._assertCompanyAccess(context, dto.companyId);
     await this._assertCompanyExists(dto.companyId);
 
     const passwordHash = await hashPassword(dto.password);
 
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+    return this.tenantDb.run(context, async (tx) => {
       await this._assertUsernameAvailable(tx, dto.username);
       await this._assertNationalIdAvailable(tx, dto.nationalId);
 
@@ -84,11 +92,12 @@ export class CompanyUsersService {
   }
 
   async update(
+    context: TenantContext,
     id: string,
     dto: UpdateCompanyUserPayload,
   ): Promise<CompanyUser> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const existing = await _findCompanyUserById(tx, id);
+    return this.tenantDb.run(context, async (tx) => {
+      const existing = await _findCompanyUserForContext(tx, context, id);
 
       if (!existing) {
         throw createApiException(
@@ -151,15 +160,11 @@ export class CompanyUsersService {
     });
   }
 
-  async delete(id: string): Promise<null> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const [row] = await tx
-        .select({ userId: companyUsers.userId })
-        .from(companyUsers)
-        .where(eq(companyUsers.id, id))
-        .limit(1);
+  async delete(context: TenantContext, id: string): Promise<null> {
+    return this.tenantDb.run(context, async (tx) => {
+      const existing = await _findCompanyUserForContext(tx, context, id);
 
-      if (!row) {
+      if (!existing) {
         throw createApiException(
           HttpStatus.NOT_FOUND,
           ApiErrorCode.NOT_FOUND,
@@ -167,9 +172,22 @@ export class CompanyUsersService {
         );
       }
 
-      await tx.delete(users).where(eq(users.id, row.userId));
+      await tx.delete(users).where(eq(users.id, existing.userId));
       return null;
     });
+  }
+
+  private _assertCompanyAccess(
+    context: TenantContext,
+    companyId: string,
+  ): void {
+    if (!context.isInternal && context.companyId !== companyId) {
+      throw createApiException(
+        HttpStatus.FORBIDDEN,
+        ApiErrorCode.FORBIDDEN,
+        'Access denied',
+      );
+    }
   }
 
   private async _assertCompanyExists(companyId: string): Promise<void> {
@@ -276,6 +294,24 @@ async function _findCompanyUserById(
   });
 
   if (!row?.user) {
+    return null;
+  }
+
+  return row;
+}
+
+async function _findCompanyUserForContext(
+  tx: TenantTransaction,
+  context: TenantContext,
+  id: string,
+): Promise<CompanyUserWithUser | null> {
+  const row = await _findCompanyUserById(tx, id);
+
+  if (!row) {
+    return null;
+  }
+
+  if (!context.isInternal && row.companyId !== context.companyId) {
     return null;
   }
 

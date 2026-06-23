@@ -20,15 +20,16 @@ import {
 import type { CompanyUser } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
-  createCompanyUserDtoSchema,
-  type CreateCompanyUserDto,
-  updateCompanyUserDtoSchema,
-  type UpdateCompanyUserDto,
+  createInternalCompanyUserDtoSchema,
+  type CreateInternalCompanyUserDto,
+  updateInternalCompanyUserDtoSchema,
+  type UpdateInternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
@@ -53,7 +54,7 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeOkListResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(@Query('companyId') companyId: string): Promise<CompanyUser[]> {
-    return this.companyUsersService.listByCompany(companyId);
+    return this.companyUsersService.list(internalTenantContext(), companyId);
   }
 
   @Get(':id')
@@ -63,7 +64,7 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   getById(@Param('id') id: string): Promise<CompanyUser> {
-    return this.companyUsersService.getById(id);
+    return this.companyUsersService.getById(internalTenantContext(), id);
   }
 
   @Post()
@@ -73,10 +74,10 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
-    @Body(new ZodValidationPipe(createCompanyUserDtoSchema))
-    dto: CreateCompanyUserDto,
+    @Body(new ZodValidationPipe(createInternalCompanyUserDtoSchema))
+    dto: CreateInternalCompanyUserDto,
   ): Promise<CompanyUser> {
-    return this.companyUsersService.create(dto);
+    return this.companyUsersService.create(internalTenantContext(), dto);
   }
 
   @Patch(':id')
@@ -89,10 +90,10 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeUnauthorizedResponse()
   update(
     @Param('id') id: string,
-    @Body(new ZodValidationPipe(updateCompanyUserDtoSchema))
-    dto: UpdateCompanyUserDto,
+    @Body(new ZodValidationPipe(updateInternalCompanyUserDtoSchema))
+    dto: UpdateInternalCompanyUserDto,
   ): Promise<CompanyUser> {
-    return this.companyUsersService.update(id, dto);
+    return this.companyUsersService.update(internalTenantContext(), id, dto);
   }
 
   @Delete(':id')
@@ -101,6 +102,6 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   delete(@Param('id') id: string): Promise<null> {
-    return this.companyUsersService.delete(id);
+    return this.companyUsersService.delete(internalTenantContext(), id);
   }
 }

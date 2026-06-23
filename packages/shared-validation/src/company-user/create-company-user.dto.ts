@@ -25,20 +25,37 @@ const companyUserBaseSchema = z.object({
   email: optionalTextField(COMPANY_USER_EMAIL_MAX_LENGTH).optional(),
 });
 
-export const createCompanyUserDtoSchema = companyUserBaseSchema.extend({
+/** Internal admin: companyId is required in the request body. */
+export const createInternalCompanyUserDtoSchema = companyUserBaseSchema.extend({
   companyId: z.uuid(),
   password: strongPasswordSchema,
 });
 
-export const updateCompanyUserDtoSchema = companyUserBaseSchema
-  .extend({
-    password: strongPasswordSchema.optional(),
-  })
-  .partial();
+/** Company user: companyId is taken from the JWT, not the request body. */
+export const createExternalCompanyUserDtoSchema = companyUserBaseSchema.extend({
+  password: strongPasswordSchema,
+});
 
-export type CreateCompanyUserDto = CompanyUserInput;
-export type UpdateCompanyUserDto = Partial<
+/** @deprecated Use createInternalCompanyUserDtoSchema */
+export const createCompanyUserDtoSchema = createInternalCompanyUserDtoSchema;
+
+export const updateInternalCompanyUserDtoSchema =
+  createInternalCompanyUserDtoSchema.partial();
+export const updateExternalCompanyUserDtoSchema =
+  createExternalCompanyUserDtoSchema.partial();
+
+/** @deprecated Use updateInternalCompanyUserDtoSchema */
+export const updateCompanyUserDtoSchema = updateInternalCompanyUserDtoSchema;
+
+export type CreateInternalCompanyUserDto = CompanyUserInput;
+export type CreateExternalCompanyUserDto = Omit<CompanyUserInput, 'companyId'>;
+export type UpdateInternalCompanyUserDto = Partial<
   Omit<CompanyUserInput, 'companyId' | 'password'>
+> & {
+  password?: string;
+};
+export type UpdateExternalCompanyUserDto = Partial<
+  Omit<CreateExternalCompanyUserDto, 'password'>
 > & {
   password?: string;
 };
