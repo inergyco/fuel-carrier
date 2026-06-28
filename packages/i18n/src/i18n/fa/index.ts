@@ -59,7 +59,7 @@ const fa: Translation = {
       cancel: 'انصراف',
     },
     shell: {
-      brand: 'Fuel Carrier',
+      brand: 'سوخت رسان',
       brandSubtitle: 'داخلی',
     },
     toast: {
@@ -259,7 +259,7 @@ const fa: Translation = {
       cancel: 'انصراف',
     },
     shell: {
-      brand: 'Fuel Carrier',
+      brand: 'سوخت رسان',
       brandSubtitle: 'پرتال شرکت',
     },
     footer: {

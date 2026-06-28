@@ -9,7 +9,7 @@ import {
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
-import { Home, Zap, Building2 } from '@fuel-carrier/web-ui/icons'
+import { Home, Building2 } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
@@ -78,7 +78,16 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
       <PanelShell
         brandTitle={LL.internalPanel.shell.brand()}
         brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
-        brandIcon={<Zap strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
+        brandIcon={
+          <a
+            href="https://www.inergy.ir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
+          >
+            <img src="/inergy-logo.png" alt="Inergy" />
+          </a>
+        }
         openMenuLabel={LL.internalPanel.nav.openMenu()}
         navItems={navItems}
         footer={

@@ -99,13 +99,13 @@ export function PanelShell({
           <div aria-hidden className={shellGridClassName} />
 
           <div className={cn(shellHeaderClassName, 'relative px-5')}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/15 text-primary [&_svg]:size-5">
+            <div className="flex h-10 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/15 px-1.5 text-primary [&_img]:h-8 [&_img]:w-auto [&_img]:max-w-[5.5rem] [&_img]:object-contain [&_svg]:size-5">
               {brandIcon}
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-tight">{brandTitle}</p>
               {brandSubtitle ? (
-                <p className="truncate text-[10px] uppercase tracking-widest text-base-content/40">
+                <p className="truncate text-xs font-semibold uppercase tracking-wide text-base-content/50">
                   {brandSubtitle}
                 </p>
               ) : null}
