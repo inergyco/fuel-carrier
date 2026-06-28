@@ -159,8 +159,12 @@ export class AuthService {
     };
   }
 
-  getAuthCookieName(): string {
-    return this.configService.getOrThrow<string>('AUTH_COOKIE_NAME');
+  getInternalAuthCookieName(): string {
+    return this.configService.getOrThrow<string>('INTERNAL_AUTH_COOKIE_NAME');
+  }
+
+  getExternalAuthCookieName(): string {
+    return this.configService.getOrThrow<string>('EXTERNAL_AUTH_COOKIE_NAME');
   }
 
   getAuthCookieSameSite(): 'lax' | 'strict' | 'none' {

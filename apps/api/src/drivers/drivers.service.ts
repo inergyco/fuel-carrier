@@ -1,7 +1,17 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
 import type { Driver, TenantContext } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  AuditAction,
+  AuditEntityType,
+} from '@fuel-carrier/shared-types';
+import { AuditLogService } from '../audit-logs/audit-log.service';
+import {
+  createAuditChanges,
+  diffAuditChanges,
+  toAuditSnapshot,
+} from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -39,7 +49,10 @@ const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
 
 @Injectable()
 export class DriversService {
-  constructor(private readonly tenantDb: TenantDbService) {}
+  constructor(
+    private readonly tenantDb: TenantDbService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   async list(context: TenantContext): Promise<Driver[]> {
     return this.tenantDb.run(context, async (tx) => {
@@ -87,7 +100,19 @@ export class DriversService {
           );
         }
 
-        return _mapDriver(row);
+        const driver = _mapDriver(row);
+
+        await this.auditLogService.record(context, {
+          action: AuditAction.DRIVER_CREATED,
+          companyId: driver.companyId,
+          entityType: AuditEntityType.DRIVER,
+          entityId: driver.id,
+          metadata: {
+            changes: createAuditChanges(driver, DRIVER_AUDIT_FIELDS),
+          },
+        });
+
+        return driver;
       });
     } catch (error) {
       rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
@@ -101,6 +126,20 @@ export class DriversService {
   ): Promise<Driver> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
+        const [existing] = await tx
+          .select()
+          .from(drivers)
+          .where(eq(drivers.id, id))
+          .limit(1);
+
+        if (!existing) {
+          throw createApiException(
+            HttpStatus.NOT_FOUND,
+            ApiErrorCode.NOT_FOUND,
+            'Driver not found',
+          );
+        }
+
         const [row] = await tx
           .update(drivers)
           .set(dto)
@@ -115,7 +154,23 @@ export class DriversService {
           );
         }
 
-        return _mapDriver(row);
+        const driver = _mapDriver(row);
+
+        await this.auditLogService.record(context, {
+          action: AuditAction.DRIVER_UPDATED,
+          companyId: driver.companyId,
+          entityType: AuditEntityType.DRIVER,
+          entityId: driver.id,
+          metadata: {
+            changes: diffAuditChanges(
+              _mapDriver(existing),
+              driver,
+              DRIVER_AUDIT_FIELDS,
+            ),
+          },
+        });
+
+        return driver;
       });
     } catch (error) {
       rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
@@ -124,6 +179,20 @@ export class DriversService {
 
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
+      const [existing] = await tx
+        .select()
+        .from(drivers)
+        .where(eq(drivers.id, id))
+        .limit(1);
+
+      if (!existing) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Driver not found',
+        );
+      }
+
       const [row] = await tx
         .delete(drivers)
         .where(eq(drivers.id, id))
@@ -136,6 +205,16 @@ export class DriversService {
           'Driver not found',
         );
       }
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.DRIVER_DELETED,
+        companyId: existing.companyId,
+        entityType: AuditEntityType.DRIVER,
+        entityId: id,
+        metadata: {
+          snapshot: toAuditSnapshot(_mapDriver(existing), DRIVER_AUDIT_FIELDS),
+        },
+      });
 
       return null;
     });
@@ -156,3 +235,9 @@ function _mapDriverWithCar(row: DriverWithCar): Driver {
     car: row.car,
   };
 }
+
+const DRIVER_AUDIT_FIELDS = [
+  'firstName',
+  'lastName',
+  'nationalId',
+] as const satisfies readonly (keyof Driver)[];

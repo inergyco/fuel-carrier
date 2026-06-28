@@ -1,8 +1,18 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, desc, eq, ne } from 'drizzle-orm';
 import type { CompanyUser, TenantContext } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  AuditAction,
+  AuditEntityType,
+} from '@fuel-carrier/shared-types';
 import { hashPassword } from '../auth/password.utils';
+import { AuditLogService } from '../audit-logs/audit-log.service';
+import {
+  createAuditChanges,
+  diffAuditChanges,
+  toAuditSnapshot,
+} from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
@@ -13,7 +23,10 @@ import type { TenantTransaction } from '../database/tenant-db.types';
 
 @Injectable()
 export class CompanyUsersService {
-  constructor(private readonly tenantDb: TenantDbService) {}
+  constructor(
+    private readonly tenantDb: TenantDbService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   async list(
     context: TenantContext,
@@ -87,7 +100,22 @@ export class CompanyUsersService {
         );
       }
 
-      return _mapCompanyUser(created);
+      const companyUser = _mapCompanyUser(created);
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.COMPANY_USER_CREATED,
+        companyId: companyUser.companyId,
+        entityType: AuditEntityType.COMPANY_USER,
+        entityId: companyUser.id,
+        metadata: {
+          changes: createAuditChanges(
+            _companyUserAuditRecord(companyUser, true),
+            COMPANY_USER_AUDIT_FIELDS,
+          ),
+        },
+      });
+
+      return companyUser;
     });
   }
 
@@ -156,7 +184,23 @@ export class CompanyUsersService {
         );
       }
 
-      return _mapCompanyUser(updated);
+      const companyUser = _mapCompanyUser(updated);
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.COMPANY_USER_UPDATED,
+        companyId: companyUser.companyId,
+        entityType: AuditEntityType.COMPANY_USER,
+        entityId: companyUser.id,
+        metadata: {
+          changes: diffAuditChanges(
+            _companyUserAuditRecord(_mapCompanyUser(existing), false),
+            _companyUserAuditRecord(companyUser, Boolean(dto.password)),
+            COMPANY_USER_AUDIT_FIELDS,
+          ),
+        },
+      });
+
+      return companyUser;
     });
   }
 
@@ -173,6 +217,20 @@ export class CompanyUsersService {
       }
 
       await tx.delete(users).where(eq(users.id, existing.userId));
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.COMPANY_USER_DELETED,
+        companyId: existing.companyId,
+        entityType: AuditEntityType.COMPANY_USER,
+        entityId: existing.id,
+        metadata: {
+          snapshot: toAuditSnapshot(
+            _companyUserAuditRecord(_mapCompanyUser(existing), false),
+            COMPANY_USER_AUDIT_FIELDS,
+          ),
+        },
+      });
+
       return null;
     });
   }
@@ -350,3 +408,26 @@ type UpdateCompanyUserPayload = Partial<
 type CompanyUserWithUser = typeof companyUsers.$inferSelect & {
   user: typeof users.$inferSelect;
 };
+
+const COMPANY_USER_AUDIT_FIELDS = [
+  'firstName',
+  'lastName',
+  'username',
+  'nationalId',
+  'email',
+  'password',
+] as const;
+
+function _companyUserAuditRecord(
+  user: CompanyUser,
+  passwordChanged: boolean,
+): Record<string, unknown> {
+  return {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    nationalId: user.nationalId,
+    email: user.email,
+    password: passwordChanged ? 'changed' : null,
+  };
+}

@@ -1,7 +1,17 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
 import type { Car, TenantContext } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  AuditAction,
+  AuditEntityType,
+} from '@fuel-carrier/shared-types';
+import { AuditLogService } from '../audit-logs/audit-log.service';
+import {
+  createAuditChanges,
+  diffAuditChanges,
+  toAuditSnapshot,
+} from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -41,7 +51,10 @@ const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
 
 @Injectable()
 export class CarsService {
-  constructor(private readonly tenantDb: TenantDbService) {}
+  constructor(
+    private readonly tenantDb: TenantDbService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   async list(context: TenantContext): Promise<Car[]> {
     return this.tenantDb.run(context, async (tx) => {
@@ -97,7 +110,19 @@ export class CarsService {
           );
         }
 
-        return _mapCar(row);
+        const car = _mapCar(row);
+
+        await this.auditLogService.record(context, {
+          action: AuditAction.CAR_CREATED,
+          companyId: car.companyId,
+          entityType: AuditEntityType.CAR,
+          entityId: car.id,
+          metadata: {
+            changes: createAuditChanges(car, CAR_AUDIT_FIELDS),
+          },
+        });
+
+        return car;
       });
     } catch (error) {
       rethrowPostgresError(error, CAR_POSTGRES_MAPPINGS);
@@ -110,6 +135,20 @@ export class CarsService {
     dto: UpdateCarPayload,
   ): Promise<Car> {
     return this.tenantDb.run(context, async (tx) => {
+      const [existing] = await tx
+        .select()
+        .from(cars)
+        .where(eq(cars.id, id))
+        .limit(1);
+
+      if (!existing) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Car not found',
+        );
+      }
+
       if (dto.driverId) {
         await this._assertDriverAccessible(tx, dto.driverId);
       }
@@ -136,12 +175,38 @@ export class CarsService {
         );
       }
 
-      return _mapCar(row);
+      const car = _mapCar(row);
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.CAR_UPDATED,
+        companyId: car.companyId,
+        entityType: AuditEntityType.CAR,
+        entityId: car.id,
+        metadata: {
+          changes: diffAuditChanges(_mapCar(existing), car, CAR_AUDIT_FIELDS),
+        },
+      });
+
+      return car;
     });
   }
 
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
+      const [existing] = await tx
+        .select()
+        .from(cars)
+        .where(eq(cars.id, id))
+        .limit(1);
+
+      if (!existing) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Car not found',
+        );
+      }
+
       const [row] = await tx
         .delete(cars)
         .where(eq(cars.id, id))
@@ -154,6 +219,16 @@ export class CarsService {
           'Car not found',
         );
       }
+
+      await this.auditLogService.record(context, {
+        action: AuditAction.CAR_DELETED,
+        companyId: existing.companyId,
+        entityType: AuditEntityType.CAR,
+        entityId: id,
+        metadata: {
+          snapshot: toAuditSnapshot(_mapCar(existing), CAR_AUDIT_FIELDS),
+        },
+      });
 
       return null;
     });
@@ -193,3 +268,10 @@ export class CarsService {
 function _mapCar(row: typeof cars.$inferSelect): Car {
   return row;
 }
+
+const CAR_AUDIT_FIELDS = [
+  'name',
+  'licensePlate',
+  'driverId',
+  'note',
+] as const satisfies readonly (keyof Car)[];

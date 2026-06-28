@@ -1,7 +1,7 @@
 import type { CompanyUser } from '@fuel-carrier/shared-types'
 import type {
-  CreateCompanyUserDto,
-  UpdateCompanyUserDto,
+  CreateInternalCompanyUserDto,
+  UpdateInternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create'
 import { api } from './api'
 
@@ -40,14 +40,14 @@ export async function fetchCompanyUsers(
 }
 
 export async function createCompanyUser(
-  dto: CreateCompanyUserDto,
+  dto: CreateInternalCompanyUserDto,
 ): Promise<CompanyUser> {
   return api.post('company-users', { json: dto }).json<CompanyUser>()
 }
 
 export async function updateCompanyUser(
   id: string,
-  dto: UpdateCompanyUserDto,
+  dto: UpdateInternalCompanyUserDto,
 ): Promise<CompanyUser> {
   return api.patch(`company-users/${id}`, { json: dto }).json<CompanyUser>()
 }

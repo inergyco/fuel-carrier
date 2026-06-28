@@ -9,10 +9,13 @@ import { AuthService } from './auth.service';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(JwtStrategyBase, 'jwt') {
   constructor(authService: AuthService, configService: ConfigService) {
-    const cookieName = authService.getAuthCookieName();
+    const internalCookieName = authService.getInternalAuthCookieName();
+    const externalCookieName = authService.getExternalAuthCookieName();
 
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor(cookieName)]),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        portalCookieExtractor(internalCookieName, externalCookieName),
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });
@@ -26,9 +29,32 @@ export class JwtStrategy extends PassportStrategy(JwtStrategyBase, 'jwt') {
   }
 }
 
-function cookieExtractor(cookieName: string) {
+function portalCookieExtractor(
+  internalCookieName: string,
+  externalCookieName: string,
+) {
   return (req: unknown): string | null => {
-    const request = req as { cookies?: Record<string, string | undefined> };
-    return request.cookies?.[cookieName] ?? null;
+    const request = req as {
+      cookies?: Record<string, string | undefined>;
+      url?: string;
+      raw?: { url?: string };
+    };
+    const cookies = request.cookies;
+
+    if (!cookies) {
+      return null;
+    }
+
+    const path = request.url ?? request.raw?.url ?? '';
+
+    if (path.includes('/external/')) {
+      return cookies[externalCookieName] ?? null;
+    }
+
+    if (path.includes('/internal/')) {
+      return cookies[internalCookieName] ?? null;
+    }
+
+    return cookies[internalCookieName] ?? cookies[externalCookieName] ?? null;
   };
 }

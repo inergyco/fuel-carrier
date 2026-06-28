@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import type { FastifyReply } from 'fastify';
 import { UserRole, type AuthSession } from '@fuel-carrier/shared-types';
+import { AuditAction } from '@fuel-carrier/shared-types';
 import { changePasswordDtoSchema } from '@fuel-carrier/shared-validation/auth/change-password';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -20,6 +21,9 @@ import { LoginRequestDto } from '../swagger/dto/login-request.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import type { ChangePasswordDto } from '@fuel-carrier/shared-validation/auth/change-password';
+import { AuditLogService } from '../audit-logs/audit-log.service';
+import { AUDIT_REDACTED_VALUE } from '../audit-logs/audit-log.utils';
+import { tenantContextFromSession } from '../database/tenant-context.utils';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -35,7 +39,10 @@ type AuthPayload = {
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
 @Controller('external/auth')
 export class ExternalAuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   @Post('login')
   @UseGuards(LocalCompanyAuthGuard)
@@ -47,19 +54,44 @@ export class ExternalAuthController {
   login(
     @CurrentUser() user: AuthSession,
     @Res({ passthrough: true }) res: FastifyReply,
-  ): AuthPayload {
+  ): Promise<AuthPayload> {
     this._setAuthCookie(res, user);
-    return { user };
+
+    return this.auditLogService
+      .record(tenantContextFromSession(user), {
+        action: AuditAction.AUTH_LOGIN_SUCCEEDED,
+        companyId: user.companyId,
+        metadata: { portal: 'external' },
+        actor: user,
+      })
+      .then(function returnPayload() {
+        return { user };
+      });
   }
 
   @Post('logout')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.COMPANY_USER)
   @ApiOperation({ summary: 'Clear the auth cookie' })
   @ApiNoContentResponse({ description: 'Signed out successfully' })
-  logout(@Res({ passthrough: true }) res: FastifyReply): null {
-    void res.clearCookie(this.authService.getAuthCookieName(), {
+  logout(
+    @CurrentUser() user: AuthSession,
+    @Res({ passthrough: true }) res: FastifyReply,
+  ): Promise<null> {
+    void res.clearCookie(this.authService.getExternalAuthCookieName(), {
       path: '/api',
     });
-    return null;
+
+    return this.auditLogService
+      .record(tenantContextFromSession(user), {
+        action: AuditAction.AUTH_LOGOUT,
+        companyId: user.companyId,
+        metadata: { portal: 'external' },
+        actor: user,
+      })
+      .then(function returnNull() {
+        return null;
+      });
   }
 
   @Get('me')
@@ -94,13 +126,28 @@ export class ExternalAuthController {
     );
 
     this._setAuthCookie(res, updated);
+
+    await this.auditLogService.record(tenantContextFromSession(updated), {
+      action: AuditAction.AUTH_PASSWORD_CHANGED,
+      companyId: updated.companyId,
+      actor: updated,
+      metadata: {
+        changes: {
+          password: {
+            from: AUDIT_REDACTED_VALUE,
+            to: AUDIT_REDACTED_VALUE,
+          },
+        },
+      },
+    });
+
     return { user: updated };
   }
 
   private _setAuthCookie(res: FastifyReply, user: AuthSession): void {
     const token = this.authService.signToken(user);
 
-    void res.setCookie(this.authService.getAuthCookieName(), token, {
+    void res.setCookie(this.authService.getExternalAuthCookieName(), token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: this.authService.getAuthCookieSameSite(),

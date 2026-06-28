@@ -13,7 +13,12 @@ export function setupSwagger(app: INestApplication): void {
     return;
   }
 
-  const cookieName = configService.getOrThrow<string>('AUTH_COOKIE_NAME');
+  const internalCookieName = configService.getOrThrow<string>(
+    'INTERNAL_AUTH_COOKIE_NAME',
+  );
+  const externalCookieName = configService.getOrThrow<string>(
+    'EXTERNAL_AUTH_COOKIE_NAME',
+  );
 
   const internalDocument = SwaggerModule.createDocument(
     app,
@@ -24,7 +29,7 @@ export function setupSwagger(app: INestApplication): void {
       .addCookieAuth(AUTH_COOKIE_SCHEME, {
         type: 'apiKey',
         in: 'cookie',
-        name: cookieName,
+        name: internalCookieName,
       })
       .build(),
     { include: [InternalModule] },
@@ -40,6 +45,11 @@ export function setupSwagger(app: INestApplication): void {
       .setTitle('Fuel Carrier External API')
       .setDescription('Public and customer-facing operations')
       .setVersion('1.0')
+      .addCookieAuth(AUTH_COOKIE_SCHEME, {
+        type: 'apiKey',
+        in: 'cookie',
+        name: externalCookieName,
+      })
       .build(),
     { include: [ExternalModule] },
   );

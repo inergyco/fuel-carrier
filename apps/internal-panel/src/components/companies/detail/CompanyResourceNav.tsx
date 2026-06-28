@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { cn } from '@fuel-carrier/web-ui/utils'
-import { Building2, Car, Users, UserRound } from '@fuel-carrier/web-ui/icons'
+import { Building2, Car, ScrollText, Users, UserRound } from '@fuel-carrier/web-ui/icons'
 
 interface CompanyResourceNavProps {
   companyId: string
@@ -39,6 +39,12 @@ export function CompanyResourceNav({ companyId }: CompanyResourceNavProps) {
       to: '/companies/$companyId/cars' as const,
       label: LL.internalPanel.companies.detail.carsTitle(),
       icon: Car,
+      exact: false,
+    },
+    {
+      to: '/companies/$companyId/audit-logs' as const,
+      label: LL.internalPanel.companies.detail.auditLogsTitle(),
+      icon: ScrollText,
       exact: false,
     },
   ]

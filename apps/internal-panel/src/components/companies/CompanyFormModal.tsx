@@ -13,6 +13,7 @@ import {
   createCreateCompanyDtoSchema,
   type CreateCompanyDto,
 } from '@fuel-carrier/shared-validation/company/create'
+import type { z } from 'zod'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
@@ -21,10 +22,11 @@ import {
   companyToFormValues,
   createCompany,
   updateCompany,
-  type CompanyFormValues,
 } from '../../lib/api/companies'
 
 type CompanyFormModalMode = 'create' | 'edit'
+
+type CompanyFormInput = z.input<ReturnType<typeof createCreateCompanyDtoSchema>>
 
 interface CompanyFormModalProps {
   mode: CompanyFormModalMode
@@ -69,7 +71,7 @@ export function CompanyFormModal({
     [LL],
   )
 
-  const form = useForm<CompanyFormValues, unknown, CreateCompanyDto>({
+  const form = useForm<CompanyFormInput, unknown, CreateCompanyDto>({
     resolver: zodResolver(companySchema),
     defaultValues: companyToFormValues(company),
   })

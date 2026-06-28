@@ -1,5 +1,6 @@
 export * from "./api-error-code";
 export * from "./api-response";
+export * from "./audit-log";
 export * from "./auth-session";
 export * from "./car";
 export * from "./company";

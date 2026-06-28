@@ -1,8 +1,18 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, desc, eq, ne } from 'drizzle-orm';
 import type { Company, CompanyInput } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  AuditAction,
+  AuditEntityType,
+} from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { AuditLogService } from '../audit-logs/audit-log.service';
+import {
+  createAuditChanges,
+  diffAuditChanges,
+  toAuditSnapshot,
+} from '../audit-logs/audit-log.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { companies } from '../database/schema/companies';
 import { TenantDbService } from '../database/tenant-db.service';
@@ -14,7 +24,10 @@ import type { TenantTransaction } from '../database/tenant-db.types';
  */
 @Injectable()
 export class CompaniesService {
-  constructor(private readonly tenantDb: TenantDbService) {}
+  constructor(
+    private readonly tenantDb: TenantDbService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   async list(): Promise<Company[]> {
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
@@ -29,20 +42,7 @@ export class CompaniesService {
 
   async getById(id: string): Promise<Company> {
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const [row] = await tx
-        .select()
-        .from(companies)
-        .where(eq(companies.id, id))
-        .limit(1);
-
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company not found',
-        );
-      }
-
+      const row = await _findCompanyById(tx, id);
       return _mapCompany(row);
     });
   }
@@ -52,12 +52,26 @@ export class CompaniesService {
       await this._assertNationalIdAvailable(tx, dto.nationalId);
 
       const [row] = await tx.insert(companies).values(dto).returning();
-      return _mapCompany(row);
+      const company = _mapCompany(row);
+
+      await this.auditLogService.record(internalTenantContext(), {
+        action: AuditAction.COMPANY_CREATED,
+        companyId: company.id,
+        entityType: AuditEntityType.COMPANY,
+        entityId: company.id,
+        metadata: {
+          changes: createAuditChanges(company, COMPANY_AUDIT_FIELDS),
+        },
+      });
+
+      return company;
     });
   }
 
   async update(id: string, dto: CompanyInput): Promise<Company> {
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      const existing = await _findCompanyById(tx, id);
+
       await this._assertNationalIdAvailable(tx, dto.nationalId, id);
 
       const [row] = await tx
@@ -66,32 +80,44 @@ export class CompaniesService {
         .where(eq(companies.id, id))
         .returning();
 
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company not found',
-        );
-      }
+      const company = _mapCompany(row);
 
-      return _mapCompany(row);
+      await this.auditLogService.record(internalTenantContext(), {
+        action: AuditAction.COMPANY_UPDATED,
+        companyId: company.id,
+        entityType: AuditEntityType.COMPANY,
+        entityId: company.id,
+        metadata: {
+          changes: diffAuditChanges(
+            _mapCompany(existing),
+            company,
+            COMPANY_AUDIT_FIELDS,
+          ),
+        },
+      });
+
+      return company;
     });
   }
 
   async delete(id: string): Promise<null> {
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const [row] = await tx
-        .delete(companies)
-        .where(eq(companies.id, id))
-        .returning({ id: companies.id });
+      const existing = await _findCompanyById(tx, id);
 
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company not found',
-        );
-      }
+      await tx.delete(companies).where(eq(companies.id, id));
+
+      await this.auditLogService.record(internalTenantContext(), {
+        action: AuditAction.COMPANY_DELETED,
+        companyId: id,
+        entityType: AuditEntityType.COMPANY,
+        entityId: id,
+        metadata: {
+          snapshot: toAuditSnapshot(
+            _mapCompany(existing),
+            COMPANY_AUDIT_FIELDS,
+          ),
+        },
+      });
 
       return null;
     });
@@ -128,6 +154,35 @@ export class CompaniesService {
   }
 }
 
+async function _findCompanyById(
+  tx: TenantTransaction,
+  id: string,
+): Promise<typeof companies.$inferSelect> {
+  const [row] = await tx
+    .select()
+    .from(companies)
+    .where(eq(companies.id, id))
+    .limit(1);
+
+  if (!row) {
+    throw createApiException(
+      HttpStatus.NOT_FOUND,
+      ApiErrorCode.NOT_FOUND,
+      'Company not found',
+    );
+  }
+
+  return row;
+}
+
 function _mapCompany(row: typeof companies.$inferSelect): Company {
   return row;
 }
+
+const COMPANY_AUDIT_FIELDS = [
+  'name',
+  'nationalId',
+  'phoneNumber',
+  'address',
+  'note',
+] as const satisfies readonly (keyof Company)[];

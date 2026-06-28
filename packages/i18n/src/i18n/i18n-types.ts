@@ -589,6 +589,174 @@ type RootTranslation = {
 				 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 				 */
 				duplicateDriverNationalId: string
+				/**
+				 * A​u​d​i​t​ ​l​o​g
+				 */
+				auditLogsTitle: string
+				/**
+				 * C​r​i​t​i​c​a​l​ ​a​c​t​i​o​n​s​ ​p​e​r​f​o​r​m​e​d​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y
+				 */
+				auditLogsSubtitle: string
+				/**
+				 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
+				 */
+				auditLogsEmpty: string
+				/**
+				 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
+				 */
+				auditLogsLoading: string
+				/**
+				 * W​h​e​n
+				 */
+				auditLogsWhen: string
+				/**
+				 * A​c​t​o​r
+				 */
+				auditLogsActor: string
+				/**
+				 * A​c​t​i​o​n
+				 */
+				auditLogsAction: string
+				/**
+				 * D​e​t​a​i​l​s
+				 */
+				auditLogsDetails: string
+				/**
+				 * I​n​t​e​r​n​a​l​ ​a​d​m​i​n
+				 */
+				auditLogsRoleInternalAdmin: string
+				/**
+				 * C​o​m​p​a​n​y​ ​u​s​e​r
+				 */
+				auditLogsRoleCompanyUser: string
+				/**
+				 * U​n​k​n​o​w​n
+				 */
+				auditLogsRoleUnknown: string
+				auditLogsActions: {
+					/**
+					 * C​o​m​p​a​n​y​ ​c​r​e​a​t​e​d
+					 */
+					companyCreated: string
+					/**
+					 * C​o​m​p​a​n​y​ ​u​p​d​a​t​e​d
+					 */
+					companyUpdated: string
+					/**
+					 * C​o​m​p​a​n​y​ ​d​e​l​e​t​e​d
+					 */
+					companyDeleted: string
+					/**
+					 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​c​r​e​a​t​e​d
+					 */
+					companyUserCreated: string
+					/**
+					 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​u​p​d​a​t​e​d
+					 */
+					companyUserUpdated: string
+					/**
+					 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​d​e​l​e​t​e​d
+					 */
+					companyUserDeleted: string
+					/**
+					 * D​r​i​v​e​r​ ​c​r​e​a​t​e​d
+					 */
+					driverCreated: string
+					/**
+					 * D​r​i​v​e​r​ ​u​p​d​a​t​e​d
+					 */
+					driverUpdated: string
+					/**
+					 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d
+					 */
+					driverDeleted: string
+					/**
+					 * V​e​h​i​c​l​e​ ​c​r​e​a​t​e​d
+					 */
+					carCreated: string
+					/**
+					 * V​e​h​i​c​l​e​ ​u​p​d​a​t​e​d
+					 */
+					carUpdated: string
+					/**
+					 * V​e​h​i​c​l​e​ ​d​e​l​e​t​e​d
+					 */
+					carDeleted: string
+					/**
+					 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
+					 */
+					authLoginSucceeded: string
+					/**
+					 * L​o​g​i​n​ ​f​a​i​l​e​d
+					 */
+					authLoginFailed: string
+					/**
+					 * L​o​g​o​u​t
+					 */
+					authLogout: string
+					/**
+					 * P​a​s​s​w​o​r​d​ ​c​h​a​n​g​e​d
+					 */
+					authPasswordChanged: string
+				}
+				auditLogsFields: {
+					/**
+					 * N​a​m​e
+					 */
+					name: string
+					/**
+					 * N​a​t​i​o​n​a​l​ ​I​D
+					 */
+					nationalId: string
+					/**
+					 * P​h​o​n​e​ ​n​u​m​b​e​r
+					 */
+					phoneNumber: string
+					/**
+					 * A​d​d​r​e​s​s
+					 */
+					address: string
+					/**
+					 * N​o​t​e
+					 */
+					note: string
+					/**
+					 * F​i​r​s​t​ ​n​a​m​e
+					 */
+					firstName: string
+					/**
+					 * L​a​s​t​ ​n​a​m​e
+					 */
+					lastName: string
+					/**
+					 * U​s​e​r​n​a​m​e
+					 */
+					username: string
+					/**
+					 * E​m​a​i​l
+					 */
+					email: string
+					/**
+					 * P​a​s​s​w​o​r​d
+					 */
+					password: string
+					/**
+					 * L​i​c​e​n​s​e​ ​p​l​a​t​e
+					 */
+					licensePlate: string
+					/**
+					 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
+					 */
+					driverId: string
+				}
+				/**
+				 * —
+				 */
+				auditLogsNoDetails: string
+				/**
+				 * D​e​l​e​t​e​d​ ​r​e​c​o​r​d​ ​s​n​a​p​s​h​o​t​ ​r​e​c​o​r​d​e​d​.
+				 */
+				auditLogsDeletedSnapshot: string
 			}
 		}
 	}
@@ -1691,6 +1859,174 @@ export type TranslationFunctions = {
 				 * A driver with this national ID already exists.
 				 */
 				duplicateDriverNationalId: () => LocalizedString
+				/**
+				 * Audit log
+				 */
+				auditLogsTitle: () => LocalizedString
+				/**
+				 * Critical actions performed for this company
+				 */
+				auditLogsSubtitle: () => LocalizedString
+				/**
+				 * No audit entries yet for this company.
+				 */
+				auditLogsEmpty: () => LocalizedString
+				/**
+				 * Loading audit log…
+				 */
+				auditLogsLoading: () => LocalizedString
+				/**
+				 * When
+				 */
+				auditLogsWhen: () => LocalizedString
+				/**
+				 * Actor
+				 */
+				auditLogsActor: () => LocalizedString
+				/**
+				 * Action
+				 */
+				auditLogsAction: () => LocalizedString
+				/**
+				 * Details
+				 */
+				auditLogsDetails: () => LocalizedString
+				/**
+				 * Internal admin
+				 */
+				auditLogsRoleInternalAdmin: () => LocalizedString
+				/**
+				 * Company user
+				 */
+				auditLogsRoleCompanyUser: () => LocalizedString
+				/**
+				 * Unknown
+				 */
+				auditLogsRoleUnknown: () => LocalizedString
+				auditLogsActions: {
+					/**
+					 * Company created
+					 */
+					companyCreated: () => LocalizedString
+					/**
+					 * Company updated
+					 */
+					companyUpdated: () => LocalizedString
+					/**
+					 * Company deleted
+					 */
+					companyDeleted: () => LocalizedString
+					/**
+					 * Company user created
+					 */
+					companyUserCreated: () => LocalizedString
+					/**
+					 * Company user updated
+					 */
+					companyUserUpdated: () => LocalizedString
+					/**
+					 * Company user deleted
+					 */
+					companyUserDeleted: () => LocalizedString
+					/**
+					 * Driver created
+					 */
+					driverCreated: () => LocalizedString
+					/**
+					 * Driver updated
+					 */
+					driverUpdated: () => LocalizedString
+					/**
+					 * Driver deleted
+					 */
+					driverDeleted: () => LocalizedString
+					/**
+					 * Vehicle created
+					 */
+					carCreated: () => LocalizedString
+					/**
+					 * Vehicle updated
+					 */
+					carUpdated: () => LocalizedString
+					/**
+					 * Vehicle deleted
+					 */
+					carDeleted: () => LocalizedString
+					/**
+					 * Login succeeded
+					 */
+					authLoginSucceeded: () => LocalizedString
+					/**
+					 * Login failed
+					 */
+					authLoginFailed: () => LocalizedString
+					/**
+					 * Logout
+					 */
+					authLogout: () => LocalizedString
+					/**
+					 * Password changed
+					 */
+					authPasswordChanged: () => LocalizedString
+				}
+				auditLogsFields: {
+					/**
+					 * Name
+					 */
+					name: () => LocalizedString
+					/**
+					 * National ID
+					 */
+					nationalId: () => LocalizedString
+					/**
+					 * Phone number
+					 */
+					phoneNumber: () => LocalizedString
+					/**
+					 * Address
+					 */
+					address: () => LocalizedString
+					/**
+					 * Note
+					 */
+					note: () => LocalizedString
+					/**
+					 * First name
+					 */
+					firstName: () => LocalizedString
+					/**
+					 * Last name
+					 */
+					lastName: () => LocalizedString
+					/**
+					 * Username
+					 */
+					username: () => LocalizedString
+					/**
+					 * Email
+					 */
+					email: () => LocalizedString
+					/**
+					 * Password
+					 */
+					password: () => LocalizedString
+					/**
+					 * License plate
+					 */
+					licensePlate: () => LocalizedString
+					/**
+					 * Assigned driver
+					 */
+					driverId: () => LocalizedString
+				}
+				/**
+				 * —
+				 */
+				auditLogsNoDetails: () => LocalizedString
+				/**
+				 * Deleted record snapshot recorded.
+				 */
+				auditLogsDeletedSnapshot: () => LocalizedString
 			}
 		}
 	}
