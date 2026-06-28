@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { LocaleControls } from '@fuel-carrier/web-ui/ui'
+import { ExternalPanelBackground } from './ExternalPanelBackground'
 
 interface AuthPageShellProps {
   icon: ReactNode
@@ -17,6 +18,8 @@ export function AuthPageShell({
   return (
     <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-base-100 p-4 sm:p-6">
       <LocaleControls />
+
+      <ExternalPanelBackground />
 
       {/* Aurora mesh */}
       <div aria-hidden className="pointer-events-none absolute inset-0">

@@ -12,6 +12,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
 import { redirectToLoginPage } from "../lib/redirect";
+import { ExternalPanelBackground } from "./ExternalPanelBackground";
 
 interface AuthenticatedShellProps {
   children: ReactNode;
@@ -92,6 +93,7 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
         brandIcon={<Shield className="h-4 w-4 text-primary" aria-hidden />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
+        background={<ExternalPanelBackground variant="shell" />}
         footer={
           <div className="rounded-xl border border-primary/15 bg-base-100/40 p-3 backdrop-blur-sm">
             <div className="mb-3 flex items-center gap-3">

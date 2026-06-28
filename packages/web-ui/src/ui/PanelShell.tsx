@@ -19,6 +19,7 @@ interface PanelShellProps {
   drawerId?: string
   openMenuLabel: string
   footer?: ReactNode
+  background?: ReactNode
   children: ReactNode
 }
 
@@ -36,13 +37,19 @@ export function PanelShell({
   drawerId = 'panel-shell-drawer',
   openMenuLabel,
   footer,
+  background,
   children,
 }: PanelShellProps) {
   return (
     <div className="drawer lg:drawer-open">
       <input id={drawerId} type="checkbox" className="drawer-toggle" />
 
-      <div className="drawer-content flex min-h-svh flex-col bg-base-100">
+      <div
+        className={cn(
+          'drawer-content flex min-h-svh flex-col',
+          background ? 'bg-transparent' : 'bg-base-100',
+        )}
+      >
         <header
           className={cn(
             shellHeaderClassName,
@@ -63,6 +70,14 @@ export function PanelShell({
         </header>
 
         <div className="relative flex flex-1 overflow-hidden">
+          {background ? (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 overflow-hidden"
+            >
+              {background}
+            </div>
+          ) : null}
           <div aria-hidden className={shellGridClassName} />
           <div
             aria-hidden
