@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { ExternalPanelBackground } from './ExternalPanelBackground'
+import { InergyFooter } from './InergyFooter'
 
 interface AuthPageShellProps {
   icon: ReactNode
@@ -65,6 +66,8 @@ export function AuthPageShell({
           </div>
         </div>
       </div>
+
+      <InergyFooter className="relative z-10 mt-auto shrink-0" />
     </main>
   )
 }

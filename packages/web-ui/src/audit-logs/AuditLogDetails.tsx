@@ -1,6 +1,7 @@
 import type { AuditLogMetadata } from '@fuel-carrier/shared-types'
 import { ArrowRight } from '../icons'
 import { iconSmClassName, ICON_STROKE_WIDTH } from '../ui/iconClassName'
+import { cn } from '../utils'
 import {
   formatAuditFieldLabel,
   formatAuditValue,
@@ -79,7 +80,7 @@ function AuditLogChangeLine({ label, from, to }: AuditLogChangeLineProps) {
       <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
         <bdi dir="auto">{from}</bdi>
         <ArrowRight
-          className={`${iconSmClassName} text-base-content/55 rtl:rotate-180`}
+          className={cn(iconSmClassName, 'text-base-content/55 rtl:rotate-180')}
           strokeWidth={ICON_STROKE_WIDTH}
           aria-hidden
         />

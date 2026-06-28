@@ -1,5 +1,19 @@
-import { Button, ICON_STROKE_WIDTH, iconSmClassName } from '@fuel-carrier/web-ui/ui'
+import {
+  Button,
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableHeaderRow,
+  DataTableRow,
+  dataTableDeleteActionClassName,
+  dataTableEditActionClassName,
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+} from '@fuel-carrier/web-ui/ui'
 import { Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import type { ReactNode } from 'react'
 import type { ResourceActionLabels } from './ResourceSection'
 
@@ -32,8 +46,6 @@ function ResourceOperations<T>({
   onDelete: (item: T) => void
   stacked?: boolean
 }) {
-  const width = stacked ? ' w-full' : ''
-
   function handleEdit() {
     onEdit(item)
   }
@@ -43,14 +55,14 @@ function ResourceOperations<T>({
   }
 
   return (
-    <div className={stacked ? 'flex flex-col gap-2' : 'flex flex-wrap items-center gap-2'}>
+    <div className={cn(stacked ? 'flex flex-col gap-2' : 'flex flex-wrap items-center gap-2')}>
       <Button
         type="button"
         variant="ghost"
-        className={`h-9 min-h-9${width} border border-base-content/8 bg-base-100/30 px-3`}
+        className={dataTableEditActionClassName(stacked && 'w-full')}
         onClick={handleEdit}
       >
-        <span className={`flex items-center gap-2${stacked ? ' justify-center' : ''}`}>
+        <span className={cn('flex items-center gap-2', stacked && 'justify-center')}>
           <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {actionLabels.edit}
         </span>
@@ -58,10 +70,10 @@ function ResourceOperations<T>({
       <Button
         type="button"
         variant="ghost"
-        className={`h-9 min-h-9${width} border border-error/20 bg-error/5 px-3 text-error hover:bg-error/10`}
+        className={dataTableDeleteActionClassName(stacked && 'w-full')}
         onClick={handleDelete}
       >
-        <span className={`flex items-center gap-2${stacked ? ' justify-center' : ''}`}>
+        <span className={cn('flex items-center gap-2', stacked && 'justify-center')}>
           <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {actionLabels.delete}
         </span>
@@ -80,44 +92,41 @@ export function ResourceList<T extends { id: string }>({
 }: ResourceListProps<T>) {
   if (variant === 'table') {
     return (
-      <div className="overflow-x-auto rounded-xl border border-base-content/8">
-        <table className="table table-sm w-full">
-          <thead>
-            <tr className="border-b border-base-content/8 text-xs tracking-widest text-base-content/40 uppercase">
-              {columns.map(function renderHeader(column) {
-                return <th key={column.key}>{column.header}</th>
-              })}
-              <th>{actionLabels.operations}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(function renderRow(item) {
+      <DataTable>
+        <DataTableHead>
+          <DataTableHeaderRow>
+            {columns.map(function renderHeader(column) {
               return (
-                <tr
-                  key={item.id}
-                  className="border-b border-base-content/8 last:border-b-0 hover:bg-base-100/30"
-                >
-                  {columns.map(function renderCell(column) {
-                    return (
-                      <td key={column.key} className={column.className}>
-                        {column.cell(item)}
-                      </td>
-                    )
-                  })}
-                  <td className="text-end">
-                    <ResourceOperations
-                      item={item}
-                      actionLabels={actionLabels}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                    />
-                  </td>
-                </tr>
+                <DataTableHeaderCell key={column.key}>{column.header}</DataTableHeaderCell>
               )
             })}
-          </tbody>
-        </table>
-      </div>
+            <DataTableHeaderCell>{actionLabels.operations}</DataTableHeaderCell>
+          </DataTableHeaderRow>
+        </DataTableHead>
+        <DataTableBody>
+          {items.map(function renderRow(item) {
+            return (
+              <DataTableRow key={item.id}>
+                {columns.map(function renderCell(column) {
+                  return (
+                    <DataTableCell key={column.key} className={column.className}>
+                      {column.cell(item)}
+                    </DataTableCell>
+                  )
+                })}
+                <DataTableCell className="text-end">
+                  <ResourceOperations
+                    item={item}
+                    actionLabels={actionLabels}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                  />
+                </DataTableCell>
+              </DataTableRow>
+            )
+          })}
+        </DataTableBody>
+      </DataTable>
     )
   }
 
@@ -145,7 +154,10 @@ export function ResourceList<T extends { id: string }>({
                         {column.header}
                       </dt>
                       <dd
-                        className={`mt-1 break-words whitespace-pre-wrap ${column.className ?? ''}`}
+                        className={cn(
+                          'mt-1 break-words whitespace-pre-wrap',
+                          column.className,
+                        )}
                       >
                         {column.cell(item)}
                       </dd>

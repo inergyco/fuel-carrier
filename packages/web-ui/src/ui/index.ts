@@ -21,6 +21,18 @@ export {
   iconXlClassName,
 } from './iconClassName'
 export { ConfirmModal } from './ConfirmModal'
+export {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableHeaderRow,
+  DataTableRow,
+  dataTableDeleteActionClassName,
+  dataTableEditActionClassName,
+  dataTableViewActionClassName,
+} from './DataTable'
 export { Modal, ModalActions } from './Modal'
 export { useTheme } from './useTheme'
 export type { Theme } from './useTheme'

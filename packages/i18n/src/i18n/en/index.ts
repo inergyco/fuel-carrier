@@ -264,6 +264,9 @@ const en: BaseTranslation = {
       brand: 'Fuel Carrier',
       brandSubtitle: 'Company Portal',
     },
+    footer: {
+      copyright: '© {year:number} Inergy Corporation. All rights reserved.',
+    },
     toast: {
       userCreated: 'User added.',
       userUpdated: 'User updated.',

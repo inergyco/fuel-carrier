@@ -262,6 +262,10 @@ const fa: Translation = {
       brand: 'Fuel Carrier',
       brandSubtitle: 'پرتال شرکت',
     },
+    footer: {
+      copyright:
+        'تمامی حقوق این پروژه برای شرکت اینرژی محفوظ است. © {year:number}',
+    },
     toast: {
       userCreated: 'کاربر اضافه شد.',
       userUpdated: 'کاربر به‌روزرسانی شد.',

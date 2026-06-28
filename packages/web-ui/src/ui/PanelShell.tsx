@@ -19,6 +19,7 @@ interface PanelShellProps {
   drawerId?: string
   openMenuLabel: string
   footer?: ReactNode
+  pageFooter?: ReactNode
   background?: ReactNode
   children: ReactNode
 }
@@ -37,6 +38,7 @@ export function PanelShell({
   drawerId = 'panel-shell-drawer',
   openMenuLabel,
   footer,
+  pageFooter,
   background,
   children,
 }: PanelShellProps) {
@@ -87,6 +89,8 @@ export function PanelShell({
             {children}
           </main>
         </div>
+
+        {pageFooter}
       </div>
 
       <div className="drawer-side z-30">

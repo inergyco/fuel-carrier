@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
 import { redirectToLoginPage } from "../lib/redirect";
 import { ExternalPanelBackground } from "./ExternalPanelBackground";
+import { InergyFooter } from "./InergyFooter";
 
 interface AuthenticatedShellProps {
   children: ReactNode;
@@ -95,29 +96,38 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
         background={<ExternalPanelBackground variant="shell" />}
+        pageFooter={
+          <InergyFooter
+            stacked
+            className="relative z-10 shrink-0 lg:hidden"
+          />
+        }
         footer={
-          <div className="rounded-xl border border-primary/15 bg-base-100/40 p-3 backdrop-blur-sm">
-            <div className="mb-3 flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-gradient-to-br from-primary/15 to-secondary/10 text-xs font-semibold text-primary">
-                {initials}
+          <div className="space-y-3">
+            <div className="rounded-xl border border-primary/15 bg-base-100/40 p-3 backdrop-blur-sm">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-gradient-to-br from-primary/15 to-secondary/10 text-xs font-semibold text-primary">
+                  {initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="truncate font-mono text-[10px] text-base-content/40">
+                    @{user.username}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">
-                  {user.firstName} {user.lastName}
-                </p>
-                <p className="truncate font-mono text-[10px] text-base-content/40">
-                  @{user.username}
-                </p>
-              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-9 w-full justify-center border border-base-content/8 bg-base-100/30 normal-case tracking-normal"
+                onClick={handleOpenLogoutModal}
+              >
+                {LL.externalPanel.nav.signOut()}
+              </Button>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 w-full justify-center border border-base-content/8 bg-base-100/30 normal-case tracking-normal"
-              onClick={handleOpenLogoutModal}
-            >
-              {LL.externalPanel.nav.signOut()}
-            </Button>
+            <InergyFooter stacked className="hidden lg:flex" />
           </div>
         }
       >

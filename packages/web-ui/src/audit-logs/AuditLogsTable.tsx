@@ -1,4 +1,13 @@
 import type { AuditLog } from '@fuel-carrier/shared-types'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableCell,
+  DataTableHead,
+  DataTableHeaderCell,
+  DataTableHeaderRow,
+  DataTableRow,
+} from '../ui/DataTable'
 import { AuditLogDetails } from './AuditLogDetails'
 import {
   formatAuditAction,
@@ -15,46 +24,41 @@ interface AuditLogsTableProps {
 
 export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-base-content/8">
-      <table className="table table-sm w-full">
-        <thead>
-          <tr className="border-b border-base-content/8 text-xs tracking-widest text-base-content/40 uppercase">
-            <th>{labels.when()}</th>
-            <th>{labels.actor()}</th>
-            <th>{labels.action()}</th>
-            <th>{labels.details()}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map(function renderAuditLog(log) {
-            return (
-              <tr
-                key={log.id}
-                className="border-b border-base-content/8 align-top last:border-b-0 hover:bg-base-100/30"
-              >
-                <td className="whitespace-nowrap text-sm text-base-content/70">
-                  {formatAuditTimestamp(log, locale)}
-                </td>
-                <td className="min-w-40 text-sm">
-                  <p className="font-medium">{log.actorDisplayName}</p>
-                  <p className="font-mono text-xs text-base-content/50">
-                    @{log.actorUsername}
-                  </p>
-                  <p className="text-xs text-base-content/40">
-                    {formatAuditRole(log.actorRole, labels)}
-                  </p>
-                </td>
-                <td className="min-w-36 text-sm font-medium">
-                  {formatAuditAction(log.action, labels)}
-                </td>
-                <td className="max-w-xl text-sm text-base-content/70">
-                  <AuditLogDetails metadata={log.metadata} labels={labels} />
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+    <DataTable>
+      <DataTableHead>
+        <DataTableHeaderRow>
+          <DataTableHeaderCell>{labels.when()}</DataTableHeaderCell>
+          <DataTableHeaderCell>{labels.actor()}</DataTableHeaderCell>
+          <DataTableHeaderCell>{labels.action()}</DataTableHeaderCell>
+          <DataTableHeaderCell>{labels.details()}</DataTableHeaderCell>
+        </DataTableHeaderRow>
+      </DataTableHead>
+      <DataTableBody>
+        {logs.map(function renderAuditLog(log) {
+          return (
+            <DataTableRow key={log.id}>
+              <DataTableCell className="whitespace-nowrap align-top">
+                {formatAuditTimestamp(log, locale)}
+              </DataTableCell>
+              <DataTableCell className="min-w-40 align-top">
+                <p className="font-medium">{log.actorDisplayName}</p>
+                <p className="font-mono text-xs text-base-content/55">
+                  @{log.actorUsername}
+                </p>
+                <p className="text-xs text-base-content/50">
+                  {formatAuditRole(log.actorRole, labels)}
+                </p>
+              </DataTableCell>
+              <DataTableCell className="min-w-36 align-top font-medium">
+                {formatAuditAction(log.action, labels)}
+              </DataTableCell>
+              <DataTableCell className="max-w-xl align-top">
+                <AuditLogDetails metadata={log.metadata} labels={labels} />
+              </DataTableCell>
+            </DataTableRow>
+          )
+        })}
+      </DataTableBody>
+    </DataTable>
   )
 }

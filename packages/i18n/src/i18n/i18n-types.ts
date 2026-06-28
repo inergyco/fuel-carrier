@@ -931,6 +931,13 @@ type RootTranslation = {
 			 */
 			brandSubtitle: string
 		}
+		footer: {
+			/**
+			 * ©​ ​{​y​e​a​r​}​ ​I​n​e​r​g​y​ ​C​o​r​p​o​r​a​t​i​o​n​.​ ​A​l​l​ ​r​i​g​h​t​s​ ​r​e​s​e​r​v​e​d​.
+			 * @param {number} year
+			 */
+			copyright: RequiredParams<'year'>
+		}
 		toast: {
 			/**
 			 * U​s​e​r​ ​a​d​d​e​d​.
@@ -2370,6 +2377,12 @@ export type TranslationFunctions = {
 			 * Company Portal
 			 */
 			brandSubtitle: () => LocalizedString
+		}
+		footer: {
+			/**
+			 * © {year} Inergy Corporation. All rights reserved.
+			 */
+			copyright: (arg: { year: number }) => LocalizedString
 		}
 		toast: {
 			/**
