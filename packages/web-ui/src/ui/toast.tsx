@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from 'react'
 import { CheckCircle2, X } from '../icons'
+import { iconMdClassName, iconSmClassName, ICON_STROKE_WIDTH } from './iconClassName'
 import { cn } from '../utils'
 
 type ToastVariant = 'success' | 'error'
@@ -109,9 +110,10 @@ function Toast({
     >
       <Icon
         className={cn(
-          'h-4 w-4 shrink-0',
+          iconMdClassName,
           toast.variant === 'success' ? 'text-success' : 'text-error',
         )}
+        strokeWidth={ICON_STROKE_WIDTH}
         aria-hidden
       />
       <span className="text-sm">{toast.message}</span>
@@ -123,7 +125,7 @@ function Toast({
           onDismiss(toast.id)
         }}
       >
-        <X className="h-3 w-3" aria-hidden />
+        <X className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </button>
     </div>
   )

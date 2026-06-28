@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, ConfirmModal, MEDIA_QUERIES, useMediaQuery, useToast } from '@fuel-carrier/web-ui/ui'
+import { Button, ConfirmModal, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery, useToast } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
@@ -102,7 +102,7 @@ function CompaniesPage() {
           onClick={handleOpenCreateModal}
         >
           <span className="flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4" aria-hidden />
+            <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
             {LL.internalPanel.companies.create()}
           </span>
         </Button>

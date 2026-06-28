@@ -5,6 +5,7 @@ import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   Button,
   ConfirmModal,
+  ICON_STROKE_WIDTH,
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
@@ -33,13 +34,13 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
       {
         to: '/',
         label: LL.internalPanel.nav.dashboard(),
-        icon: <Home className="h-4 w-4" aria-hidden />,
+        icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         exact: true,
       },
       {
         to: '/companies',
         label: LL.internalPanel.nav.companies(),
-        icon: <Building2 className="h-4 w-4" aria-hidden />,
+        icon: <Building2 strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
       },
     ]
   }, [LL])
@@ -77,7 +78,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
       <PanelShell
         brandTitle={LL.internalPanel.shell.brand()}
         brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
-        brandIcon={<Zap className="h-4 w-4" aria-hidden />}
+        brandIcon={<Zap strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
         openMenuLabel={LL.internalPanel.nav.openMenu()}
         navItems={navItems}
         footer={

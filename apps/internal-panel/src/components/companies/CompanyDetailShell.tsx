@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Button, ICON_STROKE_WIDTH, iconMdClassName } from '@fuel-carrier/web-ui/ui'
 import { ArrowLeft } from '@fuel-carrier/web-ui/icons'
 import { CompanyResourceNav } from './detail/CompanyResourceNav'
 import { useCompanyQuery } from './useCompanyQuery'
@@ -25,9 +25,9 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
       <div className="mb-6">
         <Link
           to="/companies"
-          className="mb-4 inline-flex items-center gap-2 text-sm text-base-content/50 transition-colors hover:text-base-content"
+          className="mb-4 inline-flex items-center gap-2 text-sm text-base-content/65 transition-colors hover:text-base-content"
         >
-          <ArrowLeft className="h-4 w-4 rtl:rotate-180" aria-hidden />
+          <ArrowLeft className={`${iconMdClassName} rtl:rotate-180`} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {LL.internalPanel.companies.backToList()}
         </Link>
 

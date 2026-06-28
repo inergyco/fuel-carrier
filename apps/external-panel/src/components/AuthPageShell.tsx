@@ -47,7 +47,7 @@ export function AuthPageShell({
               aria-hidden
               className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30 blur-md"
             />
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/25 bg-base-200/70 backdrop-blur-xl">
+            <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/25 bg-base-200/70 backdrop-blur-xl text-primary [&_svg]:size-8">
               {icon}
             </div>
           </div>

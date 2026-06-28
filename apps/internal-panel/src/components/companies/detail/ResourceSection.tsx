@@ -1,5 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Button, MEDIA_QUERIES, useMediaQuery } from '@fuel-carrier/web-ui/ui'
+import { Button, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import { ResourceList, type ResourceColumn } from './resourceListViews'
 
@@ -42,7 +42,7 @@ export function ResourceSection<T extends { id: string }>({
         </div>
         <Button type="button" className="h-10 w-full sm:w-auto sm:px-5" onClick={onAdd}>
           <span className="flex items-center justify-center gap-2">
-            <Plus className="h-4 w-4" aria-hidden />
+            <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
             {addLabel}
           </span>
         </Button>

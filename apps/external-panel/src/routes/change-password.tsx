@@ -9,7 +9,7 @@ import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
 import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, FormInput } from '@fuel-carrier/web-ui/ui'
+import { Button, FormInput, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { KeyRound } from '@fuel-carrier/web-ui/icons'
 import { useMemo, useState } from 'react'
 import { AuthPageShell } from '../components/AuthPageShell'
@@ -103,7 +103,7 @@ function ChangePasswordPage() {
 
   return (
     <AuthPageShell
-      icon={<KeyRound className="h-7 w-7 text-secondary" aria-hidden />}
+      icon={<KeyRound className="text-secondary" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
       title={LL.externalPanel.changePassword.title()}
       subtitle={LL.externalPanel.changePassword.subtitle()}
     >

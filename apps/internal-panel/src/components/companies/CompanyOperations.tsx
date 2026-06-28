@@ -1,7 +1,7 @@
 import type { Company } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Link } from '@tanstack/react-router'
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Button, ICON_STROKE_WIDTH, iconSmClassName } from '@fuel-carrier/web-ui/ui'
 import { Eye, Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
 
 interface CompanyOperationsProps {
@@ -45,7 +45,7 @@ export function CompanyOperations({
         }
       >
         <span className="flex items-center gap-2">
-          <Eye className="h-3.5 w-3.5" aria-hidden />
+          <Eye className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {LL.internalPanel.companies.view()}
         </span>
       </Link>
@@ -56,7 +56,7 @@ export function CompanyOperations({
         onClick={handleEdit}
       >
         <span className="flex items-center gap-2">
-          <Pencil className="h-3.5 w-3.5" aria-hidden />
+          <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {LL.internalPanel.companies.edit()}
         </span>
       </Button>
@@ -67,7 +67,7 @@ export function CompanyOperations({
         onClick={handleDelete}
       >
         <span className="flex items-center gap-2">
-          <Trash2 className="h-3.5 w-3.5" aria-hidden />
+          <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {LL.internalPanel.companies.delete()}
         </span>
       </Button>

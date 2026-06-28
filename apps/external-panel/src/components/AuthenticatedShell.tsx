@@ -4,6 +4,7 @@ import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   Button,
   ConfirmModal,
+  ICON_STROKE_WIDTH,
   PanelShell,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
@@ -31,28 +32,28 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
         {
           to: "/",
           label: LL.externalPanel.nav.dashboard(),
-          icon: <Home className="h-4 w-4" aria-hidden />,
+          icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
           exact: true,
         },
         {
           to: "/users",
           label: LL.externalPanel.nav.users(),
-          icon: <Users className="h-4 w-4" aria-hidden />,
+          icon: <Users strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/drivers",
           label: LL.externalPanel.nav.drivers(),
-          icon: <Car className="h-4 w-4" aria-hidden />,
+          icon: <Car strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/cars",
           label: LL.externalPanel.nav.cars(),
-          icon: <Truck className="h-4 w-4" aria-hidden />,
+          icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/audit-logs",
           label: LL.externalPanel.nav.auditLogs(),
-          icon: <ScrollText className="h-4 w-4" aria-hidden />,
+          icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
       ];
     },
@@ -90,7 +91,7 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
       <PanelShell
         brandTitle={LL.externalPanel.shell.brand()}
         brandSubtitle={LL.externalPanel.shell.brandSubtitle()}
-        brandIcon={<Shield className="h-4 w-4 text-primary" aria-hidden />}
+        brandIcon={<Shield strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
         background={<ExternalPanelBackground variant="shell" />}

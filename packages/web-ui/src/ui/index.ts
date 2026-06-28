@@ -13,6 +13,13 @@ export { LanguageToggle } from './LanguageToggle'
 export { LocaleControls } from './LocaleControls'
 export { PanelShell } from './PanelShell'
 export type { PanelNavItem } from './PanelShell'
+export {
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+  iconMdClassName,
+  iconLgClassName,
+  iconXlClassName,
+} from './iconClassName'
 export { ConfirmModal } from './ConfirmModal'
 export { Modal, ModalActions } from './Modal'
 export { useTheme } from './useTheme'

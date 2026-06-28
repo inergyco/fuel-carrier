@@ -3,7 +3,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
-import { Button, FormInput, LocaleControls } from '@fuel-carrier/web-ui/ui'
+import { Button, FormInput, ICON_STROKE_WIDTH, LocaleControls, iconXlClassName } from '@fuel-carrier/web-ui/ui'
 import { Zap } from '@fuel-carrier/web-ui/icons'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/api/auth'
@@ -94,8 +94,8 @@ function LoginPage() {
       <div className="relative z-10 w-full max-w-sm">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-base-content/10 bg-base-200/60 backdrop-blur-sm">
-            <Zap className="h-6 w-6 text-primary" aria-hidden />
+          <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-base-200/60 text-primary backdrop-blur-sm">
+            <Zap className={iconXlClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           </div>
           <h1 className="text-xl font-semibold tracking-tight">
             {LL.internalPanel.login.title()}

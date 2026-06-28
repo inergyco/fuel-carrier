@@ -1,4 +1,4 @@
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Button, ICON_STROKE_WIDTH, iconSmClassName } from '@fuel-carrier/web-ui/ui'
 import { Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import type { ResourceActionLabels } from './ResourceSection'
@@ -51,7 +51,7 @@ function ResourceOperations<T>({
         onClick={handleEdit}
       >
         <span className={`flex items-center gap-2${stacked ? ' justify-center' : ''}`}>
-          <Pencil className="h-3.5 w-3.5" aria-hidden />
+          <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {actionLabels.edit}
         </span>
       </Button>
@@ -62,7 +62,7 @@ function ResourceOperations<T>({
         onClick={handleDelete}
       >
         <span className={`flex items-center gap-2${stacked ? ' justify-center' : ''}`}>
-          <Trash2 className="h-3.5 w-3.5" aria-hidden />
+          <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
           {actionLabels.delete}
         </span>
       </Button>

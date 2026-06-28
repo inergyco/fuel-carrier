@@ -12,7 +12,7 @@ import {
 import { PASSWORD_MIN_LENGTH } from "@fuel-carrier/shared-validation/password";
 import { zodResolver, Form, useForm } from "@fuel-carrier/web-ui/form";
 import { isApiClientError } from "@fuel-carrier/web-ui/api";
-import { Button, FormInput } from "@fuel-carrier/web-ui/ui";
+import { Button, FormInput, ICON_STROKE_WIDTH } from "@fuel-carrier/web-ui/ui";
 import { Shield } from "@fuel-carrier/web-ui/icons";
 import { useMemo, useState } from "react";
 import { AuthPageShell } from "../components/AuthPageShell";
@@ -90,7 +90,7 @@ function LoginPage() {
 
   return (
     <AuthPageShell
-      icon={<Shield className="h-7 w-7 text-primary" aria-hidden />}
+      icon={<Shield strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
       title={LL.externalPanel.login.title()}
       subtitle={LL.externalPanel.login.subtitle()}
     >

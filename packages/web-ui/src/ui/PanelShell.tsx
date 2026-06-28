@@ -61,7 +61,7 @@ export function PanelShell({
             aria-label={openMenuLabel}
             className="btn btn-ghost btn-sm btn-square h-10 min-h-10 w-10 lg:hidden"
           >
-            <Menu className="h-5 w-5" aria-hidden />
+            <Menu className="size-6" strokeWidth={2.25} aria-hidden />
           </label>
 
           <div className="flex flex-1 items-center justify-end">
@@ -95,7 +95,7 @@ export function PanelShell({
           <div aria-hidden className={shellGridClassName} />
 
           <div className={cn(shellHeaderClassName, 'relative px-5')}>
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/15 text-primary [&_svg]:size-5">
               {brandIcon}
             </div>
             <div className="min-w-0">
@@ -117,14 +117,14 @@ export function PanelShell({
                   activeOptions={{ exact: item.exact ?? false }}
                   className={cn(
                     'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all',
-                    'text-base-content/60 hover:bg-base-content/5 hover:text-base-content',
+                    'text-base-content/75 hover:bg-base-content/5 hover:text-base-content',
                   )}
                   activeProps={{
                     className:
-                      'bg-primary/10 text-primary border border-primary/15 shadow-[0_0_24px_-8px] shadow-primary/30',
+                      'bg-primary/10 text-primary border border-primary/15 shadow-[0_0_24px_-8px] shadow-primary/30 [&_svg]:text-primary',
                   }}
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-base-content/8 bg-base-100/40 transition-colors group-hover:border-base-content/15 [&_svg]:h-4 [&_svg]:w-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-base-content/12 bg-base-100/50 text-base-content/85 transition-colors group-hover:border-base-content/20 group-hover:text-base-content [&_svg]:size-5">
                     {item.icon}
                   </span>
                   <span className="truncate font-medium">{item.label}</span>

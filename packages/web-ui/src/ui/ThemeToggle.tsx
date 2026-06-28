@@ -1,5 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun } from '@fuel-carrier/web-ui/icons'
+import { ICON_STROKE_WIDTH, iconMdClassName } from './iconClassName'
 import { Button } from './Button'
 import { useTheme } from './useTheme'
 
@@ -17,9 +18,9 @@ export function ThemeToggle() {
       }
     >
       {theme === 'dark' ? (
-        <Sun className="h-[18px] w-[18px]" aria-hidden />
+        <Sun className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       ) : (
-        <Moon className="h-[18px] w-[18px]" aria-hidden />
+        <Moon className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       )}
     </Button>
   )
