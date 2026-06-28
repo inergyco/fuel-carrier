@@ -2,9 +2,9 @@ import type { AuditLog } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { auditLogKeys, fetchCompanyAuditLogs } from '../../../lib/api/audit-logs'
+import { AuditLogDetails } from './AuditLogDetails'
 import {
   formatAuditAction,
-  formatAuditDetails,
   formatAuditRole,
   formatAuditTimestamp,
 } from './auditLogFormatters'
@@ -91,8 +91,8 @@ function AuditLogsTable({ logs, locale }: AuditLogsTableProps) {
                 <td className="min-w-36 text-sm font-medium">
                   {formatAuditAction(log.action, LL)}
                 </td>
-                <td className="max-w-xl text-sm whitespace-pre-wrap text-base-content/70">
-                  {formatAuditDetails(log.metadata, LL)}
+                <td className="max-w-xl text-sm text-base-content/70">
+                  <AuditLogDetails metadata={log.metadata} />
                 </td>
               </tr>
             )

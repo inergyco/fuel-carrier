@@ -1,4 +1,4 @@
-import type { AuditLog, AuditLogMetadata } from '@fuel-carrier/shared-types'
+import type { AuditLog } from '@fuel-carrier/shared-types'
 import { AuditAction } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
 
@@ -21,7 +21,7 @@ const ACTION_LABEL_KEYS: Record<string, keyof TranslationFunctions['internalPane
   [AuditAction.AUTH_PASSWORD_CHANGED]: 'authPasswordChanged',
 }
 
-function formatAuditValue(value: unknown): string {
+export function formatAuditValue(value: unknown): string {
   if (value == null || value === '') {
     return '—'
   }
@@ -71,37 +71,6 @@ export function formatAuditFieldLabel(
   }
 
   return field
-}
-
-export function formatAuditDetails(
-  metadata: AuditLogMetadata,
-  LL: TranslationFunctions,
-): string {
-  if (metadata.changes && Object.keys(metadata.changes).length > 0) {
-    return Object.entries(metadata.changes)
-      .map(function formatChange([field, change]) {
-        const label = formatAuditFieldLabel(field, LL)
-        return `${label}: ${formatAuditValue(change.from)} → ${formatAuditValue(change.to)}`
-      })
-      .join('\n')
-  }
-
-  if (metadata.snapshot && Object.keys(metadata.snapshot).length > 0) {
-    return `${LL.internalPanel.companies.detail.auditLogsDeletedSnapshot()}\n${Object.entries(
-      metadata.snapshot,
-    )
-      .map(function formatSnapshotField([field, value]) {
-        const label = formatAuditFieldLabel(field, LL)
-        return `${label}: ${formatAuditValue(value)}`
-      })
-      .join('\n')}`
-  }
-
-  if (metadata.username) {
-    return `${formatAuditFieldLabel('username', LL)}: ${metadata.username}`
-  }
-
-  return LL.internalPanel.companies.detail.auditLogsNoDetails()
 }
 
 export function formatAuditTimestamp(log: AuditLog, locale: string): string {
