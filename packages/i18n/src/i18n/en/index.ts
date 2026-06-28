@@ -29,6 +29,8 @@ const en: BaseTranslation = {
       'Phone number must be at most {max:number} characters',
     companyAddressTooLong: 'Address must be at most {max:number} characters',
     companyNoteTooLong: 'Note must be at most {max:number} characters',
+    companyLogoUrlTooLong: 'Logo URL must be at most {max:number} characters',
+    companyLogoUrlInvalid: 'Logo URL must be a valid URL',
   },
   internalPanel: {
     login: {
@@ -87,11 +89,13 @@ const en: BaseTranslation = {
       phoneNumber: 'Phone number',
       address: 'Address',
       note: 'Note',
+      logoUrl: 'Logo URL',
       namePlaceholder: 'Acme Logistics',
       nationalIdPlaceholder: '12345678901',
       phoneNumberPlaceholder: '+98 21 1234 5678',
       addressPlaceholder: '123 Main St, Tehran',
       notePlaceholder: 'Additional notes about this company',
+      logoUrlPlaceholder: 'https://example.com/logo.svg',
       create: 'Add company',
       creating: 'Adding…',
       createFailed: 'Could not create company. Please try again.',

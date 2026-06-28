@@ -4,6 +4,7 @@ import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
+  COMPANY_LOGO_URL_MAX_LENGTH,
   COMPANY_NAME_MAX_LENGTH,
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
@@ -66,6 +67,10 @@ export function CompanyFormModal({
         noteTooLong: LL.validation.companyNoteTooLong({
           max: COMPANY_NOTE_MAX_LENGTH,
         }),
+        logoUrlTooLong: LL.validation.companyLogoUrlTooLong({
+          max: COMPANY_LOGO_URL_MAX_LENGTH,
+        }),
+        logoUrlInvalid: LL.validation.companyLogoUrlInvalid(),
       })
     },
     [LL],
@@ -119,7 +124,8 @@ export function CompanyFormModal({
             fieldError.field === 'nationalId' ||
             fieldError.field === 'phoneNumber' ||
             fieldError.field === 'address' ||
-            fieldError.field === 'note'
+            fieldError.field === 'note' ||
+            fieldError.field === 'logoUrl'
           ) {
             setError(fieldError.field, { message: fieldError.message })
           }
@@ -221,6 +227,13 @@ export function CompanyFormModal({
           type="text"
           autoComplete="street-address"
           placeholder={LL.internalPanel.companies.addressPlaceholder()}
+        />
+
+        <FormInput
+          name="logoUrl"
+          label={LL.internalPanel.companies.logoUrl()}
+          type="url"
+          placeholder={LL.internalPanel.companies.logoUrlPlaceholder()}
         />
 
         <FormTextarea

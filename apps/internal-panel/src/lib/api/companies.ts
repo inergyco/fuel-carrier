@@ -14,6 +14,7 @@ export type CompanyFormValues = {
   phoneNumber: string;
   address: string;
   note: string;
+  logoUrl: string;
 };
 
 export function companyToFormValues(company?: Company): CompanyFormValues {
@@ -23,6 +24,7 @@ export function companyToFormValues(company?: Company): CompanyFormValues {
     phoneNumber: company?.phoneNumber ?? '',
     address: company?.address ?? '',
     note: company?.note ?? '',
+    logoUrl: company?.logoUrl ?? '',
   };
 }
 

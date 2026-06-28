@@ -18,6 +18,11 @@ export class CompanyDto {
 
   @ApiPropertyOptional({ example: 'Preferred carrier for north region' })
   note!: string | null;
+
+  @ApiPropertyOptional({
+    example: 'https://upload.wikimedia.org/wikipedia/en/e/e8/Shell_logo.svg',
+  })
+  logoUrl!: string | null;
 }
 
 export class CreateCompanyRequestDto {
@@ -35,6 +40,11 @@ export class CreateCompanyRequestDto {
 
   @ApiPropertyOptional({ example: 'Preferred carrier for north region' })
   note?: string;
+
+  @ApiPropertyOptional({
+    example: 'https://upload.wikimedia.org/wikipedia/en/e/e8/Shell_logo.svg',
+  })
+  logoUrl?: string;
 }
 
 export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {}

@@ -8,11 +8,12 @@ import {
   PanelShell,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
-import { Home, Shield, Users, Car, Truck, ScrollText } from "@fuel-carrier/web-ui/icons";
+import { Home, Users, Car, Truck, ScrollText } from "@fuel-carrier/web-ui/icons";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
 import { redirectToLoginPage } from "../lib/redirect";
+import { CompanyBrandLogo } from "./CompanyBrandLogo";
 import { ExternalPanelBackground } from "./ExternalPanelBackground";
 import { InergyFooter } from "./InergyFooter";
 
@@ -92,7 +93,7 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
       <PanelShell
         brandTitle={LL.externalPanel.shell.brand()}
         brandSubtitle={LL.externalPanel.shell.brandSubtitle()}
-        brandIcon={<Shield strokeWidth={ICON_STROKE_WIDTH} aria-hidden />}
+        brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
         background={<ExternalPanelBackground variant="shell" />}

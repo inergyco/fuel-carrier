@@ -67,7 +67,7 @@ export class AuthService {
 
     const companyUser = await this.db.query.companyUsers.findFirst({
       where: eq(companyUsers.username, username),
-      with: { user: true },
+      with: { user: true, company: true },
     });
 
     if (!companyUser?.user) {
@@ -79,36 +79,20 @@ export class AuthService {
       return null;
     }
 
-    return {
-      userId: companyUser.userId,
-      role: UserRole.COMPANY_USER,
-      companyId: companyUser.companyId,
-      username: companyUser.username,
-      firstName: companyUser.user.firstName,
-      lastName: companyUser.user.lastName,
-      mustChangePassword: companyUser.mustChangePassword,
-    };
+    return mapCompanyUserSession(companyUser);
   }
 
   async getCompanyUserSession(userId: string): Promise<AuthSession | null> {
     const companyUser = await this.db.query.companyUsers.findFirst({
       where: eq(companyUsers.userId, userId),
-      with: { user: true },
+      with: { user: true, company: true },
     });
 
     if (!companyUser?.user) {
       return null;
     }
 
-    return {
-      userId: companyUser.userId,
-      role: UserRole.COMPANY_USER,
-      companyId: companyUser.companyId,
-      username: companyUser.username,
-      firstName: companyUser.user.firstName,
-      lastName: companyUser.user.lastName,
-      mustChangePassword: companyUser.mustChangePassword,
-    };
+    return mapCompanyUserSession(companyUser);
   }
 
   async changeCompanyUserPassword(
@@ -118,7 +102,7 @@ export class AuthService {
   ): Promise<AuthSession> {
     const companyUser = await this.db.query.companyUsers.findFirst({
       where: eq(companyUsers.userId, session.userId),
-      with: { user: true },
+      with: { user: true, company: true },
     });
 
     if (!companyUser?.user) {
@@ -148,15 +132,10 @@ export class AuthService {
       .set({ passwordHash, mustChangePassword: false })
       .where(eq(companyUsers.userId, session.userId));
 
-    return {
-      userId: companyUser.userId,
-      role: UserRole.COMPANY_USER,
-      companyId: companyUser.companyId,
-      username: companyUser.username,
-      firstName: companyUser.user.firstName,
-      lastName: companyUser.user.lastName,
+    return mapCompanyUserSession({
+      ...companyUser,
       mustChangePassword: false,
-    };
+    });
   }
 
   getInternalAuthCookieName(): string {
@@ -198,4 +177,24 @@ export class AuthService {
   getAuthCookieMaxAgeMs(): number {
     return getAuthCookieMaxAgeMs(this._getJwtExpiresIn());
   }
+}
+
+function mapCompanyUserSession(companyUser: {
+  userId: string;
+  companyId: string;
+  username: string;
+  mustChangePassword: boolean;
+  user: { firstName: string; lastName: string };
+  company?: { logoUrl: string | null } | null;
+}): AuthSession {
+  return {
+    userId: companyUser.userId,
+    role: UserRole.COMPANY_USER,
+    companyId: companyUser.companyId,
+    username: companyUser.username,
+    firstName: companyUser.user.firstName,
+    lastName: companyUser.user.lastName,
+    mustChangePassword: companyUser.mustChangePassword,
+    companyLogoUrl: companyUser.company?.logoUrl ?? null,
+  };
 }

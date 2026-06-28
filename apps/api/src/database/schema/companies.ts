@@ -7,6 +7,7 @@ export const companies = pgTable('companies', {
   phoneNumber: varchar('phone_number', { length: 20 }).notNull(),
   address: varchar('address', { length: 500 }),
   note: text('note'),
+  logoUrl: varchar('logo_url', { length: 2048 }),
   createdAt: timestamp('created_at', { withTimezone: true })
     .defaultNow()
     .notNull(),

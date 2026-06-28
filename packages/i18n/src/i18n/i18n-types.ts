@@ -111,6 +111,15 @@ type RootTranslation = {
 		 * @param {number} max
 		 */
 		companyNoteTooLong: RequiredParams<'max'>
+		/**
+		 * L​o​g​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		companyLogoUrlTooLong: RequiredParams<'max'>
+		/**
+		 * L​o​g​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​U​R​L
+		 */
+		companyLogoUrlInvalid: string
 	}
 	internalPanel: {
 		login: {
@@ -305,6 +314,10 @@ type RootTranslation = {
 			 */
 			note: string
 			/**
+			 * L​o​g​o​ ​U​R​L
+			 */
+			logoUrl: string
+			/**
 			 * A​c​m​e​ ​L​o​g​i​s​t​i​c​s
 			 */
 			namePlaceholder: string
@@ -324,6 +337,10 @@ type RootTranslation = {
 			 * A​d​d​i​t​i​o​n​a​l​ ​n​o​t​e​s​ ​a​b​o​u​t​ ​t​h​i​s​ ​c​o​m​p​a​n​y
 			 */
 			notePlaceholder: string
+			/**
+			 * h​t​t​p​s​:​/​/​e​x​a​m​p​l​e​.​c​o​m​/​l​o​g​o​.​s​v​g
+			 */
+			logoUrlPlaceholder: string
 			/**
 			 * A​d​d​ ​c​o​m​p​a​n​y
 			 */
@@ -1570,6 +1587,14 @@ export type TranslationFunctions = {
 		 * Note must be at most {max} characters
 		 */
 		companyNoteTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Logo URL must be at most {max} characters
+		 */
+		companyLogoUrlTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Logo URL must be a valid URL
+		 */
+		companyLogoUrlInvalid: () => LocalizedString
 	}
 	internalPanel: {
 		login: {
@@ -1760,6 +1785,10 @@ export type TranslationFunctions = {
 			 */
 			note: () => LocalizedString
 			/**
+			 * Logo URL
+			 */
+			logoUrl: () => LocalizedString
+			/**
 			 * Acme Logistics
 			 */
 			namePlaceholder: () => LocalizedString
@@ -1779,6 +1808,10 @@ export type TranslationFunctions = {
 			 * Additional notes about this company
 			 */
 			notePlaceholder: () => LocalizedString
+			/**
+			 * https://example.com/logo.svg
+			 */
+			logoUrlPlaceholder: () => LocalizedString
 			/**
 			 * Add company
 			 */

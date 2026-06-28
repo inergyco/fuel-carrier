@@ -10,4 +10,6 @@ export type AuthSession = {
   lastName: string;
   /** Present for company users; true until they set their own password. */
   mustChangePassword?: boolean;
+  /** Present for company users when their company has a logo. */
+  companyLogoUrl?: string | null;
 };

@@ -34,9 +34,15 @@ async function seedCompanies(): Promise<void> {
       .limit(1);
 
     if (existingCompany) {
-      throw new Error(
-        `Seed companies already exist (national ID "${SEED_MARKER_NATIONAL_ID}" found).`,
+      await db.transaction(async (tx) => {
+        await applyInternalContext(tx);
+        await syncExistingSeedCompanies(tx);
+      });
+
+      console.log(
+        `Seed companies already exist. Synced ${SEED_COMPANIES.length} company profiles (including logos).`,
       );
+      return;
     }
 
     const passwordHash = await hashPassword(env.SEED_COMPANY_PASSWORD);
@@ -73,6 +79,7 @@ async function seedCompany(
       phoneNumber: companySeed.phoneNumber,
       address: companySeed.address,
       note: companySeed.note,
+      logoUrl: companySeed.logoUrl ?? null,
     })
     .returning({ id: companies.id });
 
@@ -126,6 +133,31 @@ async function seedCompany(
   }
 
   console.log(`  ✓ ${companySeed.name}`);
+}
+
+async function syncExistingSeedCompanies(tx: TenantTransaction): Promise<void> {
+  for (const companySeed of SEED_COMPANIES) {
+    const [company] = await tx
+      .update(companies)
+      .set({
+        name: companySeed.name,
+        phoneNumber: companySeed.phoneNumber,
+        address: companySeed.address,
+        note: companySeed.note,
+        logoUrl: companySeed.logoUrl ?? null,
+      })
+      .where(eq(companies.nationalId, companySeed.nationalId))
+      .returning({ id: companies.id });
+
+    if (!company) {
+      console.warn(
+        `  ! Skipped ${companySeed.name} (national ID "${companySeed.nationalId}" not found)`,
+      );
+      continue;
+    }
+
+    console.log(`  ↻ ${companySeed.name}`);
+  }
 }
 
 async function applyInternalContext(tx: TenantTransaction): Promise<void> {

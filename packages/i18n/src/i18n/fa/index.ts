@@ -27,6 +27,8 @@ const fa: Translation = {
     companyPhoneNumberTooLong: 'شماره تلفن باید حداکثر {max} کاراکتر باشد',
     companyAddressTooLong: 'آدرس باید حداکثر {max} کاراکتر باشد',
     companyNoteTooLong: 'یادداشت باید حداکثر {max} کاراکتر باشد',
+    companyLogoUrlTooLong: 'آدرس لوگو باید حداکثر {max} کاراکتر باشد',
+    companyLogoUrlInvalid: 'آدرس لوگو باید یک URL معتبر باشد',
   },
   internalPanel: {
     login: {
@@ -85,11 +87,13 @@ const fa: Translation = {
       phoneNumber: 'شماره تلفن',
       address: 'آدرس',
       note: 'یادداشت',
+      logoUrl: 'آدرس لوگو',
       namePlaceholder: 'شرکت نمونه',
       nationalIdPlaceholder: '12345678901',
       phoneNumberPlaceholder: '۰۲۱-۱۲۳۴۵۶۷۸',
       addressPlaceholder: 'تهران، خیابان اصلی ۱۲۳',
       notePlaceholder: 'یادداشت‌های اضافی درباره این شرکت',
+      logoUrlPlaceholder: 'https://example.com/logo.svg',
       create: 'افزودن شرکت',
       creating: 'در حال افزودن…',
       createFailed: 'ایجاد شرکت انجام نشد. لطفاً دوباره تلاش کنید.',

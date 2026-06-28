@@ -4,14 +4,12 @@ import { ExternalPanelBackground } from './ExternalPanelBackground'
 import { InergyFooter } from './InergyFooter'
 
 interface AuthPageShellProps {
-  icon: ReactNode
   title: string
   subtitle: string
   children: ReactNode
 }
 
 export function AuthPageShell({
-  icon,
   title,
   subtitle,
   children,
@@ -43,15 +41,18 @@ export function AuthPageShell({
 
       <div className="relative z-10 w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="relative mx-auto mb-5 inline-flex">
-            <div
-              aria-hidden
-              className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/30 via-secondary/20 to-accent/30 blur-md"
+          <a
+            href="https://www.inergy.ir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto mb-5 inline-flex rounded-lg transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
+          >
+            <img
+              src="/inergy-logo.png"
+              alt="Inergy"
+              className="h-10 w-auto max-w-[11rem] object-contain sm:h-11"
             />
-            <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/25 bg-base-200/70 backdrop-blur-xl text-primary [&_svg]:size-8">
-              {icon}
-            </div>
-          </div>
+          </a>
           <h1 className="bg-gradient-to-br from-base-content via-base-content to-base-content/60 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
             {title}
           </h1>

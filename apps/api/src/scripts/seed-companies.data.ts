@@ -26,6 +26,7 @@ export type SeedCompany = {
   phoneNumber: string;
   address: string;
   note: string;
+  logoUrl?: string;
   users: SeedCompanyUser[];
   drivers: SeedDriver[];
   cars: SeedCar[];
@@ -41,6 +42,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
     phoneNumber: '02188765432',
     address: 'تهران، خیابان ولیعصر، بالاتر از میدان ونک، پلاک ۱۲۳۴',
     note: 'حمل سوخت بین‌شهری و توزیع در استان تهران',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/en/e/e8/Shell_logo.svg',
     users: [
       {
         username: 'pars_admin',
@@ -101,6 +103,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
     phoneNumber: '03136547890',
     address: 'اصفهان، شهرک صنعتی مورچه‌خورت، بلوار نفت، پلاک ۵۶',
     note: 'پخش سوخت در استان اصفهان و چهارمحال و بختیاری',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/en/8/8e/Bp-logo.svg',
     users: [
       {
         username: 'kimia_admin',
@@ -160,6 +163,8 @@ export const SEED_COMPANIES: SeedCompany[] = [
     phoneNumber: '07132345678',
     address: 'شیراز، بلوار امام خمینی، کوچه ۱۵، ساختمان زاگرس، طبقه ۳',
     note: 'حمل سوخت در استان‌های فارس، بوشهر و هرمزگان',
+    logoUrl:
+      'https://upload.wikimedia.org/wikipedia/en/3/3b/TotalEnergies_logo.svg',
     users: [
       {
         username: 'zagros_admin',

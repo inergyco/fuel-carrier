@@ -5,6 +5,7 @@ export type Company = {
   phoneNumber: string;
   address: string | null;
   note: string | null;
+  logoUrl: string | null;
 };
 
 export type CompanyInput = Omit<Company, "id">;

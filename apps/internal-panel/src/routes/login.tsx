@@ -3,8 +3,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
-import { Button, FormInput, ICON_STROKE_WIDTH, LocaleControls, iconXlClassName } from '@fuel-carrier/web-ui/ui'
-import { Zap } from '@fuel-carrier/web-ui/icons'
+import { Button, FormInput, LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/api/auth'
 import { sanitizeRedirectPath } from '../lib/redirect'
@@ -94,9 +93,18 @@ function LoginPage() {
       <div className="relative z-10 w-full max-w-sm">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-base-200/60 text-primary backdrop-blur-sm">
-            <Zap className={iconXlClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          </div>
+          <a
+            href="https://www.inergy.ir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto mb-5 inline-flex rounded-lg transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
+          >
+            <img
+              src="/inergy-logo.png"
+              alt="Inergy"
+              className="h-10 w-auto max-w-[11rem] object-contain sm:h-11"
+            />
+          </a>
           <h1 className="text-xl font-semibold tracking-tight">
             {LL.internalPanel.login.title()}
           </h1>

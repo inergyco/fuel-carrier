@@ -185,4 +185,5 @@ const COMPANY_AUDIT_FIELDS = [
   'phoneNumber',
   'address',
   'note',
+  'logoUrl',
 ] as const satisfies readonly (keyof Company)[];
