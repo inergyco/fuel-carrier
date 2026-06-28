@@ -13,6 +13,8 @@ import type { TenantTransaction } from './tenant-db.types';
  *   - app.is_internal
  *   - app.current_company_id
  *
+ * The API must connect with a role that does not have BYPASSRLS so policies apply.
+ *
  * Never call db.select/insert/update/delete directly from services —
  * always route queries through tenantDb.run().
  */

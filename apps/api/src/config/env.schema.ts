@@ -9,6 +9,13 @@ export const envSchema = z.object({
       (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
       'DATABASE_URL must be a PostgreSQL connection string',
     ),
+  MIGRATION_DATABASE_URL: z
+    .string()
+    .refine(
+      (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
+      'MIGRATION_DATABASE_URL must be a PostgreSQL connection string',
+    )
+    .optional(),
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
   JWT_EXPIRES_IN: z.string().default('7d'),
   INTERNAL_AUTH_COOKIE_NAME: z.string().min(1).default('internal_auth_token'),

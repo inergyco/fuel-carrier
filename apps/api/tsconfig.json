@@ -27,5 +27,5 @@
       "@fuel-carrier/shared-validation/*": ["../../packages/shared-validation/src/*"]
     }
   },
-  "include": ["src", "test", "../../packages/shared-validation/src"]
+  "include": ["src", "test", "drizzle.config.ts", "../../packages/shared-validation/src"]
 }

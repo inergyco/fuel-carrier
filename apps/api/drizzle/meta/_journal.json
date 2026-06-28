@@ -43,6 +43,13 @@
       "when": 1782658920873,
       "tag": "0005_audit_logs",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782665000000,
+      "tag": "0006_app_database_role",
+      "breakpoints": true
     }
   ]
 }
