@@ -889,6 +889,10 @@ type RootTranslation = {
 			 */
 			cars: string
 			/**
+			 * A​u​d​i​t​ ​l​o​g
+			 */
+			auditLogs: string
+			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
 			openMenu: string
@@ -1293,6 +1297,176 @@ type RootTranslation = {
 			 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
 			duplicateLicensePlate: string
+		}
+		auditLogs: {
+			/**
+			 * A​u​d​i​t​ ​l​o​g
+			 */
+			title: string
+			/**
+			 * C​r​i​t​i​c​a​l​ ​a​c​t​i​o​n​s​ ​p​e​r​f​o​r​m​e​d​ ​f​o​r​ ​y​o​u​r​ ​c​o​m​p​a​n​y
+			 */
+			subtitle: string
+			/**
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​y​e​t​.
+			 */
+			empty: string
+			/**
+			 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
+			 */
+			loading: string
+			/**
+			 * W​h​e​n
+			 */
+			when: string
+			/**
+			 * A​c​t​o​r
+			 */
+			actor: string
+			/**
+			 * A​c​t​i​o​n
+			 */
+			action: string
+			/**
+			 * D​e​t​a​i​l​s
+			 */
+			details: string
+			/**
+			 * I​n​t​e​r​n​a​l​ ​a​d​m​i​n
+			 */
+			roleInternalAdmin: string
+			/**
+			 * C​o​m​p​a​n​y​ ​u​s​e​r
+			 */
+			roleCompanyUser: string
+			/**
+			 * U​n​k​n​o​w​n
+			 */
+			roleUnknown: string
+			actions: {
+				/**
+				 * C​o​m​p​a​n​y​ ​c​r​e​a​t​e​d
+				 */
+				companyCreated: string
+				/**
+				 * C​o​m​p​a​n​y​ ​u​p​d​a​t​e​d
+				 */
+				companyUpdated: string
+				/**
+				 * C​o​m​p​a​n​y​ ​d​e​l​e​t​e​d
+				 */
+				companyDeleted: string
+				/**
+				 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​c​r​e​a​t​e​d
+				 */
+				companyUserCreated: string
+				/**
+				 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​u​p​d​a​t​e​d
+				 */
+				companyUserUpdated: string
+				/**
+				 * C​o​m​p​a​n​y​ ​u​s​e​r​ ​d​e​l​e​t​e​d
+				 */
+				companyUserDeleted: string
+				/**
+				 * D​r​i​v​e​r​ ​c​r​e​a​t​e​d
+				 */
+				driverCreated: string
+				/**
+				 * D​r​i​v​e​r​ ​u​p​d​a​t​e​d
+				 */
+				driverUpdated: string
+				/**
+				 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d
+				 */
+				driverDeleted: string
+				/**
+				 * V​e​h​i​c​l​e​ ​c​r​e​a​t​e​d
+				 */
+				carCreated: string
+				/**
+				 * V​e​h​i​c​l​e​ ​u​p​d​a​t​e​d
+				 */
+				carUpdated: string
+				/**
+				 * V​e​h​i​c​l​e​ ​d​e​l​e​t​e​d
+				 */
+				carDeleted: string
+				/**
+				 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
+				 */
+				authLoginSucceeded: string
+				/**
+				 * L​o​g​i​n​ ​f​a​i​l​e​d
+				 */
+				authLoginFailed: string
+				/**
+				 * L​o​g​o​u​t
+				 */
+				authLogout: string
+				/**
+				 * P​a​s​s​w​o​r​d​ ​c​h​a​n​g​e​d
+				 */
+				authPasswordChanged: string
+			}
+			fields: {
+				/**
+				 * N​a​m​e
+				 */
+				name: string
+				/**
+				 * N​a​t​i​o​n​a​l​ ​I​D
+				 */
+				nationalId: string
+				/**
+				 * P​h​o​n​e​ ​n​u​m​b​e​r
+				 */
+				phoneNumber: string
+				/**
+				 * A​d​d​r​e​s​s
+				 */
+				address: string
+				/**
+				 * N​o​t​e
+				 */
+				note: string
+				/**
+				 * F​i​r​s​t​ ​n​a​m​e
+				 */
+				firstName: string
+				/**
+				 * L​a​s​t​ ​n​a​m​e
+				 */
+				lastName: string
+				/**
+				 * U​s​e​r​n​a​m​e
+				 */
+				username: string
+				/**
+				 * E​m​a​i​l
+				 */
+				email: string
+				/**
+				 * P​a​s​s​w​o​r​d
+				 */
+				password: string
+				/**
+				 * L​i​c​e​n​s​e​ ​p​l​a​t​e
+				 */
+				licensePlate: string
+				/**
+				 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
+				 */
+				driverId: string
+			}
+			/**
+			 * —
+			 */
+			noDetails: string
+			/**
+			 * D​e​l​e​t​e​d​ ​r​e​c​o​r​d​ ​s​n​a​p​s​h​o​t​ ​r​e​c​o​r​d​e​d​.
+			 */
+			deletedSnapshot: string
 		}
 	}
 }
@@ -2155,6 +2329,10 @@ export type TranslationFunctions = {
 			 */
 			cars: () => LocalizedString
 			/**
+			 * Audit log
+			 */
+			auditLogs: () => LocalizedString
+			/**
 			 * Open menu
 			 */
 			openMenu: () => LocalizedString
@@ -2556,6 +2734,176 @@ export type TranslationFunctions = {
 			 * A vehicle with this license plate already exists.
 			 */
 			duplicateLicensePlate: () => LocalizedString
+		}
+		auditLogs: {
+			/**
+			 * Audit log
+			 */
+			title: () => LocalizedString
+			/**
+			 * Critical actions performed for your company
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * No audit entries yet.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Loading audit log…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * When
+			 */
+			when: () => LocalizedString
+			/**
+			 * Actor
+			 */
+			actor: () => LocalizedString
+			/**
+			 * Action
+			 */
+			action: () => LocalizedString
+			/**
+			 * Details
+			 */
+			details: () => LocalizedString
+			/**
+			 * Internal admin
+			 */
+			roleInternalAdmin: () => LocalizedString
+			/**
+			 * Company user
+			 */
+			roleCompanyUser: () => LocalizedString
+			/**
+			 * Unknown
+			 */
+			roleUnknown: () => LocalizedString
+			actions: {
+				/**
+				 * Company created
+				 */
+				companyCreated: () => LocalizedString
+				/**
+				 * Company updated
+				 */
+				companyUpdated: () => LocalizedString
+				/**
+				 * Company deleted
+				 */
+				companyDeleted: () => LocalizedString
+				/**
+				 * Company user created
+				 */
+				companyUserCreated: () => LocalizedString
+				/**
+				 * Company user updated
+				 */
+				companyUserUpdated: () => LocalizedString
+				/**
+				 * Company user deleted
+				 */
+				companyUserDeleted: () => LocalizedString
+				/**
+				 * Driver created
+				 */
+				driverCreated: () => LocalizedString
+				/**
+				 * Driver updated
+				 */
+				driverUpdated: () => LocalizedString
+				/**
+				 * Driver deleted
+				 */
+				driverDeleted: () => LocalizedString
+				/**
+				 * Vehicle created
+				 */
+				carCreated: () => LocalizedString
+				/**
+				 * Vehicle updated
+				 */
+				carUpdated: () => LocalizedString
+				/**
+				 * Vehicle deleted
+				 */
+				carDeleted: () => LocalizedString
+				/**
+				 * Login succeeded
+				 */
+				authLoginSucceeded: () => LocalizedString
+				/**
+				 * Login failed
+				 */
+				authLoginFailed: () => LocalizedString
+				/**
+				 * Logout
+				 */
+				authLogout: () => LocalizedString
+				/**
+				 * Password changed
+				 */
+				authPasswordChanged: () => LocalizedString
+			}
+			fields: {
+				/**
+				 * Name
+				 */
+				name: () => LocalizedString
+				/**
+				 * National ID
+				 */
+				nationalId: () => LocalizedString
+				/**
+				 * Phone number
+				 */
+				phoneNumber: () => LocalizedString
+				/**
+				 * Address
+				 */
+				address: () => LocalizedString
+				/**
+				 * Note
+				 */
+				note: () => LocalizedString
+				/**
+				 * First name
+				 */
+				firstName: () => LocalizedString
+				/**
+				 * Last name
+				 */
+				lastName: () => LocalizedString
+				/**
+				 * Username
+				 */
+				username: () => LocalizedString
+				/**
+				 * Email
+				 */
+				email: () => LocalizedString
+				/**
+				 * Password
+				 */
+				password: () => LocalizedString
+				/**
+				 * License plate
+				 */
+				licensePlate: () => LocalizedString
+				/**
+				 * Assigned driver
+				 */
+				driverId: () => LocalizedString
+			}
+			/**
+			 * —
+			 */
+			noDetails: () => LocalizedString
+			/**
+			 * Deleted record snapshot recorded.
+			 */
+			deletedSnapshot: () => LocalizedString
 		}
 	}
 }

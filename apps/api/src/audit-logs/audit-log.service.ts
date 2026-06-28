@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, HttpStatus } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
 import type {
   AuditAction,
@@ -9,6 +9,8 @@ import type {
   AuthSession,
   TenantContext,
 } from '@fuel-carrier/shared-types';
+import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import { createApiException } from '../common/exceptions/api.exception';
 import { auditLogs } from '../database/schema/audit-logs';
 import { TenantDbService } from '../database/tenant-db.service';
 import { actorFromSession } from './audit-log.utils';
@@ -67,6 +69,8 @@ export class AuditLogService {
     context: TenantContext,
     companyId: string,
   ): Promise<AuditLog[]> {
+    this._assertCompanyAccess(context, companyId);
+
     return this.tenantDb.run(context, async (tx) => {
       const rows = await tx
         .select()
@@ -76,6 +80,19 @@ export class AuditLogService {
 
       return rows.map(_mapAuditLog);
     });
+  }
+
+  private _assertCompanyAccess(
+    context: TenantContext,
+    companyId: string,
+  ): void {
+    if (!context.isInternal && context.companyId !== companyId) {
+      throw createApiException(
+        HttpStatus.FORBIDDEN,
+        ApiErrorCode.FORBIDDEN,
+        'Access denied',
+      );
+    }
   }
 
   private _resolveActor(explicitActor?: AuditActor | AuthSession | null): {

@@ -11,6 +11,7 @@
     "./router": "./src/router/index.ts",
     "./ui": "./src/ui/index.ts",
     "./icons": "./src/icons/index.ts",
+    "./audit-logs": "./src/audit-logs/index.ts",
     "./utils": "./src/utils/index.ts"
   },
   "dependencies": {

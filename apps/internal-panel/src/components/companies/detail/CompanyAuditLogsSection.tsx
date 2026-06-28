@@ -1,13 +1,8 @@
-import type { AuditLog } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQuery } from '@fuel-carrier/web-ui/query'
+import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import { auditLogKeys, fetchCompanyAuditLogs } from '../../../lib/api/audit-logs'
-import { AuditLogDetails } from './AuditLogDetails'
-import {
-  formatAuditAction,
-  formatAuditRole,
-  formatAuditTimestamp,
-} from './auditLogFormatters'
+import { getInternalAuditLogLabels } from './auditLogLabels'
 
 interface CompanyAuditLogsSectionProps {
   companyId: string
@@ -17,6 +12,7 @@ export function CompanyAuditLogsSection({
   companyId,
 }: CompanyAuditLogsSectionProps) {
   const { LL, locale } = useI18nContext()
+  const labels = getInternalAuditLogLabels(LL)
   const auditLogsQuery = useQuery({
     queryKey: auditLogKeys.company(companyId),
     queryFn: function loadAuditLogs() {
@@ -44,61 +40,12 @@ export function CompanyAuditLogsSection({
           {LL.internalPanel.companies.detail.auditLogsEmpty()}
         </p>
       ) : (
-        <AuditLogsTable logs={auditLogsQuery.data ?? []} locale={locale} />
+        <AuditLogsTable
+          logs={auditLogsQuery.data ?? []}
+          locale={locale}
+          labels={labels}
+        />
       )}
     </section>
-  )
-}
-
-interface AuditLogsTableProps {
-  logs: AuditLog[]
-  locale: string
-}
-
-function AuditLogsTable({ logs, locale }: AuditLogsTableProps) {
-  const { LL } = useI18nContext()
-
-  return (
-    <div className="overflow-x-auto rounded-xl border border-base-content/8">
-      <table className="table table-sm w-full">
-        <thead>
-          <tr className="border-b border-base-content/8 text-xs tracking-widest text-base-content/40 uppercase">
-            <th>{LL.internalPanel.companies.detail.auditLogsWhen()}</th>
-            <th>{LL.internalPanel.companies.detail.auditLogsActor()}</th>
-            <th>{LL.internalPanel.companies.detail.auditLogsAction()}</th>
-            <th>{LL.internalPanel.companies.detail.auditLogsDetails()}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {logs.map(function renderAuditLog(log) {
-            return (
-              <tr
-                key={log.id}
-                className="border-b border-base-content/8 align-top last:border-b-0 hover:bg-base-100/30"
-              >
-                <td className="whitespace-nowrap text-sm text-base-content/70">
-                  {formatAuditTimestamp(log, locale)}
-                </td>
-                <td className="min-w-40 text-sm">
-                  <p className="font-medium">{log.actorDisplayName}</p>
-                  <p className="font-mono text-xs text-base-content/50">
-                    @{log.actorUsername}
-                  </p>
-                  <p className="text-xs text-base-content/40">
-                    {formatAuditRole(log.actorRole, LL)}
-                  </p>
-                </td>
-                <td className="min-w-36 text-sm font-medium">
-                  {formatAuditAction(log.action, LL)}
-                </td>
-                <td className="max-w-xl text-sm text-base-content/70">
-                  <AuditLogDetails metadata={log.metadata} />
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
   )
 }

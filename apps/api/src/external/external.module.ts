@@ -5,18 +5,27 @@ import { ExternalCarsController } from '../cars/external-cars.controller';
 import { CarsModule } from '../cars/cars.module';
 import { ExternalCompanyUsersController } from '../company-users/external-company-users.controller';
 import { CompanyUsersModule } from '../company-users/company-users.module';
-import { ExternalDriversController } from '../drivers/external-drivers.controller';
+import { ExternalAuditLogsController } from '../audit-logs/external-audit-logs.controller';
+import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 import { DriversModule } from '../drivers/drivers.module';
 import { ExternalHealthController } from './external-health.controller';
+import { ExternalDriversController } from '../drivers/external-drivers.controller';
 
 @Module({
-  imports: [AuthModule, CarsModule, CompanyUsersModule, DriversModule],
+  imports: [
+    AuthModule,
+    AuditLogsModule,
+    CarsModule,
+    CompanyUsersModule,
+    DriversModule,
+  ],
   controllers: [
     ExternalHealthController,
     ExternalAuthController,
     ExternalCompanyUsersController,
     ExternalCarsController,
     ExternalDriversController,
+    ExternalAuditLogsController,
   ],
 })
 export class ExternalModule {}

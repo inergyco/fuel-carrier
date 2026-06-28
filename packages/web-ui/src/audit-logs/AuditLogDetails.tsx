@@ -1,18 +1,17 @@
 import type { AuditLogMetadata } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { ArrowRight } from '@fuel-carrier/web-ui/icons'
+import { ArrowRight } from '../icons'
 import {
   formatAuditFieldLabel,
   formatAuditValue,
-} from './auditLogFormatters'
+  type AuditLogLabels,
+} from './audit-log-formatters'
 
 interface AuditLogDetailsProps {
   metadata: AuditLogMetadata
+  labels: AuditLogLabels
 }
 
-export function AuditLogDetails({ metadata }: AuditLogDetailsProps) {
-  const { LL } = useI18nContext()
-
+export function AuditLogDetails({ metadata, labels }: AuditLogDetailsProps) {
   if (metadata.changes && Object.keys(metadata.changes).length > 0) {
     return (
       <div className="space-y-2">
@@ -23,7 +22,7 @@ export function AuditLogDetails({ metadata }: AuditLogDetailsProps) {
           return (
             <AuditLogChangeLine
               key={field}
-              label={formatAuditFieldLabel(field, LL)}
+              label={formatAuditFieldLabel(field, labels)}
               from={formatAuditValue(change.from)}
               to={formatAuditValue(change.to)}
             />
@@ -36,7 +35,7 @@ export function AuditLogDetails({ metadata }: AuditLogDetailsProps) {
   if (metadata.snapshot && Object.keys(metadata.snapshot).length > 0) {
     return (
       <div className="space-y-1">
-        <p>{LL.internalPanel.companies.detail.auditLogsDeletedSnapshot()}</p>
+        <p>{labels.deletedSnapshot()}</p>
         {Object.entries(metadata.snapshot).map(function renderSnapshot([
           field,
           value,
@@ -44,7 +43,7 @@ export function AuditLogDetails({ metadata }: AuditLogDetailsProps) {
           return (
             <AuditLogValueLine
               key={field}
-              label={formatAuditFieldLabel(field, LL)}
+              label={formatAuditFieldLabel(field, labels)}
               value={formatAuditValue(value)}
             />
           )
@@ -56,14 +55,14 @@ export function AuditLogDetails({ metadata }: AuditLogDetailsProps) {
   if (metadata.username) {
     return (
       <AuditLogValueLine
-        label={formatAuditFieldLabel('username', LL)}
+        label={formatAuditFieldLabel('username', labels)}
         value={metadata.username}
         valueDir="ltr"
       />
     )
   }
 
-  return <span>{LL.internalPanel.companies.detail.auditLogsNoDetails()}</span>
+  return <span>{labels.noDetails()}</span>
 }
 
 interface AuditLogChangeLineProps {

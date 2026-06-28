@@ -1,8 +1,21 @@
 import type { AuditLog } from '@fuel-carrier/shared-types'
 import { AuditAction } from '@fuel-carrier/shared-types'
-import type { TranslationFunctions } from '@fuel-carrier/i18n'
 
-const ACTION_LABEL_KEYS: Record<string, keyof TranslationFunctions['internalPanel']['companies']['detail']['auditLogsActions']> = {
+export type AuditLogLabels = {
+  actions: Record<string, () => string>
+  fields: Record<string, () => string>
+  roleInternalAdmin: () => string
+  roleCompanyUser: () => string
+  roleUnknown: () => string
+  deletedSnapshot: () => string
+  noDetails: () => string
+  when: () => string
+  actor: () => string
+  action: () => string
+  details: () => string
+}
+
+const ACTION_LABEL_KEYS: Record<string, string> = {
   [AuditAction.COMPANY_CREATED]: 'companyCreated',
   [AuditAction.COMPANY_UPDATED]: 'companyUpdated',
   [AuditAction.COMPANY_DELETED]: 'companyDeleted',
@@ -33,28 +46,25 @@ export function formatAuditValue(value: unknown): string {
   return JSON.stringify(value)
 }
 
-export function formatAuditRole(
-  role: string,
-  LL: TranslationFunctions,
-): string {
+export function formatAuditRole(role: string, labels: AuditLogLabels): string {
   if (role === 'internal_admin') {
-    return LL.internalPanel.companies.detail.auditLogsRoleInternalAdmin()
+    return labels.roleInternalAdmin()
   }
 
   if (role === 'company_user') {
-    return LL.internalPanel.companies.detail.auditLogsRoleCompanyUser()
+    return labels.roleCompanyUser()
   }
 
-  return LL.internalPanel.companies.detail.auditLogsRoleUnknown()
+  return labels.roleUnknown()
 }
 
 export function formatAuditAction(
   action: string,
-  LL: TranslationFunctions,
+  labels: AuditLogLabels,
 ): string {
   const key = ACTION_LABEL_KEYS[action]
-  if (key) {
-    return LL.internalPanel.companies.detail.auditLogsActions[key]()
+  if (key && key in labels.actions) {
+    return labels.actions[key]()
   }
 
   return action
@@ -62,18 +72,17 @@ export function formatAuditAction(
 
 export function formatAuditFieldLabel(
   field: string,
-  LL: TranslationFunctions,
+  labels: AuditLogLabels,
 ): string {
-  const fields = LL.internalPanel.companies.detail.auditLogsFields
-
-  if (field in fields) {
-    return fields[field as keyof typeof fields]()
+  if (field in labels.fields) {
+    return labels.fields[field]()
   }
 
   return field
 }
 
 export function formatAuditTimestamp(log: AuditLog, locale: string): string {
-  const date = log.createdAt instanceof Date ? log.createdAt : new Date(log.createdAt)
+  const date =
+    log.createdAt instanceof Date ? log.createdAt : new Date(log.createdAt)
   return date.toLocaleString(locale)
 }
