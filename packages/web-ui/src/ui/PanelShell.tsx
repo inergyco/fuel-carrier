@@ -95,7 +95,7 @@ export function PanelShell({
 
       <div className="drawer-side z-30">
         <label htmlFor={drawerId} aria-label={openMenuLabel} className="drawer-overlay" />
-        <aside className="flex h-full w-72 flex-col border-base-content/8 bg-base-200/30 backdrop-blur-xl ltr:border-r rtl:border-l">
+        <aside className="flex h-full w-72 flex-col border-base-content/12 bg-base-200 ltr:border-r rtl:border-l">
           <div aria-hidden className={shellGridClassName} />
 
           <div className={cn(shellHeaderClassName, 'relative px-5')}>
@@ -128,7 +128,7 @@ export function PanelShell({
                       'bg-primary/10 text-primary border border-primary/15 shadow-[0_0_24px_-8px] shadow-primary/30 [&_svg]:text-primary',
                   }}
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-base-content/12 bg-base-100/50 text-base-content/85 transition-colors group-hover:border-base-content/20 group-hover:text-base-content [&_svg]:size-5">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-base-content/12 bg-base-100 text-base-content/85 transition-colors group-hover:border-base-content/20 group-hover:text-base-content [&_svg]:size-5">
                     {item.icon}
                   </span>
                   <span className="truncate font-medium">{item.label}</span>
@@ -138,7 +138,7 @@ export function PanelShell({
           </nav>
 
           {footer ? (
-            <div className="relative border-t border-base-content/8 p-3">{footer}</div>
+            <div className="relative border-t border-base-content/12 bg-base-200 p-3">{footer}</div>
           ) : null}
         </aside>
       </div>

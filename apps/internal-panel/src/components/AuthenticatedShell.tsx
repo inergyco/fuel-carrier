@@ -82,7 +82,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         openMenuLabel={LL.internalPanel.nav.openMenu()}
         navItems={navItems}
         footer={
-          <div className="rounded-xl border border-base-content/8 bg-base-100/40 p-3 backdrop-blur-sm">
+          <div className="rounded-xl border border-base-content/12 bg-base-100 p-3">
             <div className="mb-3 flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-xs font-semibold text-primary">
                 {initials}

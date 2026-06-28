@@ -104,7 +104,7 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
         }
         footer={
           <div className="space-y-3">
-            <div className="rounded-xl border border-primary/15 bg-base-100/40 p-3 backdrop-blur-sm">
+            <div className="rounded-xl border border-base-content/12 bg-base-100 p-3">
               <div className="mb-3 flex items-center gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-gradient-to-br from-primary/15 to-secondary/10 text-xs font-semibold text-primary">
                   {initials}
