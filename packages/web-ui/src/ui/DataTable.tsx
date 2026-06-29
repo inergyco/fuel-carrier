@@ -106,21 +106,21 @@ export function DataTableCell({
 
 export function dataTableEditActionClassName(...inputs: ClassValue[]) {
   return cn(
-    'h-9 min-h-9 border border-primary/25 bg-primary/10 px-3 text-primary hover:border-primary/35 hover:bg-primary/15',
+    'inline-flex size-9 min-h-9 min-w-9 shrink-0 items-center justify-center border border-primary/25 bg-primary/10 p-0 text-primary hover:border-primary/35 hover:bg-primary/15',
     ...inputs,
   )
 }
 
 export function dataTableDeleteActionClassName(...inputs: ClassValue[]) {
   return cn(
-    'h-9 min-h-9 border border-error/30 bg-error/10 px-3 text-error hover:border-error/40 hover:bg-error/15',
+    'inline-flex size-9 min-h-9 min-w-9 shrink-0 items-center justify-center border border-error/30 bg-error/10 p-0 text-error hover:border-error/40 hover:bg-error/15',
     ...inputs,
   )
 }
 
 export function dataTableViewActionClassName(...inputs: ClassValue[]) {
   return cn(
-    'btn btn-ghost btn-sm inline-flex h-9 min-h-9 items-center border border-base-content/12 bg-base-100/45 px-3 text-xs normal-case tracking-normal transition-all hover:border-base-content/20 hover:bg-base-100/65',
+    'btn btn-ghost btn-sm inline-flex size-9 min-h-9 min-w-9 shrink-0 items-center justify-center border border-base-content/12 bg-base-100/45 p-0 normal-case tracking-normal transition-all hover:border-base-content/20 hover:bg-base-100/65',
     ...inputs,
   )
 }

@@ -55,28 +55,29 @@ function ResourceOperations<T>({
   }
 
   return (
-    <div className={cn(stacked ? 'flex flex-col gap-2' : 'flex flex-wrap items-center gap-2')}>
+    <div
+      className={cn(
+        'flex flex-wrap items-center gap-2',
+        stacked && 'justify-center',
+      )}
+    >
       <Button
         type="button"
         variant="ghost"
-        className={dataTableEditActionClassName(stacked && 'w-full')}
+        className={dataTableEditActionClassName()}
         onClick={handleEdit}
+        aria-label={actionLabels.edit}
       >
-        <span className={cn('flex items-center gap-2', stacked && 'justify-center')}>
-          <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          {actionLabels.edit}
-        </span>
+        <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </Button>
       <Button
         type="button"
         variant="ghost"
-        className={dataTableDeleteActionClassName(stacked && 'w-full')}
+        className={dataTableDeleteActionClassName()}
         onClick={handleDelete}
+        aria-label={actionLabels.delete}
       >
-        <span className={cn('flex items-center gap-2', stacked && 'justify-center')}>
-          <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          {actionLabels.delete}
-        </span>
+        <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </Button>
     </div>
   )

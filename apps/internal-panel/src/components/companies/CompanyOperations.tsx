@@ -39,42 +39,35 @@ export function CompanyOperations({
   return (
     <div
       className={cn(
-        isStacked ? 'flex flex-col gap-2' : 'flex flex-wrap items-center gap-2',
+        'flex flex-wrap items-center gap-2',
+        isStacked && 'justify-center',
       )}
     >
       <Link
         to="/companies/$companyId"
         params={{ companyId: company.id }}
-        className={dataTableViewActionClassName(
-          isStacked && 'flex w-full justify-center',
-        )}
+        className={dataTableViewActionClassName()}
+        aria-label={LL.internalPanel.companies.view()}
       >
-        <span className={cn('flex items-center gap-2', isStacked && 'justify-center')}>
-          <Eye className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          {LL.internalPanel.companies.view()}
-        </span>
+        <Eye className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </Link>
       <Button
         type="button"
         variant="ghost"
-        className={dataTableEditActionClassName(isStacked && 'w-full')}
+        className={dataTableEditActionClassName()}
         onClick={handleEdit}
+        aria-label={LL.internalPanel.companies.edit()}
       >
-        <span className={cn('flex items-center gap-2', isStacked && 'justify-center')}>
-          <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          {LL.internalPanel.companies.edit()}
-        </span>
+        <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </Button>
       <Button
         type="button"
         variant="ghost"
-        className={dataTableDeleteActionClassName(isStacked && 'w-full')}
+        className={dataTableDeleteActionClassName()}
         onClick={handleDelete}
+        aria-label={LL.internalPanel.companies.delete()}
       >
-        <span className={cn('flex items-center gap-2', isStacked && 'justify-center')}>
-          <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          {LL.internalPanel.companies.delete()}
-        </span>
+        <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
       </Button>
     </div>
   )
