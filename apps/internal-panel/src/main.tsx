@@ -6,6 +6,7 @@ import {
   ThemeProvider,
 } from '@fuel-carrier/web-ui/providers'
 import './index.css'
+import './routeTree.gen'
 import { router } from './router'
 
 const storageKeys = getPanelStorageKeys('internal')
