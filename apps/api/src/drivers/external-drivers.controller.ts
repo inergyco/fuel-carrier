@@ -26,6 +26,7 @@ import {
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
+import { CompanyUserAdminGuard } from '../auth/company-user-admin.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
@@ -73,6 +74,7 @@ export class ExternalDriversController {
   }
 
   @Post()
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({ summary: 'Create a driver for the authenticated company' })
   @ApiBody({ schema: { type: 'object' } })
   @ApiEnvelopeOkResponse(Object)
@@ -90,6 +92,7 @@ export class ExternalDriversController {
   }
 
   @Patch(':id')
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Update a driver belonging to the authenticated company',
   })
@@ -109,6 +112,7 @@ export class ExternalDriversController {
   }
 
   @Delete(':id')
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Delete a driver belonging to the authenticated company',
   })

@@ -1,6 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, desc, eq, ne } from 'drizzle-orm';
-import type { CompanyUser, TenantContext } from '@fuel-carrier/shared-types';
+import { and, desc, eq, ne, sql } from 'drizzle-orm';
+import type {
+  CompanyUser,
+  CompanyUserLevel,
+  TenantContext,
+} from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditAction,
@@ -14,6 +18,7 @@ import {
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
+import { resolveCompanyUserLevel } from '../common/company-user-level';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
@@ -87,6 +92,7 @@ export class CompanyUsersService {
           nationalId: dto.nationalId ?? null,
           email: dto.email ?? null,
           passwordHash,
+          level: dto.level,
         })
         .returning();
 
@@ -146,6 +152,19 @@ export class CompanyUsersService {
         await this._assertNationalIdAvailable(tx, dto.nationalId, id);
       }
 
+      const existingLevel = resolveCompanyUserLevel(existing.level, 'admin');
+      const nextLevel =
+        dto.level !== undefined
+          ? resolveCompanyUserLevel(dto.level, existingLevel)
+          : existingLevel;
+      await this._assertNotRemovingLastAdmin(
+        tx,
+        existing.companyId,
+        existing.id,
+        existingLevel,
+        nextLevel,
+      );
+
       if (dto.firstName !== undefined || dto.lastName !== undefined) {
         await tx
           .update(users)
@@ -170,6 +189,7 @@ export class CompanyUsersService {
             ? { nationalId: dto.nationalId }
             : {}),
           ...(dto.email !== undefined ? { email: dto.email } : {}),
+          ...(dto.level !== undefined ? { level: dto.level } : {}),
           ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
         })
         .where(eq(companyUsers.id, id));
@@ -215,6 +235,14 @@ export class CompanyUsersService {
           'Company user not found',
         );
       }
+
+      await this._assertNotRemovingLastAdmin(
+        tx,
+        existing.companyId,
+        existing.id,
+        resolveCompanyUserLevel(existing.level, 'admin'),
+        null,
+      );
 
       await tx.delete(users).where(eq(users.id, existing.userId));
 
@@ -327,6 +355,39 @@ export class CompanyUsersService {
       );
     }
   }
+
+  private async _assertNotRemovingLastAdmin(
+    tx: TenantTransaction,
+    companyId: string,
+    _targetId: string,
+    currentLevel: CompanyUserLevel,
+    nextLevel: CompanyUserLevel | null,
+  ): Promise<void> {
+    const isCurrentlyAdmin = currentLevel === 'admin';
+    const willRemainAdmin = nextLevel === 'admin';
+
+    if (!isCurrentlyAdmin || willRemainAdmin) {
+      return;
+    }
+
+    const [{ count }] = await tx
+      .select({ count: sql<number>`count(*)::int` })
+      .from(companyUsers)
+      .where(
+        and(
+          eq(companyUsers.companyId, companyId),
+          eq(companyUsers.level, 'admin'),
+        ),
+      );
+
+    if (count <= 1) {
+      throw createApiException(
+        HttpStatus.FORBIDDEN,
+        ApiErrorCode.FORBIDDEN,
+        'Cannot remove the last company admin',
+      );
+    }
+  }
 }
 
 async function _findCompanyUsersByCompanyId(
@@ -386,6 +447,7 @@ function _mapCompanyUser(row: CompanyUserWithUser): CompanyUser {
     lastName: row.user.lastName,
     nationalId: row.nationalId,
     email: row.email,
+    level: row.level,
   };
 }
 
@@ -395,6 +457,7 @@ type CreateCompanyUserPayload = {
   lastName: string;
   username: string;
   password: string;
+  level: CompanyUserLevel;
   nationalId?: string | null;
   email?: string | null;
 };
@@ -415,6 +478,7 @@ const COMPANY_USER_AUDIT_FIELDS = [
   'username',
   'nationalId',
   'email',
+  'level',
   'password',
 ] as const;
 
@@ -428,6 +492,7 @@ function _companyUserAuditRecord(
     username: user.username,
     nationalId: user.nationalId,
     email: user.email,
+    level: user.level,
     password: passwordChanged ? 'changed' : null,
   };
 }

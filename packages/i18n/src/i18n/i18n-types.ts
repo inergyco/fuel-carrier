@@ -66,6 +66,20 @@ type RootTranslation = {
 			 */
 			perPage: string
 		}
+		companyUserLevel: {
+			/**
+			 * A​c​c​e​s​s​ ​l​e​v​e​l
+			 */
+			label: string
+			/**
+			 * A​d​m​i​n
+			 */
+			admin: string
+			/**
+			 * V​i​e​w​e​r
+			 */
+			viewer: string
+		}
 		/**
 		 * S​h​o​w​ ​p​a​s​s​w​o​r​d
 		 */
@@ -792,6 +806,10 @@ type RootTranslation = {
 					 * P​a​s​s​w​o​r​d
 					 */
 					password: string
+					/**
+					 * A​c​c​e​s​s​ ​l​e​v​e​l
+					 */
+					level: string
 					/**
 					 * L​i​c​e​n​s​e​ ​p​l​a​t​e
 					 */
@@ -1578,6 +1596,20 @@ export type TranslationFunctions = {
 			 */
 			perPage: () => LocalizedString
 		}
+		companyUserLevel: {
+			/**
+			 * Access level
+			 */
+			label: () => LocalizedString
+			/**
+			 * Admin
+			 */
+			admin: () => LocalizedString
+			/**
+			 * Viewer
+			 */
+			viewer: () => LocalizedString
+		}
 		/**
 		 * Show password
 		 */
@@ -2289,6 +2321,10 @@ export type TranslationFunctions = {
 					 * Password
 					 */
 					password: () => LocalizedString
+					/**
+					 * Access level
+					 */
+					level: () => LocalizedString
 					/**
 					 * License plate
 					 */

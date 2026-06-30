@@ -1,5 +1,5 @@
 import { useI18nContext } from "@fuel-carrier/i18n/react";
-import type { AuthSession } from "@fuel-carrier/shared-types";
+import { isCompanyUserAdmin, type AuthSession } from "@fuel-carrier/shared-types";
 import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   Button,
@@ -87,6 +87,9 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
 
   const initials =
     `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const levelLabel = isCompanyUserAdmin(user)
+      ? LL.common.companyUserLevel.admin()
+      : LL.common.companyUserLevel.viewer();
 
   return (
     <>
@@ -116,6 +119,9 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
                   </p>
                   <p className="truncate font-mono text-[10px] text-base-content/40">
                     @{user.username}
+                  </p>
+                  <p className="truncate text-[10px] text-base-content/45">
+                    {levelLabel}
                   </p>
                 </div>
               </div>

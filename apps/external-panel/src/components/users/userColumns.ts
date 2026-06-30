@@ -1,10 +1,20 @@
 import type { CompanyUser } from '@fuel-carrier/shared-types'
+import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
 import type { ResourceColumn } from './ResourceSection'
 
 interface UserColumnOptions {
   LL: TranslationFunctions
   emptyCell?: string
+}
+
+function formatLevel(
+  level: CompanyUser['level'],
+  LL: TranslationFunctions,
+): string {
+  return level === CompanyUserLevels.ADMIN
+    ? LL.common.companyUserLevel.admin()
+    : LL.common.companyUserLevel.viewer()
 }
 
 export function getUserColumns({
@@ -17,6 +27,13 @@ export function getUserColumns({
       header: LL.externalPanel.users.name(),
       cell: function renderName(user) {
         return `${user.firstName} ${user.lastName}`
+      },
+    },
+    {
+      key: 'level',
+      header: LL.common.companyUserLevel.label(),
+      cell: function renderLevel(user) {
+        return formatLevel(user.level, LL)
       },
     },
     {

@@ -7,6 +7,10 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import {
+  CompanyUserLevels,
+  type CompanyUserLevel,
+} from '@fuel-carrier/shared-types';
 import { companies } from './companies';
 import { users } from './users';
 import { USERNAME_MAX_LENGTH } from '@fuel-carrier/shared-validation/username';
@@ -32,6 +36,10 @@ export const companyUsers = pgTable(
     nationalId: varchar('national_id', { length: 32 }).unique(),
     email: varchar('email', { length: 254 }),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+    level: varchar('level', { length: 16 })
+      .notNull()
+      .default(CompanyUserLevels.ADMIN)
+      .$type<CompanyUserLevel>(),
     mustChangePassword: boolean('must_change_password').notNull().default(true),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
@@ -49,6 +57,10 @@ export const companyUsers = pgTable(
     check(
       'company_users_username_format',
       sql`${table.username} ~ '^[a-zA-Z0-9_-]+$'`,
+    ),
+    check(
+      'company_users_level_check',
+      sql`${table.level} IN ('admin', 'viewer')`,
     ),
   ],
 );

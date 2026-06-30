@@ -52,10 +52,10 @@
       "breakpoints": true
     },
     {
-      "idx": 7,
+      "idx": 8,
       "version": "7",
-      "when": 1783000000000,
-      "tag": "0007_company_logo_url",
+      "when": 1783100000000,
+      "tag": "0008_company_user_level",
       "breakpoints": true
     }
   ]

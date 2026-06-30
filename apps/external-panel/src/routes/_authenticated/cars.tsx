@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { CarFormModal } from '../../components/cars/CarFormModal'
 import { getCarColumns } from '../../components/cars/carColumns'
 import { DeleteCarModal } from '../../components/cars/DeleteCarModal'
@@ -12,6 +13,8 @@ export const Route = createFileRoute('/_authenticated/cars')({
 
 function CarsPage() {
   const { LL } = useI18nContext()
+  const { user } = Route.useRouteContext()
+  const canManage = isCompanyUserAdmin(user)
   const cars = useCars()
   const emptyCell = LL.externalPanel.cars.emptyCell()
   const isLoading = cars.carsQuery.isLoading || cars.driversQuery.isLoading
@@ -43,9 +46,10 @@ function CarsPage() {
           cars.setCarModal({ mode: 'edit', item: car })
         }}
         onDelete={cars.setDeleteTarget}
+        readOnly={!canManage}
       />
 
-      {cars.carModal && (
+      {canManage && cars.carModal ? (
         <CarFormModal
           key={
             cars.carModal.mode === 'edit'
@@ -60,15 +64,17 @@ function CarsPage() {
           }}
           onSuccess={cars.handleChanged}
         />
-      )}
+      ) : null}
 
-      <DeleteCarModal
-        target={cars.deleteTarget}
-        mutation={cars.deleteMutation}
-        onClose={function closeDeleteModal() {
-          cars.setDeleteTarget(null)
-        }}
-      />
+      {canManage ? (
+        <DeleteCarModal
+          target={cars.deleteTarget}
+          mutation={cars.deleteMutation}
+          onClose={function closeDeleteModal() {
+            cars.setDeleteTarget(null)
+          }}
+        />
+      ) : null}
     </div>
   )
 }

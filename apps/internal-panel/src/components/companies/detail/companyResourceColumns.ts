@@ -1,4 +1,5 @@
 import type { Car, CompanyUser, Driver } from '@fuel-carrier/shared-types'
+import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
 import type { ResourceColumn } from './ResourceSection'
 
@@ -6,6 +7,15 @@ interface CompanyResourceColumnOptions {
   LL: TranslationFunctions
   emptyCell?: string
   driverNameById?: Map<string, string>
+}
+
+function formatLevel(
+  level: CompanyUser['level'],
+  LL: TranslationFunctions,
+): string {
+  return level === CompanyUserLevels.ADMIN
+    ? LL.common.companyUserLevel.admin()
+    : LL.common.companyUserLevel.viewer()
 }
 
 function formatCarLabel(car: Car): string {
@@ -27,6 +37,11 @@ export function getUserColumns({
       header: LL.internalPanel.companies.detail.username(),
       cell: (user) => user.username,
       className: 'font-mono text-sm',
+    },
+    {
+      key: 'level',
+      header: LL.common.companyUserLevel.label(),
+      cell: (user) => formatLevel(user.level, LL),
     },
     {
       key: 'nationalId',

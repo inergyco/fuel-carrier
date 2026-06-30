@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { isCompanyUserAdmin } from "@fuel-carrier/shared-types";
 import { CompanyUserFormModal } from "../../components/users/CompanyUserFormModal";
 import { DeleteCompanyUserModal } from "../../components/users/DeleteCompanyUserModal";
 import { ResourceSection } from "../../components/users/ResourceSection";
@@ -12,6 +13,8 @@ export const Route = createFileRoute("/_authenticated/users")({
 
 function CompanyUsersPage() {
   const { LL } = useI18nContext();
+  const { user } = Route.useRouteContext();
+  const canManage = isCompanyUserAdmin(user);
   const users = useCompanyUsers();
   const emptyCell = LL.externalPanel.users.emptyCell();
 
@@ -38,9 +41,10 @@ function CompanyUsersPage() {
           users.setUserModal({ mode: "edit", item: user });
         }}
         onDelete={users.setDeleteTarget}
+        readOnly={!canManage}
       />
 
-      {users.userModal && (
+      {canManage && users.userModal ? (
         <CompanyUserFormModal
           key={
             users.userModal.mode === "edit"
@@ -56,15 +60,17 @@ function CompanyUsersPage() {
           }}
           onSuccess={users.handleChanged}
         />
-      )}
+      ) : null}
 
-      <DeleteCompanyUserModal
-        target={users.deleteTarget}
-        mutation={users.deleteMutation}
-        onClose={function closeDeleteModal() {
-          users.setDeleteTarget(null);
-        }}
-      />
+      {canManage ? (
+        <DeleteCompanyUserModal
+          target={users.deleteTarget}
+          mutation={users.deleteMutation}
+          onClose={function closeDeleteModal() {
+            users.setDeleteTarget(null);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -99,6 +99,7 @@ async function seedCompany(
       nationalId: userSeed.nationalId,
       email: userSeed.email,
       passwordHash,
+      level: userSeed.level,
       mustChangePassword: false,
     });
   }

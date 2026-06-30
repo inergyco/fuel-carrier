@@ -23,6 +23,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onAdd: () => void
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  readOnly?: boolean
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -37,6 +38,7 @@ export function ResourceSection<T extends { id: string }>({
   onAdd,
   onEdit,
   onDelete,
+  readOnly = false,
 }: ResourceSectionProps<T>) {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
 
@@ -47,12 +49,14 @@ export function ResourceSection<T extends { id: string }>({
           <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
           <p className="mt-1 text-sm text-base-content/50">{subtitle}</p>
         </div>
-        <Button type="button" className="h-10 w-full sm:w-auto sm:px-5" onClick={onAdd}>
-          <span className="flex items-center justify-center gap-2">
-            <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-            {addLabel}
-          </span>
-        </Button>
+        {!readOnly ? (
+          <Button type="button" className="h-10 w-full sm:w-auto sm:px-5" onClick={onAdd}>
+            <span className="flex items-center justify-center gap-2">
+              <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+              {addLabel}
+            </span>
+          </Button>
+        ) : null}
       </div>
 
       {loading ? (
@@ -66,6 +70,7 @@ export function ResourceSection<T extends { id: string }>({
           actionLabels={actionLabels}
           onEdit={onEdit}
           onDelete={onDelete}
+          readOnly={readOnly}
           variant={isMdUp ? 'table' : 'cards'}
         />
       )}

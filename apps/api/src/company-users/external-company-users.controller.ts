@@ -26,6 +26,7 @@ import {
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
+import { CompanyUserAdminGuard } from '../auth/company-user-admin.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
@@ -78,6 +79,7 @@ export class ExternalCompanyUsersController {
   }
 
   @Post()
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Create a company user for the authenticated company',
   })
@@ -97,6 +99,7 @@ export class ExternalCompanyUsersController {
   }
 
   @Patch(':id')
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Update a company user belonging to the authenticated company',
   })
@@ -120,6 +123,7 @@ export class ExternalCompanyUsersController {
   }
 
   @Delete(':id')
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Delete a company user belonging to the authenticated company',
   })

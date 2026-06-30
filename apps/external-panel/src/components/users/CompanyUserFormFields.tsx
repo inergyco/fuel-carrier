@@ -1,6 +1,7 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
-import { FormInput } from '@fuel-carrier/web-ui/ui'
+import { FormInput, FormSelect } from '@fuel-carrier/web-ui/ui'
 import type { CompanyUserFormModalMode } from './company-user-form.schema'
 
 interface CompanyUserFormFieldsProps {
@@ -48,6 +49,15 @@ export function CompanyUserFormFields({ mode, serverError }: CompanyUserFormFiel
         type="email"
         autoComplete="email"
       />
+
+      <FormSelect name="level" label={LL.common.companyUserLevel.label()}>
+        <option value={CompanyUserLevels.ADMIN}>
+          {LL.common.companyUserLevel.admin()}
+        </option>
+        <option value={CompanyUserLevels.VIEWER}>
+          {LL.common.companyUserLevel.viewer()}
+        </option>
+      </FormSelect>
 
       <FormInput
         name="password"

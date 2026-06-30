@@ -3,11 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import {
-  ApiErrorCode,
-  UserRole,
-  type AuthSession,
-} from '@fuel-carrier/shared-types';
+import { ApiErrorCode, UserRole } from '@fuel-carrier/shared-types';
+import type { AuthSession } from '@fuel-carrier/shared-types/auth-session';
 import { isValidUsername } from '@fuel-carrier/shared-validation/username';
 import { DATABASE } from '../database/database.tokens';
 import type { Database } from '../database/database.types';
@@ -165,6 +162,7 @@ export class AuthService {
       sub: session.userId,
       role: session.role,
       companyId: session.companyId,
+      companyUserLevel: parseCompanyUserLevel(session.companyUserLevel),
       username: session.username,
       firstName: session.firstName,
       lastName: session.lastName,
@@ -179,22 +177,29 @@ export class AuthService {
   }
 }
 
-function mapCompanyUserSession(companyUser: {
-  userId: string;
-  companyId: string;
-  username: string;
-  mustChangePassword: boolean;
-  user: { firstName: string; lastName: string };
-  company?: { logoUrl: string | null } | null;
-}): AuthSession {
+function mapCompanyUserSession(
+  companyUser: typeof companyUsers.$inferSelect & {
+    user: { firstName: string; lastName: string };
+    company?: { logoUrl: string | null } | null;
+  },
+): AuthSession {
   return {
     userId: companyUser.userId,
     role: UserRole.COMPANY_USER,
     companyId: companyUser.companyId,
+    companyUserLevel: parseCompanyUserLevel(companyUser.level),
     username: companyUser.username,
     firstName: companyUser.user.firstName,
     lastName: companyUser.user.lastName,
     mustChangePassword: companyUser.mustChangePassword,
     companyLogoUrl: companyUser.company?.logoUrl ?? null,
   };
+}
+
+function parseCompanyUserLevel(value: unknown): JwtPayload['companyUserLevel'] {
+  if (value === 'admin' || value === 'viewer') {
+    return value;
+  }
+
+  return undefined;
 }

@@ -1,3 +1,5 @@
+import type { CompanyUserLevel } from './company-user-level';
+
 export type CompanyUser = {
   id: string;
   userId: string;
@@ -7,6 +9,7 @@ export type CompanyUser = {
   lastName: string;
   nationalId: string | null;
   email: string | null;
+  level: CompanyUserLevel;
 };
 
 export type CompanyUserInput = {
@@ -15,6 +18,7 @@ export type CompanyUserInput = {
   username: string;
   password: string;
   companyId: string;
+  level: CompanyUserLevel;
   nationalId?: string | null;
   email?: string | null;
 };

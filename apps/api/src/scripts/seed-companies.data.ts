@@ -4,6 +4,7 @@ export type SeedCompanyUser = {
   lastName: string;
   nationalId: string;
   email: string;
+  level: 'admin' | 'viewer';
 };
 
 export type SeedDriver = {
@@ -50,6 +51,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'رضایی',
         nationalId: '0012345678',
         email: 'ali.rezaei@pars-energy.ir',
+        level: 'admin',
       },
       {
         username: 'pars_ops',
@@ -57,6 +59,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'محمدی',
         nationalId: '0023456789',
         email: 'sara.mohammadi@pars-energy.ir',
+        level: 'viewer',
       },
       {
         username: 'pars_dispatch',
@@ -64,6 +67,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'کریمی',
         nationalId: '0034567890',
         email: 'hassan.karimi@pars-energy.ir',
+        level: 'viewer',
       },
     ],
     drivers: [
@@ -111,6 +115,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'نوری',
         nationalId: '1122334455',
         email: 'mehdi.nouri@kimia-oil.ir',
+        level: 'admin',
       },
       {
         username: 'kimia_logistics',
@@ -118,6 +123,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'صادقی',
         nationalId: '2233445566',
         email: 'fateme.sadeghi@kimia-oil.ir',
+        level: 'viewer',
       },
       {
         username: 'kimia_fleet',
@@ -125,6 +131,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'اکبری',
         nationalId: '3344556677',
         email: 'javad.akbari@kimia-oil.ir',
+        level: 'viewer',
       },
     ],
     drivers: [
@@ -172,6 +179,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'ملکی',
         nationalId: '4455667788',
         email: 'rezvan.maleki@zagros-fuel.ir',
+        level: 'admin',
       },
       {
         username: 'zagros_ops',
@@ -179,6 +187,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'بهرامی',
         nationalId: '5566778899',
         email: 'parviz.bahrami@zagros-fuel.ir',
+        level: 'viewer',
       },
       {
         username: 'zagros_hr',
@@ -186,6 +195,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         lastName: 'حیدری',
         nationalId: '6677889900',
         email: 'narges.heidari@zagros-fuel.ir',
+        level: 'viewer',
       },
     ],
     drivers: [

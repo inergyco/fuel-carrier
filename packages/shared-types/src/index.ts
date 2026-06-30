@@ -6,6 +6,7 @@ export * from "./car";
 export * from "./company";
 export * from "./company-user";
 export * from "./driver";
+export * from "./company-user-level";
 export * from "./pagination";
 export * from "./tenant-context";
 export * from "./user-role";

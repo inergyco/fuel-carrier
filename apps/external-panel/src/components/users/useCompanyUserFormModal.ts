@@ -70,6 +70,7 @@ export function useCompanyUserFormModal({
         username: data.username,
         nationalId: data.nationalId || null,
         email: data.email || null,
+        level: data.level,
       }
 
       if (mode === 'edit' && user) {
@@ -117,7 +118,8 @@ export function useCompanyUserFormModal({
             fieldError.field === 'username' ||
             fieldError.field === 'password' ||
             fieldError.field === 'nationalId' ||
-            fieldError.field === 'email'
+            fieldError.field === 'email' ||
+            fieldError.field === 'level'
           ) {
             setError(fieldError.field, { message: fieldError.message })
           }

@@ -26,6 +26,7 @@ import {
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
+import { CompanyUserAdminGuard } from '../auth/company-user-admin.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
@@ -71,6 +72,7 @@ export class ExternalCarsController {
   }
 
   @Post()
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({ summary: 'Create a car for the authenticated company' })
   @ApiBody({ schema: { type: 'object' } })
   @ApiEnvelopeOkResponse(Object)
@@ -88,7 +90,10 @@ export class ExternalCarsController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update a car belonging to the authenticated company' })
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary: 'Update a car belonging to the authenticated company',
+  })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiBody({ schema: { type: 'object' } })
   @ApiEnvelopeOkResponse(Object)
@@ -105,7 +110,10 @@ export class ExternalCarsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete a car belonging to the authenticated company' })
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary: 'Delete a car belonging to the authenticated company',
+  })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()

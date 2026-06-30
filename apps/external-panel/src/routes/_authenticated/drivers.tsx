@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { DeleteDriverModal } from '../../components/drivers/DeleteDriverModal'
 import { DriverFormModal } from '../../components/drivers/DriverFormModal'
 import { getDriverColumns } from '../../components/drivers/driverColumns'
@@ -12,6 +13,8 @@ export const Route = createFileRoute('/_authenticated/drivers')({
 
 function DriversPage() {
   const { LL } = useI18nContext()
+  const { user } = Route.useRouteContext()
+  const canManage = isCompanyUserAdmin(user)
   const drivers = useDrivers()
   const emptyCell = LL.externalPanel.drivers.emptyCell()
 
@@ -38,9 +41,10 @@ function DriversPage() {
           drivers.setDriverModal({ mode: 'edit', item: driver })
         }}
         onDelete={drivers.setDeleteTarget}
+        readOnly={!canManage}
       />
 
-      {drivers.driverModal && (
+      {canManage && drivers.driverModal ? (
         <DriverFormModal
           key={
             drivers.driverModal.mode === 'edit'
@@ -58,15 +62,17 @@ function DriversPage() {
           }}
           onSuccess={drivers.handleChanged}
         />
-      )}
+      ) : null}
 
-      <DeleteDriverModal
-        target={drivers.deleteTarget}
-        mutation={drivers.deleteMutation}
-        onClose={function closeDeleteModal() {
-          drivers.setDeleteTarget(null)
-        }}
-      />
+      {canManage ? (
+        <DeleteDriverModal
+          target={drivers.deleteTarget}
+          mutation={drivers.deleteMutation}
+          onClose={function closeDeleteModal() {
+            drivers.setDeleteTarget(null)
+          }}
+        />
+      ) : null}
     </div>
   )
 }

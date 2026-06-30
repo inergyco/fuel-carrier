@@ -30,6 +30,7 @@ interface ResourceListProps<T extends { id: string }> {
   actionLabels: ResourceActionLabels
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  readOnly?: boolean
   variant: 'table' | 'cards'
 }
 
@@ -89,6 +90,7 @@ export function ResourceList<T extends { id: string }>({
   actionLabels,
   onEdit,
   onDelete,
+  readOnly = false,
   variant,
 }: ResourceListProps<T>) {
   if (variant === 'table') {
@@ -101,7 +103,9 @@ export function ResourceList<T extends { id: string }>({
                 <DataTableHeaderCell key={column.key}>{column.header}</DataTableHeaderCell>
               )
             })}
-            <DataTableHeaderCell>{actionLabels.operations}</DataTableHeaderCell>
+            {!readOnly ? (
+              <DataTableHeaderCell>{actionLabels.operations}</DataTableHeaderCell>
+            ) : null}
           </DataTableHeaderRow>
         </DataTableHead>
         <DataTableBody>
@@ -115,14 +119,16 @@ export function ResourceList<T extends { id: string }>({
                     </DataTableCell>
                   )
                 })}
-                <DataTableCell className="text-end">
-                  <ResourceOperations
-                    item={item}
-                    actionLabels={actionLabels}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                  />
-                </DataTableCell>
+                {!readOnly ? (
+                  <DataTableCell className="text-end">
+                    <ResourceOperations
+                      item={item}
+                      actionLabels={actionLabels}
+                      onEdit={onEdit}
+                      onDelete={onDelete}
+                    />
+                  </DataTableCell>
+                ) : null}
               </DataTableRow>
             )
           })}
@@ -167,15 +173,17 @@ export function ResourceList<T extends { id: string }>({
                 })}
               </dl>
             ) : null}
-            <div className="mt-4 border-t border-base-content/8 pt-4">
-              <ResourceOperations
-                item={item}
-                actionLabels={actionLabels}
-                onEdit={onEdit}
-                onDelete={onDelete}
-                stacked
-              />
-            </div>
+            {!readOnly ? (
+              <div className="mt-4 border-t border-base-content/8 pt-4">
+                <ResourceOperations
+                  item={item}
+                  actionLabels={actionLabels}
+                  onEdit={onEdit}
+                  onDelete={onDelete}
+                  stacked
+                />
+              </div>
+            ) : null}
           </li>
         )
       })}

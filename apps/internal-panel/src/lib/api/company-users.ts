@@ -1,4 +1,5 @@
 import type { CompanyUser } from '@fuel-carrier/shared-types'
+import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import type {
   CreateInternalCompanyUserDto,
   UpdateInternalCompanyUserDto,
@@ -16,6 +17,7 @@ export type CompanyUserFormValues = {
   password: string
   nationalId: string
   email: string
+  level: CompanyUser['level']
 }
 
 export function companyUserToFormValues(
@@ -28,6 +30,7 @@ export function companyUserToFormValues(
     password: '',
     nationalId: user?.nationalId ?? '',
     email: user?.email ?? '',
+    level: user?.level ?? CompanyUserLevels.VIEWER,
   }
 }
 
