@@ -67,6 +67,7 @@ const en: BaseTranslation = {
     nav: {
       dashboard: 'Dashboard',
       companies: 'Companies',
+      auditLogs: 'Audit log',
       openMenu: 'Open menu',
       signOut: 'Sign out',
       signingOut: 'Signing out…',
@@ -94,6 +95,12 @@ const en: BaseTranslation = {
       carUpdated: 'Car updated.',
       carDeleted: 'Car deleted.',
       signedOut: 'Signed out.',
+    },
+    auditLogs: {
+      title: 'Audit log',
+      subtitle: 'Actions performed by internal administrators',
+      loading: 'Loading audit log…',
+      empty: 'No audit entries yet.',
     },
     companies: {
       title: 'Companies',

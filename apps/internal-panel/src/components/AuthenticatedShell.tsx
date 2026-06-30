@@ -9,7 +9,7 @@ import {
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
-import { Home, Building2 } from '@fuel-carrier/web-ui/icons'
+import { Home, Building2, ScrollText } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
@@ -41,6 +41,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         to: '/companies',
         label: LL.internalPanel.nav.companies(),
         icon: <Building2 strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      },
+      {
+        to: '/audit-logs',
+        label: LL.internalPanel.nav.auditLogs(),
+        icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
       },
     ]
   }, [LL])

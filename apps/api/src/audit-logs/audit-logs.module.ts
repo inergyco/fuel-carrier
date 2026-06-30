@@ -3,10 +3,11 @@ import { AuditContextMiddleware } from './audit-context.middleware';
 import { AuditLogService } from './audit-log.service';
 import { AuditRequestContext } from './audit-request.context';
 import { InternalAuditLogsController } from './internal-audit-logs.controller';
+import { InternalPortalAuditLogsController } from './internal-portal-audit-logs.controller';
 
 @Global()
 @Module({
-  controllers: [InternalAuditLogsController],
+  controllers: [InternalAuditLogsController, InternalPortalAuditLogsController],
   providers: [AuditRequestContext, AuditLogService, AuditContextMiddleware],
   exports: [AuditLogService, AuditRequestContext],
 })

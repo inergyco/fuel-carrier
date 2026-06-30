@@ -91,6 +91,36 @@ export class AuditLogService {
     const offset = (page - 1) * limit;
     const where = eq(auditLogs.companyId, companyId);
 
+    return this._listWhere(context, where, pagination, offset);
+  }
+
+  async listInternalActions(
+    context: TenantContext,
+    pagination: PaginationParams,
+  ): Promise<PaginatedResult<AuditLog>> {
+    if (!context.isInternal) {
+      throw createApiException(
+        HttpStatus.FORBIDDEN,
+        ApiErrorCode.FORBIDDEN,
+        'Access denied',
+      );
+    }
+
+    const { page, limit } = pagination;
+    const offset = (page - 1) * limit;
+    const where = eq(auditLogs.actorRole, UserRole.INTERNAL_ADMIN);
+
+    return this._listWhere(context, where, pagination, offset);
+  }
+
+  private async _listWhere(
+    context: TenantContext,
+    where: ReturnType<typeof eq>,
+    pagination: PaginationParams,
+    offset: number,
+  ): Promise<PaginatedResult<AuditLog>> {
+    const { page, limit } = pagination;
+
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
         .select({ value: count() })

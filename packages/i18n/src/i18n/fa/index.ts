@@ -65,6 +65,7 @@ const fa: Translation = {
     nav: {
       dashboard: "داشبورد",
       companies: "شرکت‌ها",
+      auditLogs: "گزارش فعالیت",
       openMenu: "باز کردن منو",
       signOut: "خروج",
       signingOut: "در حال خروج…",
@@ -92,6 +93,12 @@ const fa: Translation = {
       carUpdated: "خودرو به‌روزرسانی شد.",
       carDeleted: "خودرو حذف شد.",
       signedOut: "خروج انجام شد.",
+    },
+    auditLogs: {
+      title: "گزارش فعالیت",
+      subtitle: "اقدامات انجام‌شده توسط مدیران داخلی",
+      loading: "در حال بارگذاری گزارش فعالیت…",
+      empty: "هنوز گزارشی ثبت نشده است.",
     },
     companies: {
       title: "شرکت‌ها",

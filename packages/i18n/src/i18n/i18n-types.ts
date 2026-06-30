@@ -241,6 +241,10 @@ type RootTranslation = {
 			 */
 			companies: string
 			/**
+			 * A​u​d​i​t​ ​l​o​g
+			 */
+			auditLogs: string
+			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
 			openMenu: string
@@ -332,6 +336,24 @@ type RootTranslation = {
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
+		}
+		auditLogs: {
+			/**
+			 * A​u​d​i​t​ ​l​o​g
+			 */
+			title: string
+			/**
+			 * A​c​t​i​o​n​s​ ​p​e​r​f​o​r​m​e​d​ ​b​y​ ​i​n​t​e​r​n​a​l​ ​a​d​m​i​n​i​s​t​r​a​t​o​r​s
+			 */
+			subtitle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​y​e​t​.
+			 */
+			empty: string
 		}
 		companies: {
 			/**
@@ -1760,6 +1782,10 @@ export type TranslationFunctions = {
 			 */
 			companies: () => LocalizedString
 			/**
+			 * Audit log
+			 */
+			auditLogs: () => LocalizedString
+			/**
 			 * Open menu
 			 */
 			openMenu: () => LocalizedString
@@ -1851,6 +1877,24 @@ export type TranslationFunctions = {
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
+		}
+		auditLogs: {
+			/**
+			 * Audit log
+			 */
+			title: () => LocalizedString
+			/**
+			 * Actions performed by internal administrators
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Loading audit log…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No audit entries yet.
+			 */
+			empty: () => LocalizedString
 		}
 		companies: {
 			/**
