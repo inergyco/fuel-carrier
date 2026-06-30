@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
+    "@fastify/helmet": "^13.0.2",
     "@fastify/static": "^9.1.3",
     "@fuel-carrier/shared-types": "workspace:*",
     "@fuel-carrier/shared-validation": "workspace:*",

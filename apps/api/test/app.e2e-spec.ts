@@ -8,6 +8,7 @@ import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { ApiExceptionFilter } from './../src/common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './../src/common/interceptors/api-response.interceptor';
+import { setupSecurityHeaders } from './../src/security/security-headers.setup';
 
 describe('AppController (e2e)', () => {
   let app: NestFastifyApplication;
@@ -21,12 +22,23 @@ describe('AppController (e2e)', () => {
       new FastifyAdapter(),
     );
 
+    await setupSecurityHeaders(app);
     await app.register(fastifyCookie);
     app.setGlobalPrefix('api');
     app.useGlobalInterceptors(new ApiResponseInterceptor());
     app.useGlobalFilters(new ApiExceptionFilter());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
+  });
+
+  it('/api/internal (GET) includes security headers', () => {
+    return request(app.getHttpServer())
+      .get('/api/internal')
+      .expect(200)
+      .expect('x-content-type-options', 'nosniff')
+      .expect('x-frame-options', 'DENY')
+      .expect('referrer-policy', 'no-referrer')
+      .expect('cross-origin-resource-policy', 'cross-origin');
   });
 
   it('/api/internal (GET) returns a success envelope', () => {
