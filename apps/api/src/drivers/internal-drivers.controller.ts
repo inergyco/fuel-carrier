@@ -15,7 +15,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Driver } from '@fuel-carrier/shared-types';
+import type { AuthSession, Driver } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createInternalDriverDtoSchema,
@@ -24,6 +24,7 @@ import {
   type UpdateInternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -71,10 +72,11 @@ export class InternalDriversController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
+    @CurrentUser() user: AuthSession,
     @Body(new ZodValidationPipe(createInternalDriverDtoSchema))
     dto: CreateInternalDriverDto,
   ): Promise<Driver> {
-    return this.driversService.create(internalTenantContext(), dto);
+    return this.driversService.create(internalTenantContext(user), dto);
   }
 
   @Patch(':id')
@@ -86,11 +88,12 @@ export class InternalDriversController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   update(
+    @CurrentUser() user: AuthSession,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateInternalDriverDtoSchema))
     dto: UpdateInternalDriverDto,
   ): Promise<Driver> {
-    return this.driversService.update(internalTenantContext(), id, dto);
+    return this.driversService.update(internalTenantContext(user), id, dto);
   }
 
   @Delete(':id')
@@ -98,7 +101,10 @@ export class InternalDriversController {
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  delete(@Param('id') id: string): Promise<null> {
-    return this.driversService.delete(internalTenantContext(), id);
+  delete(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<null> {
+    return this.driversService.delete(internalTenantContext(user), id);
   }
 }

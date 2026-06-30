@@ -15,7 +15,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Car } from '@fuel-carrier/shared-types';
+import type { AuthSession, Car } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createInternalCarDtoSchema,
@@ -24,6 +24,7 @@ import {
   type UpdateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -71,10 +72,11 @@ export class InternalCarsController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
+    @CurrentUser() user: AuthSession,
     @Body(new ZodValidationPipe(createInternalCarDtoSchema))
     dto: CreateInternalCarDto,
   ): Promise<Car> {
-    return this.carsService.create(internalTenantContext(), dto);
+    return this.carsService.create(internalTenantContext(user), dto);
   }
 
   @Patch(':id')
@@ -86,11 +88,12 @@ export class InternalCarsController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   update(
+    @CurrentUser() user: AuthSession,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateInternalCarDtoSchema))
     dto: UpdateInternalCarDto,
   ): Promise<Car> {
-    return this.carsService.update(internalTenantContext(), id, dto);
+    return this.carsService.update(internalTenantContext(user), id, dto);
   }
 
   @Delete(':id')
@@ -98,7 +101,10 @@ export class InternalCarsController {
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  delete(@Param('id') id: string): Promise<null> {
-    return this.carsService.delete(internalTenantContext(), id);
+  delete(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<null> {
+    return this.carsService.delete(internalTenantContext(user), id);
   }
 }

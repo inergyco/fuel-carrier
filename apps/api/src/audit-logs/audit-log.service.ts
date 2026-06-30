@@ -9,13 +9,15 @@ import type {
   AuthSession,
   TenantContext,
 } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import { ApiErrorCode, UserRole } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import type {
   PaginatedResult,
   PaginationParams,
 } from '../common/types/pagination';
 import { auditLogs } from '../database/schema/audit-logs';
+import type { ApiTenantContext } from '../database/tenant-context.types';
+import { getTenantContextActor } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { actorFromSession } from './audit-log.utils';
 import { AuditRequestContext } from './audit-request.context';
@@ -39,12 +41,21 @@ export class AuditLogService {
   ) {}
 
   async record(
-    context: TenantContext,
+    context: ApiTenantContext,
     input: RecordAuditLogInput,
   ): Promise<void> {
     try {
-      const actor = this._resolveActor(input.actor);
-      const metadata = input.metadata ?? {};
+      const actor = this._resolveActor(
+        input.actor,
+        getTenantContextActor(context),
+      );
+      const metadata: AuditLogMetadata = {
+        ...input.metadata,
+      };
+
+      if (!metadata.portal) {
+        metadata.portal = this._inferPortal(actor.role);
+      }
 
       await this.tenantDb.run(context, async (tx) => {
         await tx.insert(auditLogs).values({
@@ -120,7 +131,22 @@ export class AuditLogService {
     }
   }
 
-  private _resolveActor(explicitActor?: AuditActor | AuthSession | null): {
+  private _inferPortal(role: string): AuditLogMetadata['portal'] | undefined {
+    if (role === UserRole.INTERNAL_ADMIN) {
+      return 'internal';
+    }
+
+    if (role === UserRole.COMPANY_USER) {
+      return 'external';
+    }
+
+    return undefined;
+  }
+
+  private _resolveActor(
+    explicitActor?: AuditActor | AuthSession | null,
+    contextActor?: AuthSession,
+  ): {
     userId: string | null;
     role: string;
     username: string;
@@ -148,10 +174,10 @@ export class AuditLogService {
       };
     }
 
-    const requestActor = this.auditRequestContext.getActor();
+    const fallbackActor = contextActor;
 
-    if (requestActor) {
-      const sessionActor = actorFromSession(requestActor);
+    if (fallbackActor) {
+      const sessionActor = actorFromSession(fallbackActor);
       return {
         userId: sessionActor.userId,
         role: sessionActor.role,

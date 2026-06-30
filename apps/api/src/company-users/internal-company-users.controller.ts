@@ -17,7 +17,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { CompanyUser } from '@fuel-carrier/shared-types';
+import type { AuthSession, CompanyUser } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createInternalCompanyUserDtoSchema,
@@ -26,6 +26,7 @@ import {
   type UpdateInternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
@@ -74,10 +75,11 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
+    @CurrentUser() user: AuthSession,
     @Body(new ZodValidationPipe(createInternalCompanyUserDtoSchema))
     dto: CreateInternalCompanyUserDto,
   ): Promise<CompanyUser> {
-    return this.companyUsersService.create(internalTenantContext(), dto);
+    return this.companyUsersService.create(internalTenantContext(user), dto);
   }
 
   @Patch(':id')
@@ -89,11 +91,16 @@ export class InternalCompanyUsersController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   update(
+    @CurrentUser() user: AuthSession,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateInternalCompanyUserDtoSchema))
     dto: UpdateInternalCompanyUserDto,
   ): Promise<CompanyUser> {
-    return this.companyUsersService.update(internalTenantContext(), id, dto);
+    return this.companyUsersService.update(
+      internalTenantContext(user),
+      id,
+      dto,
+    );
   }
 
   @Delete(':id')
@@ -101,7 +108,10 @@ export class InternalCompanyUsersController {
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  delete(@Param('id') id: string): Promise<null> {
-    return this.companyUsersService.delete(internalTenantContext(), id);
+  delete(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<null> {
+    return this.companyUsersService.delete(internalTenantContext(user), id);
   }
 }

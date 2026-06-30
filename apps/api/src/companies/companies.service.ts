@@ -14,6 +14,7 @@ import {
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
+import type { ApiTenantContext } from '../database/tenant-context.types';
 import { companies } from '../database/schema/companies';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
@@ -47,14 +48,14 @@ export class CompaniesService {
     });
   }
 
-  async create(dto: CompanyInput): Promise<Company> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+  async create(context: ApiTenantContext, dto: CompanyInput): Promise<Company> {
+    return this.tenantDb.run(context, async (tx) => {
       await this._assertNationalIdAvailable(tx, dto.nationalId);
 
       const [row] = await tx.insert(companies).values(dto).returning();
       const company = _mapCompany(row);
 
-      await this.auditLogService.record(internalTenantContext(), {
+      await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_CREATED,
         companyId: company.id,
         entityType: AuditEntityType.COMPANY,
@@ -68,8 +69,12 @@ export class CompaniesService {
     });
   }
 
-  async update(id: string, dto: CompanyInput): Promise<Company> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+  async update(
+    context: ApiTenantContext,
+    id: string,
+    dto: CompanyInput,
+  ): Promise<Company> {
+    return this.tenantDb.run(context, async (tx) => {
       const existing = await _findCompanyById(tx, id);
 
       await this._assertNationalIdAvailable(tx, dto.nationalId, id);
@@ -82,7 +87,7 @@ export class CompaniesService {
 
       const company = _mapCompany(row);
 
-      await this.auditLogService.record(internalTenantContext(), {
+      await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_UPDATED,
         companyId: company.id,
         entityType: AuditEntityType.COMPANY,
@@ -100,13 +105,13 @@ export class CompaniesService {
     });
   }
 
-  async delete(id: string): Promise<null> {
-    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+  async delete(context: ApiTenantContext, id: string): Promise<null> {
+    return this.tenantDb.run(context, async (tx) => {
       const existing = await _findCompanyById(tx, id);
 
       await tx.delete(companies).where(eq(companies.id, id));
 
-      await this.auditLogService.record(internalTenantContext(), {
+      await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_DELETED,
         companyId: id,
         entityType: AuditEntityType.COMPANY,

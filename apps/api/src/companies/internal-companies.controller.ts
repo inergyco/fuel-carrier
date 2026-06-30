@@ -15,7 +15,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Company } from '@fuel-carrier/shared-types';
+import type { AuthSession, Company } from '@fuel-carrier/shared-types';
 import {
   createCompanyDtoSchema,
   type CreateCompanyDto,
@@ -25,7 +25,9 @@ import {
   type UpdateCompanyDto,
 } from '@fuel-carrier/shared-validation/company/update';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
@@ -73,10 +75,11 @@ export class InternalCompaniesController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
+    @CurrentUser() user: AuthSession,
     @Body(new ZodValidationPipe(createCompanyDtoSchema))
     dto: CreateCompanyDto,
   ): Promise<Company> {
-    return this.companiesService.create(dto);
+    return this.companiesService.create(internalTenantContext(user), dto);
   }
 
   @Patch(':id')
@@ -88,11 +91,12 @@ export class InternalCompaniesController {
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   update(
+    @CurrentUser() user: AuthSession,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateCompanyDtoSchema))
     dto: UpdateCompanyDto,
   ): Promise<Company> {
-    return this.companiesService.update(id, dto);
+    return this.companiesService.update(internalTenantContext(user), id, dto);
   }
 
   @Delete(':id')
@@ -100,7 +104,10 @@ export class InternalCompaniesController {
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  delete(@Param('id') id: string): Promise<null> {
-    return this.companiesService.delete(id);
+  delete(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<null> {
+    return this.companiesService.delete(internalTenantContext(user), id);
   }
 }

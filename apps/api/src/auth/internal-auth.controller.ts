@@ -61,7 +61,7 @@ export class InternalAuthController {
     });
 
     return this.auditLogService
-      .record(internalTenantContext(), {
+      .record(internalTenantContext(user), {
         action: AuditAction.AUTH_LOGIN_SUCCEEDED,
         metadata: { portal: 'internal' },
         actor: user,
@@ -85,7 +85,7 @@ export class InternalAuthController {
     });
 
     return this.auditLogService
-      .record(internalTenantContext(), {
+      .record(internalTenantContext(user), {
         action: AuditAction.AUTH_LOGOUT,
         metadata: { portal: 'internal' },
         actor: user,
