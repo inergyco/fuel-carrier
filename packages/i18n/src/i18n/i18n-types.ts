@@ -39,6 +39,41 @@ type RootTranslation = {
 		 * F​A
 		 */
 		languageFa: string
+		pagination: {
+			/**
+			 * P​r​e​v​i​o​u​s
+			 */
+			previous: string
+			/**
+			 * N​e​x​t
+			 */
+			next: string
+			/**
+			 * S​h​o​w​i​n​g​ ​{​f​r​o​m​}​–​{​t​o​}​ ​o​f​ ​{​t​o​t​a​l​}
+			 * @param {number} from
+			 * @param {number} to
+			 * @param {number} total
+			 */
+			showing: RequiredParams<'from' | 'to' | 'total'>
+			/**
+			 * P​a​g​e​ ​{​c​u​r​r​e​n​t​}​ ​o​f​ ​{​t​o​t​a​l​}
+			 * @param {number} current
+			 * @param {number} total
+			 */
+			pageOf: RequiredParams<'current' | 'total'>
+			/**
+			 * P​e​r​ ​p​a​g​e
+			 */
+			perPage: string
+		}
+		/**
+		 * S​h​o​w​ ​p​a​s​s​w​o​r​d
+		 */
+		showPassword: string
+		/**
+		 * H​i​d​e​ ​p​a​s​s​w​o​r​d
+		 */
+		hidePassword: string
 	}
 	validation: {
 		/**
@@ -1521,6 +1556,36 @@ export type TranslationFunctions = {
 		 * FA
 		 */
 		languageFa: () => LocalizedString
+		pagination: {
+			/**
+			 * Previous
+			 */
+			previous: () => LocalizedString
+			/**
+			 * Next
+			 */
+			next: () => LocalizedString
+			/**
+			 * Showing {from}–{to} of {total}
+			 */
+			showing: (arg: { from: number, to: number, total: number }) => LocalizedString
+			/**
+			 * Page {current} of {total}
+			 */
+			pageOf: (arg: { current: number, total: number }) => LocalizedString
+			/**
+			 * Per page
+			 */
+			perPage: () => LocalizedString
+		}
+		/**
+		 * Show password
+		 */
+		showPassword: () => LocalizedString
+		/**
+		 * Hide password
+		 */
+		hidePassword: () => LocalizedString
 	}
 	validation: {
 		/**

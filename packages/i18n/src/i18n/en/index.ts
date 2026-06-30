@@ -8,6 +8,15 @@ const en: BaseTranslation = {
     switchToPersian: 'Switch to Persian',
     languageEn: 'EN',
     languageFa: 'FA',
+    pagination: {
+      previous: 'Previous',
+      next: 'Next',
+      showing: 'Showing {from:number}–{to:number} of {total:number}',
+      pageOf: 'Page {current:number} of {total:number}',
+      perPage: 'Per page',
+    },
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
   },
   validation: {
     usernameRequired: 'Username is required',

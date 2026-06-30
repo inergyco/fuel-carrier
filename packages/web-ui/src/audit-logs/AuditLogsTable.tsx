@@ -1,4 +1,4 @@
-import type { AuditLog } from '@fuel-carrier/shared-types'
+import type { AuditLog } from "@fuel-carrier/shared-types";
 import {
   DataTable,
   DataTableBody,
@@ -7,19 +7,18 @@ import {
   DataTableHeaderCell,
   DataTableHeaderRow,
   DataTableRow,
-} from '../ui/DataTable'
-import { AuditLogDetails } from './AuditLogDetails'
+} from "../ui/DataTable";
+import { AuditLogDetails } from "./AuditLogDetails";
 import {
   formatAuditAction,
-  formatAuditRole,
   formatAuditTimestamp,
   type AuditLogLabels,
-} from './audit-log-formatters'
+} from "./audit-log-formatters";
 
 interface AuditLogsTableProps {
-  logs: AuditLog[]
-  locale: string
-  labels: AuditLogLabels
+  logs: AuditLog[];
+  locale: string;
+  labels: AuditLogLabels;
 }
 
 export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
@@ -42,12 +41,6 @@ export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
               </DataTableCell>
               <DataTableCell className="min-w-40 align-top">
                 <p className="font-medium">{log.actorDisplayName}</p>
-                <p className="font-mono text-xs text-base-content/55">
-                  @{log.actorUsername}
-                </p>
-                <p className="text-xs text-base-content/50">
-                  {formatAuditRole(log.actorRole, labels)}
-                </p>
               </DataTableCell>
               <DataTableCell className="min-w-36 align-top font-medium">
                 {formatAuditAction(log.action, labels)}
@@ -56,9 +49,9 @@ export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
                 <AuditLogDetails metadata={log.metadata} labels={labels} />
               </DataTableCell>
             </DataTableRow>
-          )
+          );
         })}
       </DataTableBody>
     </DataTable>
-  )
+  );
 }

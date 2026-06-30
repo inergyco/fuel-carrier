@@ -1,12 +1,23 @@
-import type { AuditLog } from '@fuel-carrier/shared-types'
-import { api } from './api'
+import type {
+  AuditLog,
+  PaginatedResult,
+  PaginationParams,
+} from "@fuel-carrier/shared-types";
+import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
+import { api } from "./api";
 
 export const auditLogKeys = {
-  company: (companyId: string) => ['audit-logs', companyId] as const,
-}
+  company: (
+    companyId: string,
+    params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+  ) => ["audit-logs", companyId, params] as const,
+};
 
 export async function fetchCompanyAuditLogs(
   companyId: string,
-): Promise<AuditLog[]> {
-  return api.get(`companies/${companyId}/audit-logs`).json<AuditLog[]>()
+  searchParams: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+): Promise<PaginatedResult<AuditLog>> {
+  return api
+    .get(`companies/${companyId}/audit-logs`, { searchParams })
+    .json<PaginatedResult<AuditLog>>();
 }

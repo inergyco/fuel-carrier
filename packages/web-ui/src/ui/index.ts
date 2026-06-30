@@ -34,6 +34,11 @@ export {
   dataTableViewActionClassName,
 } from './DataTable'
 export { Modal, ModalActions } from './Modal'
+export {
+  Pagination,
+  getPaginationRange,
+  type PaginationLabels,
+} from './Pagination'
 export { useTheme } from './useTheme'
 export type { Theme } from './useTheme'
 export { useMediaQuery } from './useMediaQuery'

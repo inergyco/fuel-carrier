@@ -42,6 +42,34 @@ export function ApiEnvelopeOkListResponse<T extends Type>(model: T) {
   );
 }
 
+export function ApiEnvelopeOkPaginatedResponse<T extends Type>(model: T) {
+  return applyDecorators(
+    ApiExtraModels(model),
+    ApiOkResponse({
+      schema: {
+        type: 'object',
+        required: ['data'],
+        properties: {
+          data: {
+            type: 'object',
+            required: ['items', 'page', 'limit', 'totalItems', 'totalPages'],
+            properties: {
+              items: {
+                type: 'array',
+                items: { $ref: getSchemaPath(model) },
+              },
+              page: { type: 'integer', example: 1 },
+              limit: { type: 'integer', example: 10 },
+              totalItems: { type: 'integer', example: 42 },
+              totalPages: { type: 'integer', example: 3 },
+            },
+          },
+        },
+      },
+    }),
+  );
+}
+
 export function ApiEnvelopeUnauthorizedResponse() {
   return applyDecorators(
     ApiExtraModels(ApiErrorBodyDto),

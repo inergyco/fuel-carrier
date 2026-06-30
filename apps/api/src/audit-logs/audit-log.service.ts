@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpStatus } from '@nestjs/common';
-import { desc, eq } from 'drizzle-orm';
+import { count, desc, eq } from 'drizzle-orm';
 import type {
   AuditAction,
   AuditActor,
@@ -11,6 +11,10 @@ import type {
 } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import type {
+  PaginatedResult,
+  PaginationParams,
+} from '../common/types/pagination';
 import { auditLogs } from '../database/schema/audit-logs';
 import { TenantDbService } from '../database/tenant-db.service';
 import { actorFromSession } from './audit-log.utils';
@@ -68,17 +72,38 @@ export class AuditLogService {
   async listByCompany(
     context: TenantContext,
     companyId: string,
-  ): Promise<AuditLog[]> {
+    pagination: PaginationParams,
+  ): Promise<PaginatedResult<AuditLog>> {
     this._assertCompanyAccess(context, companyId);
 
+    const { page, limit } = pagination;
+    const offset = (page - 1) * limit;
+    const where = eq(auditLogs.companyId, companyId);
+
     return this.tenantDb.run(context, async (tx) => {
+      const [countRow] = await tx
+        .select({ value: count() })
+        .from(auditLogs)
+        .where(where);
+
+      const totalItems = countRow?.value ?? 0;
+      const totalPages = Math.max(1, Math.ceil(totalItems / limit));
+
       const rows = await tx
         .select()
         .from(auditLogs)
-        .where(eq(auditLogs.companyId, companyId))
-        .orderBy(desc(auditLogs.createdAt));
+        .where(where)
+        .orderBy(desc(auditLogs.createdAt))
+        .limit(limit)
+        .offset(offset);
 
-      return rows.map(_mapAuditLog);
+      return {
+        items: rows.map(_mapAuditLog),
+        page,
+        limit,
+        totalItems,
+        totalPages,
+      };
     });
   }
 
