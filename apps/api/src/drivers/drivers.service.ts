@@ -8,8 +8,11 @@ import {
 } from '@fuel-carrier/shared-types';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
+  buildAuditContext,
   createAuditChanges,
   diffAuditChanges,
+  fetchCompanyName,
+  formatAuditDriverLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -101,6 +104,7 @@ export class DriversService {
         }
 
         const driver = _mapDriver(row);
+        const companyName = await fetchCompanyName(tx, driver.companyId);
 
         await this.auditLogService.record(context, {
           action: AuditAction.DRIVER_CREATED,
@@ -108,6 +112,10 @@ export class DriversService {
           entityType: AuditEntityType.DRIVER,
           entityId: driver.id,
           metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditDriverLabel(driver),
+            }),
             changes: createAuditChanges(driver, DRIVER_AUDIT_FIELDS),
           },
         });
@@ -155,6 +163,7 @@ export class DriversService {
         }
 
         const driver = _mapDriver(row);
+        const companyName = await fetchCompanyName(tx, driver.companyId);
 
         await this.auditLogService.record(context, {
           action: AuditAction.DRIVER_UPDATED,
@@ -162,6 +171,10 @@ export class DriversService {
           entityType: AuditEntityType.DRIVER,
           entityId: driver.id,
           metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditDriverLabel(driver),
+            }),
             changes: diffAuditChanges(
               _mapDriver(existing),
               driver,
@@ -206,13 +219,20 @@ export class DriversService {
         );
       }
 
+      const deletedDriver = _mapDriver(existing);
+      const companyName = await fetchCompanyName(tx, existing.companyId);
+
       await this.auditLogService.record(context, {
         action: AuditAction.DRIVER_DELETED,
         companyId: existing.companyId,
         entityType: AuditEntityType.DRIVER,
         entityId: id,
         metadata: {
-          snapshot: toAuditSnapshot(_mapDriver(existing), DRIVER_AUDIT_FIELDS),
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditDriverLabel(deletedDriver),
+          }),
+          snapshot: toAuditSnapshot(deletedDriver, DRIVER_AUDIT_FIELDS),
         },
       });
 

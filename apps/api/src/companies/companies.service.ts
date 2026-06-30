@@ -9,6 +9,7 @@ import {
 import { createApiException } from '../common/exceptions/api.exception';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
+  buildAuditContext,
   createAuditChanges,
   diffAuditChanges,
   toAuditSnapshot,
@@ -61,6 +62,7 @@ export class CompaniesService {
         entityType: AuditEntityType.COMPANY,
         entityId: company.id,
         metadata: {
+          ...buildAuditContext({ companyName: company.name }),
           changes: createAuditChanges(company, COMPANY_AUDIT_FIELDS),
         },
       });
@@ -93,6 +95,7 @@ export class CompaniesService {
         entityType: AuditEntityType.COMPANY,
         entityId: company.id,
         metadata: {
+          ...buildAuditContext({ companyName: company.name }),
           changes: diffAuditChanges(
             _mapCompany(existing),
             company,
@@ -117,6 +120,7 @@ export class CompaniesService {
         entityType: AuditEntityType.COMPANY,
         entityId: id,
         metadata: {
+          ...buildAuditContext({ companyName: existing.name }),
           snapshot: toAuditSnapshot(
             _mapCompany(existing),
             COMPANY_AUDIT_FIELDS,

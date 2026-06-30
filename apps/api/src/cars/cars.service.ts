@@ -8,8 +8,11 @@ import {
 } from '@fuel-carrier/shared-types';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
+  buildAuditContext,
   createAuditChanges,
   diffAuditChanges,
+  fetchCompanyName,
+  formatAuditCarLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -111,6 +114,7 @@ export class CarsService {
         }
 
         const car = _mapCar(row);
+        const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {
           action: AuditAction.CAR_CREATED,
@@ -118,6 +122,10 @@ export class CarsService {
           entityType: AuditEntityType.CAR,
           entityId: car.id,
           metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditCarLabel(car),
+            }),
             changes: createAuditChanges(car, CAR_AUDIT_FIELDS),
           },
         });
@@ -176,6 +184,7 @@ export class CarsService {
       }
 
       const car = _mapCar(row);
+      const companyName = await fetchCompanyName(tx, car.companyId);
 
       await this.auditLogService.record(context, {
         action: AuditAction.CAR_UPDATED,
@@ -183,6 +192,10 @@ export class CarsService {
         entityType: AuditEntityType.CAR,
         entityId: car.id,
         metadata: {
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditCarLabel(car),
+          }),
           changes: diffAuditChanges(_mapCar(existing), car, CAR_AUDIT_FIELDS),
         },
       });
@@ -220,13 +233,20 @@ export class CarsService {
         );
       }
 
+      const deletedCar = _mapCar(existing);
+      const companyName = await fetchCompanyName(tx, existing.companyId);
+
       await this.auditLogService.record(context, {
         action: AuditAction.CAR_DELETED,
         companyId: existing.companyId,
         entityType: AuditEntityType.CAR,
         entityId: id,
         metadata: {
-          snapshot: toAuditSnapshot(_mapCar(existing), CAR_AUDIT_FIELDS),
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditCarLabel(deletedCar),
+          }),
+          snapshot: toAuditSnapshot(deletedCar, CAR_AUDIT_FIELDS),
         },
       });
 

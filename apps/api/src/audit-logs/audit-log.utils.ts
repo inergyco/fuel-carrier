@@ -1,4 +1,11 @@
-import type { AuditFieldChange, AuthSession } from '@fuel-carrier/shared-types';
+import { eq } from 'drizzle-orm';
+import type {
+  AuditFieldChange,
+  AuditLogMetadata,
+  AuthSession,
+} from '@fuel-carrier/shared-types';
+import { companies } from '../database/schema/companies';
+import type { TenantTransaction } from '../database/tenant-db.types';
 
 export const AUDIT_REDACTED_VALUE = '[redacted]';
 
@@ -8,6 +15,68 @@ const SENSITIVE_FIELDS = new Set([
   'currentPassword',
   'newPassword',
 ]);
+
+export function buildAuditContext(options: {
+  companyName?: string | null;
+  entityLabel?: string | null;
+}): Pick<AuditLogMetadata, 'companyName' | 'entityLabel'> {
+  const context: Pick<AuditLogMetadata, 'companyName' | 'entityLabel'> = {};
+
+  if (options.companyName) {
+    context.companyName = options.companyName;
+  }
+
+  if (options.entityLabel) {
+    context.entityLabel = options.entityLabel;
+  }
+
+  return context;
+}
+
+export function formatAuditPersonLabel(
+  firstName: string,
+  lastName: string,
+  username?: string,
+): string {
+  const name = `${firstName} ${lastName}`.trim();
+
+  if (username) {
+    return `${name} (${username})`;
+  }
+
+  return name;
+}
+
+export function formatAuditDriverLabel(driver: {
+  firstName: string;
+  lastName: string;
+}): string {
+  return `${driver.firstName} ${driver.lastName}`.trim();
+}
+
+export function formatAuditCarLabel(car: {
+  name: string | null;
+  licensePlate: string;
+}): string {
+  if (car.name) {
+    return `${car.name} (${car.licensePlate})`;
+  }
+
+  return car.licensePlate;
+}
+
+export async function fetchCompanyName(
+  tx: TenantTransaction,
+  companyId: string,
+): Promise<string | undefined> {
+  const [row] = await tx
+    .select({ name: companies.name })
+    .from(companies)
+    .where(eq(companies.id, companyId))
+    .limit(1);
+
+  return row?.name;
+}
 
 export function actorFromSession(session: AuthSession): {
   userId: string;

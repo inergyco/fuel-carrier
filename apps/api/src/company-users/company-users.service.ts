@@ -13,8 +13,11 @@ import {
 import { hashPassword } from '../auth/password.utils';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
+  buildAuditContext,
   createAuditChanges,
   diffAuditChanges,
+  fetchCompanyName,
+  formatAuditPersonLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -107,6 +110,7 @@ export class CompanyUsersService {
       }
 
       const companyUser = _mapCompanyUser(created);
+      const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
       await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_USER_CREATED,
@@ -114,6 +118,14 @@ export class CompanyUsersService {
         entityType: AuditEntityType.COMPANY_USER,
         entityId: companyUser.id,
         metadata: {
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditPersonLabel(
+              companyUser.firstName,
+              companyUser.lastName,
+              companyUser.username,
+            ),
+          }),
           changes: createAuditChanges(
             _companyUserAuditRecord(companyUser, true),
             COMPANY_USER_AUDIT_FIELDS,
@@ -205,6 +217,7 @@ export class CompanyUsersService {
       }
 
       const companyUser = _mapCompanyUser(updated);
+      const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
       await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_USER_UPDATED,
@@ -212,6 +225,14 @@ export class CompanyUsersService {
         entityType: AuditEntityType.COMPANY_USER,
         entityId: companyUser.id,
         metadata: {
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditPersonLabel(
+              companyUser.firstName,
+              companyUser.lastName,
+              companyUser.username,
+            ),
+          }),
           changes: diffAuditChanges(
             _companyUserAuditRecord(_mapCompanyUser(existing), false),
             _companyUserAuditRecord(companyUser, Boolean(dto.password)),
@@ -246,14 +267,25 @@ export class CompanyUsersService {
 
       await tx.delete(users).where(eq(users.id, existing.userId));
 
+      const deletedUser = _mapCompanyUser(existing);
+      const companyName = await fetchCompanyName(tx, existing.companyId);
+
       await this.auditLogService.record(context, {
         action: AuditAction.COMPANY_USER_DELETED,
         companyId: existing.companyId,
         entityType: AuditEntityType.COMPANY_USER,
         entityId: existing.id,
         metadata: {
+          ...buildAuditContext({
+            companyName,
+            entityLabel: formatAuditPersonLabel(
+              deletedUser.firstName,
+              deletedUser.lastName,
+              deletedUser.username,
+            ),
+          }),
           snapshot: toAuditSnapshot(
-            _companyUserAuditRecord(_mapCompanyUser(existing), false),
+            _companyUserAuditRecord(deletedUser, false),
             COMPANY_USER_AUDIT_FIELDS,
           ),
         },

@@ -789,6 +789,14 @@ type RootTranslation = {
 				}
 				auditLogsFields: {
 					/**
+					 * C​o​m​p​a​n​y
+					 */
+					company: string
+					/**
+					 * S​u​b​j​e​c​t
+					 */
+					subject: string
+					/**
 					 * N​a​m​e
 					 */
 					name: string
@@ -1509,6 +1517,14 @@ type RootTranslation = {
 				authPasswordChanged: string
 			}
 			fields: {
+				/**
+				 * C​o​m​p​a​n​y
+				 */
+				company: string
+				/**
+				 * S​u​b​j​e​c​t
+				 */
+				subject: string
 				/**
 				 * N​a​m​e
 				 */
@@ -2326,6 +2342,14 @@ export type TranslationFunctions = {
 				}
 				auditLogsFields: {
 					/**
+					 * Company
+					 */
+					company: () => LocalizedString
+					/**
+					 * Subject
+					 */
+					subject: () => LocalizedString
+					/**
 					 * Name
 					 */
 					name: () => LocalizedString
@@ -3038,6 +3062,14 @@ export type TranslationFunctions = {
 				authPasswordChanged: () => LocalizedString
 			}
 			fields: {
+				/**
+				 * Company
+				 */
+				company: () => LocalizedString
+				/**
+				 * Subject
+				 */
+				subject: () => LocalizedString
 				/**
 				 * Name
 				 */

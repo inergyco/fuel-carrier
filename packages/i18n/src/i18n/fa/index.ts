@@ -216,6 +216,8 @@ const fa: Translation = {
           authPasswordChanged: "تغییر رمز عبور",
         },
         auditLogsFields: {
+          company: "شرکت",
+          subject: "موضوع",
           name: "نام",
           nationalId: "شناسه ملی",
           phoneNumber: "شماره تماس",
@@ -422,6 +424,8 @@ const fa: Translation = {
         authPasswordChanged: "رمز عبور تغییر کرد",
       },
       fields: {
+        company: "شرکت",
+        subject: "موضوع",
         name: "نام",
         nationalId: "شناسه ملی",
         phoneNumber: "شماره تماس",

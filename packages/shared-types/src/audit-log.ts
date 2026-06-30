@@ -41,6 +41,8 @@ export type AuditLogMetadata = {
   snapshot?: Record<string, unknown>;
   portal?: 'internal' | 'external';
   username?: string;
+  companyName?: string;
+  entityLabel?: string;
 };
 
 export type AuditLog = {

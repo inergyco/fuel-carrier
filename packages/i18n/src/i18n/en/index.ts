@@ -217,6 +217,8 @@ const en: BaseTranslation = {
           authPasswordChanged: 'Password changed',
         },
         auditLogsFields: {
+          company: 'Company',
+          subject: 'Subject',
           name: 'Name',
           nationalId: 'National ID',
           phoneNumber: 'Phone number',
@@ -424,6 +426,8 @@ const en: BaseTranslation = {
         authPasswordChanged: 'Password changed',
       },
       fields: {
+        company: 'Company',
+        subject: 'Subject',
         name: 'Name',
         nationalId: 'National ID',
         phoneNumber: 'Phone number',
