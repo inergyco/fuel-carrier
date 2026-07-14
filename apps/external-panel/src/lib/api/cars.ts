@@ -7,6 +7,7 @@ import { api } from '../api'
 
 export const carKeys = {
   all: ['cars'] as const,
+  detail: (id: string) => ['cars', id] as const,
 }
 
 export type CarFormValues = {
@@ -27,6 +28,10 @@ export function carToFormValues(car?: Car): CarFormValues {
 
 export async function fetchCars(): Promise<Car[]> {
   return api.get('cars').json<Car[]>()
+}
+
+export async function fetchCar(id: string): Promise<Car> {
+  return api.get(`cars/${id}`).json<Car>()
 }
 
 export async function createCar(dto: CreateExternalCarDto): Promise<Car> {

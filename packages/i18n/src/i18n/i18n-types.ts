@@ -1356,6 +1356,10 @@ type RootTranslation = {
 			 */
 			emptyCell: string
 			/**
+			 * V​i​e​w
+			 */
+			view: string
+			/**
 			 * E​d​i​t
 			 */
 			edit: string
@@ -1404,6 +1408,26 @@ type RootTranslation = {
 			 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
 			duplicateLicensePlate: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​v​e​h​i​c​l​e​s
+			 */
+			backToList: string
+			/**
+			 * V​e​h​i​c​l​e​ ​n​o​t​ ​f​o​u​n​d​.
+			 */
+			notFound: string
+			/**
+			 * T​h​i​s​ ​v​e​h​i​c​l​e​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​o​r​ ​t​h​e​ ​l​i​n​k​ ​i​s​ ​i​n​v​a​l​i​d​.
+			 */
+			notFoundDescription: string
+			/**
+			 * V​e​h​i​c​l​e​ ​d​e​t​a​i​l​s
+			 */
+			detailTitle: string
+			/**
+			 * O​v​e​r​v​i​e​w​ ​o​f​ ​t​h​i​s​ ​v​e​h​i​c​l​e
+			 */
+			detailSubtitle: string
 		}
 		auditLogs: {
 			/**
@@ -2902,6 +2926,10 @@ export type TranslationFunctions = {
 			 */
 			emptyCell: () => LocalizedString
 			/**
+			 * View
+			 */
+			view: () => LocalizedString
+			/**
 			 * Edit
 			 */
 			edit: () => LocalizedString
@@ -2949,6 +2977,26 @@ export type TranslationFunctions = {
 			 * A vehicle with this license plate already exists.
 			 */
 			duplicateLicensePlate: () => LocalizedString
+			/**
+			 * Back to vehicles
+			 */
+			backToList: () => LocalizedString
+			/**
+			 * Vehicle not found.
+			 */
+			notFound: () => LocalizedString
+			/**
+			 * This vehicle may have been deleted or the link is invalid.
+			 */
+			notFoundDescription: () => LocalizedString
+			/**
+			 * Vehicle details
+			 */
+			detailTitle: () => LocalizedString
+			/**
+			 * Overview of this vehicle
+			 */
+			detailSubtitle: () => LocalizedString
 		}
 		auditLogs: {
 			/**

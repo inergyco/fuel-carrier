@@ -30,6 +30,7 @@ interface ResourceListProps<T extends { id: string }> {
   actionLabels: ResourceActionLabels
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  renderViewAction?: (item: T) => ReactNode
   readOnly?: boolean
   variant: 'table' | 'cards'
 }
@@ -39,12 +40,16 @@ function ResourceOperations<T>({
   actionLabels,
   onEdit,
   onDelete,
+  renderViewAction,
+  readOnly = false,
   stacked = false,
 }: {
   item: T
   actionLabels: ResourceActionLabels
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  renderViewAction?: (item: T) => ReactNode
+  readOnly?: boolean
   stacked?: boolean
 }) {
   function handleEdit() {
@@ -62,24 +67,29 @@ function ResourceOperations<T>({
         stacked && 'justify-center',
       )}
     >
-      <Button
-        type="button"
-        variant="ghost"
-        className={dataTableEditActionClassName()}
-        onClick={handleEdit}
-        aria-label={actionLabels.edit}
-      >
-        <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        className={dataTableDeleteActionClassName()}
-        onClick={handleDelete}
-        aria-label={actionLabels.delete}
-      >
-        <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      </Button>
+      {renderViewAction?.(item)}
+      {!readOnly ? (
+        <>
+          <Button
+            type="button"
+            variant="ghost"
+            className={dataTableEditActionClassName()}
+            onClick={handleEdit}
+            aria-label={actionLabels.edit}
+          >
+            <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            className={dataTableDeleteActionClassName()}
+            onClick={handleDelete}
+            aria-label={actionLabels.delete}
+          >
+            <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+          </Button>
+        </>
+      ) : null}
     </div>
   )
 }
@@ -90,9 +100,12 @@ export function ResourceList<T extends { id: string }>({
   actionLabels,
   onEdit,
   onDelete,
+  renderViewAction,
   readOnly = false,
   variant,
 }: ResourceListProps<T>) {
+  const showOperations = Boolean(renderViewAction) || !readOnly
+
   if (variant === 'table') {
     return (
       <DataTable>
@@ -103,7 +116,7 @@ export function ResourceList<T extends { id: string }>({
                 <DataTableHeaderCell key={column.key}>{column.header}</DataTableHeaderCell>
               )
             })}
-            {!readOnly ? (
+            {showOperations ? (
               <DataTableHeaderCell>{actionLabels.operations}</DataTableHeaderCell>
             ) : null}
           </DataTableHeaderRow>
@@ -119,13 +132,15 @@ export function ResourceList<T extends { id: string }>({
                     </DataTableCell>
                   )
                 })}
-                {!readOnly ? (
+                {showOperations ? (
                   <DataTableCell className="text-end">
                     <ResourceOperations
                       item={item}
                       actionLabels={actionLabels}
                       onEdit={onEdit}
                       onDelete={onDelete}
+                      renderViewAction={renderViewAction}
+                      readOnly={readOnly}
                     />
                   </DataTableCell>
                 ) : null}
@@ -173,13 +188,15 @@ export function ResourceList<T extends { id: string }>({
                 })}
               </dl>
             ) : null}
-            {!readOnly ? (
+            {showOperations ? (
               <div className="mt-4 border-t border-base-content/8 pt-4">
                 <ResourceOperations
                   item={item}
                   actionLabels={actionLabels}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  renderViewAction={renderViewAction}
+                  readOnly={readOnly}
                   stacked
                 />
               </div>

@@ -1,5 +1,6 @@
 import { Button, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
+import type { ReactNode } from 'react'
 import { ResourceList, type ResourceColumn } from './resourceListViews'
 
 export type { ResourceColumn } from './resourceListViews'
@@ -23,6 +24,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onAdd: () => void
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  renderViewAction?: (item: T) => ReactNode
   readOnly?: boolean
 }
 
@@ -38,6 +40,7 @@ export function ResourceSection<T extends { id: string }>({
   onAdd,
   onEdit,
   onDelete,
+  renderViewAction,
   readOnly = false,
 }: ResourceSectionProps<T>) {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
@@ -70,6 +73,7 @@ export function ResourceSection<T extends { id: string }>({
           actionLabels={actionLabels}
           onEdit={onEdit}
           onDelete={onDelete}
+          renderViewAction={renderViewAction}
           readOnly={readOnly}
           variant={isMdUp ? 'table' : 'cards'}
         />
