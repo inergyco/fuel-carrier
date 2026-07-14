@@ -2,8 +2,8 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { formatVolume, FuelTruckDiagram } from '../fuel-truck'
 
 /** Placeholder until tank capacity / fill levels come from the API. */
-const PLACEHOLDER_TANK_CAPACITY = 10_000
-const PLACEHOLDER_TANK_FILLED = [7_200, 4_100, 8_000]
+const PLACEHOLDER_TANK_CAPACITY = 500
+const PLACEHOLDER_TANK_FILLED = [250, 100, 100]
 
 export function CarTanksSection() {
   const { LL } = useI18nContext()
