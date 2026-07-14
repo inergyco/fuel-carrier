@@ -400,6 +400,8 @@ const en: BaseTranslation = {
       notFoundDescription: 'This vehicle may have been deleted or the link is invalid.',
       detailTitle: 'Vehicle details',
       detailSubtitle: 'Overview of this vehicle',
+      tankUnit: 'L',
+      tankCapacity: 'Capacity per tank: {volume:string}',
     },
     auditLogs: {
       title: 'Audit log',

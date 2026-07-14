@@ -398,6 +398,8 @@ const fa: Translation = {
       notFoundDescription: "این خودرو حذف شده یا لینک نامعتبر است.",
       detailTitle: "جزئیات خودرو",
       detailSubtitle: "خلاصه اطلاعات این خودرو",
+      tankUnit: "لیتر",
+      tankCapacity: "ظرفیت هر مخزن: {volume:string}",
     },
     auditLogs: {
       title: "گزارش ممیزی",

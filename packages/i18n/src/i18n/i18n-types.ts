@@ -1428,6 +1428,15 @@ type RootTranslation = {
 			 * O​v​e​r​v​i​e​w​ ​o​f​ ​t​h​i​s​ ​v​e​h​i​c​l​e
 			 */
 			detailSubtitle: string
+			/**
+			 * L
+			 */
+			tankUnit: string
+			/**
+			 * C​a​p​a​c​i​t​y​ ​p​e​r​ ​t​a​n​k​:​ ​{​v​o​l​u​m​e​}
+			 * @param {string} volume
+			 */
+			tankCapacity: RequiredParams<'volume'>
 		}
 		auditLogs: {
 			/**
@@ -2997,6 +3006,14 @@ export type TranslationFunctions = {
 			 * Overview of this vehicle
 			 */
 			detailSubtitle: () => LocalizedString
+			/**
+			 * L
+			 */
+			tankUnit: () => LocalizedString
+			/**
+			 * Capacity per tank: {volume}
+			 */
+			tankCapacity: (arg: { volume: string }) => LocalizedString
 		}
 		auditLogs: {
 			/**
