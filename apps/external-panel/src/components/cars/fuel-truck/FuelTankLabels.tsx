@@ -4,30 +4,26 @@ import {
   TANK_LABEL_Y,
   VIEWBOX_HEIGHT,
   VIEWBOX_WIDTH,
-} from './layout'
+} from "./layout";
 
 export type FuelTankLabelsProps = {
-  filled: number[]
-  unitLabel?: string
-}
+  filled: number[];
+  unitLabel?: string;
+};
 
-/**
- * HTML fill labels aligned to tank centers. Capacity is shown once elsewhere
- * (shared across tanks). CSS font sizes keep text readable on mobile.
- */
 export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
-  const slots = getVisibleTankSlots(filled)
+  const slots = getVisibleTankSlots(filled);
 
   if (slots.length === 0) {
-    return null
+    return null;
   }
 
   return (
     <ul className="pointer-events-none absolute inset-0">
       {slots.map(function renderLabel(slot) {
-        const leftPercent = (slot.cx / VIEWBOX_WIDTH) * 100
-        const topPercent = (TANK_LABEL_Y / VIEWBOX_HEIGHT) * 100
-        const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ''}`
+        const leftPercent = (slot.cx / VIEWBOX_WIDTH) * 100;
+        const topPercent = (TANK_LABEL_Y / VIEWBOX_HEIGHT) * 100;
+        const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ""}`;
 
         return (
           <li
@@ -39,8 +35,8 @@ export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
               {label}
             </p>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
