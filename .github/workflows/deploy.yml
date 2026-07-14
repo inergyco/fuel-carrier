@@ -1,0 +1,75 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Start SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+
+      - name: Trust VPS host key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Open SSH tunnel to PostgreSQL
+        run: |
+          ssh -fN \
+            -o ExitOnForwardFailure=yes \
+            -o ServerAliveInterval=30 \
+            -L 5433:127.0.0.1:5432 \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}"
+
+      - name: Run database migrations
+        working-directory: apps/api
+        env:
+          MIGRATION_DATABASE_URL: ${{ secrets.MIGRATION_DATABASE_URL }}
+        run: pnpm db:migrate
+
+      - name: Build and pack deploy bundle
+        run: bash scripts/pack-deploy.sh
+
+      - name: Upload artifacts to VPS
+        run: |
+          rsync -avz --delete \
+            --exclude '.env' \
+            -e "ssh -o IdentitiesOnly=yes" \
+            deploy/ \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/fuel-carrier/"
+
+      - name: Restart API service
+        run: |
+          ssh -o IdentitiesOnly=yes \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            'sudo systemctl restart fuel-carrier-api && sudo systemctl is-active fuel-carrier-api'

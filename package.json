@@ -8,6 +8,7 @@
     "dev:api": "pnpm --filter api start:dev",
     "dev:internal": "pnpm --filter internal-panel dev",
     "dev:external": "pnpm --filter external-panel dev",
+    "pack:deploy": "bash scripts/pack-deploy.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
