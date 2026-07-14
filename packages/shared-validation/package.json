@@ -3,17 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "exports": {
-    "./username": "./src/username.js",
-    "./password": "./src/password.js",
-    "./admin/login": "./src/admin/login.dto.js",
-    "./company/create": "./src/company/create-company.dto.js",
-    "./company/update": "./src/company/update-company.dto.js",
-    "./company/constants": "./src/company/constants.js",
-    "./car/create": "./src/car/create-car.dto.js",
-    "./driver/create": "./src/driver/create-driver.dto.js",
-    "./company-user/create": "./src/company-user/create-company-user.dto.js",
-    "./auth/change-password": "./src/auth/change-password.dto.js",
-    "./pagination": "./src/pagination/pagination-query.dto.js"
+    "./username": "./src/username.ts",
+    "./password": "./src/password.ts",
+    "./admin/login": "./src/admin/login.dto.ts",
+    "./company/create": "./src/company/create-company.dto.ts",
+    "./company/update": "./src/company/update-company.dto.ts",
+    "./company/constants": "./src/company/constants.ts",
+    "./car/create": "./src/car/create-car.dto.ts",
+    "./driver/create": "./src/driver/create-driver.dto.ts",
+    "./company-user/create": "./src/company-user/create-company-user.dto.ts",
+    "./auth/change-password": "./src/auth/change-password.dto.ts",
+    "./pagination": "./src/pagination/pagination-query.dto.ts"
   },
   "dependencies": {
     "@fuel-carrier/shared-types": "workspace:*",
