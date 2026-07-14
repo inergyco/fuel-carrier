@@ -7,6 +7,6 @@ catalog:
   '@tanstack/react-query': ^5.90.12
 
 allowBuilds:
-  '@scarf/scarf': set this to true or false
+  '@scarf/scarf': false
   esbuild: false
   unrs-resolver: true
