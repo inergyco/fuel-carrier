@@ -63,12 +63,10 @@ jobs:
         run: |
           rsync -avz --delete \
             --exclude '.env' \
-            -e "ssh -o IdentitiesOnly=yes" \
             deploy/ \
             "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/fuel-carrier/"
 
       - name: Restart API service
         run: |
-          ssh -o IdentitiesOnly=yes \
-            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+          ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
             'sudo systemctl restart fuel-carrier-api && sudo systemctl is-active fuel-carrier-api'
