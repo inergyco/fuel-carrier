@@ -23,6 +23,8 @@ interface PanelShellProps {
   background?: ReactNode
   /** Extra classes for the scrollable main content region. */
   mainClassName?: string
+  /** Skip Tailwind `container` and padding (full-bleed pages like the map). */
+  fullWidthMain?: boolean
   children: ReactNode
 }
 
@@ -43,6 +45,7 @@ export function PanelShell({
   pageFooter,
   background,
   mainClassName,
+  fullWidthMain = false,
   children,
 }: PanelShellProps) {
   return (
@@ -90,7 +93,10 @@ export function PanelShell({
           />
           <main
             className={cn(
-              'relative z-10 min-h-0 flex-1 overflow-y-auto p-4 md:p-6 lg:p-8',
+              'relative z-10 min-h-0 flex-1',
+              fullWidthMain
+                ? 'flex flex-col overflow-hidden'
+                : 'container mx-auto w-full overflow-y-auto p-4 md:p-6 lg:p-8',
               mainClassName,
             )}
           >

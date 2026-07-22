@@ -269,6 +269,10 @@ const fa: Translation = {
       title: "داشبورد",
       welcome: "خوش آمدید، {firstName}",
       signedInAs: "وارد شده به عنوان {firstName} {lastName} ({username})",
+      fleetSummary: "{count} خودرو در ناوگان شما",
+      location: "موقعیت",
+      locationLive: "زنده",
+      locationUnknown: "آفلاین",
     },
     nav: {
       dashboard: "داشبورد",

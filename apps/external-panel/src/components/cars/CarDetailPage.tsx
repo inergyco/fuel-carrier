@@ -15,11 +15,7 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
   const { carQuery, isNotFound } = useCarQuery(carId)
 
   if (carQuery.isLoading) {
-    return (
-      <div className="mx-auto max-w-5xl">
-        <CarDetailLoadingHeader />
-      </div>
-    )
+    return <CarDetailLoadingHeader />
   }
 
   if (isNotFound || !carQuery.data) {
@@ -29,7 +25,7 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
   const car = carQuery.data
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <CarDetailHeader car={car} />
       <div className="flex flex-col gap-6">
         <CarTanksSection />

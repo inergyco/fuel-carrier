@@ -272,6 +272,10 @@ const en: BaseTranslation = {
       welcome: 'Welcome back, {firstName:string}',
       signedInAs:
         'Signed in as {firstName:string} {lastName:string} ({username:string})',
+      fleetSummary: '{count:number} vehicles in your fleet',
+      location: 'Location',
+      locationLive: 'Live',
+      locationUnknown: 'Offline',
     },
     nav: {
       dashboard: 'Dashboard',

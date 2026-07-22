@@ -22,7 +22,7 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
   }
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div>
       <div className="mb-6">
         <Link
           to="/companies"

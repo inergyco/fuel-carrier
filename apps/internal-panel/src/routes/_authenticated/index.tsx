@@ -12,7 +12,7 @@ function HomePage() {
   const { LL } = useI18nContext()
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div>
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
           {LL.internalPanel.home.title()}

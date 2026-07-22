@@ -19,7 +19,7 @@ function CompanyUsersPage() {
   const emptyCell = LL.externalPanel.users.emptyCell();
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <ResourceSection
         title={LL.externalPanel.users.title()}
         subtitle={LL.externalPanel.users.subtitle()}

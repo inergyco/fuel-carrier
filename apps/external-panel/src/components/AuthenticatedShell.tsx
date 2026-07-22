@@ -123,11 +123,7 @@ export function AuthenticatedShell({
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
-        mainClassName={
-          isMapPage
-            ? "flex min-h-0 flex-col overflow-hidden p-0 md:p-0 lg:p-0"
-            : undefined
-        }
+        fullWidthMain={isMapPage}
         pageFooter={
           isMapPage ? undefined : (
             <InergyFooter

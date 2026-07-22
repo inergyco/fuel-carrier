@@ -19,7 +19,7 @@ function DriversPage() {
   const emptyCell = LL.externalPanel.drivers.emptyCell()
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <ResourceSection
         title={LL.externalPanel.drivers.title()}
         subtitle={LL.externalPanel.drivers.subtitle()}

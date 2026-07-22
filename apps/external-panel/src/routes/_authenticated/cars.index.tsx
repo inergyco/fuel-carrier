@@ -26,7 +26,7 @@ function CarsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <ResourceSection
         title={LL.externalPanel.cars.title()}
         subtitle={LL.externalPanel.cars.subtitle()}

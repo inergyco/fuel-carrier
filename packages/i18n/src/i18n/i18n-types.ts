@@ -970,6 +970,23 @@ type RootTranslation = {
 			 * @param {string} username
 			 */
 			signedInAs: RequiredParams<'firstName' | 'lastName' | 'username'>
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s​ ​i​n​ ​y​o​u​r​ ​f​l​e​e​t
+			 * @param {number} count
+			 */
+			fleetSummary: RequiredParams<'count'>
+			/**
+			 * L​o​c​a​t​i​o​n
+			 */
+			location: string
+			/**
+			 * L​i​v​e
+			 */
+			locationLive: string
+			/**
+			 * O​f​f​l​i​n​e
+			 */
+			locationUnknown: string
 		}
 		nav: {
 			/**
@@ -2587,6 +2604,22 @@ export type TranslationFunctions = {
 			 * Signed in as {firstName} {lastName} ({username})
 			 */
 			signedInAs: (arg: { firstName: string, lastName: string, username: string }) => LocalizedString
+			/**
+			 * {count} vehicles in your fleet
+			 */
+			fleetSummary: (arg: { count: number }) => LocalizedString
+			/**
+			 * Location
+			 */
+			location: () => LocalizedString
+			/**
+			 * Live
+			 */
+			locationLive: () => LocalizedString
+			/**
+			 * Offline
+			 */
+			locationUnknown: () => LocalizedString
 		}
 		nav: {
 			/**

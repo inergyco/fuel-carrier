@@ -12,7 +12,7 @@ export function CarDetailNotFound() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <div className="mb-6">
         <CarDetailBackLink />
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
