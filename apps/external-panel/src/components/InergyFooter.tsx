@@ -27,7 +27,7 @@ export function InergyFooter({ className, stacked = false }: InergyFooterProps) 
         <img
           src="/inergy-logo.png"
           alt="Inergy"
-          className="h-9 w-auto max-w-[10rem] object-contain sm:h-10 sm:max-w-[11rem]"
+          className="h-9 w-auto max-w-40 object-contain sm:h-10 sm:max-w-44"
         />
       </a>
       <p className="text-center text-[10px] leading-snug text-base-content/35 sm:text-xs">

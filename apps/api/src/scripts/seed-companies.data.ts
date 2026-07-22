@@ -19,6 +19,9 @@ export type SeedCar = {
   note?: string;
   /** Index into the company's drivers array; omit for unassigned cars. */
   driverIndex?: number;
+  /** Demo GPS position around the company's operating region. */
+  latitude?: number;
+  longitude?: number;
 };
 
 export type SeedCompany = {
@@ -82,22 +85,30 @@ export const SEED_COMPANIES: SeedCompany[] = [
         licensePlate: '۱۲ب۳۴۵-۶۷',
         note: 'حمل بنزین سوپر',
         driverIndex: 0,
+        latitude: 35.7575,
+        longitude: 51.4097,
       },
       {
         name: 'تانکر ۲۴۰۰۰ لیتر',
         licensePlate: '۴۵ج۷۸۹-۲۱',
         note: 'حمل گازوئیل',
         driverIndex: 1,
+        latitude: 35.7219,
+        longitude: 51.3347,
       },
       {
         name: 'تریلی ۳۲۰۰۰ لیتر',
         licensePlate: '۷۸د۱۲۳-۴۵',
         driverIndex: 2,
+        latitude: 35.6892,
+        longitude: 51.389,
       },
       {
         name: 'تانکر ۱۸۰۰۰ لیتر',
         licensePlate: '۳۴س۵۶۷-۸۹',
         note: 'توزیع شهری',
+        latitude: 35.7448,
+        longitude: 51.3755,
       },
     ],
   },
@@ -146,21 +157,29 @@ export const SEED_COMPANIES: SeedCompany[] = [
         licensePlate: '۲۳ب۴۵۶-۷۸',
         note: 'حمل نفت کوره',
         driverIndex: 0,
+        latitude: 32.6546,
+        longitude: 51.668,
       },
       {
         name: 'تانکر ۲۸۰۰۰ لیتر',
         licensePlate: '۵۶ج۷۸۹-۱۲',
         driverIndex: 1,
+        latitude: 32.6714,
+        longitude: 51.6852,
       },
       {
         name: 'تریلی ۳۶۰۰۰ لیتر',
         licensePlate: '۸۹د۰۱۲-۳۴',
         note: 'حمل بنزین معمولی',
         driverIndex: 2,
+        latitude: 32.6405,
+        longitude: 51.6552,
       },
       {
         name: 'تانکر ۲۰۰۰۰ لیتر',
         licensePlate: '۱۱س۲۳۴-۵۶',
+        latitude: 32.6619,
+        longitude: 51.7011,
       },
     ],
   },
@@ -210,22 +229,30 @@ export const SEED_COMPANIES: SeedCompany[] = [
         licensePlate: '۶۷ب۸۹۰-۱۲',
         note: 'حمل گازوئیل صنعتی',
         driverIndex: 0,
+        latitude: 29.5918,
+        longitude: 52.5837,
       },
       {
         name: 'تانکر ۳۰۰۰۰ لیتر',
         licensePlate: '۹۰ج۱۲۳-۴۵',
         driverIndex: 1,
+        latitude: 29.6103,
+        longitude: 52.5311,
       },
       {
         name: 'تریلی ۳۶۰۰۰ لیتر',
         licensePlate: '۱۳د۴۵۶-۷۸',
         note: 'حمل بنزین سوپر',
         driverIndex: 2,
+        latitude: 29.6335,
+        longitude: 52.5211,
       },
       {
         name: 'تانکر ۲۲۰۰۰ لیتر',
         licensePlate: '۴۶س۷۸۹-۰۱',
         driverIndex: 3,
+        latitude: 29.5742,
+        longitude: 52.5989,
       },
     ],
   },

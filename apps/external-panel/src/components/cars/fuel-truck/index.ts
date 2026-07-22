@@ -10,4 +10,6 @@ export type { FuelTankBankProps } from './FuelTankBank'
 export { FuelTankLabels } from './FuelTankLabels'
 export type { FuelTankLabelsProps } from './FuelTankLabels'
 
+export { TruckBody } from './TruckBody'
+
 export { formatVolume } from './layout'

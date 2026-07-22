@@ -21,6 +21,8 @@ interface PanelShellProps {
   footer?: ReactNode
   pageFooter?: ReactNode
   background?: ReactNode
+  /** Extra classes for the scrollable main content region. */
+  mainClassName?: string
   children: ReactNode
 }
 
@@ -40,6 +42,7 @@ export function PanelShell({
   footer,
   pageFooter,
   background,
+  mainClassName,
   children,
 }: PanelShellProps) {
   return (
@@ -71,7 +74,7 @@ export function PanelShell({
           </div>
         </header>
 
-        <div className="relative flex flex-1 overflow-hidden">
+        <div className="relative flex min-h-0 flex-1 overflow-hidden">
           {background ? (
             <div
               aria-hidden
@@ -85,7 +88,12 @@ export function PanelShell({
             aria-hidden
             className="pointer-events-none absolute -top-24 end-0 h-72 w-72 rounded-full bg-primary/8 blur-3xl"
           />
-          <main className="relative z-10 flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <main
+            className={cn(
+              'relative z-10 min-h-0 flex-1 overflow-y-auto p-4 md:p-6 lg:p-8',
+              mainClassName,
+            )}
+          >
             {children}
           </main>
         </div>

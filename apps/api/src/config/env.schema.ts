@@ -21,6 +21,14 @@ export const envSchema = z.object({
   INTERNAL_AUTH_COOKIE_NAME: z.string().min(1).default('internal_auth_token'),
   EXTERNAL_AUTH_COOKIE_NAME: z.string().min(1).default('external_auth_token'),
   AUTH_COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),
+  REDIS_URL: z
+    .string()
+    .min(1, 'REDIS_URL is required')
+    .refine(
+      (url) => url.startsWith('redis://') || url.startsWith('rediss://'),
+      'REDIS_URL must be a Redis connection string',
+    )
+    .default('redis://localhost:6379'),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
     .default('true')

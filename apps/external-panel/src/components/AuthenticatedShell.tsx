@@ -1,5 +1,8 @@
 import { useI18nContext } from "@fuel-carrier/i18n/react";
-import { isCompanyUserAdmin, type AuthSession } from "@fuel-carrier/shared-types";
+import {
+  isCompanyUserAdmin,
+  type AuthSession,
+} from "@fuel-carrier/shared-types";
 import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   Button,
@@ -8,13 +11,20 @@ import {
   PanelShell,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
-import { Home, Users, Car, Truck, ScrollText } from "@fuel-carrier/web-ui/icons";
+import {
+  Home,
+  Users,
+  Car,
+  Truck,
+  Map,
+  ScrollText,
+} from "@fuel-carrier/web-ui/icons";
+import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
 import { redirectToLoginPage } from "../lib/redirect";
 import { CompanyBrandLogo } from "./CompanyBrandLogo";
-import { ExternalPanelBackground } from "./ExternalPanelBackground";
 import { InergyFooter } from "./InergyFooter";
 
 interface AuthenticatedShellProps {
@@ -22,11 +32,20 @@ interface AuthenticatedShellProps {
   user: AuthSession;
 }
 
-export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) {
+export function AuthenticatedShell({
+  children,
+  user,
+}: AuthenticatedShellProps) {
   const { LL } = useI18nContext();
   const queryClient = useQueryClient();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const pathname = useRouterState({
+    select: function selectPathname(state) {
+      return state.location.pathname;
+    },
+  });
+  const isMapPage = pathname === "/map";
 
   const navItems = useMemo(
     function createNavItems(): PanelNavItem[] {
@@ -51,6 +70,11 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
           to: "/cars",
           label: LL.externalPanel.nav.cars(),
           icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
+        {
+          to: "/map",
+          label: LL.externalPanel.nav.map(),
+          icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/audit-logs",
@@ -88,8 +112,8 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
   const initials =
     `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   const levelLabel = isCompanyUserAdmin(user)
-      ? LL.common.companyUserLevel.admin()
-      : LL.common.companyUserLevel.viewer();
+    ? LL.common.companyUserLevel.admin()
+    : LL.common.companyUserLevel.viewer();
 
   return (
     <>
@@ -99,12 +123,18 @@ export function AuthenticatedShell({ children, user }: AuthenticatedShellProps) 
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
-        background={<ExternalPanelBackground variant="shell" />}
+        mainClassName={
+          isMapPage
+            ? "flex min-h-0 flex-col overflow-hidden p-0 md:p-0 lg:p-0"
+            : undefined
+        }
         pageFooter={
-          <InergyFooter
-            stacked
-            className="relative z-10 shrink-0 lg:hidden"
-          />
+          isMapPage ? undefined : (
+            <InergyFooter
+              stacked
+              className="relative z-10 shrink-0 lg:hidden"
+            />
+          )
         }
         footer={
           <div className="space-y-3">

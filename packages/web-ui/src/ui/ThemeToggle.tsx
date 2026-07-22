@@ -2,7 +2,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Moon, Sun } from '@fuel-carrier/web-ui/icons'
 import { ICON_STROKE_WIDTH, iconMdClassName } from './iconClassName'
 import { Button } from './Button'
-import { useTheme } from './useTheme'
+import { useTheme } from './theme-context'
 
 export function ThemeToggle() {
   const { theme, toggle } = useTheme()

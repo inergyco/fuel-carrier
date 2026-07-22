@@ -2,39 +2,20 @@ import { FuelTank } from './FuelTank'
 import { getVisibleTankSlots, MANIFOLD_Y } from './layout'
 
 export type FuelTankBankProps = {
-  /** Shared capacity for every visible compartment. */
   capacity: number
-  /**
-   * Filled volumes for 1–3 tanks.
-   * Length decides how many compartments are shown.
-   */
   filled: number[]
   idPrefix: string
-  metalGradientId: string
-  liquidGradientId: string
-  shineGradientId: string
 }
 
-/**
- * App-facing tank group: capacity + per-tank levels drive which vessels render
- * and how full each one is. Visual cab/chassis stay separate from this state.
- */
-export function FuelTankBank({
-  capacity,
-  filled,
-  idPrefix,
-  metalGradientId,
-  liquidGradientId,
-  shineGradientId,
-}: FuelTankBankProps) {
+export function FuelTankBank({ capacity, filled, idPrefix }: FuelTankBankProps) {
   const slots = getVisibleTankSlots(filled)
 
   if (slots.length === 0) {
     return null
   }
 
-  const manifoldStart = slots[0]!.cx - 8
-  const manifoldEnd = slots[slots.length - 1]!.cx + 8
+  const manifoldStart = slots[0]!.cx - 12
+  const manifoldEnd = slots[slots.length - 1]!.cx + 12
 
   return (
     <g data-tank-bank="">
@@ -42,18 +23,19 @@ export function FuelTankBank({
         x={manifoldStart}
         y={MANIFOLD_Y}
         width={manifoldEnd - manifoldStart}
-        height={10}
-        rx={5}
-        className="fill-base-content/55 stroke-base-content/40"
+        height={8}
+        rx={4}
+        fill="#475569"
+        stroke="#334155"
         strokeWidth={1.5}
       />
       <rect
-        x={manifoldStart + 4}
+        x={manifoldStart + 3}
         y={MANIFOLD_Y + 2}
-        width={manifoldEnd - manifoldStart - 8}
-        height={3}
+        width={manifoldEnd - manifoldStart - 6}
+        height={2}
         rx={1}
-        className="fill-base-content/25"
+        fill="#94a3b8"
       />
 
       {slots.map(function renderTank(slot) {
@@ -64,9 +46,6 @@ export function FuelTankBank({
             cx={slot.cx}
             capacity={capacity}
             filled={slot.filled}
-            metalGradientId={metalGradientId}
-            liquidGradientId={liquidGradientId}
-            shineGradientId={shineGradientId}
           />
         )
       })}

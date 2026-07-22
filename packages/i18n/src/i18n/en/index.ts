@@ -278,6 +278,7 @@ const en: BaseTranslation = {
       users: 'Company users',
       drivers: 'Drivers',
       cars: 'Vehicles',
+      map: 'Map',
       auditLogs: 'Audit log',
       openMenu: 'Open menu',
       signOut: 'Sign out',
@@ -402,6 +403,15 @@ const en: BaseTranslation = {
       detailSubtitle: 'Overview of this vehicle',
       tankUnit: 'L',
       tankCapacity: 'Capacity per tank: {volume:string}',
+    },
+    map: {
+      title: 'Fleet map',
+      subtitle: 'Live vehicle positions',
+      loading: 'Loading map…',
+      empty: 'No vehicles are reporting a location yet.',
+      vehiclesOnMap: '{count:number} vehicles on map',
+      viewVehicle: 'View vehicle',
+      unnamedVehicle: 'Unnamed vehicle',
     },
     auditLogs: {
       title: 'Audit log',

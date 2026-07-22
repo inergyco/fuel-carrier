@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { admins } from './admins';
 import { auditLogs } from './audit-logs';
+import { carLocationHistory } from './car-location-history';
 import { cars } from './cars';
 import { companies } from './companies';
 import { companyUsers } from './company-users';
@@ -31,6 +32,7 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   cars: many(cars),
   companyUsers: many(companyUsers),
   auditLogs: many(auditLogs),
+  carLocationHistory: many(carLocationHistory),
 }));
 
 export const companyUsersRelations = relations(companyUsers, ({ one }) => ({
@@ -55,7 +57,7 @@ export const driversRelations = relations(drivers, ({ one }) => ({
   }),
 }));
 
-export const carsRelations = relations(cars, ({ one }) => ({
+export const carsRelations = relations(cars, ({ one, many }) => ({
   company: one(companies, {
     fields: [cars.companyId],
     references: [companies.id],
@@ -64,7 +66,22 @@ export const carsRelations = relations(cars, ({ one }) => ({
     fields: [cars.driverId],
     references: [drivers.id],
   }),
+  locationHistory: many(carLocationHistory),
 }));
+
+export const carLocationHistoryRelations = relations(
+  carLocationHistory,
+  ({ one }) => ({
+    car: one(cars, {
+      fields: [carLocationHistory.carId],
+      references: [cars.id],
+    }),
+    company: one(companies, {
+      fields: [carLocationHistory.companyId],
+      references: [companies.id],
+    }),
+  }),
+);
 
 export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
   company: one(companies, {

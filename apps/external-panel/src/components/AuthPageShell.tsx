@@ -1,12 +1,11 @@
-import type { ReactNode } from 'react'
-import { LocaleControls } from '@fuel-carrier/web-ui/ui'
-import { ExternalPanelBackground } from './ExternalPanelBackground'
-import { InergyFooter } from './InergyFooter'
+import type { ReactNode } from "react";
+import { LocaleControls } from "@fuel-carrier/web-ui/ui";
+import { InergyFooter } from "./InergyFooter";
 
 interface AuthPageShellProps {
-  title: string
-  subtitle: string
-  children: ReactNode
+  title: string;
+  subtitle: string;
+  children: ReactNode;
 }
 
 export function AuthPageShell({
@@ -17,8 +16,6 @@ export function AuthPageShell({
   return (
     <main className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-base-100 p-4 sm:p-6">
       <LocaleControls />
-
-      <ExternalPanelBackground />
 
       {/* Aurora mesh */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -50,7 +47,7 @@ export function AuthPageShell({
             <img
               src="/inergy-logo.png"
               alt="Inergy"
-              className="h-10 w-auto max-w-[11rem] object-contain sm:h-11"
+              className="h-10 w-auto max-w-44 object-contain sm:h-11"
             />
           </a>
           <h1 className="bg-gradient-to-br from-base-content via-base-content to-base-content/60 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
@@ -70,5 +67,5 @@ export function AuthPageShell({
 
       <InergyFooter className="relative z-10 mt-auto shrink-0" />
     </main>
-  )
+  );
 }

@@ -14,6 +14,7 @@ import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
 import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
 import { Route as AuthenticatedCarsRouteImport } from './routes/_authenticated/cars'
 import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated/audit-logs'
@@ -42,6 +43,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMapRoute = AuthenticatedMapRouteImport.update({
+  id: '/map',
+  path: '/map',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedDriversRoute = AuthenticatedDriversRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/cars': typeof AuthenticatedCarsRouteWithChildren
   '/drivers': typeof AuthenticatedDriversRoute
+  '/map': typeof AuthenticatedMapRoute
   '/users': typeof AuthenticatedUsersRoute
   '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
   '/cars/': typeof AuthenticatedCarsIndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/drivers': typeof AuthenticatedDriversRoute
+  '/map': typeof AuthenticatedMapRoute
   '/users': typeof AuthenticatedUsersRoute
   '/': typeof AuthenticatedIndexRoute
   '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
@@ -99,6 +107,7 @@ export interface FileRoutesById {
   '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/_authenticated/cars': typeof AuthenticatedCarsRouteWithChildren
   '/_authenticated/drivers': typeof AuthenticatedDriversRoute
+  '/_authenticated/map': typeof AuthenticatedMapRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/cars/$carId': typeof AuthenticatedCarsCarIdRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/audit-logs'
     | '/cars'
     | '/drivers'
+    | '/map'
     | '/users'
     | '/cars/$carId'
     | '/cars/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/audit-logs'
     | '/drivers'
+    | '/map'
     | '/users'
     | '/'
     | '/cars/$carId'
@@ -134,6 +145,7 @@ export interface FileRouteTypes {
     | '/_authenticated/audit-logs'
     | '/_authenticated/cars'
     | '/_authenticated/drivers'
+    | '/_authenticated/map'
     | '/_authenticated/users'
     | '/_authenticated/'
     | '/_authenticated/cars/$carId'
@@ -181,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/map': {
+      id: '/_authenticated/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof AuthenticatedMapRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/drivers': {
@@ -238,6 +257,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
   AuthenticatedCarsRoute: typeof AuthenticatedCarsRouteWithChildren
   AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
+  AuthenticatedMapRoute: typeof AuthenticatedMapRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
@@ -246,6 +266,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
   AuthenticatedCarsRoute: AuthenticatedCarsRouteWithChildren,
   AuthenticatedDriversRoute: AuthenticatedDriversRoute,
+  AuthenticatedMapRoute: AuthenticatedMapRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }

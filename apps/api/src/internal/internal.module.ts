@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { InternalAuthController } from '../auth/internal-auth.controller';
-import { AuthModule } from '../auth/auth.module';
 import { InternalCarsController } from '../cars/internal-cars.controller';
 import { CarsModule } from '../cars/cars.module';
 import { InternalCompanyUsersController } from '../company-users/internal-company-users.controller';
@@ -12,13 +11,7 @@ import { DriversModule } from '../drivers/drivers.module';
 import { InternalHealthController } from './internal-health.controller';
 
 @Module({
-  imports: [
-    AuthModule,
-    CompaniesModule,
-    CarsModule,
-    DriversModule,
-    CompanyUsersModule,
-  ],
+  imports: [CompaniesModule, CarsModule, DriversModule, CompanyUsersModule],
   controllers: [
     InternalHealthController,
     InternalAuthController,

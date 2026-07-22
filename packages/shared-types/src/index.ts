@@ -3,6 +3,7 @@ export * from "./api-response";
 export * from "./audit-log";
 export * from "./auth-session";
 export * from "./car";
+export * from "./car-location";
 export * from "./company";
 export * from "./company-user";
 export * from "./driver";

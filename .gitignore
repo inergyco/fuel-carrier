@@ -2,3 +2,5 @@ node_modules
 
 # Local deploy package (built artifacts for VPS upload)
 /deploy/
+
+.pnpm-store/

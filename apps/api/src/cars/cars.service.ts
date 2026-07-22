@@ -15,6 +15,7 @@ import {
   formatAuditCarLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
+import { CarLocationsService } from '../car-locations/car-locations.service';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -57,6 +58,7 @@ export class CarsService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
+    private readonly carLocationsService: CarLocationsService,
   ) {}
 
   async list(context: TenantContext): Promise<Car[]> {
@@ -205,7 +207,7 @@ export class CarsService {
   }
 
   async delete(context: TenantContext, id: string): Promise<null> {
-    return this.tenantDb.run(context, async (tx) => {
+    const deleted = await this.tenantDb.run(context, async (tx) => {
       const [existing] = await tx
         .select()
         .from(cars)
@@ -250,8 +252,15 @@ export class CarsService {
         },
       });
 
-      return null;
+      return { companyId: existing.companyId, carId: id };
     });
+
+    await this.carLocationsService.clearForCar(
+      deleted.companyId,
+      deleted.carId,
+    );
+
+    return null;
   }
 
   /**

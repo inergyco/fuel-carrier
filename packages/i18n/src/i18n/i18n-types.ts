@@ -989,6 +989,10 @@ type RootTranslation = {
 			 */
 			cars: string
 			/**
+			 * M​a​p
+			 */
+			map: string
+			/**
 			 * A​u​d​i​t​ ​l​o​g
 			 */
 			auditLogs: string
@@ -1437,6 +1441,37 @@ type RootTranslation = {
 			 * @param {string} volume
 			 */
 			tankCapacity: RequiredParams<'volume'>
+		}
+		map: {
+			/**
+			 * F​l​e​e​t​ ​m​a​p
+			 */
+			title: string
+			/**
+			 * L​i​v​e​ ​v​e​h​i​c​l​e​ ​p​o​s​i​t​i​o​n​s
+			 */
+			subtitle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​m​a​p​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​s​ ​a​r​e​ ​r​e​p​o​r​t​i​n​g​ ​a​ ​l​o​c​a​t​i​o​n​ ​y​e​t​.
+			 */
+			empty: string
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s​ ​o​n​ ​m​a​p
+			 * @param {number} count
+			 */
+			vehiclesOnMap: RequiredParams<'count'>
+			/**
+			 * V​i​e​w​ ​v​e​h​i​c​l​e
+			 */
+			viewVehicle: string
+			/**
+			 * U​n​n​a​m​e​d​ ​v​e​h​i​c​l​e
+			 */
+			unnamedVehicle: string
 		}
 		auditLogs: {
 			/**
@@ -2571,6 +2606,10 @@ export type TranslationFunctions = {
 			 */
 			cars: () => LocalizedString
 			/**
+			 * Map
+			 */
+			map: () => LocalizedString
+			/**
 			 * Audit log
 			 */
 			auditLogs: () => LocalizedString
@@ -3014,6 +3053,36 @@ export type TranslationFunctions = {
 			 * Capacity per tank: {volume}
 			 */
 			tankCapacity: (arg: { volume: string }) => LocalizedString
+		}
+		map: {
+			/**
+			 * Fleet map
+			 */
+			title: () => LocalizedString
+			/**
+			 * Live vehicle positions
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Loading map…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No vehicles are reporting a location yet.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * {count} vehicles on map
+			 */
+			vehiclesOnMap: (arg: { count: number }) => LocalizedString
+			/**
+			 * View vehicle
+			 */
+			viewVehicle: () => LocalizedString
+			/**
+			 * Unnamed vehicle
+			 */
+			unnamedVehicle: () => LocalizedString
 		}
 		auditLogs: {
 			/**

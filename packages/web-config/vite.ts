@@ -8,7 +8,14 @@ const defaultApiProxyTarget = "http://localhost:3000";
 export function createPanelViteConfig(overrides: UserConfig = {}) {
   return defineConfig({
     plugins: createPanelPlugins(),
+    optimizeDeps: {
+      include: ["leaflet", "react-leaflet"],
+    },
     server: {
+      fs: {
+        // Allow importing from workspace packages (e.g. @fuel-carrier/web-ui).
+        allow: ["../.."],
+      },
       proxy: {
         "/api": {
           target: defaultApiProxyTarget,

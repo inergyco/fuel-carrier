@@ -12,6 +12,7 @@
     "./ui": "./src/ui/index.ts",
     "./icons": "./src/icons/index.ts",
     "./audit-logs": "./src/audit-logs/index.ts",
+    "./map": "./src/map/index.ts",
     "./utils": "./src/utils/index.ts"
   },
   "dependencies": {
@@ -24,8 +25,10 @@
     "@tanstack/react-router-devtools": "^1.157.16",
     "clsx": "^2.1.1",
     "ky": "^1.14.3",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.20.0",
     "react-hook-form": "^7.57.0",
+    "react-leaflet": "^5.0.0",
     "tailwind-merge": "^3.3.1"
   },
   "scripts": {
@@ -33,13 +36,16 @@
   },
   "devDependencies": {
     "@fuel-carrier/web-config": "workspace:*",
+    "@types/leaflet": "^1.9.21",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "react": "^19.2.6",
     "typescript": "~6.0.2"
   },
   "peerDependencies": {
+    "leaflet": "^1.9.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-leaflet": "^5.0.0"
   }
 }

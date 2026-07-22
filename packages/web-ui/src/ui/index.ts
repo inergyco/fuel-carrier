@@ -7,7 +7,7 @@ export { FormTextarea } from './FormTextarea'
 export { Button } from './Button'
 export type { ButtonVariant } from './Button'
 export { ThemeToggle } from './ThemeToggle'
-export { ThemeProvider } from './theme-context'
+export { ThemeProvider, useTheme } from './theme-context'
 export type { ThemeMode, ThemeNames } from './theme-context'
 export { LanguageToggle } from './LanguageToggle'
 export { LocaleControls } from './LocaleControls'
@@ -39,8 +39,6 @@ export {
   getPaginationRange,
   type PaginationLabels,
 } from './Pagination'
-export { useTheme } from './useTheme'
-export type { Theme } from './useTheme'
 export { useMediaQuery } from './useMediaQuery'
 export { BREAKPOINTS, MEDIA_QUERIES } from './breakpoints'
 export { ToastProvider, useToast } from './toast'

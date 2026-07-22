@@ -1,8 +1,10 @@
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
+  useState,
   type ReactNode,
 } from 'react'
 
@@ -10,64 +12,27 @@ export type ThemeMode = 'light' | 'dark'
 
 export type ThemeNames = Record<ThemeMode, string>
 
-export const defaultThemeNames: ThemeNames = {
-  light: 'light',
-  dark: 'dark',
-}
-
-export const defaultThemeStorageKey = 'theme'
-
 type ThemeContextValue = {
-  names: ThemeNames
-  storageKey: string
+  theme: ThemeMode
+  setTheme: (mode: ThemeMode) => void
+  toggle: () => void
 }
 
-const defaultThemeContextValue: ThemeContextValue = {
-  names: defaultThemeNames,
-  storageKey: defaultThemeStorageKey,
-}
+const ThemeContext = createContext<ThemeContextValue | null>(null)
 
-const ThemeContext = createContext<ThemeContextValue>(defaultThemeContextValue)
-
-function isThemeMode(value: string | null): value is ThemeMode {
-  return value === 'light' || value === 'dark'
-}
-
-function readStoredThemeMode(storageKey: string): ThemeMode | null {
+function resolveThemeMode(names: ThemeNames, storageKey: string): ThemeMode {
   const stored = localStorage.getItem(storageKey)
-  if (isThemeMode(stored)) {
-    return stored
-  }
-
-  return null
-}
-
-export function resolveThemeMode(
-  themeNames: ThemeNames,
-  storageKey: string,
-): ThemeMode {
-  const stored = readStoredThemeMode(storageKey)
-  if (stored) {
+  if (stored === 'light' || stored === 'dark') {
     return stored
   }
 
   const attr = document.documentElement.getAttribute('data-theme')
-  if (attr === themeNames.dark) return 'dark'
-  if (attr === themeNames.light) return 'light'
-  if (attr === defaultThemeNames.dark) return 'dark'
-  if (attr === defaultThemeNames.light) return 'light'
+  if (attr === names.dark || attr === 'dark') return 'dark'
+  if (attr === names.light || attr === 'light') return 'light'
 
   return window.matchMedia('(prefers-color-scheme: dark)').matches
     ? 'dark'
     : 'light'
-}
-
-export function applyThemeMode(themeNames: ThemeNames, mode: ThemeMode) {
-  document.documentElement.setAttribute('data-theme', themeNames[mode])
-}
-
-export function persistThemeMode(storageKey: string, mode: ThemeMode) {
-  localStorage.setItem(storageKey, mode)
 }
 
 type ThemeProviderProps = {
@@ -78,40 +43,60 @@ type ThemeProviderProps = {
 
 export function ThemeProvider({
   themeNames,
-  storageKey = defaultThemeStorageKey,
+  storageKey = 'theme',
   children,
 }: ThemeProviderProps) {
-  const lightThemeName = themeNames?.light
-  const darkThemeName = themeNames?.dark
-  const value = useMemo(
-    function createThemeContextValue(): ThemeContextValue {
+  const names = useMemo(
+    function createThemeNames(): ThemeNames {
       return {
-        names: {
-          light: lightThemeName ?? defaultThemeNames.light,
-          dark: darkThemeName ?? defaultThemeNames.dark,
-        },
-        storageKey,
+        light: themeNames?.light ?? 'light',
+        dark: themeNames?.dark ?? 'dark',
       }
     },
-    [lightThemeName, darkThemeName, storageKey],
+    [themeNames?.light, themeNames?.dark],
+  )
+
+  const [theme, setThemeState] = useState<ThemeMode>(() =>
+    resolveThemeMode(names, storageKey),
+  )
+
+  const setTheme = useCallback(
+    function setTheme(mode: ThemeMode) {
+      document.documentElement.setAttribute('data-theme', names[mode])
+      localStorage.setItem(storageKey, mode)
+      setThemeState(mode)
+    },
+    [names, storageKey],
+  )
+
+  const toggle = useCallback(
+    function toggle() {
+      setTheme(theme === 'light' ? 'dark' : 'light')
+    },
+    [setTheme, theme],
   )
 
   useEffect(
-    function syncThemeOnMount() {
-      const mode = resolveThemeMode(value.names, value.storageKey)
-      applyThemeMode(value.names, mode)
-      persistThemeMode(value.storageKey, mode)
+    function syncTheme() {
+      setTheme(resolveThemeMode(names, storageKey))
     },
-    [value],
+    [names, setTheme, storageKey],
+  )
+
+  const value = useMemo(
+    function createThemeContextValue(): ThemeContextValue {
+      return { theme, setTheme, toggle }
+    },
+    [setTheme, theme, toggle],
   )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
-export function useThemeConfig(): ThemeContextValue {
-  return useContext(ThemeContext)
-}
-
-export function useThemeNames(): ThemeNames {
-  return useThemeConfig().names
+export function useTheme(): ThemeContextValue {
+  const value = useContext(ThemeContext)
+  if (!value) {
+    throw new Error('useTheme must be used within ThemeProvider')
+  }
+  return value
 }
