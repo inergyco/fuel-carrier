@@ -32,8 +32,8 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
     <div className="mx-auto max-w-5xl">
       <CarDetailHeader car={car} />
       <div className="flex flex-col gap-6">
-        <CarOverviewSection car={car} />
         <CarTanksSection />
+        <CarOverviewSection car={car} />
       </div>
     </div>
   )
