@@ -1,0 +1,13 @@
+# VPS: Postgres listens on 127.0.0.1 only — use host networking.
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Ensure config/secrets/postgres.conf on the server has:
+#   auth_opt_pg_host 127.0.0.1
+#   auth_opt_pg_password <production-secret>
+
+services:
+  mosquitto:
+    network_mode: host
+    ports: !reset []
+    extra_hosts: !reset []

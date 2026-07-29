@@ -4,3 +4,6 @@ node_modules
 /deploy/
 
 .pnpm-store/
+
+# Mosquitto DB connection secrets (never commit real passwords)
+infra/mosquitto/config/secrets/postgres.conf

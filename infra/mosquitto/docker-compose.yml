@@ -6,9 +6,16 @@ services:
       - "1883:1883"
     volumes:
       - ./config/mosquitto.conf:/etc/mosquitto/mosquitto.conf:ro
+      - ./config/secrets/postgres.conf:/etc/mosquitto/secrets/postgres.conf:ro
       - mosquitto-data:/var/lib/mosquitto
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cat /etc/mosquitto/mosquitto.conf /etc/mosquitto/secrets/postgres.conf > /tmp/mosquitto.conf
+        exec /usr/bin/tini -- /usr/sbin/mosquitto -c /tmp/mosquitto.conf
     restart: "no"
 
 volumes:
