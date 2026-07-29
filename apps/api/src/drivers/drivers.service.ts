@@ -3,7 +3,7 @@ import { desc, eq } from 'drizzle-orm';
 import type { Driver, TenantContext } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
-  AuditAction,
+  AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { AuditLogService } from '../audit-logs/audit-log.service';
@@ -107,7 +107,7 @@ export class DriversService {
         const companyName = await fetchCompanyName(tx, driver.companyId);
 
         await this.auditLogService.record(context, {
-          action: AuditAction.DRIVER_CREATED,
+          action: AuditActions.DRIVER_CREATED,
           companyId: driver.companyId,
           entityType: AuditEntityType.DRIVER,
           entityId: driver.id,
@@ -166,7 +166,7 @@ export class DriversService {
         const companyName = await fetchCompanyName(tx, driver.companyId);
 
         await this.auditLogService.record(context, {
-          action: AuditAction.DRIVER_UPDATED,
+          action: AuditActions.DRIVER_UPDATED,
           companyId: driver.companyId,
           entityType: AuditEntityType.DRIVER,
           entityId: driver.id,
@@ -223,7 +223,7 @@ export class DriversService {
       const companyName = await fetchCompanyName(tx, existing.companyId);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.DRIVER_DELETED,
+        action: AuditActions.DRIVER_DELETED,
         companyId: existing.companyId,
         entityType: AuditEntityType.DRIVER,
         entityId: id,

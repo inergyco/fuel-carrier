@@ -771,6 +771,14 @@ type RootTranslation = {
 					 */
 					carDeleted: string
 					/**
+					 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​p​r​o​v​i​s​i​o​n​e​d
+					 */
+					carMqttCredentialsProvisioned: string
+					/**
+					 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​o​t​a​t​e​d
+					 */
+					carMqttCredentialsRotated: string
+					/**
 					 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 					 */
 					authLoginSucceeded: string
@@ -1584,6 +1592,14 @@ type RootTranslation = {
 				 * V​e​h​i​c​l​e​ ​d​e​l​e​t​e​d
 				 */
 				carDeleted: string
+				/**
+				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​p​r​o​v​i​s​i​o​n​e​d
+				 */
+				carMqttCredentialsProvisioned: string
+				/**
+				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​o​t​a​t​e​d
+				 */
+				carMqttCredentialsRotated: string
 				/**
 				 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 				 */
@@ -2409,6 +2425,14 @@ export type TranslationFunctions = {
 					 */
 					carDeleted: () => LocalizedString
 					/**
+					 * MQTT credentials provisioned
+					 */
+					carMqttCredentialsProvisioned: () => LocalizedString
+					/**
+					 * MQTT credentials rotated
+					 */
+					carMqttCredentialsRotated: () => LocalizedString
+					/**
 					 * Login succeeded
 					 */
 					authLoginSucceeded: () => LocalizedString
@@ -3211,6 +3235,14 @@ export type TranslationFunctions = {
 				 * Vehicle deleted
 				 */
 				carDeleted: () => LocalizedString
+				/**
+				 * MQTT credentials provisioned
+				 */
+				carMqttCredentialsProvisioned: () => LocalizedString
+				/**
+				 * MQTT credentials rotated
+				 */
+				carMqttCredentialsRotated: () => LocalizedString
 				/**
 				 * Login succeeded
 				 */

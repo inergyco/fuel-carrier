@@ -21,11 +21,5 @@
     "noFallthroughCasesInSwitch": false,
     "types": ["jest", "node"]
   },
-  "include": [
-    "src",
-    "test",
-    "drizzle.config.ts",
-    "../../packages/shared-types/src",
-    "../../packages/shared-validation/src"
-  ]
+  "include": ["src", "test", "drizzle.config.ts"]
 }

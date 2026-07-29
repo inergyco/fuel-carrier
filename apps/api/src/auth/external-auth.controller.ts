@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import type { FastifyReply } from 'fastify';
 import { UserRole, type AuthSession } from '@fuel-carrier/shared-types';
-import { AuditAction } from '@fuel-carrier/shared-types';
+import { AuditActions } from '@fuel-carrier/shared-types';
 import { changePasswordDtoSchema } from '@fuel-carrier/shared-validation/auth/change-password';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -59,7 +59,7 @@ export class ExternalAuthController {
 
     return this.auditLogService
       .record(tenantContextFromSession(user), {
-        action: AuditAction.AUTH_LOGIN_SUCCEEDED,
+        action: AuditActions.AUTH_LOGIN_SUCCEEDED,
         companyId: user.companyId,
         metadata: { portal: 'external' },
         actor: user,
@@ -84,7 +84,7 @@ export class ExternalAuthController {
 
     return this.auditLogService
       .record(tenantContextFromSession(user), {
-        action: AuditAction.AUTH_LOGOUT,
+        action: AuditActions.AUTH_LOGOUT,
         companyId: user.companyId,
         metadata: { portal: 'external' },
         actor: user,
@@ -128,7 +128,7 @@ export class ExternalAuthController {
     this._setAuthCookie(res, updated);
 
     await this.auditLogService.record(tenantContextFromSession(updated), {
-      action: AuditAction.AUTH_PASSWORD_CHANGED,
+      action: AuditActions.AUTH_PASSWORD_CHANGED,
       companyId: updated.companyId,
       actor: updated,
       metadata: {

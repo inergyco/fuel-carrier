@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import type { FastifyReply } from 'fastify';
 import type { AuthSession } from '@fuel-carrier/shared-types';
-import { AuditAction, UserRole } from '@fuel-carrier/shared-types';
+import { AuditActions, UserRole } from '@fuel-carrier/shared-types';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeOkResponse,
@@ -62,7 +62,7 @@ export class InternalAuthController {
 
     return this.auditLogService
       .record(internalTenantContext(user), {
-        action: AuditAction.AUTH_LOGIN_SUCCEEDED,
+        action: AuditActions.AUTH_LOGIN_SUCCEEDED,
         metadata: { portal: 'internal' },
         actor: user,
       })
@@ -86,7 +86,7 @@ export class InternalAuthController {
 
     return this.auditLogService
       .record(internalTenantContext(user), {
-        action: AuditAction.AUTH_LOGOUT,
+        action: AuditActions.AUTH_LOGOUT,
         metadata: { portal: 'internal' },
         actor: user,
       })

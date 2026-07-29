@@ -1,6 +1,6 @@
 import type { UserRole } from './user-role';
 
-export const AuditAction = {
+export const AuditActions = {
   COMPANY_CREATED: 'company.created',
   COMPANY_UPDATED: 'company.updated',
   COMPANY_DELETED: 'company.deleted',
@@ -13,13 +13,15 @@ export const AuditAction = {
   CAR_CREATED: 'car.created',
   CAR_UPDATED: 'car.updated',
   CAR_DELETED: 'car.deleted',
+  CAR_MQTT_CREDENTIALS_PROVISIONED: 'car.mqtt_credentials_provisioned',
+  CAR_MQTT_CREDENTIALS_ROTATED: 'car.mqtt_credentials_rotated',
   AUTH_LOGIN_SUCCEEDED: 'auth.login_succeeded',
   AUTH_LOGIN_FAILED: 'auth.login_failed',
   AUTH_LOGOUT: 'auth.logout',
   AUTH_PASSWORD_CHANGED: 'auth.password_changed',
 } as const;
 
-export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
+export type AuditAction = (typeof AuditActions)[keyof typeof AuditActions];
 
 export const AuditEntityType = {
   COMPANY: 'company',

@@ -7,7 +7,7 @@ import type {
 } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
-  AuditAction,
+  AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { hashPassword } from '../auth/password.utils';
@@ -113,7 +113,7 @@ export class CompanyUsersService {
       const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_USER_CREATED,
+        action: AuditActions.COMPANY_USER_CREATED,
         companyId: companyUser.companyId,
         entityType: AuditEntityType.COMPANY_USER,
         entityId: companyUser.id,
@@ -220,7 +220,7 @@ export class CompanyUsersService {
       const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_USER_UPDATED,
+        action: AuditActions.COMPANY_USER_UPDATED,
         companyId: companyUser.companyId,
         entityType: AuditEntityType.COMPANY_USER,
         entityId: companyUser.id,
@@ -271,7 +271,7 @@ export class CompanyUsersService {
       const companyName = await fetchCompanyName(tx, existing.companyId);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_USER_DELETED,
+        action: AuditActions.COMPANY_USER_DELETED,
         companyId: existing.companyId,
         entityType: AuditEntityType.COMPANY_USER,
         entityId: existing.id,

@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategyBase } from 'passport-local';
 import { eq } from 'drizzle-orm';
 import type { AuthSession } from '@fuel-carrier/shared-types';
-import { AuditAction, UserRole } from '@fuel-carrier/shared-types';
+import { AuditActions, UserRole } from '@fuel-carrier/shared-types';
 import { parseZodDto } from '../common/validation/zod.utils';
 import {
   loginDtoSchema,
@@ -50,7 +50,7 @@ export class LocalCompanyStrategy extends PassportStrategy(
       });
 
       await this.auditLogService.record(internalTenantContext(), {
-        action: AuditAction.AUTH_LOGIN_FAILED,
+        action: AuditActions.AUTH_LOGIN_FAILED,
         companyId: companyUser?.companyId ?? null,
         actor: {
           userId: null,

@@ -8,10 +8,17 @@ import { InternalCompaniesController } from '../companies/internal-companies.con
 import { CompaniesModule } from '../companies/companies.module';
 import { InternalDriversController } from '../drivers/internal-drivers.controller';
 import { DriversModule } from '../drivers/drivers.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 import { InternalHealthController } from './internal-health.controller';
 
 @Module({
-  imports: [CompaniesModule, CarsModule, DriversModule, CompanyUsersModule],
+  imports: [
+    CompaniesModule,
+    CarsModule,
+    DriversModule,
+    CompanyUsersModule,
+    MqttModule,
+  ],
   controllers: [
     InternalHealthController,
     InternalAuthController,

@@ -1,5 +1,5 @@
 import type { AuditLog } from '@fuel-carrier/shared-types'
-import { AuditAction } from '@fuel-carrier/shared-types'
+import { AuditActions } from '@fuel-carrier/shared-types'
 
 export type AuditLogLabels = {
   actions: Record<string, () => string>
@@ -16,22 +16,24 @@ export type AuditLogLabels = {
 }
 
 const ACTION_LABEL_KEYS: Record<string, string> = {
-  [AuditAction.COMPANY_CREATED]: 'companyCreated',
-  [AuditAction.COMPANY_UPDATED]: 'companyUpdated',
-  [AuditAction.COMPANY_DELETED]: 'companyDeleted',
-  [AuditAction.COMPANY_USER_CREATED]: 'companyUserCreated',
-  [AuditAction.COMPANY_USER_UPDATED]: 'companyUserUpdated',
-  [AuditAction.COMPANY_USER_DELETED]: 'companyUserDeleted',
-  [AuditAction.DRIVER_CREATED]: 'driverCreated',
-  [AuditAction.DRIVER_UPDATED]: 'driverUpdated',
-  [AuditAction.DRIVER_DELETED]: 'driverDeleted',
-  [AuditAction.CAR_CREATED]: 'carCreated',
-  [AuditAction.CAR_UPDATED]: 'carUpdated',
-  [AuditAction.CAR_DELETED]: 'carDeleted',
-  [AuditAction.AUTH_LOGIN_SUCCEEDED]: 'authLoginSucceeded',
-  [AuditAction.AUTH_LOGIN_FAILED]: 'authLoginFailed',
-  [AuditAction.AUTH_LOGOUT]: 'authLogout',
-  [AuditAction.AUTH_PASSWORD_CHANGED]: 'authPasswordChanged',
+  [AuditActions.COMPANY_CREATED]: 'companyCreated',
+  [AuditActions.COMPANY_UPDATED]: 'companyUpdated',
+  [AuditActions.COMPANY_DELETED]: 'companyDeleted',
+  [AuditActions.COMPANY_USER_CREATED]: 'companyUserCreated',
+  [AuditActions.COMPANY_USER_UPDATED]: 'companyUserUpdated',
+  [AuditActions.COMPANY_USER_DELETED]: 'companyUserDeleted',
+  [AuditActions.DRIVER_CREATED]: 'driverCreated',
+  [AuditActions.DRIVER_UPDATED]: 'driverUpdated',
+  [AuditActions.DRIVER_DELETED]: 'driverDeleted',
+  [AuditActions.CAR_CREATED]: 'carCreated',
+  [AuditActions.CAR_UPDATED]: 'carUpdated',
+  [AuditActions.CAR_DELETED]: 'carDeleted',
+  [AuditActions.CAR_MQTT_CREDENTIALS_PROVISIONED]: 'carMqttCredentialsProvisioned',
+  [AuditActions.CAR_MQTT_CREDENTIALS_ROTATED]: 'carMqttCredentialsRotated',
+  [AuditActions.AUTH_LOGIN_SUCCEEDED]: 'authLoginSucceeded',
+  [AuditActions.AUTH_LOGIN_FAILED]: 'authLoginFailed',
+  [AuditActions.AUTH_LOGOUT]: 'authLogout',
+  [AuditActions.AUTH_PASSWORD_CHANGED]: 'authPasswordChanged',
 }
 
 export function formatAuditValue(value: unknown): string {

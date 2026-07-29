@@ -2,12 +2,11 @@ import 'dotenv/config';
 import { eq } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import bcrypt from 'bcryptjs';
 import { Pool } from 'pg';
-import { BCRYPT_ROUNDS } from '../auth/password.utils';
 import * as schema from '../database/schema';
 import { mqttAcls } from '../database/schema/mqtt-acls';
 import { mqttClients } from '../database/schema/mqtt-clients';
+import { hashMqttSecret } from '../mqtt/mqtt-secret.utils';
 
 /** Fixed local-dev credentials — not for production. */
 const BACKEND_USERNAME = 'backend';
@@ -103,10 +102,6 @@ async function upsertClient(params: {
       })),
     );
   });
-}
-
-async function hashMqttSecret(secret: string): Promise<string> {
-  return bcrypt.hash(secret, BCRYPT_ROUNDS);
 }
 
 seedMqttClients().catch((error: unknown) => {

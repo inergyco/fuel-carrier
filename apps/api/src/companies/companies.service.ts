@@ -3,7 +3,7 @@ import { and, desc, eq, ne } from 'drizzle-orm';
 import type { Company, CompanyInput } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
-  AuditAction,
+  AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -57,7 +57,7 @@ export class CompaniesService {
       const company = _mapCompany(row);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_CREATED,
+        action: AuditActions.COMPANY_CREATED,
         companyId: company.id,
         entityType: AuditEntityType.COMPANY,
         entityId: company.id,
@@ -90,7 +90,7 @@ export class CompaniesService {
       const company = _mapCompany(row);
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_UPDATED,
+        action: AuditActions.COMPANY_UPDATED,
         companyId: company.id,
         entityType: AuditEntityType.COMPANY,
         entityId: company.id,
@@ -115,7 +115,7 @@ export class CompaniesService {
       await tx.delete(companies).where(eq(companies.id, id));
 
       await this.auditLogService.record(context, {
-        action: AuditAction.COMPANY_DELETED,
+        action: AuditActions.COMPANY_DELETED,
         companyId: id,
         entityType: AuditEntityType.COMPANY,
         entityId: id,
