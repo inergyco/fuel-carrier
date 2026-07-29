@@ -6,6 +6,8 @@ import { cars } from './cars';
 import { companies } from './companies';
 import { companyUsers } from './company-users';
 import { drivers } from './drivers';
+import { mqttAcls } from './mqtt-acls';
+import { mqttClients } from './mqtt-clients';
 import { users } from './users';
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -67,6 +69,25 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
     references: [drivers.id],
   }),
   locationHistory: many(carLocationHistory),
+  mqttClient: one(mqttClients, {
+    fields: [cars.id],
+    references: [mqttClients.carId],
+  }),
+}));
+
+export const mqttClientsRelations = relations(mqttClients, ({ one, many }) => ({
+  car: one(cars, {
+    fields: [mqttClients.carId],
+    references: [cars.id],
+  }),
+  acls: many(mqttAcls),
+}));
+
+export const mqttAclsRelations = relations(mqttAcls, ({ one }) => ({
+  client: one(mqttClients, {
+    fields: [mqttAcls.clientId],
+    references: [mqttClients.id],
+  }),
 }));
 
 export const carLocationHistoryRelations = relations(
