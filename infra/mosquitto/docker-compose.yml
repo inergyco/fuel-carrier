@@ -1,15 +1,15 @@
 services:
   mosquitto:
-    image: eclipse-mosquitto:2
+    image: iegomez/mosquitto-go-auth:3.0.0-mosquitto_2.0.18
     container_name: fuel-carrier-mosquitto
     ports:
       - "1883:1883"
     volumes:
-      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
-      - mosquitto-data:/mosquitto/data
-      - mosquitto-log:/mosquitto/log
+      - ./config/mosquitto.conf:/etc/mosquitto/mosquitto.conf:ro
+      - mosquitto-data:/var/lib/mosquitto
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: "no"
 
 volumes:
   mosquitto-data:
-  mosquitto-log:
