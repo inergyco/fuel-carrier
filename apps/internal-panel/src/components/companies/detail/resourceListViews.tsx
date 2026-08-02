@@ -39,6 +39,7 @@ export function ResourceList<T extends { id: string }>({
   columns,
   onEdit,
   onDelete,
+  onMqttCredentials,
   variant,
 }: ResourceListProps<T>) {
   const { LL } = useI18nContext();
@@ -79,6 +80,7 @@ export function ResourceList<T extends { id: string }>({
                     item={item}
                     onEdit={onEdit}
                     onDelete={onDelete}
+                    onMqttCredentials={onMqttCredentials}
                   />
                 </DataTableCell>
               </DataTableRow>
@@ -130,6 +132,7 @@ export function ResourceList<T extends { id: string }>({
                 item={item}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onMqttCredentials={onMqttCredentials}
                 stacked
               />
             </div>
