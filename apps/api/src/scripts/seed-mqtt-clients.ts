@@ -8,11 +8,11 @@ import { mqttAcls } from '../database/schema/mqtt-acls';
 import { mqttClients } from '../database/schema/mqtt-clients';
 import { hashMqttSecret } from '../mqtt/mqtt-secret.utils';
 
-/** Fixed local-dev credentials — not for production. */
+/** Fixed local-dev defaults — override with MQTT_SEED_* env vars for production. */
 const BACKEND_USERNAME = 'backend';
-const BACKEND_PASSWORD = 'dev-backend-secret';
 const DEVICE_USERNAME = 'device1';
-const DEVICE_PASSWORD = 'dev-device-secret';
+const DEV_BACKEND_PASSWORD = 'dev-backend-secret';
+const DEV_DEVICE_PASSWORD = 'dev-device-secret';
 
 type Db = NodePgDatabase<typeof schema>;
 
@@ -22,6 +22,27 @@ async function seedMqttClients(): Promise<void> {
     throw new Error('DATABASE_URL is required');
   }
 
+  const isProd = process.env.MQTT_SEED_PROD === 'true';
+  const backendPassword =
+    process.env.MQTT_SEED_BACKEND_PASSWORD ??
+    (isProd ? undefined : DEV_BACKEND_PASSWORD);
+  const seedDevice = isProd
+    ? process.env.MQTT_SEED_DEVICE === 'true'
+    : process.env.MQTT_SEED_DEVICE !== 'false';
+  const devicePassword = process.env.MQTT_SEED_DEVICE_PASSWORD;
+
+  if (!backendPassword) {
+    throw new Error(
+      'MQTT_SEED_BACKEND_PASSWORD is required when MQTT_SEED_PROD=true',
+    );
+  }
+
+  if (isProd && backendPassword === DEV_BACKEND_PASSWORD) {
+    throw new Error(
+      'Refusing to seed production with the local-dev backend password',
+    );
+  }
+
   const pool = new Pool({ connectionString: databaseUrl });
   const db = drizzle(pool, { schema });
 
@@ -29,24 +50,40 @@ async function seedMqttClients(): Promise<void> {
     await upsertClient({
       db,
       username: BACKEND_USERNAME,
-      password: BACKEND_PASSWORD,
+      password: backendPassword,
       acls: [{ topic: 'telemetry/#', access: 'read' }],
     });
 
-    await upsertClient({
-      db,
-      username: DEVICE_USERNAME,
-      password: DEVICE_PASSWORD,
-      acls: [{ topic: `telemetry/${DEVICE_USERNAME}/#`, access: 'write' }],
-    });
+    console.log(
+      isProd
+        ? 'MQTT backend client seeded (production):'
+        : 'MQTT clients seeded (local/dev):',
+    );
+    if (isProd) {
+      console.log(
+        `  ${BACKEND_USERNAME} → subscribe telemetry/# (password = MQTT_SEED_BACKEND_PASSWORD)`,
+      );
+      console.log(
+        `  Set API MQTT_USERNAME=${BACKEND_USERNAME} and MQTT_PASSWORD to that same secret.`,
+      );
+    } else {
+      console.log(
+        `  ${BACKEND_USERNAME} / ${backendPassword}  → subscribe telemetry/#`,
+      );
+    }
 
-    console.log('MQTT clients seeded (local/dev only):');
-    console.log(
-      `  ${BACKEND_USERNAME} / ${BACKEND_PASSWORD}  → subscribe telemetry/#`,
-    );
-    console.log(
-      `  ${DEVICE_USERNAME} / ${DEVICE_PASSWORD}  → publish telemetry/${DEVICE_USERNAME}/#`,
-    );
+    if (seedDevice) {
+      const password = devicePassword ?? DEV_DEVICE_PASSWORD;
+      await upsertClient({
+        db,
+        username: DEVICE_USERNAME,
+        password,
+        acls: [{ topic: `telemetry/${DEVICE_USERNAME}/#`, access: 'write' }],
+      });
+      console.log(
+        `  ${DEVICE_USERNAME} / ${password}  → publish telemetry/${DEVICE_USERNAME}/#`,
+      );
+    }
   } finally {
     await pool.end();
   }
