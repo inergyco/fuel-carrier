@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { Car } from '@fuel-carrier/shared-types'
+import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
@@ -19,6 +19,8 @@ export function useCompanyCars(companyId: string) {
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
   const [mqttTarget, setMqttTarget] = useState<Car | null>(null)
+  const [mqttCredentials, setMqttCredentials] =
+    useState<CarMqttCredentials | null>(null)
 
   const carsQuery = useQuery({
     queryKey: carKeys.all,
@@ -73,7 +75,7 @@ export function useCompanyCars(companyId: string) {
   const mqttMutation = useMutation({
     mutationFn: provisionCarMqttCredentials,
     onSuccess: function onMqttCredentialsProvisioned(result) {
-      setMqttTarget(null)
+      setMqttCredentials(result)
       toast.success(
         result.rotated
           ? LL.internalPanel.toast.carMqttCredentialsRotated()
@@ -91,15 +93,20 @@ export function useCompanyCars(companyId: string) {
 
   function openMqttCredentials(car: Car) {
     mqttMutation.reset()
+    setMqttCredentials(null)
     setMqttTarget(car)
   }
 
   function closeMqttConfirm() {
-    setMqttTarget(null)
+    if (!mqttCredentials) {
+      setMqttTarget(null)
+    }
   }
 
   function closeMqttCredentials() {
     mqttMutation.reset()
+    setMqttCredentials(null)
+    setMqttTarget(null)
   }
 
   return {
@@ -112,6 +119,7 @@ export function useCompanyCars(companyId: string) {
     deleteTarget,
     setDeleteTarget,
     mqttTarget,
+    mqttCredentials,
     openMqttCredentials,
     mqttMutation,
     closeMqttConfirm,

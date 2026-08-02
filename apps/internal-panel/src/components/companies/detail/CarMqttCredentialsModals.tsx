@@ -15,6 +15,7 @@ import {
 
 interface CarMqttCredentialsModalsProps {
   target: Car | null
+  credentials: CarMqttCredentials | null
   mutation: UseMutationResult<CarMqttCredentials, Error, string, unknown>
   onCloseConfirm: () => void
   onCloseCredentials: () => void
@@ -22,12 +23,12 @@ interface CarMqttCredentialsModalsProps {
 
 export function CarMqttCredentialsModals({
   target,
+  credentials,
   mutation,
   onCloseConfirm,
   onCloseCredentials,
 }: CarMqttCredentialsModalsProps) {
   const { LL } = useI18nContext()
-  const credentials = mutation.data ?? null
 
   return (
     <>

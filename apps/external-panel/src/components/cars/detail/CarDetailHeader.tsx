@@ -64,6 +64,7 @@ export function CarDetailHeader({ car }: CarDetailHeaderProps) {
       {canManage ? (
         <CarMqttCredentialsModals
           target={mqtt.mqttTarget}
+          credentials={mqtt.mqttCredentials}
           mutation={mqtt.mqttMutation}
           onCloseConfirm={mqtt.closeMqttConfirm}
           onCloseCredentials={mqtt.closeMqttCredentials}

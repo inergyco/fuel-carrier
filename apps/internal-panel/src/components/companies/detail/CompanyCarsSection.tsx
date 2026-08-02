@@ -67,6 +67,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
 
       <CarMqttCredentialsModals
         target={cars.mqttTarget}
+        credentials={cars.mqttCredentials}
         mutation={cars.mqttMutation}
         onCloseConfirm={cars.closeMqttConfirm}
         onCloseCredentials={cars.closeMqttCredentials}
