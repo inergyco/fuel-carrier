@@ -13,6 +13,6 @@ export async function hashMqttSecret(secret: string): Promise<string> {
   return bcrypt.hash(secret, BCRYPT_ROUNDS);
 }
 
-export function mqttTelemetryTopic(carId: string): string {
+export function buildMqttTelemetryTopic(carId: string): string {
   return `telemetry/${carId}/#`;
 }

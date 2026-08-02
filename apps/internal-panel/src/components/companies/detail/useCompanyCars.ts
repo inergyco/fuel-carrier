@@ -3,7 +3,12 @@ import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
-import { carKeys, deleteCar, fetchCars } from '../../../lib/api/cars'
+import {
+  carKeys,
+  deleteCar,
+  fetchCars,
+  provisionCarMqttCredentials,
+} from '../../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
 
@@ -13,6 +18,7 @@ export function useCompanyCars(companyId: string) {
   const queryClient = useQueryClient()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
+  const [mqttTarget, setMqttTarget] = useState<Car | null>(null)
 
   const carsQuery = useQuery({
     queryKey: carKeys.all,
@@ -64,8 +70,36 @@ export function useCompanyCars(companyId: string) {
     },
   })
 
+  const mqttMutation = useMutation({
+    mutationFn: provisionCarMqttCredentials,
+    onSuccess: function onMqttCredentialsProvisioned(result) {
+      setMqttTarget(null)
+      toast.success(
+        result.rotated
+          ? LL.internalPanel.toast.carMqttCredentialsRotated()
+          : LL.internalPanel.toast.carMqttCredentialsProvisioned(),
+      )
+    },
+    onError: function onMqttCredentialsError() {
+      toast.error(LL.internalPanel.companies.detail.mqttCredentialsFailed())
+    },
+  })
+
   async function handleChanged() {
     await queryClient.invalidateQueries({ queryKey: carKeys.all })
+  }
+
+  function openMqttCredentials(car: Car) {
+    mqttMutation.reset()
+    setMqttTarget(car)
+  }
+
+  function closeMqttConfirm() {
+    setMqttTarget(null)
+  }
+
+  function closeMqttCredentials() {
+    mqttMutation.reset()
   }
 
   return {
@@ -77,6 +111,11 @@ export function useCompanyCars(companyId: string) {
     setCarModal,
     deleteTarget,
     setDeleteTarget,
+    mqttTarget,
+    openMqttCredentials,
+    mqttMutation,
+    closeMqttConfirm,
+    closeMqttCredentials,
     deleteMutation,
     handleChanged,
   }

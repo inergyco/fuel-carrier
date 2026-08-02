@@ -23,7 +23,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import {
   generateMqttSecret,
   hashMqttSecret,
-  mqttTelemetryTopic,
+  buildMqttTelemetryTopic,
 } from './mqtt-secret.utils';
 
 @Injectable()
@@ -44,7 +44,7 @@ export class MqttCredentialsService {
     const password = generateMqttSecret();
     const passwordHash = await hashMqttSecret(password);
     const username = carId;
-    const publishTopic = mqttTelemetryTopic(carId);
+    const publishTopic = buildMqttTelemetryTopic(carId);
 
     return this.tenantDb.run(context, async (tx) => {
       const [car] = await tx

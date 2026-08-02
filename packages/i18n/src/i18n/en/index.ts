@@ -94,6 +94,8 @@ const en: BaseTranslation = {
       carCreated: 'Car added.',
       carUpdated: 'Car updated.',
       carDeleted: 'Car deleted.',
+      carMqttCredentialsProvisioned: 'MQTT credentials provisioned.',
+      carMqttCredentialsRotated: 'MQTT credentials rotated.',
       signedOut: 'Signed out.',
     },
     auditLogs: {
@@ -182,6 +184,24 @@ const en: BaseTranslation = {
         deleteCarTitle: 'Delete car?',
         deleteCarDescription:
           'This will permanently delete {licensePlate:string}. This action cannot be undone.',
+        mqttCredentialsAction: 'MQTT credentials',
+        mqttCredentialsConfirmTitle: 'Provision MQTT credentials?',
+        mqttCredentialsConfirmDescription:
+          'Create or rotate broker credentials for {licensePlate:string}. The plaintext password is shown only once.',
+        mqttCredentialsConfirm: 'Provision',
+        mqttCredentialsProvisioning: 'Provisioning…',
+        mqttCredentialsProvisionedTitle: 'MQTT credentials ready',
+        mqttCredentialsRotatedTitle: 'MQTT credentials rotated',
+        mqttCredentialsOnceWarning:
+          'Copy these values now. The password cannot be retrieved again.',
+        mqttCredentialsUsername: 'Username',
+        mqttCredentialsPassword: 'Password',
+        mqttCredentialsTopic: 'Publish topic',
+        mqttCredentialsCopy: 'Copy',
+        mqttCredentialsCopied: 'Copied to clipboard.',
+        mqttCredentialsCopyFailed: 'Could not copy to clipboard.',
+        mqttCredentialsDismiss: 'Done',
+        mqttCredentialsFailed: 'Could not provision MQTT credentials. Please try again.',
         createFailed: 'Could not save. Please try again.',
         deleteFailed: 'Could not delete. Please try again.',
         duplicateUsername: 'This username is already taken.',

@@ -333,6 +333,14 @@ type RootTranslation = {
 			 */
 			carDeleted: string
 			/**
+			 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​p​r​o​v​i​s​i​o​n​e​d​.
+			 */
+			carMqttCredentialsProvisioned: string
+			/**
+			 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​o​t​a​t​e​d​.
+			 */
+			carMqttCredentialsRotated: string
+			/**
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
@@ -657,6 +665,71 @@ type RootTranslation = {
 				 * @param {string} licensePlate
 				 */
 				deleteCarDescription: RequiredParams<'licensePlate'>
+				/**
+				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s
+				 */
+				mqttCredentialsAction: string
+				/**
+				 * P​r​o​v​i​s​i​o​n​ ​M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​?
+				 */
+				mqttCredentialsConfirmTitle: string
+				/**
+				 * C​r​e​a​t​e​ ​o​r​ ​r​o​t​a​t​e​ ​b​r​o​k​e​r​ ​c​r​e​d​e​n​t​i​a​l​s​ ​f​o​r​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​T​h​e​ ​p​l​a​i​n​t​e​x​t​ ​p​a​s​s​w​o​r​d​ ​i​s​ ​s​h​o​w​n​ ​o​n​l​y​ ​o​n​c​e​.
+				 * @param {string} licensePlate
+				 */
+				mqttCredentialsConfirmDescription: RequiredParams<'licensePlate'>
+				/**
+				 * P​r​o​v​i​s​i​o​n
+				 */
+				mqttCredentialsConfirm: string
+				/**
+				 * P​r​o​v​i​s​i​o​n​i​n​g​…
+				 */
+				mqttCredentialsProvisioning: string
+				/**
+				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​e​a​d​y
+				 */
+				mqttCredentialsProvisionedTitle: string
+				/**
+				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​o​t​a​t​e​d
+				 */
+				mqttCredentialsRotatedTitle: string
+				/**
+				 * C​o​p​y​ ​t​h​e​s​e​ ​v​a​l​u​e​s​ ​n​o​w​.​ ​T​h​e​ ​p​a​s​s​w​o​r​d​ ​c​a​n​n​o​t​ ​b​e​ ​r​e​t​r​i​e​v​e​d​ ​a​g​a​i​n​.
+				 */
+				mqttCredentialsOnceWarning: string
+				/**
+				 * U​s​e​r​n​a​m​e
+				 */
+				mqttCredentialsUsername: string
+				/**
+				 * P​a​s​s​w​o​r​d
+				 */
+				mqttCredentialsPassword: string
+				/**
+				 * P​u​b​l​i​s​h​ ​t​o​p​i​c
+				 */
+				mqttCredentialsTopic: string
+				/**
+				 * C​o​p​y
+				 */
+				mqttCredentialsCopy: string
+				/**
+				 * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
+				 */
+				mqttCredentialsCopied: string
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​c​o​p​y​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
+				 */
+				mqttCredentialsCopyFailed: string
+				/**
+				 * D​o​n​e
+				 */
+				mqttCredentialsDismiss: string
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​p​r​o​v​i​s​i​o​n​ ​M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				mqttCredentialsFailed: string
 				/**
 				 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
 				 */
@@ -1991,6 +2064,14 @@ export type TranslationFunctions = {
 			 */
 			carDeleted: () => LocalizedString
 			/**
+			 * MQTT credentials provisioned.
+			 */
+			carMqttCredentialsProvisioned: () => LocalizedString
+			/**
+			 * MQTT credentials rotated.
+			 */
+			carMqttCredentialsRotated: () => LocalizedString
+			/**
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
@@ -2311,6 +2392,70 @@ export type TranslationFunctions = {
 				 * This will permanently delete {licensePlate}. This action cannot be undone.
 				 */
 				deleteCarDescription: (arg: { licensePlate: string }) => LocalizedString
+				/**
+				 * MQTT credentials
+				 */
+				mqttCredentialsAction: () => LocalizedString
+				/**
+				 * Provision MQTT credentials?
+				 */
+				mqttCredentialsConfirmTitle: () => LocalizedString
+				/**
+				 * Create or rotate broker credentials for {licensePlate}. The plaintext password is shown only once.
+				 */
+				mqttCredentialsConfirmDescription: (arg: { licensePlate: string }) => LocalizedString
+				/**
+				 * Provision
+				 */
+				mqttCredentialsConfirm: () => LocalizedString
+				/**
+				 * Provisioning…
+				 */
+				mqttCredentialsProvisioning: () => LocalizedString
+				/**
+				 * MQTT credentials ready
+				 */
+				mqttCredentialsProvisionedTitle: () => LocalizedString
+				/**
+				 * MQTT credentials rotated
+				 */
+				mqttCredentialsRotatedTitle: () => LocalizedString
+				/**
+				 * Copy these values now. The password cannot be retrieved again.
+				 */
+				mqttCredentialsOnceWarning: () => LocalizedString
+				/**
+				 * Username
+				 */
+				mqttCredentialsUsername: () => LocalizedString
+				/**
+				 * Password
+				 */
+				mqttCredentialsPassword: () => LocalizedString
+				/**
+				 * Publish topic
+				 */
+				mqttCredentialsTopic: () => LocalizedString
+				/**
+				 * Copy
+				 */
+				mqttCredentialsCopy: () => LocalizedString
+				/**
+				 * Copied to clipboard.
+				 */
+				mqttCredentialsCopied: () => LocalizedString
+				/**
+				 * Could not copy to clipboard.
+				 */
+				mqttCredentialsCopyFailed: () => LocalizedString
+				/**
+				 * Done
+				 */
+				mqttCredentialsDismiss: () => LocalizedString
+				/**
+				 * Could not provision MQTT credentials. Please try again.
+				 */
+				mqttCredentialsFailed: () => LocalizedString
 				/**
 				 * Could not save. Please try again.
 				 */

@@ -16,6 +16,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onAdd: () => void
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  onMqttCredentials?: (item: T) => void
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -29,6 +30,7 @@ export function ResourceSection<T extends { id: string }>({
   onAdd,
   onEdit,
   onDelete,
+  onMqttCredentials,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
@@ -58,6 +60,7 @@ export function ResourceSection<T extends { id: string }>({
           columns={columns}
           onEdit={onEdit}
           onDelete={onDelete}
+          onMqttCredentials={onMqttCredentials}
           variant={isMdUp ? 'table' : 'cards'}
         />
       )}

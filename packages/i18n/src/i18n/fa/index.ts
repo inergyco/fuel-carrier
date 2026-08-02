@@ -92,6 +92,8 @@ const fa: Translation = {
       carCreated: "خودرو اضافه شد.",
       carUpdated: "خودرو به‌روزرسانی شد.",
       carDeleted: "خودرو حذف شد.",
+      carMqttCredentialsProvisioned: "اعتبارنامه MQTT صادر شد.",
+      carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
       signedOut: "خروج انجام شد.",
     },
     auditLogs: {
@@ -180,6 +182,25 @@ const fa: Translation = {
         deleteCarTitle: "حذف خودرو؟",
         deleteCarDescription:
           "خودرو با پلاک «{licensePlate}» برای همیشه حذف می‌شود. این عمل قابل بازگشت نیست.",
+        mqttCredentialsAction: "اعتبارنامه MQTT",
+        mqttCredentialsConfirmTitle: "صدور اعتبارنامه MQTT؟",
+        mqttCredentialsConfirmDescription:
+          "برای خودرو با پلاک «{licensePlate}» اعتبارنامه کارگزار ایجاد یا چرخانده می‌شود. رمز عبور فقط یک‌بار نمایش داده می‌شود.",
+        mqttCredentialsConfirm: "صدور",
+        mqttCredentialsProvisioning: "در حال صدور…",
+        mqttCredentialsProvisionedTitle: "اعتبارنامه MQTT آماده است",
+        mqttCredentialsRotatedTitle: "اعتبارنامه MQTT چرخانده شد",
+        mqttCredentialsOnceWarning:
+          "همین حالا این مقادیر را کپی کنید. رمز عبور دیگر قابل بازیابی نیست.",
+        mqttCredentialsUsername: "نام کاربری",
+        mqttCredentialsPassword: "رمز عبور",
+        mqttCredentialsTopic: "تاپیک انتشار",
+        mqttCredentialsCopy: "کپی",
+        mqttCredentialsCopied: "در کلیپ‌بورد کپی شد.",
+        mqttCredentialsCopyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
+        mqttCredentialsDismiss: "تمام",
+        mqttCredentialsFailed:
+          "صدور اعتبارنامه MQTT انجام نشد. لطفاً دوباره تلاش کنید.",
         createFailed: "ذخیره انجام نشد. لطفاً دوباره تلاش کنید.",
         deleteFailed: "حذف انجام نشد. لطفاً دوباره تلاش کنید.",
         duplicateUsername: "این نام کاربری قبلاً استفاده شده است.",

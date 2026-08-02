@@ -1,6 +1,7 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { getCarColumns } from './companyResourceColumns'
 import { CarFormModal } from './CarFormModal'
+import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { DeleteCompanyCarModal } from './DeleteCompanyCarModal'
 import { ResourceSection } from './ResourceSection'
 import { useCompanyCars } from './useCompanyCars'
@@ -35,6 +36,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
           cars.setCarModal({ mode: 'edit', item: car })
         }}
         onDelete={cars.setDeleteTarget}
+        onMqttCredentials={cars.openMqttCredentials}
       />
 
       {cars.carModal && (
@@ -61,6 +63,13 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         onClose={function closeDeleteModal() {
           cars.setDeleteTarget(null)
         }}
+      />
+
+      <CarMqttCredentialsModals
+        target={cars.mqttTarget}
+        mutation={cars.mqttMutation}
+        onCloseConfirm={cars.closeMqttConfirm}
+        onCloseCredentials={cars.closeMqttCredentials}
       />
     </>
   )

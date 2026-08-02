@@ -1,4 +1,4 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   Button,
   DataTable,
@@ -10,76 +10,28 @@ import {
   DataTableRow,
   dataTableDeleteActionClassName,
   dataTableEditActionClassName,
+  dataTableViewActionClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
-} from '@fuel-carrier/web-ui/ui'
-import { Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
-import { cn } from '@fuel-carrier/web-ui/utils'
-import type { ReactNode } from 'react'
+} from "@fuel-carrier/web-ui/ui";
+import { KeyRound, Pencil, Trash2 } from "@fuel-carrier/web-ui/icons";
+import { cn } from "@fuel-carrier/web-ui/utils";
+import type { ReactNode } from "react";
 
 export interface ResourceColumn<T> {
-  key: string
-  header: string
-  cell: (item: T) => ReactNode
-  className?: string
+  key: string;
+  header: string;
+  cell: (item: T) => ReactNode;
+  className?: string;
 }
 
 interface ResourceListProps<T extends { id: string }> {
-  items: T[]
-  columns: ResourceColumn<T>[]
-  onEdit: (item: T) => void
-  onDelete: (item: T) => void
-  variant: 'table' | 'cards'
-}
-
-function ResourceOperations<T>({
-  item,
-  onEdit,
-  onDelete,
-  stacked = false,
-}: {
-  item: T
-  onEdit: (item: T) => void
-  onDelete: (item: T) => void
-  stacked?: boolean
-}) {
-  const { LL } = useI18nContext()
-
-  function handleEdit() {
-    onEdit(item)
-  }
-
-  function handleDelete() {
-    onDelete(item)
-  }
-
-  return (
-    <div
-      className={cn(
-        'flex flex-wrap items-center gap-2',
-        stacked && 'justify-center',
-      )}
-    >
-      <Button
-        type="button"
-        variant="ghost"
-        className={dataTableEditActionClassName()}
-        onClick={handleEdit}
-        aria-label={LL.internalPanel.companies.edit()}
-      >
-        <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        className={dataTableDeleteActionClassName()}
-        onClick={handleDelete}
-        aria-label={LL.internalPanel.companies.delete()}
-      >
-        <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      </Button>
-    </div>
-  )
+  items: T[];
+  columns: ResourceColumn<T>[];
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
+  onMqttCredentials?: (item: T) => void;
+  variant: "table" | "cards";
 }
 
 export function ResourceList<T extends { id: string }>({
@@ -89,19 +41,23 @@ export function ResourceList<T extends { id: string }>({
   onDelete,
   variant,
 }: ResourceListProps<T>) {
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
 
-  if (variant === 'table') {
+  if (variant === "table") {
     return (
       <DataTable>
         <DataTableHead>
           <DataTableHeaderRow>
             {columns.map(function renderHeader(column) {
               return (
-                <DataTableHeaderCell key={column.key}>{column.header}</DataTableHeaderCell>
-              )
+                <DataTableHeaderCell key={column.key}>
+                  {column.header}
+                </DataTableHeaderCell>
+              );
             })}
-            <DataTableHeaderCell>{LL.internalPanel.companies.operations()}</DataTableHeaderCell>
+            <DataTableHeaderCell>
+              {LL.internalPanel.companies.operations()}
+            </DataTableHeaderCell>
           </DataTableHeaderRow>
         </DataTableHead>
         <DataTableBody>
@@ -110,23 +66,30 @@ export function ResourceList<T extends { id: string }>({
               <DataTableRow key={item.id}>
                 {columns.map(function renderCell(column) {
                   return (
-                    <DataTableCell key={column.key} className={column.className}>
+                    <DataTableCell
+                      key={column.key}
+                      className={column.className}
+                    >
                       {column.cell(item)}
                     </DataTableCell>
-                  )
+                  );
                 })}
                 <DataTableCell className="text-end">
-                  <ResourceOperations item={item} onEdit={onEdit} onDelete={onDelete} />
+                  <ResourceOperations
+                    item={item}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                  />
                 </DataTableCell>
               </DataTableRow>
-            )
+            );
           })}
         </DataTableBody>
       </DataTable>
-    )
+    );
   }
 
-  const [titleColumn, ...detailColumns] = columns
+  const [titleColumn, ...detailColumns] = columns;
 
   return (
     <ul className="flex flex-col gap-3">
@@ -151,14 +114,14 @@ export function ResourceList<T extends { id: string }>({
                       </dt>
                       <dd
                         className={cn(
-                          'mt-1 break-words whitespace-pre-wrap',
+                          "mt-1 break-words whitespace-pre-wrap",
                           column.className,
                         )}
                       >
                         {column.cell(item)}
                       </dd>
                     </div>
-                  )
+                  );
                 })}
               </dl>
             ) : null}
@@ -171,8 +134,89 @@ export function ResourceList<T extends { id: string }>({
               />
             </div>
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
+}
+
+type ResourceOperationsProps<T> = {
+  item: T;
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
+  onMqttCredentials?: (item: T) => void;
+  stacked?: boolean;
+};
+
+function ResourceOperations<T>({
+  item,
+  onEdit,
+  onDelete,
+  onMqttCredentials,
+  stacked = false,
+}: ResourceOperationsProps<T>) {
+  const { LL } = useI18nContext();
+
+  function handleEdit() {
+    onEdit(item);
+  }
+
+  function handleDelete() {
+    onDelete(item);
+  }
+
+  function handleMqttCredentials() {
+    onMqttCredentials?.(item);
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex flex-wrap items-center gap-2",
+        stacked && "justify-center",
+      )}
+    >
+      {onMqttCredentials ? (
+        <Button
+          type="button"
+          variant="ghost"
+          className={dataTableViewActionClassName()}
+          onClick={handleMqttCredentials}
+          aria-label={LL.internalPanel.companies.detail.mqttCredentialsAction()}
+        >
+          <KeyRound
+            className={iconSmClassName}
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+        </Button>
+      ) : null}
+      <Button
+        type="button"
+        variant="ghost"
+        className={dataTableEditActionClassName()}
+        onClick={handleEdit}
+        aria-label={LL.internalPanel.companies.edit()}
+      >
+        <Pencil
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        className={dataTableDeleteActionClassName()}
+        onClick={handleDelete}
+        aria-label={LL.internalPanel.companies.delete()}
+      >
+        <Trash2
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+      </Button>
+    </div>
+  );
 }
