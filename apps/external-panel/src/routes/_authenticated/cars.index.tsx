@@ -3,9 +3,11 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { CarFormModal } from '../../components/cars/CarFormModal'
+import { CarMqttCredentialsModals } from '../../components/cars/CarMqttCredentialsModals'
 import { CarViewAction } from '../../components/cars/CarViewAction'
 import { getCarColumns } from '../../components/cars/carColumns'
 import { DeleteCarModal } from '../../components/cars/DeleteCarModal'
+import { useCarMqttCredentials } from '../../components/cars/useCarMqttCredentials'
 import { useCars } from '../../components/cars/useCars'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
@@ -18,6 +20,7 @@ function CarsPage() {
   const { user } = Route.useRouteContext()
   const canManage = isCompanyUserAdmin(user)
   const cars = useCars()
+  const mqtt = useCarMqttCredentials()
   const emptyCell = LL.externalPanel.cars.emptyCell()
   const isLoading = cars.carsQuery.isLoading || cars.driversQuery.isLoading
 
@@ -44,6 +47,7 @@ function CarsPage() {
           edit: LL.externalPanel.cars.edit(),
           delete: LL.externalPanel.cars.delete(),
           operations: LL.externalPanel.cars.operations(),
+          mqttCredentials: LL.externalPanel.cars.mqttCredentialsAction(),
         }}
         onAdd={function openCreateCar() {
           cars.setCarModal({ mode: 'create' })
@@ -52,6 +56,7 @@ function CarsPage() {
           cars.setCarModal({ mode: 'edit', item: car })
         }}
         onDelete={cars.setDeleteTarget}
+        onMqttCredentials={canManage ? mqtt.openMqttCredentials : undefined}
         renderViewAction={renderViewAction}
         readOnly={!canManage}
       />
@@ -80,6 +85,15 @@ function CarsPage() {
           onClose={function closeDeleteModal() {
             cars.setDeleteTarget(null)
           }}
+        />
+      ) : null}
+
+      {canManage ? (
+        <CarMqttCredentialsModals
+          target={mqtt.mqttTarget}
+          mutation={mqtt.mqttMutation}
+          onCloseConfirm={mqtt.closeMqttConfirm}
+          onCloseCredentials={mqtt.closeMqttCredentials}
         />
       ) : null}
     </div>

@@ -10,6 +10,7 @@ export interface ResourceActionLabels {
   edit: string
   delete: string
   operations: string
+  mqttCredentials?: string
 }
 
 interface ResourceSectionProps<T extends { id: string }> {
@@ -24,6 +25,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onAdd: () => void
   onEdit: (item: T) => void
   onDelete: (item: T) => void
+  onMqttCredentials?: (item: T) => void
   renderViewAction?: (item: T) => ReactNode
   readOnly?: boolean
 }
@@ -40,6 +42,7 @@ export function ResourceSection<T extends { id: string }>({
   onAdd,
   onEdit,
   onDelete,
+  onMqttCredentials,
   renderViewAction,
   readOnly = false,
 }: ResourceSectionProps<T>) {
@@ -73,6 +76,7 @@ export function ResourceSection<T extends { id: string }>({
           actionLabels={actionLabels}
           onEdit={onEdit}
           onDelete={onDelete}
+          onMqttCredentials={onMqttCredentials}
           renderViewAction={renderViewAction}
           readOnly={readOnly}
           variant={isMdUp ? 'table' : 'cards'}

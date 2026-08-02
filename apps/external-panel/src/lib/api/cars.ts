@@ -1,4 +1,4 @@
-import type { Car } from '@fuel-carrier/shared-types'
+import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types'
 import type {
   CreateExternalCarDto,
   UpdateExternalCarDto,
@@ -48,3 +48,10 @@ export async function updateCar(
 export async function deleteCar(id: string): Promise<void> {
   await api.delete(`cars/${id}`).json()
 }
+
+export async function provisionCarMqttCredentials(
+  id: string,
+): Promise<CarMqttCredentials> {
+  return api.post(`cars/${id}/mqtt-credentials`).json<CarMqttCredentials>()
+}
+

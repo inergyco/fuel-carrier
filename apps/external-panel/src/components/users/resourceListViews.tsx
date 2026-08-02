@@ -9,89 +9,32 @@ import {
   DataTableRow,
   dataTableDeleteActionClassName,
   dataTableEditActionClassName,
+  dataTableViewActionClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
-} from '@fuel-carrier/web-ui/ui'
-import { Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
-import { cn } from '@fuel-carrier/web-ui/utils'
-import type { ReactNode } from 'react'
-import type { ResourceActionLabels } from './ResourceSection'
+} from "@fuel-carrier/web-ui/ui";
+import { KeyRound, Pencil, Trash2 } from "@fuel-carrier/web-ui/icons";
+import { cn } from "@fuel-carrier/web-ui/utils";
+import type { ReactNode } from "react";
+import type { ResourceActionLabels } from "./ResourceSection";
 
 export interface ResourceColumn<T> {
-  key: string
-  header: string
-  cell: (item: T) => ReactNode
-  className?: string
+  key: string;
+  header: string;
+  cell: (item: T) => ReactNode;
+  className?: string;
 }
 
 interface ResourceListProps<T extends { id: string }> {
-  items: T[]
-  columns: ResourceColumn<T>[]
-  actionLabels: ResourceActionLabels
-  onEdit: (item: T) => void
-  onDelete: (item: T) => void
-  renderViewAction?: (item: T) => ReactNode
-  readOnly?: boolean
-  variant: 'table' | 'cards'
-}
-
-function ResourceOperations<T>({
-  item,
-  actionLabels,
-  onEdit,
-  onDelete,
-  renderViewAction,
-  readOnly = false,
-  stacked = false,
-}: {
-  item: T
-  actionLabels: ResourceActionLabels
-  onEdit: (item: T) => void
-  onDelete: (item: T) => void
-  renderViewAction?: (item: T) => ReactNode
-  readOnly?: boolean
-  stacked?: boolean
-}) {
-  function handleEdit() {
-    onEdit(item)
-  }
-
-  function handleDelete() {
-    onDelete(item)
-  }
-
-  return (
-    <div
-      className={cn(
-        'flex flex-wrap items-center gap-2',
-        stacked && 'justify-center',
-      )}
-    >
-      {renderViewAction?.(item)}
-      {!readOnly ? (
-        <>
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableEditActionClassName()}
-            onClick={handleEdit}
-            aria-label={actionLabels.edit}
-          >
-            <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableDeleteActionClassName()}
-            onClick={handleDelete}
-            aria-label={actionLabels.delete}
-          >
-            <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          </Button>
-        </>
-      ) : null}
-    </div>
-  )
+  items: T[];
+  columns: ResourceColumn<T>[];
+  actionLabels: ResourceActionLabels;
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
+  onMqttCredentials?: (item: T) => void;
+  renderViewAction?: (item: T) => ReactNode;
+  readOnly?: boolean;
+  variant: "table" | "cards";
 }
 
 export function ResourceList<T extends { id: string }>({
@@ -100,24 +43,29 @@ export function ResourceList<T extends { id: string }>({
   actionLabels,
   onEdit,
   onDelete,
+  onMqttCredentials,
   renderViewAction,
   readOnly = false,
   variant,
 }: ResourceListProps<T>) {
-  const showOperations = Boolean(renderViewAction) || !readOnly
+  const showOperations = Boolean(renderViewAction) || !readOnly;
 
-  if (variant === 'table') {
+  if (variant === "table") {
     return (
       <DataTable>
         <DataTableHead>
           <DataTableHeaderRow>
             {columns.map(function renderHeader(column) {
               return (
-                <DataTableHeaderCell key={column.key}>{column.header}</DataTableHeaderCell>
-              )
+                <DataTableHeaderCell key={column.key}>
+                  {column.header}
+                </DataTableHeaderCell>
+              );
             })}
             {showOperations ? (
-              <DataTableHeaderCell>{actionLabels.operations}</DataTableHeaderCell>
+              <DataTableHeaderCell>
+                {actionLabels.operations}
+              </DataTableHeaderCell>
             ) : null}
           </DataTableHeaderRow>
         </DataTableHead>
@@ -127,10 +75,13 @@ export function ResourceList<T extends { id: string }>({
               <DataTableRow key={item.id}>
                 {columns.map(function renderCell(column) {
                   return (
-                    <DataTableCell key={column.key} className={column.className}>
+                    <DataTableCell
+                      key={column.key}
+                      className={column.className}
+                    >
                       {column.cell(item)}
                     </DataTableCell>
-                  )
+                  );
                 })}
                 {showOperations ? (
                   <DataTableCell className="text-end">
@@ -139,20 +90,21 @@ export function ResourceList<T extends { id: string }>({
                       actionLabels={actionLabels}
                       onEdit={onEdit}
                       onDelete={onDelete}
+                      onMqttCredentials={onMqttCredentials}
                       renderViewAction={renderViewAction}
                       readOnly={readOnly}
                     />
                   </DataTableCell>
                 ) : null}
               </DataTableRow>
-            )
+            );
           })}
         </DataTableBody>
       </DataTable>
-    )
+    );
   }
 
-  const [titleColumn, ...detailColumns] = columns
+  const [titleColumn, ...detailColumns] = columns;
 
   return (
     <ul className="flex flex-col gap-3">
@@ -177,14 +129,14 @@ export function ResourceList<T extends { id: string }>({
                       </dt>
                       <dd
                         className={cn(
-                          'mt-1 break-words whitespace-pre-wrap',
+                          "mt-1 wrap-break-word whitespace-pre-wrap",
                           column.className,
                         )}
                       >
                         {column.cell(item)}
                       </dd>
                     </div>
-                  )
+                  );
                 })}
               </dl>
             ) : null}
@@ -195,6 +147,7 @@ export function ResourceList<T extends { id: string }>({
                   actionLabels={actionLabels}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  onMqttCredentials={onMqttCredentials}
                   renderViewAction={renderViewAction}
                   readOnly={readOnly}
                   stacked
@@ -202,8 +155,99 @@ export function ResourceList<T extends { id: string }>({
               </div>
             ) : null}
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
+}
+
+type ResourceOperationsProps<T> = {
+  item: T;
+  actionLabels: ResourceActionLabels;
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
+  onMqttCredentials?: (item: T) => void;
+  renderViewAction?: (item: T) => ReactNode;
+  readOnly?: boolean;
+  stacked?: boolean;
+};
+function ResourceOperations<T>({
+  item,
+  actionLabels,
+  onEdit,
+  onDelete,
+  onMqttCredentials,
+  renderViewAction,
+  readOnly = false,
+  stacked = false,
+}: ResourceOperationsProps<T>) {
+  function handleEdit() {
+    onEdit(item);
+  }
+
+  function handleDelete() {
+    onDelete(item);
+  }
+
+  function handleMqttCredentials() {
+    onMqttCredentials?.(item);
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex flex-wrap items-center gap-2",
+        stacked && "justify-center",
+      )}
+    >
+      {renderViewAction?.(item)}
+      {!readOnly ? (
+        <>
+          {onMqttCredentials ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className={dataTableViewActionClassName()}
+              onClick={handleMqttCredentials}
+              aria-label={
+                actionLabels.mqttCredentials ?? actionLabels.operations
+              }
+            >
+              <KeyRound
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+            </Button>
+          ) : null}
+          <Button
+            type="button"
+            variant="ghost"
+            className={dataTableEditActionClassName()}
+            onClick={handleEdit}
+            aria-label={actionLabels.edit}
+          >
+            <Pencil
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            className={dataTableDeleteActionClassName()}
+            onClick={handleDelete}
+            aria-label={actionLabels.delete}
+          >
+            <Trash2
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+          </Button>
+        </>
+      ) : null}
+    </div>
+  );
 }
