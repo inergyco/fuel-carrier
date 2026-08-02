@@ -9,6 +9,7 @@ import { CompanyUsersModule } from '../company-users/company-users.module';
 import { ExternalAuditLogsController } from '../audit-logs/external-audit-logs.controller';
 import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 import { DriversModule } from '../drivers/drivers.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 import { ExternalHealthController } from './external-health.controller';
 import { ExternalDriversController } from '../drivers/external-drivers.controller';
 
@@ -19,6 +20,7 @@ import { ExternalDriversController } from '../drivers/external-drivers.controlle
     CarLocationsModule,
     CompanyUsersModule,
     DriversModule,
+    MqttModule,
   ],
   controllers: [
     ExternalHealthController,

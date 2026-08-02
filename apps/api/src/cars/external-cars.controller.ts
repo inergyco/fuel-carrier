@@ -15,7 +15,7 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Car } from '@fuel-carrier/shared-types';
+import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createExternalCarDtoSchema,
@@ -32,6 +32,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
+import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
@@ -39,6 +40,7 @@ import {
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
+import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CarsService } from './cars.service';
 
@@ -48,7 +50,10 @@ import { CarsService } from './cars.service';
 @Roles(UserRole.COMPANY_USER)
 @Controller('external/cars')
 export class ExternalCarsController {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(
+    private readonly carsService: CarsService,
+    private readonly mqttCredentialsService: MqttCredentialsService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'List cars for the authenticated company' })
@@ -69,6 +74,26 @@ export class ExternalCarsController {
     @Param('id') id: string,
   ): Promise<Car> {
     return this.carsService.getById(tenantContextFromSession(user), id);
+  }
+
+  @Post(':id/mqtt-credentials')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary:
+      'Provision or rotate MQTT credentials for a company car (plaintext password returned once)',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(CarMqttCredentialsDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  provisionMqttCredentials(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<CarMqttCredentials> {
+    return this.mqttCredentialsService.provisionForCar(
+      tenantContextFromSession(user),
+      id,
+    );
   }
 
   @Post()
