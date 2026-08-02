@@ -25,11 +25,15 @@ mkdir -p deploy/external-panel deploy/internal-panel
 cp -a apps/external-panel/dist/. deploy/external-panel/
 cp -a apps/internal-panel/dist/. deploy/internal-panel/
 
-echo "==> Replacing workspace TypeScript packages with compiled JS"
+echo "==> Compiling workspace packages into deploy node_modules"
+TSC="$ROOT/apps/api/node_modules/.bin/tsc"
+"$TSC" -p packages/shared-types/tsconfig.emit.json
+"$TSC" -p packages/shared-validation/tsconfig.emit.json --noCheck
+
 for pkg in shared-types shared-validation; do
   target="$(cd "deploy/api/node_modules/@fuel-carrier/$pkg" && pwd -P)"
   rm -rf "$target/src"
-  cp -a "deploy/api/dist/packages/$pkg/src" "$target/src"
+  cp -a "packages/$pkg/dist" "$target/src"
 done
 
 node <<'EOF'
