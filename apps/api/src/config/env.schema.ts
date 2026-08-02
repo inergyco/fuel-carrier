@@ -29,6 +29,17 @@ export const envSchema = z.object({
       'REDIS_URL must be a Redis connection string',
     )
     .default('redis://localhost:6379'),
+  MQTT_URL: z
+    .string()
+    .min(1)
+    .refine(
+      (url) => url.startsWith('mqtt://') || url.startsWith('mqtts://'),
+      'MQTT_URL must start with mqtt:// or mqtts://',
+    )
+    .optional(),
+  MQTT_USERNAME: z.string().min(1).optional(),
+  MQTT_PASSWORD: z.string().min(1).optional(),
+  MQTT_TELEMETRY_TOPIC: z.string().min(1).default('telemetry/#'),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
     .default('true')
@@ -48,6 +59,15 @@ export function validateEnv(config: Record<string, unknown>): Env {
       .join('\n');
 
     throw new Error(`Invalid environment variables:\n${message}`);
+  }
+
+  if (
+    result.data.MQTT_URL &&
+    (!result.data.MQTT_USERNAME || !result.data.MQTT_PASSWORD)
+  ) {
+    throw new Error(
+      'Invalid environment variables:\nMQTT_USERNAME and MQTT_PASSWORD are required when MQTT_URL is set',
+    );
   }
 
   return result.data;

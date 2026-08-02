@@ -11,6 +11,7 @@ import { companies } from './companies';
 
 /**
  * Append-only GPS trail stored as a TimescaleDB hypertable (partitioned on time).
+ * `time` is the device-reported sample time; `createdAt` is when we ingested the row.
  * Latest position for the live map is kept in Redis, not here.
  */
 export const carLocationHistory = pgTable(
@@ -25,6 +26,9 @@ export const carLocationHistory = pgTable(
       .references(() => companies.id, { onDelete: 'cascade' }),
     latitude: doublePrecision('latitude').notNull(),
     longitude: doublePrecision('longitude').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
   },
   (table) => [
     primaryKey({ columns: [table.time, table.carId] }),

@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { ExternalModule } from './external/external.module';
 import { InternalModule } from './internal/internal.module';
+import { MqttModule } from './mqtt/mqtt.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { InternalModule } from './internal/internal.module';
     RedisModule,
     AuditLogsModule,
     AuthModule,
+    MqttModule,
     InternalModule,
     ExternalModule,
   ],

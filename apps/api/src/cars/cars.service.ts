@@ -27,6 +27,7 @@ import {
 } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { CarsReader } from './cars-reader.service';
 
 type CreateCarPayload = {
   name?: string | null;
@@ -59,6 +60,7 @@ export class CarsService {
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
     private readonly carLocationsService: CarLocationsService,
+    private readonly carsReader: CarsReader,
   ) {}
 
   async list(context: TenantContext): Promise<Car[]> {
@@ -70,23 +72,7 @@ export class CarsService {
   }
 
   async getById(context: TenantContext, id: string): Promise<Car> {
-    return this.tenantDb.run(context, async (tx) => {
-      const [row] = await tx
-        .select()
-        .from(cars)
-        .where(eq(cars.id, id))
-        .limit(1);
-
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
-
-      return _mapCar(row);
-    });
+    return this.tenantDb.run(context, (tx) => this.carsReader.getById(tx, id));
   }
 
   async create(context: TenantContext, dto: CreateCarPayload): Promise<Car> {
@@ -145,19 +131,7 @@ export class CarsService {
     dto: UpdateCarPayload,
   ): Promise<Car> {
     return this.tenantDb.run(context, async (tx) => {
-      const [existing] = await tx
-        .select()
-        .from(cars)
-        .where(eq(cars.id, id))
-        .limit(1);
-
-      if (!existing) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
+      const existing = await this.carsReader.getById(tx, id);
 
       if (dto.driverId) {
         await this._assertDriverAccessible(tx, dto.driverId);
@@ -198,7 +172,7 @@ export class CarsService {
             companyName,
             entityLabel: formatAuditCarLabel(car),
           }),
-          changes: diffAuditChanges(_mapCar(existing), car, CAR_AUDIT_FIELDS),
+          changes: diffAuditChanges(existing, car, CAR_AUDIT_FIELDS),
         },
       });
 
@@ -208,19 +182,7 @@ export class CarsService {
 
   async delete(context: TenantContext, id: string): Promise<null> {
     const deleted = await this.tenantDb.run(context, async (tx) => {
-      const [existing] = await tx
-        .select()
-        .from(cars)
-        .where(eq(cars.id, id))
-        .limit(1);
-
-      if (!existing) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
+      const existing = await this.carsReader.getById(tx, id);
 
       const [row] = await tx
         .delete(cars)
@@ -235,7 +197,6 @@ export class CarsService {
         );
       }
 
-      const deletedCar = _mapCar(existing);
       const companyName = await fetchCompanyName(tx, existing.companyId);
 
       await this.auditLogService.record(context, {
@@ -246,9 +207,9 @@ export class CarsService {
         metadata: {
           ...buildAuditContext({
             companyName,
-            entityLabel: formatAuditCarLabel(deletedCar),
+            entityLabel: formatAuditCarLabel(existing),
           }),
-          snapshot: toAuditSnapshot(deletedCar, CAR_AUDIT_FIELDS),
+          snapshot: toAuditSnapshot(existing, CAR_AUDIT_FIELDS),
         },
       });
 

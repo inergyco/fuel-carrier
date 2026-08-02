@@ -1,5 +1,4 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import type {
   CarLocation,
   CarLocationMarker,
@@ -7,9 +6,14 @@ import type {
 import type { TenantContext } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
-import { createApiException } from '../common/exceptions/api.exception';
+import { CarsReader } from '../cars/cars-reader.service';
+import {
+  ApiException,
+  createApiException,
+} from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { carLocationHistory } from '../database/schema/car-location-history';
+import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { REDIS } from '../redis/redis.tokens';
 import {
@@ -26,11 +30,21 @@ type RecordCarLocationInput = {
   recordedAt?: Date;
 };
 
+type IngestDeviceGpsInput = {
+  carId: string;
+  latitude: number;
+  longitude: number;
+  recordedAt?: Date;
+};
+
 @Injectable()
 export class CarLocationsService {
+  private readonly logger = new Logger(CarLocationsService.name);
+
   constructor(
     private readonly tenantDb: TenantDbService,
     @Inject(REDIS) private readonly redis: Redis,
+    private readonly carsReader: CarsReader,
   ) {}
 
   /**
@@ -43,19 +57,7 @@ export class CarLocationsService {
     const recordedAt = input.recordedAt ?? new Date();
 
     await this.tenantDb.run(context, async (tx) => {
-      const [car] = await tx
-        .select({ id: cars.id, companyId: cars.companyId })
-        .from(cars)
-        .where(eq(cars.id, input.carId))
-        .limit(1);
-
-      if (!car) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
+      const car = await this.carsReader.getById(tx, input.carId);
 
       if (car.companyId !== input.companyId) {
         throw createApiException(
@@ -88,6 +90,36 @@ export class CarLocationsService {
     );
 
     return location;
+  }
+
+  /**
+   * Ingest a device GPS sample from MQTT (internal context; skips unknown cars).
+   */
+  async ingestDeviceGps(
+    input: IngestDeviceGpsInput,
+  ): Promise<CarLocation | null> {
+    const context = internalTenantContext();
+
+    try {
+      const car = await this.tenantDb.run(context, (tx) =>
+        this.carsReader.getById(tx, input.carId),
+      );
+
+      return this.record(context, {
+        carId: car.id,
+        companyId: car.companyId,
+        latitude: input.latitude,
+        longitude: input.longitude,
+        recordedAt: input.recordedAt,
+      });
+    } catch (error) {
+      if (isNotFoundApiException(error)) {
+        this.logger.warn(`Ignoring GPS sample for unknown car ${input.carId}`);
+        return null;
+      }
+
+      throw error;
+    }
   }
 
   /** Latest positions for the current tenant, joined with car identity. */
@@ -148,4 +180,18 @@ export class CarLocationsService {
 
     return locations;
   }
+}
+
+function isNotFoundApiException(error: unknown): boolean {
+  if (!(error instanceof ApiException)) {
+    return false;
+  }
+
+  const response = error.getResponse();
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'code' in response &&
+    response.code === ApiErrorCode.NOT_FOUND
+  );
 }
