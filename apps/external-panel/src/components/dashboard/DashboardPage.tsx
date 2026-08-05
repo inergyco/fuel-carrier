@@ -1,10 +1,10 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { AuthSession, CarLocationMarker } from '@fuel-carrier/shared-types'
+import type { AuthSession, CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import { FleetMapView } from '@fuel-carrier/web-ui/map'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import { useCarLocationsLive } from '../map/useCarLocationsLive'
+import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './DashboardCarCard'
@@ -26,7 +26,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
     queryFn: fetchDrivers,
   })
 
-  const locationsQuery = useCarLocationsLive()
+  const telemetryQuery = useCarTelemetryLive()
 
   const driverNameById = useMemo(
     function mapDriverNames() {
@@ -39,21 +39,21 @@ export function DashboardPage({ user }: DashboardPageProps) {
     [driversQuery.data],
   )
 
-  const locationByCarId = useMemo(
-    function mapLocations() {
+  const telemetryByCarId = useMemo(
+    function mapTelemetry() {
       return new Map(
-        (locationsQuery.data ?? []).map(function toLocationEntry(marker) {
+        (telemetryQuery.data ?? []).map(function toTelemetryEntry(marker) {
           return [marker.carId, marker]
         }),
       )
     },
-    [locationsQuery.data],
+    [telemetryQuery.data],
   )
 
   const cars = carsQuery.data ?? []
   const isCarsLoading = carsQuery.isLoading
 
-  function renderVehicleLink(marker: CarLocationMarker) {
+  function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
         to="/cars/$carId"
@@ -78,8 +78,8 @@ export function DashboardPage({ user }: DashboardPageProps) {
 
       <FleetMapView
         className="h-[40svh] min-h-56 shrink-0 overflow-hidden rounded-2xl border border-base-content/8"
-        markers={locationsQuery.data ?? []}
-        isLoading={locationsQuery.isLoading}
+        markers={telemetryQuery.data ?? []}
+        isLoading={telemetryQuery.isLoading}
         labels={LL.externalPanel.map}
         renderVehicleLink={renderVehicleLink}
         titleAs="h2"
@@ -112,7 +112,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
                   <DashboardCarCard
                     car={car}
                     driverName={driverName}
-                    location={locationByCarId.get(car.id) ?? null}
+                    telemetry={telemetryByCarId.get(car.id) ?? null}
                   />
                 </li>
               )

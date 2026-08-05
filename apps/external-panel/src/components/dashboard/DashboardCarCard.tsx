@@ -1,4 +1,4 @@
-import type { Car, CarLocationMarker } from '@fuel-carrier/shared-types'
+import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { MapPin, Truck, User } from '@fuel-carrier/web-ui/icons'
@@ -7,13 +7,13 @@ import { Link } from '@tanstack/react-router'
 export type DashboardCarCardProps = {
   car: Car
   driverName: string | null
-  location: CarLocationMarker | null
+  telemetry: CarTelemetryMarker | null
 }
 
 export function DashboardCarCard({
   car,
   driverName,
-  location,
+  telemetry,
 }: DashboardCarCardProps) {
   const { LL } = useI18nContext()
   const title = car.name?.trim()
@@ -55,12 +55,12 @@ export function DashboardCarCard({
             <span
               aria-hidden
               className={
-                location
+                telemetry
                   ? 'size-1.5 rounded-full bg-success'
                   : 'size-1.5 rounded-full bg-base-content/30'
               }
             />
-            {location
+            {telemetry
               ? LL.externalPanel.home.locationLive()
               : LL.externalPanel.home.locationUnknown()}
           </dd>

@@ -2,9 +2,9 @@ import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import type { TenantContext } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
-  CarLocationSocketEvents,
-  type CarLocation,
-  type CarLocationMarker,
+  CarTelemetrySocketEvents,
+  type CarTelemetry,
+  type CarTelemetryMarker,
 } from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
@@ -18,11 +18,11 @@ import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { REDIS } from '../redis/redis.tokens';
 import {
-  companyCarLocationsKey,
-  parseCarLocation,
-  serializeCarLocation,
-} from './car-location.redis';
-import { CarLocationsRealtimeService } from './car-locations-realtime.service';
+  companyCarTelemetryKey,
+  parseCarTelemetry,
+  serializeCarTelemetry,
+} from './car-telemetry.redis';
+import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
 
 type ResistanceReadings = {
   tankToGround: number;
@@ -30,7 +30,7 @@ type ResistanceReadings = {
   groundToVehicle: number;
 };
 
-type RecordCarLocationInput = {
+type RecordCarTelemetryInput = {
   carId: string;
   companyId: string;
   latitude: number;
@@ -54,23 +54,23 @@ type IngestDeviceTelemetryInput = {
 };
 
 @Injectable()
-export class CarLocationsService {
-  private readonly logger = new Logger(CarLocationsService.name);
+export class CarTelemetryService {
+  private readonly logger = new Logger(CarTelemetryService.name);
 
   constructor(
     private readonly tenantDb: TenantDbService,
     @Inject(REDIS) private readonly redis: Redis,
     private readonly carsReader: CarsReader,
-    private readonly realtime: CarLocationsRealtimeService,
+    private readonly realtime: CarTelemetryRealtimeService,
   ) {}
 
   /**
-   * Persist a GPS sample to Timescale history and refresh the Redis latest position.
+   * Persist a GPS sample to Timescale history and refresh the Redis latest telemetry.
    */
   async record(
     context: TenantContext,
-    input: RecordCarLocationInput,
-  ): Promise<CarLocation> {
+    input: RecordCarTelemetryInput,
+  ): Promise<CarTelemetry> {
     const recordedAt = input.recordedAt ?? new Date();
 
     const markerIdentity = await this.tenantDb.run(context, async (tx) => {
@@ -98,7 +98,7 @@ export class CarLocationsService {
       };
     });
 
-    const location: CarLocation = {
+    const telemetry: CarTelemetry = {
       carId: input.carId,
       latitude: input.latitude,
       longitude: input.longitude,
@@ -109,7 +109,7 @@ export class CarLocationsService {
     };
 
     if (input.resistance != null) {
-      location.resistance = {
+      telemetry.resistance = {
         tankToGround: input.resistance.tankToGround,
         tankToNozzle: input.resistance.tankToNozzle,
         groundToVehicle: input.resistance.groundToVehicle,
@@ -117,23 +117,23 @@ export class CarLocationsService {
     }
 
     await this.redis.hset(
-      companyCarLocationsKey(input.companyId),
+      companyCarTelemetryKey(input.companyId),
       input.carId,
-      serializeCarLocation(location),
+      serializeCarTelemetry(telemetry),
     );
 
-    const marker: CarLocationMarker = {
-      ...location,
+    const marker: CarTelemetryMarker = {
+      ...telemetry,
       name: markerIdentity.name,
       licensePlate: markerIdentity.licensePlate,
     };
     await this.realtime.publish({
-      type: CarLocationSocketEvents.LOCATION_UPDATED,
+      type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
       companyId: input.companyId,
       marker,
     });
 
-    return location;
+    return telemetry;
   }
 
   /**
@@ -141,7 +141,7 @@ export class CarLocationsService {
    */
   async ingestDeviceTelemetry(
     input: IngestDeviceTelemetryInput,
-  ): Promise<CarLocation | null> {
+  ): Promise<CarTelemetry | null> {
     const context = internalTenantContext();
 
     try {
@@ -172,13 +172,13 @@ export class CarLocationsService {
     }
   }
 
-  /** Latest positions for the current tenant, joined with car identity. */
-  async listMarkers(context: TenantContext): Promise<CarLocationMarker[]> {
+  /** Latest telemetry for the current tenant, joined with car identity. */
+  async listMarkers(context: TenantContext): Promise<CarTelemetryMarker[]> {
     if (!context.companyId) {
       return [];
     }
 
-    const [fleet, locationsByCarId] = await Promise.all([
+    const [fleet, telemetryByCarId] = await Promise.all([
       this.tenantDb.run(context, async (tx) => {
         return tx
           .select({
@@ -188,19 +188,19 @@ export class CarLocationsService {
           })
           .from(cars);
       }),
-      this._readCompanyLocations(context.companyId),
+      this._readCompanyTelemetry(context.companyId),
     ]);
 
-    const markers: CarLocationMarker[] = [];
+    const markers: CarTelemetryMarker[] = [];
 
     for (const car of fleet) {
-      const location = locationsByCarId.get(car.id);
-      if (!location) {
+      const telemetry = telemetryByCarId.get(car.id);
+      if (!telemetry) {
         continue;
       }
 
       markers.push({
-        ...location,
+        ...telemetry,
         name: car.name,
         licensePlate: car.licensePlate,
       });
@@ -210,30 +210,30 @@ export class CarLocationsService {
   }
 
   async clearForCar(companyId: string, carId: string): Promise<void> {
-    await this.redis.hdel(companyCarLocationsKey(companyId), carId);
+    await this.redis.hdel(companyCarTelemetryKey(companyId), carId);
     await this.realtime.publish({
-      type: CarLocationSocketEvents.LOCATION_REMOVED,
+      type: CarTelemetrySocketEvents.TELEMETRY_REMOVED,
       companyId,
       carId,
     });
   }
 
-  private async _readCompanyLocations(
+  private async _readCompanyTelemetry(
     companyId: string,
-  ): Promise<Map<string, CarLocation>> {
+  ): Promise<Map<string, CarTelemetry>> {
     const raw: Record<string, string> = await this.redis.hgetall(
-      companyCarLocationsKey(companyId),
+      companyCarTelemetryKey(companyId),
     );
-    const locations = new Map<string, CarLocation>();
+    const telemetryByCarId = new Map<string, CarTelemetry>();
 
     for (const [carId, value] of Object.entries(raw)) {
-      const location = parseCarLocation(carId, value);
-      if (location) {
-        locations.set(carId, location);
+      const telemetry = parseCarTelemetry(carId, value);
+      if (telemetry) {
+        telemetryByCarId.set(carId, telemetry);
       }
     }
 
-    return locations;
+    return telemetryByCarId;
   }
 }
 

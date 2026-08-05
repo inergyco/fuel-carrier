@@ -7,21 +7,21 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import {
-  CarLocationSocketEvents,
+  CarTelemetrySocketEvents,
   UserRole,
   type AuthSession,
-  type CarLocationRealtimeEvent,
+  type CarTelemetryRealtimeEvent,
 } from '@fuel-carrier/shared-types';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
 import type { JwtPayload } from '../auth/auth.types';
 import { getCookieValue } from '../common/cookie-header.utils';
 import {
-  CarLocationsRealtimeService,
-  companyCarLocationsRoom,
-} from './car-locations-realtime.service';
+  CarTelemetryRealtimeService,
+  companyCarTelemetryRoom,
+} from './car-telemetry-realtime.service';
 
-type CarLocationsSocketData = {
+type CarTelemetrySocketData = {
   session?: AuthSession;
 };
 
@@ -29,21 +29,21 @@ type SocketWithSession = Socket<
   Record<string, never>,
   Record<string, never>,
   Record<string, never>,
-  CarLocationsSocketData
+  CarTelemetrySocketData
 >;
 
 @WebSocketGateway({
-  namespace: '/car-locations',
+  namespace: '/car-telemetry',
   path: '/api/socket.io',
   cors: {
     origin: true,
     credentials: true,
   },
 })
-export class CarLocationsGateway
+export class CarTelemetryGateway
   implements OnGatewayConnection, OnModuleInit, OnModuleDestroy
 {
-  private readonly logger = new Logger(CarLocationsGateway.name);
+  private readonly logger = new Logger(CarTelemetryGateway.name);
   private unsubscribeRealtime: (() => void) | null = null;
 
   @WebSocketServer()
@@ -52,7 +52,7 @@ export class CarLocationsGateway
   constructor(
     private readonly jwtService: JwtService,
     private readonly authService: AuthService,
-    private readonly realtime: CarLocationsRealtimeService,
+    private readonly realtime: CarTelemetryRealtimeService,
   ) {}
 
   onModuleInit(): void {
@@ -76,23 +76,23 @@ export class CarLocationsGateway
     }
 
     client.data.session = session;
-    await client.join(companyCarLocationsRoom(session.companyId));
+    await client.join(companyCarTelemetryRoom(session.companyId));
     this.logger.debug(
       `WS client ${client.id} joined company ${session.companyId}`,
     );
   }
 
-  private _fanOut(event: CarLocationRealtimeEvent): void {
-    const room = companyCarLocationsRoom(event.companyId);
+  private _fanOut(event: CarTelemetryRealtimeEvent): void {
+    const room = companyCarTelemetryRoom(event.companyId);
 
-    if (event.type === CarLocationSocketEvents.LOCATION_UPDATED) {
+    if (event.type === CarTelemetrySocketEvents.TELEMETRY_UPDATED) {
       this.server
         .to(room)
-        .emit(CarLocationSocketEvents.LOCATION_UPDATED, event.marker);
+        .emit(CarTelemetrySocketEvents.TELEMETRY_UPDATED, event.marker);
       return;
     }
 
-    this.server.to(room).emit(CarLocationSocketEvents.LOCATION_REMOVED, {
+    this.server.to(room).emit(CarTelemetrySocketEvents.TELEMETRY_REMOVED, {
       carId: event.carId,
     });
   }

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import mqtt, { type MqttClient } from 'mqtt';
-import { CarLocationsService } from '../car-locations/car-locations.service';
+import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import {
   parseTelemetryPayload,
   type TelemetrySample,
@@ -19,7 +19,7 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly carLocationsService: CarLocationsService,
+    private readonly carTelemetryService: CarTelemetryService,
   ) {}
 
   onModuleInit(): void {
@@ -92,7 +92,7 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     }
 
     try {
-      await this.carLocationsService.ingestDeviceTelemetry(sample);
+      await this.carTelemetryService.ingestDeviceTelemetry(sample);
     } catch (error) {
       this.logger.error(
         `Failed to ingest telemetry for car ${sample.carId}`,

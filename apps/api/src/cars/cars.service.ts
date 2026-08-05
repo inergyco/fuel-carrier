@@ -15,7 +15,7 @@ import {
   formatAuditCarLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
-import { CarLocationsService } from '../car-locations/car-locations.service';
+import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -59,7 +59,7 @@ export class CarsService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
-    private readonly carLocationsService: CarLocationsService,
+    private readonly carTelemetryService: CarTelemetryService,
     private readonly carsReader: CarsReader,
   ) {}
 
@@ -216,7 +216,7 @@ export class CarsService {
       return { companyId: existing.companyId, carId: id };
     });
 
-    await this.carLocationsService.clearForCar(
+    await this.carTelemetryService.clearForCar(
       deleted.companyId,
       deleted.carId,
     );

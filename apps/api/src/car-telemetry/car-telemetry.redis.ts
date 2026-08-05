@@ -1,7 +1,7 @@
-import type { CarLocation } from '@fuel-carrier/shared-types';
+import type { CarTelemetry } from '@fuel-carrier/shared-types';
 
-export function companyCarLocationsKey(companyId: string): string {
-  return `company:${companyId}:car-locations`;
+export function companyCarTelemetryKey(companyId: string): string {
+  return `company:${companyId}:car-telemetry`;
 }
 
 type ResistanceReadings = {
@@ -10,7 +10,7 @@ type ResistanceReadings = {
   groundToVehicle: number;
 };
 
-type RedisCarLocationPayload = {
+type RedisCarTelemetryPayload = {
   latitude: number;
   longitude: number;
   updatedAt: string;
@@ -20,9 +20,9 @@ type RedisCarLocationPayload = {
   resistance?: ResistanceReadings;
 };
 
-/** Latest position fields accepted by Redis serialization (`updatedAt` may be a Date). */
-type SerializableCarLocation = Pick<
-  CarLocation,
+/** Latest telemetry fields accepted by Redis serialization (`updatedAt` may be a Date). */
+type SerializableCarTelemetry = Pick<
+  CarTelemetry,
   | 'latitude'
   | 'longitude'
   | 'speed'
@@ -33,29 +33,29 @@ type SerializableCarLocation = Pick<
   updatedAt: Date | string;
 };
 
-export function serializeCarLocation(
-  location: SerializableCarLocation,
+export function serializeCarTelemetry(
+  telemetry: SerializableCarTelemetry,
 ): string {
-  const payload: RedisCarLocationPayload = {
-    latitude: location.latitude,
-    longitude: location.longitude,
+  const payload: RedisCarTelemetryPayload = {
+    latitude: telemetry.latitude,
+    longitude: telemetry.longitude,
     updatedAt:
-      typeof location.updatedAt === 'string'
-        ? location.updatedAt
-        : location.updatedAt.toISOString(),
+      typeof telemetry.updatedAt === 'string'
+        ? telemetry.updatedAt
+        : telemetry.updatedAt.toISOString(),
   };
 
-  if (location.speed != null) {
-    payload.speed = location.speed;
+  if (telemetry.speed != null) {
+    payload.speed = telemetry.speed;
   }
-  if (location.remainFuel != null) {
-    payload.remainFuel = location.remainFuel;
+  if (telemetry.remainFuel != null) {
+    payload.remainFuel = telemetry.remainFuel;
   }
-  if (location.fuelAmount != null) {
-    payload.fuelAmount = location.fuelAmount;
+  if (telemetry.fuelAmount != null) {
+    payload.fuelAmount = telemetry.fuelAmount;
   }
 
-  const resistance = parseResistance(location.resistance);
+  const resistance = parseResistance(telemetry.resistance);
   if (resistance != null) {
     payload.resistance = resistance;
   }
@@ -63,10 +63,10 @@ export function serializeCarLocation(
   return JSON.stringify(payload);
 }
 
-export function parseCarLocation(
+export function parseCarTelemetry(
   carId: string,
   raw: string | null | undefined,
-): CarLocation | null {
+): CarTelemetry | null {
   if (!raw) {
     return null;
   }
@@ -90,7 +90,7 @@ export function parseCarLocation(
       return null;
     }
 
-    const location: CarLocation = {
+    const telemetry: CarTelemetry = {
       carId,
       latitude,
       longitude,
@@ -98,21 +98,21 @@ export function parseCarLocation(
     };
 
     if (typeof record.speed === 'number') {
-      location.speed = record.speed;
+      telemetry.speed = record.speed;
     }
     if (typeof record.remainFuel === 'number') {
-      location.remainFuel = record.remainFuel;
+      telemetry.remainFuel = record.remainFuel;
     }
     if (typeof record.fuelAmount === 'number') {
-      location.fuelAmount = record.fuelAmount;
+      telemetry.fuelAmount = record.fuelAmount;
     }
 
     const resistance = parseResistance(record.resistance);
     if (resistance != null) {
-      location.resistance = resistance;
+      telemetry.resistance = resistance;
     }
 
-    return location;
+    return telemetry;
   } catch {
     return null;
   }

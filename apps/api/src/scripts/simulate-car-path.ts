@@ -1,17 +1,17 @@
 import 'dotenv/config';
 import {
-  CarLocationSocketEvents,
-  type CarLocationRealtimeEvent,
+  CarTelemetrySocketEvents,
+  type CarTelemetryRealtimeEvent,
 } from '@fuel-carrier/shared-types';
 import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
 import {
-  companyCarLocationsKey,
-  serializeCarLocation,
-} from '../car-locations/car-location.redis';
-import { CAR_LOCATION_UPDATES_CHANNEL } from '../car-locations/car-locations-realtime.service';
+  companyCarTelemetryKey,
+  serializeCarTelemetry,
+} from '../car-telemetry/car-telemetry.redis';
+import { CAR_TELEMETRY_UPDATES_CHANNEL } from '../car-telemetry/car-telemetry-realtime.service';
 import { cars } from '../database/schema/cars';
 import { carLocationHistory } from '../database/schema/car-location-history';
 import * as schema from '../database/schema';
@@ -159,9 +159,9 @@ async function recordStep(
   });
 
   await redis.hset(
-    companyCarLocationsKey(car.companyId),
+    companyCarTelemetryKey(car.companyId),
     car.id,
-    serializeCarLocation({
+    serializeCarTelemetry({
       latitude,
       longitude,
       updatedAt: recordedAt,
@@ -171,8 +171,8 @@ async function recordStep(
     }),
   );
 
-  const event: CarLocationRealtimeEvent = {
-    type: CarLocationSocketEvents.LOCATION_UPDATED,
+  const event: CarTelemetryRealtimeEvent = {
+    type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
     companyId: car.companyId,
     marker: {
       carId: car.id,
@@ -187,7 +187,7 @@ async function recordStep(
     },
   };
 
-  await redis.publish(CAR_LOCATION_UPDATES_CHANNEL, JSON.stringify(event));
+  await redis.publish(CAR_TELEMETRY_UPDATES_CHANNEL, JSON.stringify(event));
 }
 
 function buildInterpolatedPath(

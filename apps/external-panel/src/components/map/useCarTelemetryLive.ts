@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import {
-  CarLocationSocketEvents,
-  type CarLocationMarker,
+  CarTelemetrySocketEvents,
+  type CarTelemetryMarker,
 } from '@fuel-carrier/shared-types'
 import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { io, type Socket } from '@fuel-carrier/web-ui/socket'
 import {
-  carLocationKeys,
-  fetchCarLocations,
-} from '../../lib/api/car-locations'
+  carTelemetryKeys,
+  fetchCarTelemetry,
+} from '../../lib/api/car-telemetry'
 
 const FALLBACK_REFETCH_MS = 60_000
 
@@ -16,27 +16,27 @@ const FALLBACK_REFETCH_MS = 60_000
  * Initial snapshot via REST; live patches via Socket.IO (company-scoped).
  * Keeps a slow REST fallback if the socket drops.
  */
-export function useCarLocationsLive() {
+export function useCarTelemetryLive() {
   const queryClient = useQueryClient()
 
-  const locationsQuery = useQuery({
-    queryKey: carLocationKeys.all,
-    queryFn: fetchCarLocations,
+  const telemetryQuery = useQuery({
+    queryKey: carTelemetryKeys.all,
+    queryFn: fetchCarTelemetry,
     refetchInterval: FALLBACK_REFETCH_MS,
     refetchIntervalInBackground: false,
   })
 
   useEffect(
-    function subscribeToCarLocationSocket() {
-      const socket: Socket = io('/car-locations', {
+    function subscribeToCarTelemetrySocket() {
+      const socket: Socket = io('/car-telemetry', {
         path: '/api/socket.io',
         withCredentials: true,
         transports: ['websocket', 'polling'],
       })
 
-      function onLocationUpdated(marker: CarLocationMarker) {
-        queryClient.setQueryData<CarLocationMarker[]>(
-          carLocationKeys.all,
+      function onTelemetryUpdated(marker: CarTelemetryMarker) {
+        queryClient.setQueryData<CarTelemetryMarker[]>(
+          carTelemetryKeys.all,
           function upsertMarker(previous) {
             if (!previous) {
               return [marker]
@@ -57,9 +57,9 @@ export function useCarLocationsLive() {
         )
       }
 
-      function onLocationRemoved(payload: { carId: string }) {
-        queryClient.setQueryData<CarLocationMarker[]>(
-          carLocationKeys.all,
+      function onTelemetryRemoved(payload: { carId: string }) {
+        queryClient.setQueryData<CarTelemetryMarker[]>(
+          carTelemetryKeys.all,
           function removeMarker(previous) {
             if (!previous) {
               return previous
@@ -72,17 +72,17 @@ export function useCarLocationsLive() {
         )
       }
 
-      socket.on(CarLocationSocketEvents.LOCATION_UPDATED, onLocationUpdated)
-      socket.on(CarLocationSocketEvents.LOCATION_REMOVED, onLocationRemoved)
+      socket.on(CarTelemetrySocketEvents.TELEMETRY_UPDATED, onTelemetryUpdated)
+      socket.on(CarTelemetrySocketEvents.TELEMETRY_REMOVED, onTelemetryRemoved)
 
       return function cleanupSocket() {
         socket.off(
-          CarLocationSocketEvents.LOCATION_UPDATED,
-          onLocationUpdated,
+          CarTelemetrySocketEvents.TELEMETRY_UPDATED,
+          onTelemetryUpdated,
         )
         socket.off(
-          CarLocationSocketEvents.LOCATION_REMOVED,
-          onLocationRemoved,
+          CarTelemetrySocketEvents.TELEMETRY_REMOVED,
+          onTelemetryRemoved,
         )
         socket.disconnect()
       }
@@ -90,5 +90,5 @@ export function useCarLocationsLive() {
     [queryClient],
   )
 
-  return locationsQuery
+  return telemetryQuery
 }

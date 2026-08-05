@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
-import type { CarLocationMarker } from "@fuel-carrier/shared-types";
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
 import { FleetMapView } from "@fuel-carrier/web-ui/map";
-import { useCarLocationsLive } from "../../components/map/useCarLocationsLive";
+import { useCarTelemetryLive } from "../../components/map/useCarTelemetryLive";
 
 export const Route = createFileRoute("/_authenticated/map")({
   component: MapPage,
@@ -10,9 +10,9 @@ export const Route = createFileRoute("/_authenticated/map")({
 
 function MapPage() {
   const { LL } = useI18nContext();
-  const locationsQuery = useCarLocationsLive();
+  const telemetryQuery = useCarTelemetryLive();
 
-  function renderVehicleLink(marker: CarLocationMarker) {
+  function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
         to="/cars/$carId"
@@ -26,8 +26,8 @@ function MapPage() {
 
   return (
     <FleetMapView
-      markers={locationsQuery.data ?? []}
-      isLoading={locationsQuery.isLoading}
+      markers={telemetryQuery.data ?? []}
+      isLoading={telemetryQuery.isLoading}
       labels={LL.externalPanel.map}
       renderVehicleLink={renderVehicleLink}
     />

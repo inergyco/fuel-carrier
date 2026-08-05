@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import type { CarLocationMarker } from '@fuel-carrier/shared-types/car-location';
+import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -13,25 +13,25 @@ import {
   ApiEnvelopeOkListResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
-import { CarLocationMarkerDto } from '../swagger/dto/car-location.dto';
+import { CarTelemetryMarkerDto } from '../swagger/dto/car-telemetry.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
-import { CarLocationsService } from './car-locations.service';
+import { CarTelemetryService } from './car-telemetry.service';
 
-@ApiTags('car-locations')
+@ApiTags('car-telemetry')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
 @UseGuards(JwtAuthGuard, RolesGuard, MustChangePasswordGuard)
 @Roles(UserRole.COMPANY_USER)
-@Controller('external/car-locations')
-export class ExternalCarLocationsController {
-  constructor(private readonly carLocationsService: CarLocationsService) {}
+@Controller('external/car-telemetry')
+export class ExternalCarTelemetryController {
+  constructor(private readonly carTelemetryService: CarTelemetryService) {}
 
   @Get()
   @ApiOperation({
-    summary: 'List latest car locations for the authenticated company',
+    summary: 'List latest car telemetry for the authenticated company',
   })
-  @ApiEnvelopeOkListResponse(CarLocationMarkerDto)
+  @ApiEnvelopeOkListResponse(CarTelemetryMarkerDto)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@CurrentUser() user: AuthSession): Promise<CarLocationMarker[]> {
-    return this.carLocationsService.listMarkers(tenantContextFromSession(user));
+  list(@CurrentUser() user: AuthSession): Promise<CarTelemetryMarker[]> {
+    return this.carTelemetryService.listMarkers(tenantContextFromSession(user));
   }
 }

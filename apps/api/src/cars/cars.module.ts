@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CarLocationsModule } from '../car-locations/car-locations.module';
+import { CarTelemetryModule } from '../car-telemetry/car-telemetry.module';
 import { CarsReaderModule } from './cars-reader.module';
 import { CarsService } from './cars.service';
 
 @Module({
-  imports: [CarsReaderModule, CarLocationsModule],
+  imports: [CarsReaderModule, CarTelemetryModule],
   providers: [CarsService],
   exports: [CarsService],
 })

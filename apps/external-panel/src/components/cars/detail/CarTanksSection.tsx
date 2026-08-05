@@ -7,7 +7,7 @@ import {
   formatVolume,
   FuelTruckDiagram,
 } from '../fuel-truck'
-import { useCarLocationsLive } from '../../map/useCarLocationsLive'
+import { useCarTelemetryLive } from '../../map/useCarTelemetryLive'
 
 type CarTanksSectionProps = {
   carId: string
@@ -15,8 +15,8 @@ type CarTanksSectionProps = {
 
 export function CarTanksSection({ carId }: CarTanksSectionProps) {
   const { LL } = useI18nContext()
-  const locationsQuery = useCarLocationsLive()
-  const telemetry = (locationsQuery.data ?? []).find(function matchCar(marker) {
+  const telemetryQuery = useCarTelemetryLive()
+  const telemetry = (telemetryQuery.data ?? []).find(function matchCar(marker) {
     return marker.carId === carId
   })
 

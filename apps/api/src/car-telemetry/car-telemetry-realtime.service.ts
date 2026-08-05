@@ -5,23 +5,23 @@ import {
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import type { CarLocationRealtimeEvent } from '@fuel-carrier/shared-types';
+import type { CarTelemetryRealtimeEvent } from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
 import { REDIS } from '../redis/redis.tokens';
 
-export const CAR_LOCATION_UPDATES_CHANNEL = 'car-location-updates';
+export const CAR_TELEMETRY_UPDATES_CHANNEL = 'car-telemetry-updates';
 
-type RealtimeListener = (event: CarLocationRealtimeEvent) => void;
+type RealtimeListener = (event: CarTelemetryRealtimeEvent) => void;
 
 /**
  * Cross-process fan-out for live map updates via Redis pub/sub.
  * Any API instance can publish; every instance notifies its local WS clients.
  */
 @Injectable()
-export class CarLocationsRealtimeService
+export class CarTelemetryRealtimeService
   implements OnModuleInit, OnModuleDestroy
 {
-  private readonly logger = new Logger(CarLocationsRealtimeService.name);
+  private readonly logger = new Logger(CarTelemetryRealtimeService.name);
   private subscriber: Redis | null = null;
   private readonly listeners = new Set<RealtimeListener>();
 
@@ -32,9 +32,9 @@ export class CarLocationsRealtimeService
     this.subscriber.on('message', (_channel, message) => {
       this._handleMessage(message);
     });
-    await this.subscriber.subscribe(CAR_LOCATION_UPDATES_CHANNEL);
+    await this.subscriber.subscribe(CAR_TELEMETRY_UPDATES_CHANNEL);
     this.logger.log(
-      `Subscribed to Redis channel ${CAR_LOCATION_UPDATES_CHANNEL}`,
+      `Subscribed to Redis channel ${CAR_TELEMETRY_UPDATES_CHANNEL}`,
     );
   }
 
@@ -54,19 +54,19 @@ export class CarLocationsRealtimeService
     };
   }
 
-  async publish(event: CarLocationRealtimeEvent): Promise<void> {
+  async publish(event: CarTelemetryRealtimeEvent): Promise<void> {
     await this.redis.publish(
-      CAR_LOCATION_UPDATES_CHANNEL,
+      CAR_TELEMETRY_UPDATES_CHANNEL,
       JSON.stringify(event),
     );
   }
 
   private _handleMessage(message: string): void {
-    let event: CarLocationRealtimeEvent;
+    let event: CarTelemetryRealtimeEvent;
     try {
-      event = JSON.parse(message) as CarLocationRealtimeEvent;
+      event = JSON.parse(message) as CarTelemetryRealtimeEvent;
     } catch {
-      this.logger.warn('Ignoring invalid car-location realtime payload');
+      this.logger.warn('Ignoring invalid car-telemetry realtime payload');
       return;
     }
 
@@ -80,6 +80,6 @@ export class CarLocationsRealtimeService
   }
 }
 
-export function companyCarLocationsRoom(companyId: string): string {
-  return `company:${companyId}:car-locations`;
+export function companyCarTelemetryRoom(companyId: string): string {
+  return `company:${companyId}:car-telemetry`;
 }

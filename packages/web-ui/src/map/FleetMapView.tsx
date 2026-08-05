@@ -1,4 +1,4 @@
-import type { CarLocationMarker } from '@fuel-carrier/shared-types'
+import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import type { ReactNode } from 'react'
 import { cn } from '../utils'
 import { CarsMap, type CarsMapLabels } from './CarsMap'
@@ -11,10 +11,10 @@ export type FleetMapViewLabels = CarsMapLabels & {
 }
 
 export type FleetMapViewProps = {
-  markers: CarLocationMarker[]
+  markers: CarTelemetryMarker[]
   isLoading: boolean
   labels: FleetMapViewLabels
-  renderVehicleLink: (marker: CarLocationMarker) => ReactNode
+  renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode
   /** When set, replaces the default `flex-1` fill (e.g. dashboard embed). */
   className?: string
   /** Heading level for the overlay title. Defaults to `h1` (standalone map page). */

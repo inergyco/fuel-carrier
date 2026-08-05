@@ -6,9 +6,9 @@ import { Pool } from 'pg';
 import { parseZodValue } from '../common/validation/zod.utils';
 import { hashPassword } from '../auth/password.utils';
 import {
-  companyCarLocationsKey,
-  serializeCarLocation,
-} from '../car-locations/car-location.redis';
+  companyCarTelemetryKey,
+  serializeCarTelemetry,
+} from '../car-telemetry/car-telemetry.redis';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
@@ -145,7 +145,7 @@ async function seedCompany(
       })
       .returning({ id: cars.id });
 
-    await writeSeedCarLocation(tx, redis, {
+    await writeSeedCarTelemetry(tx, redis, {
       companyId: company.id,
       carId: car.id,
       carSeed,
@@ -190,7 +190,7 @@ async function syncExistingSeedCompanies(
         continue;
       }
 
-      await writeSeedCarLocation(tx, redis, {
+      await writeSeedCarTelemetry(tx, redis, {
         companyId: company.id,
         carId: car.id,
         carSeed,
@@ -201,7 +201,7 @@ async function syncExistingSeedCompanies(
   }
 }
 
-async function writeSeedCarLocation(
+async function writeSeedCarTelemetry(
   tx: TenantTransaction,
   redis: Redis,
   input: {
@@ -225,9 +225,9 @@ async function writeSeedCarLocation(
   });
 
   await redis.hset(
-    companyCarLocationsKey(input.companyId),
+    companyCarTelemetryKey(input.companyId),
     input.carId,
-    serializeCarLocation({
+    serializeCarTelemetry({
       latitude: input.carSeed.latitude,
       longitude: input.carSeed.longitude,
       updatedAt: recordedAt,

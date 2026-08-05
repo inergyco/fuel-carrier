@@ -1,4 +1,4 @@
-import type { CarLocationMarker } from "@fuel-carrier/shared-types";
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
 import L, { type Marker as LeafletMarker } from "leaflet";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
@@ -43,9 +43,9 @@ export type CarsMapLabels = {
 };
 
 export type CarsMapProps = {
-  markers: CarLocationMarker[];
+  markers: CarTelemetryMarker[];
   labels: CarsMapLabels;
-  renderVehicleLink: (marker: CarLocationMarker) => ReactNode;
+  renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode;
 };
 
 export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
@@ -149,7 +149,7 @@ function AnimatedCarMarker({
   );
 }
 
-function FitMarkers({ markers }: { markers: CarLocationMarker[] }) {
+function FitMarkers({ markers }: { markers: CarTelemetryMarker[] }) {
   const map = useMap();
   // Re-fit only when the set of cars changes — not on every live position update.
   const carIdsKey = markers

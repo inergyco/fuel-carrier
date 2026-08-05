@@ -5,8 +5,8 @@ export type TankResistanceReadings = {
   groundToVehicle: number;
 };
 
-/** Latest known GPS position for a car (served from Redis). */
-export type CarLocation = {
+/** Latest device telemetry for a car (served from Redis). */
+export type CarTelemetry = {
   carId: string;
   latitude: number;
   longitude: number;
@@ -21,30 +21,30 @@ export type CarLocation = {
   resistance?: TankResistanceReadings;
 };
 
-/** Map marker payload: latest location joined with car identity. */
-export type CarLocationMarker = CarLocation & {
+/** Map marker payload: latest telemetry joined with car identity. */
+export type CarTelemetryMarker = CarTelemetry & {
   name: string | null;
   licensePlate: string;
 };
 
-/** Socket.IO / Redis fan-out event names for live map updates. */
-export const CarLocationSocketEvents = {
-  LOCATION_UPDATED: 'location.updated',
-  LOCATION_REMOVED: 'location.removed',
+/** Socket.IO / Redis fan-out event names for live telemetry updates. */
+export const CarTelemetrySocketEvents = {
+  TELEMETRY_UPDATED: 'telemetry.updated',
+  TELEMETRY_REMOVED: 'telemetry.removed',
 } as const;
 
-export type CarLocationSocketEventName =
-  (typeof CarLocationSocketEvents)[keyof typeof CarLocationSocketEvents];
+export type CarTelemetrySocketEventName =
+  (typeof CarTelemetrySocketEvents)[keyof typeof CarTelemetrySocketEvents];
 
 /** Published to Redis and pushed to company WebSocket rooms. */
-export type CarLocationRealtimeEvent =
+export type CarTelemetryRealtimeEvent =
   | {
-      type: typeof CarLocationSocketEvents.LOCATION_UPDATED;
+      type: typeof CarTelemetrySocketEvents.TELEMETRY_UPDATED;
       companyId: string;
-      marker: CarLocationMarker;
+      marker: CarTelemetryMarker;
     }
   | {
-      type: typeof CarLocationSocketEvents.LOCATION_REMOVED;
+      type: typeof CarTelemetrySocketEvents.TELEMETRY_REMOVED;
       companyId: string;
       carId: string;
     };
