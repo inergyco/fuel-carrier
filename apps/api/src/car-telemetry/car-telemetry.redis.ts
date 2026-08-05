@@ -1,14 +1,23 @@
-import type { CarTelemetry } from '@fuel-carrier/shared-types';
-
-export function companyCarTelemetryKey(companyId: string): string {
-  return `company:${companyId}:car-telemetry`;
-}
-
 type ResistanceReadings = {
   tankToGround: number;
   tankToNozzle: number;
   groundToVehicle: number;
 };
+
+type CarTelemetry = {
+  carId: string;
+  latitude: number;
+  longitude: number;
+  updatedAt: string;
+  speed?: number;
+  remainFuel?: number;
+  fuelAmount?: number;
+  resistance?: ResistanceReadings;
+};
+
+export function companyCarTelemetryKey(companyId: string): string {
+  return `company:${companyId}:car-telemetry`;
+}
 
 type RedisCarTelemetryPayload = {
   latitude: number;
@@ -21,16 +30,14 @@ type RedisCarTelemetryPayload = {
 };
 
 /** Latest telemetry fields accepted by Redis serialization (`updatedAt` may be a Date). */
-type SerializableCarTelemetry = Pick<
-  CarTelemetry,
-  | 'latitude'
-  | 'longitude'
-  | 'speed'
-  | 'remainFuel'
-  | 'fuelAmount'
-  | 'resistance'
-> & {
+export type SerializableCarTelemetry = {
+  latitude: number;
+  longitude: number;
   updatedAt: Date | string;
+  speed?: number;
+  remainFuel?: number;
+  fuelAmount?: number;
+  resistance?: ResistanceReadings;
 };
 
 export function serializeCarTelemetry(

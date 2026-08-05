@@ -92,6 +92,13 @@
       "when": 1783500000000,
       "tag": "0012_car_location_history_created_at",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1783600000000,
+      "tag": "0013_car_telemetry_history",
+      "breakpoints": true
     }
   ]
 }

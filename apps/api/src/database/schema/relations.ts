@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { admins } from './admins';
 import { auditLogs } from './audit-logs';
-import { carLocationHistory } from './car-location-history';
+import { carTelemetryHistory } from './car-telemetry-history';
 import { cars } from './cars';
 import { companies } from './companies';
 import { companyUsers } from './company-users';
@@ -34,7 +34,7 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   cars: many(cars),
   companyUsers: many(companyUsers),
   auditLogs: many(auditLogs),
-  carLocationHistory: many(carLocationHistory),
+  carTelemetryHistory: many(carTelemetryHistory),
 }));
 
 export const companyUsersRelations = relations(companyUsers, ({ one }) => ({
@@ -68,7 +68,7 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
     fields: [cars.driverId],
     references: [drivers.id],
   }),
-  locationHistory: many(carLocationHistory),
+  telemetryHistory: many(carTelemetryHistory),
   mqttClient: one(mqttClients, {
     fields: [cars.id],
     references: [mqttClients.carId],
@@ -90,15 +90,15 @@ export const mqttAclsRelations = relations(mqttAcls, ({ one }) => ({
   }),
 }));
 
-export const carLocationHistoryRelations = relations(
-  carLocationHistory,
+export const carTelemetryHistoryRelations = relations(
+  carTelemetryHistory,
   ({ one }) => ({
     car: one(cars, {
-      fields: [carLocationHistory.carId],
+      fields: [carTelemetryHistory.carId],
       references: [cars.id],
     }),
     company: one(companies, {
-      fields: [carLocationHistory.companyId],
+      fields: [carTelemetryHistory.companyId],
       references: [companies.id],
     }),
   }),

@@ -1,8 +1,4 @@
 import 'dotenv/config';
-import {
-  CarTelemetrySocketEvents,
-  type CarTelemetryRealtimeEvent,
-} from '@fuel-carrier/shared-types';
 import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import Redis from 'ioredis';
@@ -12,8 +8,12 @@ import {
   serializeCarTelemetry,
 } from '../car-telemetry/car-telemetry.redis';
 import { CAR_TELEMETRY_UPDATES_CHANNEL } from '../car-telemetry/car-telemetry-realtime.service';
+import {
+  CarTelemetrySocketEvents,
+  type CarTelemetryRealtimeEvent,
+} from '../car-telemetry/car-telemetry.types';
 import { cars } from '../database/schema/cars';
-import { carLocationHistory } from '../database/schema/car-location-history';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import * as schema from '../database/schema';
 
 /** Default: first Pars (Tehran) seed car. */
@@ -149,12 +149,17 @@ async function recordStep(
 
   await db.transaction(async (tx) => {
     await tx.execute(sql`SELECT set_config('app.is_internal', 'true', true)`);
-    await tx.insert(carLocationHistory).values({
+    await tx.insert(carTelemetryHistory).values({
       time: recordedAt,
       carId: car.id,
       companyId: car.companyId,
       latitude,
       longitude,
+      speed: 28,
+      remainFuel,
+      resistanceTankToGround: resistance.tankToGround,
+      resistanceTankToNozzle: resistance.tankToNozzle,
+      resistanceGroundToVehicle: resistance.groundToVehicle,
     });
   });
 

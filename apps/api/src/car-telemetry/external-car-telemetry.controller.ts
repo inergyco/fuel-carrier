@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
-import { UserRole } from '@fuel-carrier/shared-types';
+import type { CarTelemetryMarker } from './car-telemetry.types';
+import { UserRole } from '@fuel-carrier/shared-types/user-role';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';

@@ -1,11 +1,6 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import type { TenantContext } from '@fuel-carrier/shared-types';
-import {
-  ApiErrorCode,
-  CarTelemetrySocketEvents,
-  type CarTelemetry,
-  type CarTelemetryMarker,
-} from '@fuel-carrier/shared-types';
+import { ApiErrorCode } from '@fuel-carrier/shared-types/api-error-code';
+import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
 import {
@@ -13,16 +8,21 @@ import {
   createApiException,
 } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
-import { carLocationHistory } from '../database/schema/car-location-history';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { REDIS } from '../redis/redis.tokens';
+import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
 import {
   companyCarTelemetryKey,
   parseCarTelemetry,
   serializeCarTelemetry,
 } from './car-telemetry.redis';
-import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
+import {
+  CarTelemetrySocketEvents,
+  type CarTelemetry,
+  type CarTelemetryMarker,
+} from './car-telemetry.types';
 
 type ResistanceReadings = {
   tankToGround: number;
@@ -65,7 +65,7 @@ export class CarTelemetryService {
   ) {}
 
   /**
-   * Persist a GPS sample to Timescale history and refresh the Redis latest telemetry.
+   * Persist a telemetry sample to Timescale history and refresh the Redis latest.
    */
   async record(
     context: TenantContext,
@@ -84,12 +84,18 @@ export class CarTelemetryService {
         );
       }
 
-      await tx.insert(carLocationHistory).values({
+      await tx.insert(carTelemetryHistory).values({
         time: recordedAt,
         carId: input.carId,
         companyId: input.companyId,
         latitude: input.latitude,
         longitude: input.longitude,
+        speed: input.speed,
+        remainFuel: input.remainFuel,
+        fuelAmount: input.fuelAmount,
+        resistanceTankToGround: input.resistance?.tankToGround,
+        resistanceTankToNozzle: input.resistance?.tankToNozzle,
+        resistanceGroundToVehicle: input.resistance?.groundToVehicle,
       });
 
       return {

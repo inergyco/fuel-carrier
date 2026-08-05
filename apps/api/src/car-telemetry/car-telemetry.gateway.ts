@@ -6,12 +6,8 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import {
-  CarTelemetrySocketEvents,
-  UserRole,
-  type AuthSession,
-  type CarTelemetryRealtimeEvent,
-} from '@fuel-carrier/shared-types';
+import type { AuthSession } from '@fuel-carrier/shared-types/auth-session';
+import { UserRole } from '@fuel-carrier/shared-types/user-role';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
 import type { JwtPayload } from '../auth/auth.types';
@@ -20,6 +16,10 @@ import {
   CarTelemetryRealtimeService,
   companyCarTelemetryRoom,
 } from './car-telemetry-realtime.service';
+import {
+  CarTelemetrySocketEvents,
+  type CarTelemetryRealtimeEvent,
+} from './car-telemetry.types';
 
 type CarTelemetrySocketData = {
   session?: AuthSession;

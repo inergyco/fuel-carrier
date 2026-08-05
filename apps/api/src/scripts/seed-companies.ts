@@ -14,7 +14,7 @@ import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
 import { drivers } from '../database/schema/drivers';
 import { cars } from '../database/schema/cars';
-import { carLocationHistory } from '../database/schema/car-location-history';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import * as schema from '../database/schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import {
@@ -216,7 +216,7 @@ async function writeSeedCarTelemetry(
 
   const recordedAt = new Date();
 
-  await tx.insert(carLocationHistory).values({
+  await tx.insert(carTelemetryHistory).values({
     time: recordedAt,
     carId: input.carId,
     companyId: input.companyId,
