@@ -4,6 +4,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import fastifyCookie from '@fastify/cookie';
 import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
@@ -18,6 +19,7 @@ async function bootstrap() {
   );
   const configService = app.get(ConfigService);
 
+  app.useWebSocketAdapter(new IoAdapter(app));
   await setupSecurityHeaders(app);
   await app.register(fastifyCookie);
   app.setGlobalPrefix('api');

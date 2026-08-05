@@ -4,10 +4,7 @@ import { FleetMapView } from '@fuel-carrier/web-ui/map'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import {
-  carLocationKeys,
-  fetchCarLocations,
-} from '../../lib/api/car-locations'
+import { useCarLocationsLive } from '../map/useCarLocationsLive'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './DashboardCarCard'
@@ -29,11 +26,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
     queryFn: fetchDrivers,
   })
 
-  const locationsQuery = useQuery({
-    queryKey: carLocationKeys.all,
-    queryFn: fetchCarLocations,
-    refetchInterval: 30_000,
-  })
+  const locationsQuery = useCarLocationsLive()
 
   const driverNameById = useMemo(
     function mapDriverNames() {

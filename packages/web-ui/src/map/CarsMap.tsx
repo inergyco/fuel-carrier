@@ -86,6 +86,13 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
 
 function FitMarkers({ markers }: { markers: CarLocationMarker[] }) {
   const map = useMap();
+  // Re-fit only when the set of cars changes — not on every live position update.
+  const carIdsKey = markers
+    .map(function toCarId(marker) {
+      return marker.carId;
+    })
+    .sort()
+    .join(",");
 
   useEffect(
     function fitBoundsToMarkers() {
@@ -106,7 +113,9 @@ function FitMarkers({ markers }: { markers: CarLocationMarker[] }) {
       );
       map.fitBounds(bounds, { padding: [48, 48], maxZoom: 12 });
     },
-    [map, markers],
+    // markers is read when carIdsKey changes (same render); omit from deps on purpose.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fit on fleet membership only
+    [map, carIdsKey],
   );
 
   return null;

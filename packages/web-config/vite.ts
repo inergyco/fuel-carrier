@@ -20,6 +20,7 @@ export function createPanelViteConfig(overrides: UserConfig = {}) {
         "/api": {
           target: defaultApiProxyTarget,
           changeOrigin: true,
+          ws: true,
         },
       },
     },

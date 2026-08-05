@@ -4,7 +4,10 @@ import type {
   CarLocationMarker,
 } from '@fuel-carrier/shared-types/car-location';
 import type { TenantContext } from '@fuel-carrier/shared-types';
-import { ApiErrorCode } from '@fuel-carrier/shared-types';
+import {
+  ApiErrorCode,
+  CarLocationSocketEvents,
+} from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
 import {
@@ -21,6 +24,7 @@ import {
   parseCarLocation,
   serializeCarLocation,
 } from './car-location.redis';
+import { CarLocationsRealtimeService } from './car-locations-realtime.service';
 
 type RecordCarLocationInput = {
   carId: string;
@@ -45,6 +49,7 @@ export class CarLocationsService {
     private readonly tenantDb: TenantDbService,
     @Inject(REDIS) private readonly redis: Redis,
     private readonly carsReader: CarsReader,
+    private readonly realtime: CarLocationsRealtimeService,
   ) {}
 
   /**
@@ -56,7 +61,7 @@ export class CarLocationsService {
   ): Promise<CarLocation> {
     const recordedAt = input.recordedAt ?? new Date();
 
-    await this.tenantDb.run(context, async (tx) => {
+    const markerIdentity = await this.tenantDb.run(context, async (tx) => {
       const car = await this.carsReader.getById(tx, input.carId);
 
       if (car.companyId !== input.companyId) {
@@ -74,6 +79,11 @@ export class CarLocationsService {
         latitude: input.latitude,
         longitude: input.longitude,
       });
+
+      return {
+        name: car.name,
+        licensePlate: car.licensePlate,
+      };
     });
 
     const location: CarLocation = {
@@ -88,6 +98,17 @@ export class CarLocationsService {
       input.carId,
       serializeCarLocation(location),
     );
+
+    const marker: CarLocationMarker = {
+      ...location,
+      name: markerIdentity.name,
+      licensePlate: markerIdentity.licensePlate,
+    };
+    await this.realtime.publish({
+      type: CarLocationSocketEvents.LOCATION_UPDATED,
+      companyId: input.companyId,
+      marker,
+    });
 
     return location;
   }
@@ -161,6 +182,11 @@ export class CarLocationsService {
 
   async clearForCar(companyId: string, carId: string): Promise<void> {
     await this.redis.hdel(companyCarLocationsKey(companyId), carId);
+    await this.realtime.publish({
+      type: CarLocationSocketEvents.LOCATION_REMOVED,
+      companyId,
+      carId,
+    });
   }
 
   private async _readCompanyLocations(

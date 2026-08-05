@@ -2,11 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
 import type { CarLocationMarker } from "@fuel-carrier/shared-types";
 import { FleetMapView } from "@fuel-carrier/web-ui/map";
-import { useQuery } from "@fuel-carrier/web-ui/query";
-import {
-  carLocationKeys,
-  fetchCarLocations,
-} from "../../lib/api/car-locations";
+import { useCarLocationsLive } from "../../components/map/useCarLocationsLive";
 
 export const Route = createFileRoute("/_authenticated/map")({
   component: MapPage,
@@ -14,11 +10,7 @@ export const Route = createFileRoute("/_authenticated/map")({
 
 function MapPage() {
   const { LL } = useI18nContext();
-  const locationsQuery = useQuery({
-    queryKey: carLocationKeys.all,
-    queryFn: fetchCarLocations,
-    refetchInterval: 30_000,
-  });
+  const locationsQuery = useCarLocationsLive();
 
   function renderVehicleLink(marker: CarLocationMarker) {
     return (

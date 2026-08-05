@@ -36,6 +36,7 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
   ],
   exports: [
     AuthService,
+    JwtModule,
     RolesGuard,
     MustChangePasswordGuard,
     CompanyUserAdminGuard,
