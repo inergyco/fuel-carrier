@@ -1,4 +1,4 @@
-import type L from "leaflet";
+import type { Marker as LeafletMarker } from "leaflet";
 
 /** Match typical live/simulate tick so markers glide instead of jump. */
 export const MARKER_ANIMATION_MS = 1000;
@@ -36,7 +36,7 @@ export function interpolateLatLng(
  * Returns a cancel function, or `null` when already at the target.
  */
 export function animateLeafletMarkerTo(
-  marker: L.Marker,
+  marker: LeafletMarker,
   endLat: number,
   endLng: number,
   durationMs: number = MARKER_ANIMATION_MS,

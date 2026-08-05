@@ -1,5 +1,5 @@
 import type { CarLocationMarker } from "@fuel-carrier/shared-types";
-import L from "leaflet";
+import L, { type Marker as LeafletMarker } from "leaflet";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -34,6 +34,12 @@ const markerIcon = L.divIcon({
 export type CarsMapLabels = {
   unnamedVehicle: () => string;
   viewVehicle: () => string;
+  remainFuel: (params: { volume: string }) => string;
+  resistanceSummary: (params: {
+    tankToGround: string;
+    tankToNozzle: string;
+    groundToVehicle: string;
+  }) => string;
 };
 
 export type CarsMapProps = {
@@ -75,6 +81,24 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
                 <p className="font-mono text-xs text-base-content/60">
                   {marker.licensePlate}
                 </p>
+                {marker.remainFuel != null ? (
+                  <p className="text-xs text-base-content/70">
+                    {labels.remainFuel({
+                      volume: String(marker.remainFuel),
+                    })}
+                  </p>
+                ) : null}
+                {marker.resistance ? (
+                  <p className="text-xs text-base-content/70">
+                    {labels.resistanceSummary({
+                      tankToGround: String(marker.resistance.tankToGround),
+                      tankToNozzle: String(marker.resistance.tankToNozzle),
+                      groundToVehicle: String(
+                        marker.resistance.groundToVehicle,
+                      ),
+                    })}
+                  </p>
+                ) : null}
                 {renderVehicleLink(marker)}
               </div>
             </Popup>
@@ -100,7 +124,7 @@ function AnimatedCarMarker({
   icon,
   children,
 }: AnimatedCarMarkerProps) {
-  const markerRef = useRef<L.Marker | null>(null);
+  const markerRef = useRef<LeafletMarker | null>(null);
   const [initialPosition] = useState(position);
   const endLat = position[0];
   const endLng = position[1];

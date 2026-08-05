@@ -7,7 +7,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import mqtt, { type MqttClient } from 'mqtt';
 import { CarLocationsService } from '../car-locations/car-locations.service';
-import { parseTelemetryGpsPayload } from './mqtt-telemetry.utils';
+import {
+  parseTelemetryPayload,
+  type TelemetrySample,
+} from './mqtt-telemetry.utils';
 
 @Injectable()
 export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
@@ -79,17 +82,20 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
   }
 
   private async _handleMessage(topic: string, payload: Buffer): Promise<void> {
-    const sample = parseTelemetryGpsPayload(topic, payload);
+    const sample: TelemetrySample | null = parseTelemetryPayload(
+      topic,
+      payload,
+    );
     if (!sample) {
-      this.logger.debug(`Ignoring non-GPS or invalid telemetry on ${topic}`);
+      this.logger.debug(`Ignoring invalid telemetry on ${topic}`);
       return;
     }
 
     try {
-      await this.carLocationsService.ingestDeviceGps(sample);
+      await this.carLocationsService.ingestDeviceTelemetry(sample);
     } catch (error) {
       this.logger.error(
-        `Failed to ingest GPS for car ${sample.carId}`,
+        `Failed to ingest telemetry for car ${sample.carId}`,
         error instanceof Error ? error.stack : undefined,
       );
     }

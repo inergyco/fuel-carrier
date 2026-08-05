@@ -75,7 +75,15 @@ async function simulateCarPath(): Promise<void> {
 
       for (let index = 0; index < path.length; index += 1) {
         const [latitude, longitude] = path[index];
-        await recordStep(db, redis, car, latitude, longitude);
+        await recordStep(
+          db,
+          redis,
+          car,
+          latitude,
+          longitude,
+          index,
+          path.length,
+        );
         console.log(
           `  [${index + 1}/${path.length}] ${latitude.toFixed(5)}, ${longitude.toFixed(5)}`,
         );
@@ -125,8 +133,19 @@ async function recordStep(
   car: TargetCar,
   latitude: number,
   longitude: number,
+  stepIndex: number,
+  stepCount: number,
 ): Promise<void> {
   const recordedAt = new Date();
+  const remainFuel = Math.max(
+    0,
+    Math.round(1200 - (stepIndex / Math.max(1, stepCount - 1)) * 900),
+  );
+  const resistance = {
+    tankToGround: Number((5.2 + stepIndex * 0.01).toFixed(2)),
+    tankToNozzle: Number((4.1 + stepIndex * 0.008).toFixed(2)),
+    groundToVehicle: Number((1.7 + stepIndex * 0.005).toFixed(2)),
+  };
 
   await db.transaction(async (tx) => {
     await tx.execute(sql`SELECT set_config('app.is_internal', 'true', true)`);
@@ -146,6 +165,9 @@ async function recordStep(
       latitude,
       longitude,
       updatedAt: recordedAt,
+      speed: 28,
+      remainFuel,
+      resistance,
     }),
   );
 
@@ -159,6 +181,9 @@ async function recordStep(
       updatedAt: recordedAt.toISOString(),
       name: car.name,
       licensePlate: car.licensePlate,
+      speed: 28,
+      remainFuel,
+      resistance,
     },
   };
 

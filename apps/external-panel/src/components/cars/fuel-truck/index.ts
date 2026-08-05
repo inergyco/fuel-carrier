@@ -13,3 +13,8 @@ export type { FuelTankLabelsProps } from './FuelTankLabels'
 export { TruckBody } from './TruckBody'
 
 export { formatVolume } from './layout'
+export {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+  distributeRemainFuel,
+} from './distribute-remain-fuel'

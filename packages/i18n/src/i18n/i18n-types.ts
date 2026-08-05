@@ -1612,6 +1612,43 @@ type RootTranslation = {
 			 * @param {string} volume
 			 */
 			tankCapacity: RequiredParams<'volume'>
+			/**
+			 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​:​ ​{​v​o​l​u​m​e​}
+			 * @param {string} volume
+			 */
+			remainFuel: RequiredParams<'volume'>
+			/**
+			 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​ ​u​n​k​n​o​w​n
+			 */
+			remainFuelUnknown: string
+			/**
+			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
+			 */
+			resistanceTitle: string
+			/**
+			 * T​a​n​k
+			 */
+			resistanceTank: string
+			/**
+			 * G​r​o​u​n​d
+			 */
+			resistanceGround: string
+			/**
+			 * N​o​z​z​l​e
+			 */
+			resistanceNozzle: string
+			/**
+			 * V​e​h​i​c​l​e
+			 */
+			resistanceVehicle: string
+			/**
+			 * Ω
+			 */
+			resistanceUnit: string
+			/**
+			 * N​o​ ​r​e​s​i​s​t​a​n​c​e​ ​r​e​a​d​i​n​g​s​ ​y​e​t
+			 */
+			resistanceUnknown: string
 		}
 		map: {
 			/**
@@ -1643,6 +1680,18 @@ type RootTranslation = {
 			 * U​n​n​a​m​e​d​ ​v​e​h​i​c​l​e
 			 */
 			unnamedVehicle: string
+			/**
+			 * F​u​e​l​:​ ​{​v​o​l​u​m​e​}
+			 * @param {string} volume
+			 */
+			remainFuel: RequiredParams<'volume'>
+			/**
+			 * R​:​ ​{​t​a​n​k​T​o​G​r​o​u​n​d​}​ ​/​ ​{​t​a​n​k​T​o​N​o​z​z​l​e​}​ ​/​ ​{​g​r​o​u​n​d​T​o​V​e​h​i​c​l​e​}​ ​Ω
+			 * @param {string} groundToVehicle
+			 * @param {string} tankToGround
+			 * @param {string} tankToNozzle
+			 */
+			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
 		}
 		auditLogs: {
 			/**
@@ -3400,6 +3449,42 @@ export type TranslationFunctions = {
 			 * Capacity per tank: {volume}
 			 */
 			tankCapacity: (arg: { volume: string }) => LocalizedString
+			/**
+			 * Remaining fuel: {volume}
+			 */
+			remainFuel: (arg: { volume: string }) => LocalizedString
+			/**
+			 * Remaining fuel unknown
+			 */
+			remainFuelUnknown: () => LocalizedString
+			/**
+			 * Tank resistance
+			 */
+			resistanceTitle: () => LocalizedString
+			/**
+			 * Tank
+			 */
+			resistanceTank: () => LocalizedString
+			/**
+			 * Ground
+			 */
+			resistanceGround: () => LocalizedString
+			/**
+			 * Nozzle
+			 */
+			resistanceNozzle: () => LocalizedString
+			/**
+			 * Vehicle
+			 */
+			resistanceVehicle: () => LocalizedString
+			/**
+			 * Ω
+			 */
+			resistanceUnit: () => LocalizedString
+			/**
+			 * No resistance readings yet
+			 */
+			resistanceUnknown: () => LocalizedString
 		}
 		map: {
 			/**
@@ -3430,6 +3515,14 @@ export type TranslationFunctions = {
 			 * Unnamed vehicle
 			 */
 			unnamedVehicle: () => LocalizedString
+			/**
+			 * Fuel: {volume}
+			 */
+			remainFuel: (arg: { volume: string }) => LocalizedString
+			/**
+			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
+			 */
+			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
 		}
 		auditLogs: {
 			/**

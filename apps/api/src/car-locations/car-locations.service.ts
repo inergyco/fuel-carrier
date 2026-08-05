@@ -1,12 +1,10 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
-import type {
-  CarLocation,
-  CarLocationMarker,
-} from '@fuel-carrier/shared-types/car-location';
 import type { TenantContext } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   CarLocationSocketEvents,
+  type CarLocation,
+  type CarLocationMarker,
 } from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
@@ -26,19 +24,33 @@ import {
 } from './car-location.redis';
 import { CarLocationsRealtimeService } from './car-locations-realtime.service';
 
+type ResistanceReadings = {
+  tankToGround: number;
+  tankToNozzle: number;
+  groundToVehicle: number;
+};
+
 type RecordCarLocationInput = {
   carId: string;
   companyId: string;
   latitude: number;
   longitude: number;
   recordedAt?: Date;
+  speed?: number;
+  remainFuel?: number;
+  fuelAmount?: number;
+  resistance?: ResistanceReadings;
 };
 
-type IngestDeviceGpsInput = {
+type IngestDeviceTelemetryInput = {
   carId: string;
   latitude: number;
   longitude: number;
   recordedAt?: Date;
+  speed?: number;
+  remainFuel?: number;
+  fuelAmount?: number;
+  resistance?: ResistanceReadings;
 };
 
 @Injectable()
@@ -91,7 +103,18 @@ export class CarLocationsService {
       latitude: input.latitude,
       longitude: input.longitude,
       updatedAt: recordedAt.toISOString(),
+      speed: input.speed,
+      remainFuel: input.remainFuel,
+      fuelAmount: input.fuelAmount,
     };
+
+    if (input.resistance != null) {
+      location.resistance = {
+        tankToGround: input.resistance.tankToGround,
+        tankToNozzle: input.resistance.tankToNozzle,
+        groundToVehicle: input.resistance.groundToVehicle,
+      };
+    }
 
     await this.redis.hset(
       companyCarLocationsKey(input.companyId),
@@ -114,10 +137,10 @@ export class CarLocationsService {
   }
 
   /**
-   * Ingest a device GPS sample from MQTT (internal context; skips unknown cars).
+   * Ingest a device telemetry sample from MQTT (internal context; skips unknown cars).
    */
-  async ingestDeviceGps(
-    input: IngestDeviceGpsInput,
+  async ingestDeviceTelemetry(
+    input: IngestDeviceTelemetryInput,
   ): Promise<CarLocation | null> {
     const context = internalTenantContext();
 
@@ -132,10 +155,16 @@ export class CarLocationsService {
         latitude: input.latitude,
         longitude: input.longitude,
         recordedAt: input.recordedAt,
+        speed: input.speed,
+        remainFuel: input.remainFuel,
+        fuelAmount: input.fuelAmount,
+        resistance: input.resistance,
       });
     } catch (error) {
       if (isNotFoundApiException(error)) {
-        this.logger.warn(`Ignoring GPS sample for unknown car ${input.carId}`);
+        this.logger.warn(
+          `Ignoring telemetry sample for unknown car ${input.carId}`,
+        );
         return null;
       }
 

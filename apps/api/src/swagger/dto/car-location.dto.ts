@@ -18,4 +18,26 @@ export class CarLocationMarkerDto {
 
   @ApiProperty({ example: '۱۲ب۳۴۵-۶۷' })
   licensePlate!: string;
+
+  @ApiPropertyOptional({ example: 42.5 })
+  speed?: number;
+
+  @ApiPropertyOptional({ example: 1140 })
+  remainFuel?: number;
+
+  @ApiPropertyOptional({ example: 14.76 })
+  fuelAmount?: number;
+
+  @ApiPropertyOptional({
+    example: {
+      tankToGround: 5.34,
+      tankToNozzle: 4.25,
+      groundToVehicle: 1.8,
+    },
+  })
+  resistance?: {
+    tankToGround: number;
+    tankToNozzle: number;
+    groundToVehicle: number;
+  };
 }

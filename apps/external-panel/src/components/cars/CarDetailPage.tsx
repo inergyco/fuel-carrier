@@ -28,7 +28,7 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
     <div>
       <CarDetailHeader car={car} />
       <div className="flex flex-col gap-6">
-        <CarTanksSection />
+        <CarTanksSection carId={car.id} />
         <CarOverviewSection car={car} />
       </div>
     </div>

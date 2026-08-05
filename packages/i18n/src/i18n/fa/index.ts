@@ -449,6 +449,15 @@ const fa: Translation = {
       detailSubtitle: "خلاصه اطلاعات این خودرو",
       tankUnit: "لیتر",
       tankCapacity: "ظرفیت هر مخزن: {volume}",
+      remainFuel: "سوخت باقیمانده: {volume}",
+      remainFuelUnknown: "سوخت باقیمانده نامشخص است",
+      resistanceTitle: "مقاومت مخزن",
+      resistanceTank: "مخزن",
+      resistanceGround: "زمین",
+      resistanceNozzle: "نازل",
+      resistanceVehicle: "خودرو",
+      resistanceUnit: "Ω",
+      resistanceUnknown: "هنوز مقاومت گزارش نشده است",
     },
     map: {
       title: "نقشه ناوگان",
@@ -458,6 +467,9 @@ const fa: Translation = {
       vehiclesOnMap: "{count} خودرو روی نقشه",
       viewVehicle: "مشاهده خودرو",
       unnamedVehicle: "خودروی بدون نام",
+      remainFuel: "سوخت: {volume}",
+      resistanceSummary:
+        "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
     },
     auditLogs: {
       title: "گزارش ممیزی",
