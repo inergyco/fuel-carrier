@@ -9,7 +9,7 @@ import type { CarLocationRealtimeEvent } from '@fuel-carrier/shared-types';
 import Redis from 'ioredis';
 import { REDIS } from '../redis/redis.tokens';
 
-const CAR_LOCATION_UPDATES_CHANNEL = 'car-location-updates';
+export const CAR_LOCATION_UPDATES_CHANNEL = 'car-location-updates';
 
 type RealtimeListener = (event: CarLocationRealtimeEvent) => void;
 

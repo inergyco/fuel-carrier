@@ -1,10 +1,11 @@
 import type { CarLocationMarker } from "@fuel-carrier/shared-types";
 import L from "leaflet";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./leaflet-fix.css";
 import { useTheme, type ThemeMode } from "../ui/theme-context";
+import { animateLeafletMarkerTo } from "./animate-marker-position";
 
 const IRAN_CENTER: [number, number] = [32.4279, 53.688];
 const DEFAULT_ZOOM = 5;
@@ -63,7 +64,7 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
           : labels.unnamedVehicle();
 
         return (
-          <Marker
+          <AnimatedCarMarker
             key={marker.carId}
             position={[marker.latitude, marker.longitude]}
             icon={markerIcon}
@@ -77,10 +78,50 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
                 {renderVehicleLink(marker)}
               </div>
             </Popup>
-          </Marker>
+          </AnimatedCarMarker>
         );
       })}
     </MapContainer>
+  );
+}
+
+type AnimatedCarMarkerProps = {
+  position: [number, number];
+  icon: L.DivIcon;
+  children: ReactNode;
+};
+
+/**
+ * Keeps the React-Leaflet position prop stable and animates via Leaflet
+ * `setLatLng` so live GPS updates glide instead of teleporting.
+ */
+function AnimatedCarMarker({
+  position,
+  icon,
+  children,
+}: AnimatedCarMarkerProps) {
+  const markerRef = useRef<L.Marker | null>(null);
+  const [initialPosition] = useState(position);
+  const endLat = position[0];
+  const endLng = position[1];
+
+  useEffect(
+    function animateToTarget() {
+      const maybeMarker = markerRef.current;
+      if (maybeMarker == null) {
+        return;
+      }
+
+      const cancel = animateLeafletMarkerTo(maybeMarker, endLat, endLng);
+      return cancel ?? undefined;
+    },
+    [endLat, endLng],
+  );
+
+  return (
+    <Marker ref={markerRef} position={initialPosition} icon={icon}>
+      {children}
+    </Marker>
   );
 }
 

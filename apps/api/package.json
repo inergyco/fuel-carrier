@@ -24,7 +24,8 @@
     "db:studio": "drizzle-kit studio",
     "seed:super-admin": "node -r ts-node/register -r tsconfig-paths/register src/scripts/seed-super-admin.ts",
     "seed:companies": "node -r ts-node/register -r tsconfig-paths/register src/scripts/seed-companies.ts",
-    "seed:mqtt-clients": "node -r ts-node/register -r tsconfig-paths/register src/scripts/seed-mqtt-clients.ts"
+    "seed:mqtt-clients": "node -r ts-node/register -r tsconfig-paths/register src/scripts/seed-mqtt-clients.ts",
+    "simulate:car-path": "node -r ts-node/register -r tsconfig-paths/register src/scripts/simulate-car-path.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
