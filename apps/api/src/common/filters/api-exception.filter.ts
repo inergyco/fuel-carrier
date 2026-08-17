@@ -4,6 +4,7 @@ import {
   type ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiErrorCode,
@@ -23,9 +24,18 @@ const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
 
 @Catch()
 export class ApiExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(ApiExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply>();
     const { status, error } = this.toApiError(exception);
+
+    if (status >= 500) {
+      this.logger.error(
+        error.message,
+        exception instanceof Error ? exception.stack : undefined,
+      );
+    }
 
     void response.status(status).send({ error });
   }
