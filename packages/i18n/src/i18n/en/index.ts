@@ -105,7 +105,7 @@ const en: BaseTranslation = {
       loading: 'Loading map…',
       empty: 'No vehicles are reporting a location yet.',
       vehiclesOnMap: '{count:number} vehicles on map',
-      viewVehicle: 'View company vehicles',
+      viewVehicle: 'View vehicle',
       unnamedVehicle: 'Unnamed vehicle',
       remainFuel: 'Fuel: {volume:string}',
       resistanceSummary: 'R: {tankToGround:string} / {tankToNozzle:string} / {groundToVehicle:string} Ω',

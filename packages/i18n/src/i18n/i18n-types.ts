@@ -372,7 +372,7 @@ type RootTranslation = {
 			 */
 			vehiclesOnMap: RequiredParams<'count'>
 			/**
-			 * V​i​e​w​ ​c​o​m​p​a​n​y​ ​v​e​h​i​c​l​e​s
+			 * V​i​e​w​ ​v​e​h​i​c​l​e
 			 */
 			viewVehicle: string
 			/**
@@ -2359,7 +2359,7 @@ export type TranslationFunctions = {
 			 */
 			vehiclesOnMap: (arg: { count: number }) => LocalizedString
 			/**
-			 * View company vehicles
+			 * View vehicle
 			 */
 			viewVehicle: () => LocalizedString
 			/**

@@ -103,7 +103,7 @@ const fa: Translation = {
       loading: "در حال بارگذاری نقشه…",
       empty: "هنوز هیچ خودرویی موقعیت گزارش نکرده است.",
       vehiclesOnMap: "{count} خودرو روی نقشه",
-      viewVehicle: "مشاهده خودروهای شرکت",
+      viewVehicle: "مشاهده خودرو",
       unnamedVehicle: "خودروی بدون نام",
       remainFuel: "سوخت: {volume}",
       resistanceSummary:
