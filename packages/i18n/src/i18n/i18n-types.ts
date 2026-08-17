@@ -391,6 +391,14 @@ type RootTranslation = {
 			 * @param {string} tankToNozzle
 			 */
 			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
+			/**
+			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
+			 */
+			companyLegend: string
+			/**
+			 * U​n​k​n​o​w​n​ ​c​o​m​p​a​n​y
+			 */
+			unnamedCompany: string
 		}
 		auditLogs: {
 			/**
@@ -2286,6 +2294,14 @@ export type TranslationFunctions = {
 			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
 			 */
 			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
+			/**
+			 * Company colors
+			 */
+			companyLegend: () => LocalizedString
+			/**
+			 * Unknown company
+			 */
+			unnamedCompany: () => LocalizedString
 		}
 		auditLogs: {
 			/**

@@ -30,6 +30,7 @@ function MapPage() {
       isLoading={telemetryQuery.isLoading}
       labels={LL.internalPanel.map}
       renderVehicleLink={renderVehicleLink}
+      colorByCompany
     />
   )
 }

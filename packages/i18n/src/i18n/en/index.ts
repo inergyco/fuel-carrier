@@ -109,6 +109,8 @@ const en: BaseTranslation = {
       unnamedVehicle: 'Unnamed vehicle',
       remainFuel: 'Fuel: {volume:string}',
       resistanceSummary: 'R: {tankToGround:string} / {tankToNozzle:string} / {groundToVehicle:string} Ω',
+      companyLegend: 'Company colors',
+      unnamedCompany: 'Unknown company',
     },
     auditLogs: {
       title: 'Audit log',

@@ -17,19 +17,42 @@ const TILE_URLS: Record<ThemeMode, string> = {
 
 const markerIcon = L.divIcon({
   className: "fuel-carrier-map-marker",
-  html: `<span style="
-    display:block;
-    width:14px;
-    height:14px;
-    border-radius:9999px;
-    background:var(--color-primary);
-    border:2px solid var(--color-base-100);
-    box-shadow:0 0 0 4px color-mix(in oklab, var(--color-primary) 25%, transparent);
-  "></span>`,
+  html: markerIconHtml("var(--color-primary)"),
   iconSize: [14, 14],
   iconAnchor: [7, 7],
   popupAnchor: [0, -10],
 });
+
+const markerIconByColor = new Map<string, L.DivIcon>();
+
+function markerIconHtml(color: string): string {
+  return `<span style="
+    display:block;
+    width:14px;
+    height:14px;
+    border-radius:9999px;
+    background:${color};
+    border:2px solid var(--color-base-100);
+    box-shadow:0 0 0 4px color-mix(in oklab, ${color} 25%, transparent);
+  "></span>`;
+}
+
+function markerIconForColor(color: string): L.DivIcon {
+  const cached = markerIconByColor.get(color);
+  if (cached) {
+    return cached;
+  }
+
+  const icon = L.divIcon({
+    className: "fuel-carrier-map-marker",
+    html: markerIconHtml(color),
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10],
+  });
+  markerIconByColor.set(color, icon);
+  return icon;
+}
 
 export type CarsMapLabels = {
   unnamedVehicle: () => string;
@@ -46,9 +69,15 @@ export type CarsMapProps = {
   markers: CarTelemetryMarker[];
   labels: CarsMapLabels;
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode;
+  companyColors?: ReadonlyMap<string, string>;
 };
 
-export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
+export function CarsMap({
+  markers,
+  labels,
+  renderVehicleLink,
+  companyColors,
+}: CarsMapProps) {
   const { theme } = useTheme();
 
   return (
@@ -68,12 +97,16 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
         const title = marker.name?.trim()
           ? marker.name
           : labels.unnamedVehicle();
+        const companyColor = companyColors?.get(marker.companyId);
+        const icon = companyColor
+          ? markerIconForColor(companyColor)
+          : markerIcon;
 
         return (
           <AnimatedCarMarker
             key={marker.carId}
             position={[marker.latitude, marker.longitude]}
-            icon={markerIcon}
+            icon={icon}
           >
             <Popup>
               <div className="space-y-1.5 text-sm text-base-content">
@@ -82,7 +115,14 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
                   {marker.licensePlate}
                 </p>
                 {marker.companyName ? (
-                  <p className="text-xs text-base-content/55">
+                  <p className="flex items-center gap-2 text-xs text-base-content/55">
+                    {companyColor ? (
+                      <span
+                        className="size-2.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: companyColor }}
+                        aria-hidden
+                      />
+                    ) : null}
                     {marker.companyName}
                   </p>
                 ) : null}

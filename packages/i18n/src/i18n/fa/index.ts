@@ -108,6 +108,8 @@ const fa: Translation = {
       remainFuel: "سوخت: {volume}",
       resistanceSummary:
         "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
+      companyLegend: "رنگ شرکت‌ها",
+      unnamedCompany: "شرکت ناشناس",
     },
     auditLogs: {
       title: "گزارش فعالیت",
