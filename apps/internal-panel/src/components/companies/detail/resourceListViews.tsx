@@ -31,6 +31,7 @@ interface ResourceListProps<T extends { id: string }> {
   onEdit: (item: T) => void;
   onDelete: (item: T) => void;
   onMqttCredentials?: (item: T) => void;
+  renderView?: (item: T) => ReactNode;
   variant: "table" | "cards";
 }
 
@@ -40,6 +41,7 @@ export function ResourceList<T extends { id: string }>({
   onEdit,
   onDelete,
   onMqttCredentials,
+  renderView,
   variant,
 }: ResourceListProps<T>) {
   const { LL } = useI18nContext();
@@ -81,6 +83,7 @@ export function ResourceList<T extends { id: string }>({
                     onEdit={onEdit}
                     onDelete={onDelete}
                     onMqttCredentials={onMqttCredentials}
+                    renderView={renderView}
                   />
                 </DataTableCell>
               </DataTableRow>
@@ -133,6 +136,7 @@ export function ResourceList<T extends { id: string }>({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onMqttCredentials={onMqttCredentials}
+                renderView={renderView}
                 stacked
               />
             </div>
@@ -148,6 +152,7 @@ type ResourceOperationsProps<T> = {
   onEdit: (item: T) => void;
   onDelete: (item: T) => void;
   onMqttCredentials?: (item: T) => void;
+  renderView?: (item: T) => ReactNode;
   stacked?: boolean;
 };
 
@@ -156,6 +161,7 @@ function ResourceOperations<T>({
   onEdit,
   onDelete,
   onMqttCredentials,
+  renderView,
   stacked = false,
 }: ResourceOperationsProps<T>) {
   const { LL } = useI18nContext();
@@ -179,6 +185,7 @@ function ResourceOperations<T>({
         stacked && "justify-center",
       )}
     >
+      {renderView ? renderView(item) : null}
       {onMqttCredentials ? (
         <Button
           type="button"

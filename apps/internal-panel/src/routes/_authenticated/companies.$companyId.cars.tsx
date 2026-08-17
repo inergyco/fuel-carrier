@@ -1,12 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { CompanyCarsSection } from '../../components/companies/detail/CompanyCarsSection'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/companies/$companyId/cars')({
-  component: CompanyCarsPage,
+  component: CompanyCarsLayout,
 })
 
-function CompanyCarsPage() {
-  const { companyId } = Route.useParams()
-
-  return <CompanyCarsSection companyId={companyId} />
+function CompanyCarsLayout() {
+  return <Outlet />
 }

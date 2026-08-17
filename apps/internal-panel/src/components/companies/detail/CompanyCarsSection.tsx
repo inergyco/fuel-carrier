@@ -1,4 +1,12 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { Link } from '@tanstack/react-router'
+import {
+  dataTableViewActionClassName,
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+} from '@fuel-carrier/web-ui/ui'
+import { Eye } from '@fuel-carrier/web-ui/icons'
+import type { Car } from '@fuel-carrier/shared-types'
 import { getCarColumns } from './companyResourceColumns'
 import { CarFormModal } from './CarFormModal'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
@@ -37,6 +45,22 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         }}
         onDelete={cars.setDeleteTarget}
         onMqttCredentials={cars.openMqttCredentials}
+        renderView={function renderCarView(car: Car) {
+          return (
+            <Link
+              to="/companies/$companyId/cars/$carId"
+              params={{ companyId, carId: car.id }}
+              className={dataTableViewActionClassName()}
+              aria-label={LL.internalPanel.companies.detail.viewCar()}
+            >
+              <Eye
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+            </Link>
+          )
+        }}
       />
 
       {cars.carModal && (

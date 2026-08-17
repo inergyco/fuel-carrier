@@ -796,6 +796,76 @@ type RootTranslation = {
 				 */
 				mqttCredentialsFailed: string
 				/**
+				 * V​i​e​w​ ​v​e​h​i​c​l​e
+				 */
+				viewCar: string
+				/**
+				 * B​a​c​k​ ​t​o​ ​v​e​h​i​c​l​e​s
+				 */
+				backToCars: string
+				/**
+				 * V​e​h​i​c​l​e​ ​n​o​t​ ​f​o​u​n​d​.
+				 */
+				carNotFound: string
+				/**
+				 * T​h​i​s​ ​v​e​h​i​c​l​e​ ​m​a​y​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​e​t​e​d​ ​o​r​ ​t​h​e​ ​l​i​n​k​ ​i​s​ ​i​n​v​a​l​i​d​.
+				 */
+				carNotFoundDescription: string
+				/**
+				 * V​e​h​i​c​l​e​ ​d​e​t​a​i​l​s
+				 */
+				carDetailTitle: string
+				/**
+				 * O​v​e​r​v​i​e​w​ ​o​f​ ​t​h​i​s​ ​v​e​h​i​c​l​e
+				 */
+				carDetailSubtitle: string
+				/**
+				 * L
+				 */
+				tankUnit: string
+				/**
+				 * C​a​p​a​c​i​t​y​ ​p​e​r​ ​t​a​n​k​:​ ​{​v​o​l​u​m​e​}
+				 * @param {string} volume
+				 */
+				tankCapacity: RequiredParams<'volume'>
+				/**
+				 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​:​ ​{​v​o​l​u​m​e​}
+				 * @param {string} volume
+				 */
+				remainFuel: RequiredParams<'volume'>
+				/**
+				 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​ ​u​n​k​n​o​w​n
+				 */
+				remainFuelUnknown: string
+				/**
+				 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
+				 */
+				resistanceTitle: string
+				/**
+				 * T​a​n​k
+				 */
+				resistanceTank: string
+				/**
+				 * G​r​o​u​n​d
+				 */
+				resistanceGround: string
+				/**
+				 * N​o​z​z​l​e
+				 */
+				resistanceNozzle: string
+				/**
+				 * V​e​h​i​c​l​e
+				 */
+				resistanceVehicle: string
+				/**
+				 * Ω
+				 */
+				resistanceUnit: string
+				/**
+				 * N​o​ ​r​e​s​i​s​t​a​n​c​e​ ​r​e​a​d​i​n​g​s​ ​y​e​t
+				 */
+				resistanceUnknown: string
+				/**
 				 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
 				 */
 				createFailed: string
@@ -2701,6 +2771,74 @@ export type TranslationFunctions = {
 				 * Could not provision MQTT credentials. Please try again.
 				 */
 				mqttCredentialsFailed: () => LocalizedString
+				/**
+				 * View vehicle
+				 */
+				viewCar: () => LocalizedString
+				/**
+				 * Back to vehicles
+				 */
+				backToCars: () => LocalizedString
+				/**
+				 * Vehicle not found.
+				 */
+				carNotFound: () => LocalizedString
+				/**
+				 * This vehicle may have been deleted or the link is invalid.
+				 */
+				carNotFoundDescription: () => LocalizedString
+				/**
+				 * Vehicle details
+				 */
+				carDetailTitle: () => LocalizedString
+				/**
+				 * Overview of this vehicle
+				 */
+				carDetailSubtitle: () => LocalizedString
+				/**
+				 * L
+				 */
+				tankUnit: () => LocalizedString
+				/**
+				 * Capacity per tank: {volume}
+				 */
+				tankCapacity: (arg: { volume: string }) => LocalizedString
+				/**
+				 * Remaining fuel: {volume}
+				 */
+				remainFuel: (arg: { volume: string }) => LocalizedString
+				/**
+				 * Remaining fuel unknown
+				 */
+				remainFuelUnknown: () => LocalizedString
+				/**
+				 * Tank resistance
+				 */
+				resistanceTitle: () => LocalizedString
+				/**
+				 * Tank
+				 */
+				resistanceTank: () => LocalizedString
+				/**
+				 * Ground
+				 */
+				resistanceGround: () => LocalizedString
+				/**
+				 * Nozzle
+				 */
+				resistanceNozzle: () => LocalizedString
+				/**
+				 * Vehicle
+				 */
+				resistanceVehicle: () => LocalizedString
+				/**
+				 * Ω
+				 */
+				resistanceUnit: () => LocalizedString
+				/**
+				 * No resistance readings yet
+				 */
+				resistanceUnknown: () => LocalizedString
 				/**
 				 * Could not save. Please try again.
 				 */

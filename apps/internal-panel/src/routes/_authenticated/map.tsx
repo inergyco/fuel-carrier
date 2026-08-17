@@ -15,8 +15,8 @@ function MapPage() {
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
-        to="/companies/$companyId/cars"
-        params={{ companyId: marker.companyId }}
+        to="/companies/$companyId/cars/$carId"
+        params={{ companyId: marker.companyId, carId: marker.carId }}
         className="inline-flex text-xs font-medium text-primary hover:underline"
       >
         {LL.internalPanel.map.viewVehicle()}

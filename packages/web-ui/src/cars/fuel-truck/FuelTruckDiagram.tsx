@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { cn } from "@fuel-carrier/web-ui/utils";
+import { cn } from "../../utils";
 import { FuelTankBank } from "./FuelTankBank";
 import { FuelTankLabels } from "./FuelTankLabels";
 import { FuelTruckGradients } from "./FuelTruckGradients";

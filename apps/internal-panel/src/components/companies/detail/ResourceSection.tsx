@@ -1,6 +1,7 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Button, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
+import type { ReactNode } from 'react'
 import { ResourceList, type ResourceColumn } from './resourceListViews'
 
 export type { ResourceColumn } from './resourceListViews'
@@ -17,6 +18,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onEdit: (item: T) => void
   onDelete: (item: T) => void
   onMqttCredentials?: (item: T) => void
+  renderView?: (item: T) => ReactNode
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -31,6 +33,7 @@ export function ResourceSection<T extends { id: string }>({
   onEdit,
   onDelete,
   onMqttCredentials,
+  renderView,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
@@ -61,6 +64,7 @@ export function ResourceSection<T extends { id: string }>({
           onEdit={onEdit}
           onDelete={onDelete}
           onMqttCredentials={onMqttCredentials}
+          renderView={renderView}
           variant={isMdUp ? 'table' : 'cards'}
         />
       )}
