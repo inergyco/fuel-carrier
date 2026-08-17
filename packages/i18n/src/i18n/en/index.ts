@@ -111,6 +111,8 @@ const en: BaseTranslation = {
       resistanceSummary: 'R: {tankToGround:string} / {tankToNozzle:string} / {groundToVehicle:string} Ω',
       companyLegend: 'Company colors',
       unnamedCompany: 'Unknown company',
+      showAllCompanies: 'Show all',
+      vehiclesOnMapForCompany: '{count:number} vehicles · {company:string}',
     },
     auditLogs: {
       title: 'Audit log',

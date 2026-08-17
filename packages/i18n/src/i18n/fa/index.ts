@@ -110,6 +110,8 @@ const fa: Translation = {
         "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
       companyLegend: "رنگ شرکت‌ها",
       unnamedCompany: "شرکت ناشناس",
+      showAllCompanies: "نمایش همه",
+      vehiclesOnMapForCompany: "{count} خودرو · {company}",
     },
     auditLogs: {
       title: "گزارش فعالیت",

@@ -399,6 +399,16 @@ type RootTranslation = {
 			 * U​n​k​n​o​w​n​ ​c​o​m​p​a​n​y
 			 */
 			unnamedCompany: string
+			/**
+			 * S​h​o​w​ ​a​l​l
+			 */
+			showAllCompanies: string
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s​ ​·​ ​{​c​o​m​p​a​n​y​}
+			 * @param {string} company
+			 * @param {number} count
+			 */
+			vehiclesOnMapForCompany: RequiredParams<'company' | 'count'>
 		}
 		auditLogs: {
 			/**
@@ -2302,6 +2312,14 @@ export type TranslationFunctions = {
 			 * Unknown company
 			 */
 			unnamedCompany: () => LocalizedString
+			/**
+			 * Show all
+			 */
+			showAllCompanies: () => LocalizedString
+			/**
+			 * {count} vehicles · {company}
+			 */
+			vehiclesOnMapForCompany: (arg: { company: string, count: number }) => LocalizedString
 		}
 		auditLogs: {
 			/**
