@@ -1,6 +1,6 @@
-import { api } from '../api'
-import { ArrowRight, Droplets, Gauge } from '../icons'
-import { useCarTelemetryLive } from '../map'
+import { api } from '../api/index'
+import { ArrowRight, Droplets, Gauge } from '../icons/index'
+import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
