@@ -186,6 +186,7 @@ async function recordStep(
       updatedAt: recordedAt.toISOString(),
       name: car.name,
       licensePlate: car.licensePlate,
+      companyId: car.companyId,
       speed: 28,
       remainFuel,
       resistance,

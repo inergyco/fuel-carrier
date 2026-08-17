@@ -12,11 +12,11 @@ import {
 import { ApiClientError } from "./api-client-error";
 
 export function createApiClient({
-  prefixUrl,
+  prefixUrl = import.meta.env.VITE_API_URL,
   credentials = "include",
   timeout = 30_000,
   hooks,
-}: CreateApiClientOptions): KyInstance {
+}: CreateApiClientOptions = {}): KyInstance {
   return ky.create({
     prefixUrl,
     credentials,
@@ -28,8 +28,10 @@ export function createApiClient({
   });
 }
 
+export const api = createApiClient();
+
 export type CreateApiClientOptions = {
-  prefixUrl: string;
+  prefixUrl?: string;
 } & Pick<Options, "credentials" | "hooks" | "timeout">;
 
 function createEnvelopeHooks(userHooks?: Hooks): Hooks {

@@ -65,6 +65,7 @@ const fa: Translation = {
     nav: {
       dashboard: "داشبورد",
       companies: "شرکت‌ها",
+      map: "نقشه",
       auditLogs: "گزارش فعالیت",
       openMenu: "باز کردن منو",
       signOut: "خروج",
@@ -95,6 +96,18 @@ const fa: Translation = {
       carMqttCredentialsProvisioned: "اعتبارنامه MQTT صادر شد.",
       carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
       signedOut: "خروج انجام شد.",
+    },
+    map: {
+      title: "نقشه ناوگان",
+      subtitle: "موقعیت لحظه‌ای خودروها در همه شرکت‌ها",
+      loading: "در حال بارگذاری نقشه…",
+      empty: "هنوز هیچ خودرویی موقعیت گزارش نکرده است.",
+      vehiclesOnMap: "{count} خودرو روی نقشه",
+      viewVehicle: "مشاهده خودروهای شرکت",
+      unnamedVehicle: "خودروی بدون نام",
+      remainFuel: "سوخت: {volume}",
+      resistanceSummary:
+        "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
     },
     auditLogs: {
       title: "گزارش فعالیت",

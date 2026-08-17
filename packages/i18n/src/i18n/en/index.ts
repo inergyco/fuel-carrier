@@ -67,6 +67,7 @@ const en: BaseTranslation = {
     nav: {
       dashboard: 'Dashboard',
       companies: 'Companies',
+      map: 'Map',
       auditLogs: 'Audit log',
       openMenu: 'Open menu',
       signOut: 'Sign out',
@@ -97,6 +98,17 @@ const en: BaseTranslation = {
       carMqttCredentialsProvisioned: 'MQTT credentials provisioned.',
       carMqttCredentialsRotated: 'MQTT credentials rotated.',
       signedOut: 'Signed out.',
+    },
+    map: {
+      title: 'Fleet map',
+      subtitle: 'Live vehicle positions across all companies',
+      loading: 'Loading map…',
+      empty: 'No vehicles are reporting a location yet.',
+      vehiclesOnMap: '{count:number} vehicles on map',
+      viewVehicle: 'View company vehicles',
+      unnamedVehicle: 'Unnamed vehicle',
+      remainFuel: 'Fuel: {volume:string}',
+      resistanceSummary: 'R: {tankToGround:string} / {tankToNozzle:string} / {groundToVehicle:string} Ω',
     },
     auditLogs: {
       title: 'Audit log',

@@ -83,3 +83,5 @@ export class CarTelemetryRealtimeService
 export function companyCarTelemetryRoom(companyId: string): string {
   return `company:${companyId}:car-telemetry`;
 }
+
+export const INTERNAL_CAR_TELEMETRY_ROOM = 'internal:car-telemetry';

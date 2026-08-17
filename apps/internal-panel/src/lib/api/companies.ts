@@ -1,7 +1,7 @@
 import type { Company } from '@fuel-carrier/shared-types';
 import type { CreateCompanyDto } from '@fuel-carrier/shared-validation/company/create';
 import type { UpdateCompanyDto } from '@fuel-carrier/shared-validation/company/update';
-import { api } from './api';
+import { api } from '@fuel-carrier/web-ui/api';
 
 export const companyKeys = {
   all: ['companies'] as const,

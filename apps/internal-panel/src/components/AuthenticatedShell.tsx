@@ -1,6 +1,4 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { getRouteApi } from '@tanstack/react-router'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   Button,
@@ -9,7 +7,8 @@ import {
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
-import { Home, Building2, ScrollText } from '@fuel-carrier/web-ui/icons'
+import { Home, Building2, Map, ScrollText } from '@fuel-carrier/web-ui/icons'
+import { getRouteApi, useNavigate, useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
@@ -28,6 +27,12 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
   const queryClient = useQueryClient()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const pathname = useRouterState({
+    select: function selectPathname(state) {
+      return state.location.pathname
+    },
+  })
+  const isMapPage = pathname === '/map'
 
   const navItems = useMemo(function createNavItems(): PanelNavItem[] {
     return [
@@ -41,6 +46,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         to: '/companies',
         label: LL.internalPanel.nav.companies(),
         icon: <Building2 strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      },
+      {
+        to: '/map',
+        label: LL.internalPanel.nav.map(),
+        icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
       },
       {
         to: '/audit-logs',
@@ -95,6 +105,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         }
         openMenuLabel={LL.internalPanel.nav.openMenu()}
         navItems={navItems}
+        fullWidthMain={isMapPage}
         footer={
           <div className="rounded-xl border border-base-content/12 bg-base-100 p-3">
             <div className="mb-3 flex items-center gap-3">

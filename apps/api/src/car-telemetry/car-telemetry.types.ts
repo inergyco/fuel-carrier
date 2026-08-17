@@ -24,6 +24,8 @@ export type CarTelemetry = {
 export type CarTelemetryMarker = CarTelemetry & {
   name: string | null;
   licensePlate: string;
+  companyId: string;
+  companyName?: string;
 };
 
 export const CarTelemetrySocketEvents = {

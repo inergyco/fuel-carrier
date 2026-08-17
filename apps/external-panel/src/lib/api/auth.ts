@@ -1,7 +1,7 @@
 import type { LoginDto } from '@fuel-carrier/shared-validation/admin/login'
 import type { ChangePasswordDto } from '@fuel-carrier/shared-validation/auth/change-password'
 import type { AuthSession } from '@fuel-carrier/shared-types'
-import { api } from '../api'
+import { api } from '@fuel-carrier/web-ui/api'
 
 type AuthPayload = {
   user: AuthSession

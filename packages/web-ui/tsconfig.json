@@ -9,5 +9,5 @@
       "@fuel-carrier/shared-types/*": ["../shared-types/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../web-config/types/vite-env.d.ts"]
 }

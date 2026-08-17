@@ -81,6 +81,11 @@ export function CarsMap({ markers, labels, renderVehicleLink }: CarsMapProps) {
                 <p className="font-mono text-xs text-base-content/60">
                   {marker.licensePlate}
                 </p>
+                {marker.companyName ? (
+                  <p className="text-xs text-base-content/55">
+                    {marker.companyName}
+                  </p>
+                ) : null}
                 {marker.remainFuel != null ? (
                   <p className="text-xs text-base-content/70">
                     {labels.remainFuel({

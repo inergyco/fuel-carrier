@@ -241,6 +241,10 @@ type RootTranslation = {
 			 */
 			companies: string
 			/**
+			 * M​a​p
+			 */
+			map: string
+			/**
 			 * A​u​d​i​t​ ​l​o​g
 			 */
 			auditLogs: string
@@ -344,6 +348,49 @@ type RootTranslation = {
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
+		}
+		map: {
+			/**
+			 * F​l​e​e​t​ ​m​a​p
+			 */
+			title: string
+			/**
+			 * L​i​v​e​ ​v​e​h​i​c​l​e​ ​p​o​s​i​t​i​o​n​s​ ​a​c​r​o​s​s​ ​a​l​l​ ​c​o​m​p​a​n​i​e​s
+			 */
+			subtitle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​m​a​p​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​s​ ​a​r​e​ ​r​e​p​o​r​t​i​n​g​ ​a​ ​l​o​c​a​t​i​o​n​ ​y​e​t​.
+			 */
+			empty: string
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s​ ​o​n​ ​m​a​p
+			 * @param {number} count
+			 */
+			vehiclesOnMap: RequiredParams<'count'>
+			/**
+			 * V​i​e​w​ ​c​o​m​p​a​n​y​ ​v​e​h​i​c​l​e​s
+			 */
+			viewVehicle: string
+			/**
+			 * U​n​n​a​m​e​d​ ​v​e​h​i​c​l​e
+			 */
+			unnamedVehicle: string
+			/**
+			 * F​u​e​l​:​ ​{​v​o​l​u​m​e​}
+			 * @param {string} volume
+			 */
+			remainFuel: RequiredParams<'volume'>
+			/**
+			 * R​:​ ​{​t​a​n​k​T​o​G​r​o​u​n​d​}​ ​/​ ​{​t​a​n​k​T​o​N​o​z​z​l​e​}​ ​/​ ​{​g​r​o​u​n​d​T​o​V​e​h​i​c​l​e​}​ ​Ω
+			 * @param {string} groundToVehicle
+			 * @param {string} tankToGround
+			 * @param {string} tankToNozzle
+			 */
+			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
 		}
 		auditLogs: {
 			/**
@@ -2094,6 +2141,10 @@ export type TranslationFunctions = {
 			 */
 			companies: () => LocalizedString
 			/**
+			 * Map
+			 */
+			map: () => LocalizedString
+			/**
 			 * Audit log
 			 */
 			auditLogs: () => LocalizedString
@@ -2197,6 +2248,44 @@ export type TranslationFunctions = {
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
+		}
+		map: {
+			/**
+			 * Fleet map
+			 */
+			title: () => LocalizedString
+			/**
+			 * Live vehicle positions across all companies
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Loading map…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No vehicles are reporting a location yet.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * {count} vehicles on map
+			 */
+			vehiclesOnMap: (arg: { count: number }) => LocalizedString
+			/**
+			 * View company vehicles
+			 */
+			viewVehicle: () => LocalizedString
+			/**
+			 * Unnamed vehicle
+			 */
+			unnamedVehicle: () => LocalizedString
+			/**
+			 * Fuel: {volume}
+			 */
+			remainFuel: (arg: { volume: string }) => LocalizedString
+			/**
+			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
+			 */
+			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
 		}
 		auditLogs: {
 			/**

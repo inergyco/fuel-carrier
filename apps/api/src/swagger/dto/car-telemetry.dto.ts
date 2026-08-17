@@ -19,6 +19,12 @@ export class CarTelemetryMarkerDto {
   @ApiProperty({ example: '۱۲ب۳۴۵-۶۷' })
   licensePlate!: string;
 
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  companyId!: string;
+
+  @ApiPropertyOptional({ example: 'Pars Fuel', nullable: true })
+  companyName?: string;
+
   @ApiPropertyOptional({ example: 42.5 })
   speed?: number;
 

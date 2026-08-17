@@ -9,6 +9,12 @@ catalogs:
     '@tanstack/react-query':
       specifier: ^5.90.12
       version: 5.101.0
+    leaflet:
+      specifier: ^1.9.4
+      version: 1.9.4
+    react-leaflet:
+      specifier: ^5.0.0
+      version: 5.0.0
     zod:
       specifier: ^4.4.3
       version: 4.4.3
@@ -206,18 +212,12 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.157.16
         version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      leaflet:
-        specifier: ^1.9.4
-        version: 1.9.4
       react:
         specifier: ^19.2.6
         version: 19.2.7
       react-dom:
         specifier: ^19.2.6
         version: 19.2.7(react@19.2.7)
-      react-leaflet:
-        specifier: ^5.0.0
-        version: 5.0.0(leaflet@1.9.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       zod:
         specifier: 'catalog:'
         version: 4.4.3
@@ -225,9 +225,6 @@ importers:
       '@fuel-carrier/web-config':
         specifier: workspace:*
         version: link:../../packages/web-config
-      '@types/leaflet':
-        specifier: ^1.9.21
-        version: 1.9.21
       '@types/node':
         specifier: ^24.12.3
         version: 24.13.2
@@ -400,7 +397,7 @@ importers:
         specifier: ^1.14.3
         version: 1.14.3
       leaflet:
-        specifier: ^1.9.4
+        specifier: 'catalog:'
         version: 1.9.4
       lucide-react:
         specifier: ^1.20.0
@@ -412,7 +409,7 @@ importers:
         specifier: ^7.57.0
         version: 7.79.0(react@19.2.7)
       react-leaflet:
-        specifier: ^5.0.0
+        specifier: 'catalog:'
         version: 5.0.0(leaflet@1.9.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       socket.io-client:
         specifier: ^4.8.3

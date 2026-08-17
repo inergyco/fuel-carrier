@@ -1,5 +1,7 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { api } from '@fuel-carrier/web-ui/api'
 import { ArrowRight, Droplets, Gauge } from '@fuel-carrier/web-ui/icons'
+import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
@@ -7,7 +9,6 @@ import {
   formatVolume,
   FuelTruckDiagram,
 } from '../fuel-truck'
-import { useCarTelemetryLive } from '../../map/useCarTelemetryLive'
 
 type CarTanksSectionProps = {
   carId: string
@@ -15,7 +16,7 @@ type CarTanksSectionProps = {
 
 export function CarTanksSection({ carId }: CarTanksSectionProps) {
   const { LL } = useI18nContext()
-  const telemetryQuery = useCarTelemetryLive()
+  const telemetryQuery = useCarTelemetryLive(api)
   const telemetry = (telemetryQuery.data ?? []).find(function matchCar(marker) {
     return marker.carId === carId
   })

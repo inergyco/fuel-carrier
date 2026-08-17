@@ -1,6 +1,7 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types/api-error-code';
 import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
+import { eq } from 'drizzle-orm';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
 import {
@@ -8,6 +9,7 @@ import {
   createApiException,
 } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
+import { companies } from '../database/schema/companies';
 import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
@@ -53,6 +55,16 @@ type IngestDeviceTelemetryInput = {
   resistance?: ResistanceReadings;
 };
 
+type FleetCar = {
+  id: string;
+  name: string | null;
+  licensePlate: string;
+  companyId: string;
+  company: {
+    name: string;
+  };
+};
+
 @Injectable()
 export class CarTelemetryService {
   private readonly logger = new Logger(CarTelemetryService.name);
@@ -74,7 +86,18 @@ export class CarTelemetryService {
     const recordedAt = input.recordedAt ?? new Date();
 
     const markerIdentity = await this.tenantDb.run(context, async (tx) => {
-      const car = await this.carsReader.getById(tx, input.carId);
+      const car = await tx.query.cars.findFirst({
+        where: eq(cars.id, input.carId),
+        with: { company: true },
+      });
+
+      if (!car) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Car not found',
+        );
+      }
 
       if (car.companyId !== input.companyId) {
         throw createApiException(
@@ -101,6 +124,7 @@ export class CarTelemetryService {
       return {
         name: car.name,
         licensePlate: car.licensePlate,
+        companyName: car.company.name,
       };
     });
 
@@ -132,6 +156,8 @@ export class CarTelemetryService {
       ...telemetry,
       name: markerIdentity.name,
       licensePlate: markerIdentity.licensePlate,
+      companyId: input.companyId,
+      companyName: markerIdentity.companyName,
     };
     await this.realtime.publish({
       type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
@@ -184,35 +210,20 @@ export class CarTelemetryService {
       return [];
     }
 
-    const [fleet, telemetryByCarId] = await Promise.all([
-      this.tenantDb.run(context, async (tx) => {
-        return tx
-          .select({
-            id: cars.id,
-            name: cars.name,
-            licensePlate: cars.licensePlate,
-          })
-          .from(cars);
-      }),
-      this._readCompanyTelemetry(context.companyId),
-    ]);
+    return this._listMarkersForCompanies(context, [context.companyId]);
+  }
 
-    const markers: CarTelemetryMarker[] = [];
-
-    for (const car of fleet) {
-      const telemetry = telemetryByCarId.get(car.id);
-      if (!telemetry) {
-        continue;
-      }
-
-      markers.push({
-        ...telemetry,
-        name: car.name,
-        licensePlate: car.licensePlate,
+  /** Latest telemetry for every company (internal admin fleet map). */
+  async listAllMarkers(): Promise<CarTelemetryMarker[]> {
+    const context = internalTenantContext();
+    const companyIds = await this.tenantDb.run(context, async (tx) => {
+      const rows = await tx.select({ id: companies.id }).from(companies);
+      return rows.map(function toCompanyId(row) {
+        return row.id;
       });
-    }
+    });
 
-    return markers;
+    return this._listMarkersForCompanies(context, companyIds);
   }
 
   async clearForCar(companyId: string, carId: string): Promise<void> {
@@ -224,23 +235,99 @@ export class CarTelemetryService {
     });
   }
 
+  private async _listMarkersForCompanies(
+    context: TenantContext,
+    companyIds: string[],
+  ): Promise<CarTelemetryMarker[]> {
+    if (companyIds.length === 0) {
+      return [];
+    }
+
+    const [fleet, telemetryByCompany] = await Promise.all([
+      this._listFleetCars(context),
+      this._readCompaniesTelemetry(companyIds),
+    ]);
+
+    return toMarkers(fleet, telemetryByCompany);
+  }
+
+  private async _listFleetCars(context: TenantContext): Promise<FleetCar[]> {
+    return this.tenantDb.run(context, async (tx) => {
+      return tx.query.cars.findMany({
+        columns: {
+          id: true,
+          name: true,
+          licensePlate: true,
+          companyId: true,
+        },
+        with: {
+          company: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      });
+    });
+  }
+
+  private async _readCompaniesTelemetry(
+    companyIds: string[],
+  ): Promise<CarTelemetry[][]> {
+    return Promise.all(
+      companyIds.map((companyId) => this._readCompanyTelemetry(companyId)),
+    );
+  }
+
   private async _readCompanyTelemetry(
     companyId: string,
-  ): Promise<Map<string, CarTelemetry>> {
+  ): Promise<CarTelemetry[]> {
     const raw: Record<string, string> = await this.redis.hgetall(
       companyCarTelemetryKey(companyId),
     );
-    const telemetryByCarId = new Map<string, CarTelemetry>();
+    const telemetry: CarTelemetry[] = [];
 
     for (const [carId, value] of Object.entries(raw)) {
-      const telemetry = parseCarTelemetry(carId, value);
-      if (telemetry) {
-        telemetryByCarId.set(carId, telemetry);
+      const parsed = parseCarTelemetry(carId, value);
+      if (parsed) {
+        telemetry.push(parsed);
       }
     }
 
-    return telemetryByCarId;
+    return telemetry;
   }
+}
+
+function toMarkers(
+  fleet: FleetCar[],
+  telemetryByCompany: CarTelemetry[][],
+): CarTelemetryMarker[] {
+  const carsById = new Map(
+    fleet.map(function toCarEntry(car) {
+      return [car.id, car] as const;
+    }),
+  );
+
+  const markers: CarTelemetryMarker[] = [];
+
+  for (const companyTelemetry of telemetryByCompany) {
+    for (const telemetry of companyTelemetry) {
+      const car = carsById.get(telemetry.carId);
+      if (!car) {
+        continue;
+      }
+
+      markers.push({
+        ...telemetry,
+        name: car.name,
+        licensePlate: car.licensePlate,
+        companyId: car.companyId,
+        companyName: car.company.name,
+      });
+    }
+  }
+
+  return markers;
 }
 
 function isNotFoundApiException(error: unknown): boolean {

@@ -3,25 +3,35 @@ import {
   CarTelemetrySocketEvents,
   type CarTelemetryMarker,
 } from '@fuel-carrier/shared-types'
-import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { io, type Socket } from '@fuel-carrier/web-ui/socket'
-import {
-  carTelemetryKeys,
-  fetchCarTelemetry,
-} from '../../lib/api/car-telemetry'
+import type { KyInstance } from '../api'
+import { useQuery, useQueryClient } from '../query'
+import { io, type Socket } from '../socket'
+
+export const carTelemetryKeys = {
+  all: ['car-telemetry'] as const,
+}
 
 const FALLBACK_REFETCH_MS = 60_000
 
+export function fetchCarTelemetry(
+  api: KyInstance,
+): Promise<CarTelemetryMarker[]> {
+  return api.get('car-telemetry').json<CarTelemetryMarker[]>()
+}
+
 /**
- * Initial snapshot via REST; live patches via Socket.IO (company-scoped).
+ * Initial snapshot via REST; live patches via Socket.IO.
  * Keeps a slow REST fallback if the socket drops.
+ * Server rooms are tenant-scoped (company vs internal admin).
  */
-export function useCarTelemetryLive() {
+export function useCarTelemetryLive(api: KyInstance) {
   const queryClient = useQueryClient()
 
   const telemetryQuery = useQuery({
     queryKey: carTelemetryKeys.all,
-    queryFn: fetchCarTelemetry,
+    queryFn: function loadCarTelemetry() {
+      return fetchCarTelemetry(api)
+    },
     refetchInterval: FALLBACK_REFETCH_MS,
     refetchIntervalInBackground: false,
   })

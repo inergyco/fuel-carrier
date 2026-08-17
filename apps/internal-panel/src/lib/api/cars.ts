@@ -3,7 +3,7 @@ import type {
   CreateInternalCarDto,
   UpdateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create'
-import { api } from './api'
+import { api } from '@fuel-carrier/web-ui/api'
 
 export const carKeys = {
   all: ['cars'] as const,

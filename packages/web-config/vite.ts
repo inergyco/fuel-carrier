@@ -9,7 +9,10 @@ export function createPanelViteConfig(overrides: UserConfig = {}) {
   return defineConfig({
     plugins: createPanelPlugins(),
     optimizeDeps: {
-      include: ["leaflet", "react-leaflet"],
+      include: [
+        "@fuel-carrier/web-ui > leaflet",
+        "@fuel-carrier/web-ui > react-leaflet",
+      ],
     },
     server: {
       fs: {

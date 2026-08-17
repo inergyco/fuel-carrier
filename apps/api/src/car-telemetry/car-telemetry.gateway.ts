@@ -14,6 +14,7 @@ import type { JwtPayload } from '../auth/auth.types';
 import { getCookieValue } from '../common/cookie-header.utils';
 import {
   CarTelemetryRealtimeService,
+  INTERNAL_CAR_TELEMETRY_ROOM,
   companyCarTelemetryRoom,
 } from './car-telemetry-realtime.service';
 import {
@@ -70,12 +71,24 @@ export class CarTelemetryGateway
     @ConnectedSocket() client: SocketWithSession,
   ): Promise<void> {
     const session = await this._authenticate(client);
-    if (!session?.companyId) {
+    if (!session) {
       client.disconnect(true);
       return;
     }
 
     client.data.session = session;
+
+    if (session.role === UserRole.INTERNAL_ADMIN) {
+      await client.join(INTERNAL_CAR_TELEMETRY_ROOM);
+      this.logger.debug(`WS client ${client.id} joined internal telemetry`);
+      return;
+    }
+
+    if (session.role !== UserRole.COMPANY_USER || !session.companyId) {
+      client.disconnect(true);
+      return;
+    }
+
     await client.join(companyCarTelemetryRoom(session.companyId));
     this.logger.debug(
       `WS client ${client.id} joined company ${session.companyId}`,
@@ -83,30 +96,66 @@ export class CarTelemetryGateway
   }
 
   private _fanOut(event: CarTelemetryRealtimeEvent): void {
-    const room = companyCarTelemetryRoom(event.companyId);
+    const rooms = [
+      companyCarTelemetryRoom(event.companyId),
+      INTERNAL_CAR_TELEMETRY_ROOM,
+    ];
 
     if (event.type === CarTelemetrySocketEvents.TELEMETRY_UPDATED) {
       this.server
-        .to(room)
+        .to(rooms)
         .emit(CarTelemetrySocketEvents.TELEMETRY_UPDATED, event.marker);
       return;
     }
 
-    this.server.to(room).emit(CarTelemetrySocketEvents.TELEMETRY_REMOVED, {
+    this.server.to(rooms).emit(CarTelemetrySocketEvents.TELEMETRY_REMOVED, {
       carId: event.carId,
     });
   }
 
   private async _authenticate(client: Socket): Promise<AuthSession | null> {
-    const cookieName = this.authService.getExternalAuthCookieName();
-    const token = getCookieValue(client.handshake.headers.cookie, cookieName);
+    const cookieHeader = client.handshake.headers.cookie;
+    const tokens = [
+      getCookieValue(
+        cookieHeader,
+        this.authService.getInternalAuthCookieName(),
+      ),
+      getCookieValue(
+        cookieHeader,
+        this.authService.getExternalAuthCookieName(),
+      ),
+    ];
 
+    for (const token of tokens) {
+      const session = await this._sessionFromToken(token);
+      if (session) {
+        return session;
+      }
+    }
+
+    return null;
+  }
+
+  private async _sessionFromToken(
+    token: string | null,
+  ): Promise<AuthSession | null> {
     if (!token) {
       return null;
     }
 
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+
+      if (payload.role === UserRole.INTERNAL_ADMIN) {
+        return {
+          userId: payload.sub,
+          role: payload.role,
+          username: payload.username,
+          firstName: payload.firstName,
+          lastName: payload.lastName,
+        };
+      }
+
       if (payload.role !== UserRole.COMPANY_USER || !payload.companyId) {
         return null;
       }

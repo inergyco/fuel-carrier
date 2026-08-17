@@ -3,7 +3,7 @@ import type {
   CreateInternalDriverDto,
   UpdateInternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
-import { api } from './api'
+import { api } from '@fuel-carrier/web-ui/api'
 
 export const driverKeys = {
   all: ['drivers'] as const,

@@ -1,5 +1,5 @@
 import type { LoginDto } from "@fuel-carrier/shared-validation/admin/login";
-import { api } from "./api";
+import { api } from "@fuel-carrier/web-ui/api";
 import type { AuthSession } from "@fuel-carrier/shared-types";
 
 type AuthPayload = {

@@ -4,7 +4,7 @@ import type {
   CreateExternalCompanyUserDto,
   UpdateExternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create'
-import { api } from '../api'
+import { api } from '@fuel-carrier/web-ui/api'
 
 export const companyUserKeys = {
   all: ['company-users'] as const,

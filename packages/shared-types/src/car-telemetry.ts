@@ -25,6 +25,8 @@ export type CarTelemetry = {
 export type CarTelemetryMarker = CarTelemetry & {
   name: string | null;
   licensePlate: string;
+  companyId: string;
+  companyName?: string;
 };
 
 /** Socket.IO / Redis fan-out event names for live telemetry updates. */

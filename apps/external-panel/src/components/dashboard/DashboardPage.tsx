@@ -1,10 +1,10 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession, CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { FleetMapView } from '@fuel-carrier/web-ui/map'
+import { api } from '@fuel-carrier/web-ui/api'
+import { FleetMapView, useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
-import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './DashboardCarCard'
@@ -26,7 +26,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
     queryFn: fetchDrivers,
   })
 
-  const telemetryQuery = useCarTelemetryLive()
+  const telemetryQuery = useCarTelemetryLive(api)
 
   const driverNameById = useMemo(
     function mapDriverNames() {
