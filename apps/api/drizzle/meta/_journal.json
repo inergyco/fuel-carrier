@@ -99,6 +99,13 @@
       "when": 1783600000000,
       "tag": "0013_car_telemetry_history",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1783700000000,
+      "tag": "0014_rls_nullif_company_id",
+      "breakpoints": true
     }
   ]
 }

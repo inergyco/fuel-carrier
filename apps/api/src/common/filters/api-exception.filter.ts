@@ -31,8 +31,10 @@ export class ApiExceptionFilter implements ExceptionFilter {
     const { status, error } = this.toApiError(exception);
 
     if (status >= 500) {
+      const detail =
+        exception instanceof Error ? exception.message : String(exception);
       this.logger.error(
-        error.message,
+        detail,
         exception instanceof Error ? exception.stack : undefined,
       );
     }

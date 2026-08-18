@@ -1,0 +1,117 @@
+.localized-date-time-picker-container {
+  display: block;
+  width: 100%;
+}
+
+.localized-date-time-picker-container .rmdp-container {
+  display: block;
+  width: 100%;
+}
+
+.localized-date-time-picker-input {
+  height: 2.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  background: color-mix(in oklab, var(--color-base-100) 60%, transparent);
+  padding-inline: 0.75rem;
+  color: var(--color-base-content);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.localized-date-time-picker-input::placeholder {
+  color: color-mix(in oklab, var(--color-base-content) 25%, transparent);
+}
+
+.localized-date-time-picker-input:focus {
+  border-color: color-mix(in oklab, var(--color-primary) 40%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 40%, transparent);
+}
+
+.localized-date-time-picker-container .rmdp-wrapper {
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  background: color-mix(in oklab, var(--color-base-200) 70%, transparent);
+  color: var(--color-base-content);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(24px);
+}
+
+.localized-date-time-picker-container .rmdp-calendar,
+.localized-date-time-picker-container .rmdp-calendar-container,
+.localized-date-time-picker-container .rmdp-top-class,
+.localized-date-time-picker-container .rmdp-time-picker,
+.localized-date-time-picker-container .rmdp-time-picker > div {
+  background: transparent;
+  box-shadow: none;
+}
+
+.localized-date-time-picker-container .rmdp-header-values {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.localized-date-time-picker-container .rmdp-arrow-container {
+  color: var(--color-primary);
+}
+
+.localized-date-time-picker-container .rmdp-arrow-container:hover {
+  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+}
+
+.localized-date-time-picker-container .rmdp-arrow {
+  border-color: var(--color-primary);
+}
+
+.localized-date-time-picker-container .rmdp-week-day {
+  color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+  font-size: 0.75rem;
+}
+
+.localized-date-time-picker-container .rmdp-day:not(.rmdp-disabled),
+.localized-date-time-picker-container .rmdp-time-picker div input {
+  color: var(--color-base-content);
+}
+
+.localized-date-time-picker-container .rmdp-day span {
+  border-radius: 0.75rem;
+  transition: all 150ms ease;
+}
+
+.localized-date-time-picker-container .rmdp-day.rmdp-disabled span {
+  color: color-mix(in oklab, var(--color-base-content) 28%, transparent);
+  background: color-mix(in oklab, var(--color-base-content) 6%, transparent);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.localized-date-time-picker-container .rmdp-day:not(.rmdp-disabled):not(.rmdp-day-hidden) span:hover,
+.localized-date-time-picker-container .rmdp-month-picker div:hover,
+.localized-date-time-picker-container .rmdp-year-picker div:hover,
+.localized-date-time-picker-container .rmdp-time-picker div input:focus {
+  background: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+}
+
+.localized-date-time-picker-container .rmdp-day.rmdp-selected span,
+.localized-date-time-picker-container .rmdp-range-hover,
+.localized-date-time-picker-container .rmdp-range {
+  background: color-mix(in oklab, var(--color-primary) 75%, black 5%);
+  color: var(--color-primary-content, white);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 18%, transparent);
+}
+
+.localized-date-time-picker-container .rmdp-today span {
+  background: color-mix(in oklab, var(--color-primary) 16%, transparent);
+  color: var(--color-base-content);
+}
+
+.localized-date-time-picker-container .rmdp-time-picker {
+  border-top: 1px solid color-mix(in oklab, var(--color-base-content) 8%, transparent);
+}

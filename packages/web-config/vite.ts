@@ -12,6 +12,9 @@ export function createPanelViteConfig(overrides: UserConfig = {}) {
       include: [
         "@fuel-carrier/web-ui > leaflet",
         "@fuel-carrier/web-ui > react-leaflet",
+        "@fuel-carrier/web-ui > react-multi-date-picker",
+        "@fuel-carrier/web-ui > react-multi-date-picker/plugins/time_picker",
+        "@fuel-carrier/web-ui > react-date-object",
       ],
     },
     server: {

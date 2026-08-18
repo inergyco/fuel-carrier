@@ -1,7 +1,13 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession, CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import { api } from '@fuel-carrier/web-ui/api'
-import { FleetMapView, useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
+import {
+  FleetMapView,
+  mapPopupActionClassName,
+  useCarTelemetryLive,
+} from '@fuel-carrier/web-ui/map'
+import { buttonClassName } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
 import { useMemo } from 'react'
@@ -58,7 +64,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
       <Link
         to="/cars/$carId"
         params={{ carId: marker.carId }}
-        className="inline-flex text-xs font-medium text-primary hover:underline"
+        className={cn(buttonClassName.outline, mapPopupActionClassName)}
       >
         {LL.externalPanel.map.viewVehicle()}
       </Link>

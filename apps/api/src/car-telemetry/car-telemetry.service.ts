@@ -1,7 +1,13 @@
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types/api-error-code';
+import {
+  CarTelemetrySocketEvents,
+  type CarTelemetry,
+  type CarTelemetryMarker,
+  type TankResistanceReadings,
+} from '@fuel-carrier/shared-types/car-telemetry';
 import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
-import { eq } from 'drizzle-orm';
+import { and, asc, eq, gte, lte } from 'drizzle-orm';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
 import {
@@ -20,17 +26,6 @@ import {
   parseCarTelemetry,
   serializeCarTelemetry,
 } from './car-telemetry.redis';
-import {
-  CarTelemetrySocketEvents,
-  type CarTelemetry,
-  type CarTelemetryMarker,
-} from './car-telemetry.types';
-
-type ResistanceReadings = {
-  tankToGround: number;
-  tankToNozzle: number;
-  groundToVehicle: number;
-};
 
 type RecordCarTelemetryInput = {
   carId: string;
@@ -41,7 +36,7 @@ type RecordCarTelemetryInput = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
-  resistance?: ResistanceReadings;
+  resistance?: TankResistanceReadings;
 };
 
 type IngestDeviceTelemetryInput = {
@@ -52,7 +47,13 @@ type IngestDeviceTelemetryInput = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
-  resistance?: ResistanceReadings;
+  resistance?: TankResistanceReadings;
+};
+
+type ListCarTelemetryHistoryInput = {
+  carId: string;
+  start: Date;
+  end: Date;
 };
 
 type FleetCar = {
@@ -62,7 +63,7 @@ type FleetCar = {
   companyId: string;
   company: {
     name: string;
-  };
+  } | null;
 };
 
 @Injectable()
@@ -124,7 +125,7 @@ export class CarTelemetryService {
       return {
         name: car.name,
         licensePlate: car.licensePlate,
-        companyName: car.company.name,
+        companyName: car.company?.name ?? '',
       };
     });
 
@@ -226,6 +227,69 @@ export class CarTelemetryService {
     return this._listMarkersForCompanies(context, companyIds);
   }
 
+  async listHistory(
+    context: TenantContext,
+    input: ListCarTelemetryHistoryInput,
+  ): Promise<CarTelemetry[]> {
+    return this.tenantDb.run(context, async function loadHistory(tx): Promise<
+      CarTelemetry[]
+    > {
+      const car = await tx.query.cars.findFirst({
+        where: eq(cars.id, input.carId),
+        columns: {
+          id: true,
+          companyId: true,
+        },
+      });
+
+      if (!car) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Car not found',
+        );
+      }
+
+      if (context.companyId && car.companyId !== context.companyId) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Car not found',
+        );
+      }
+
+      const rows = await tx
+        .select({
+          carId: carTelemetryHistory.carId,
+          latitude: carTelemetryHistory.latitude,
+          longitude: carTelemetryHistory.longitude,
+          updatedAt: carTelemetryHistory.time,
+          speed: carTelemetryHistory.speed,
+          remainFuel: carTelemetryHistory.remainFuel,
+          fuelAmount: carTelemetryHistory.fuelAmount,
+          resistanceTankToGround: carTelemetryHistory.resistanceTankToGround,
+          resistanceTankToNozzle: carTelemetryHistory.resistanceTankToNozzle,
+          resistanceGroundToVehicle:
+            carTelemetryHistory.resistanceGroundToVehicle,
+        })
+        .from(carTelemetryHistory)
+        .where(
+          and(
+            eq(carTelemetryHistory.carId, input.carId),
+            gte(carTelemetryHistory.time, input.start),
+            lte(carTelemetryHistory.time, input.end),
+          ),
+        )
+        .orderBy(asc(carTelemetryHistory.time));
+
+      const historyPoints: CarTelemetry[] = [];
+      for (const row of toHistorySelectRows(rows)) {
+        historyPoints.push(toHistoryPoint(row));
+      }
+      return historyPoints;
+    });
+  }
+
   async clearForCar(companyId: string, carId: string): Promise<void> {
     await this.redis.hdel(companyCarTelemetryKey(companyId), carId);
     await this.realtime.publish({
@@ -298,6 +362,62 @@ export class CarTelemetryService {
   }
 }
 
+type HistorySelectRow = {
+  carId: string;
+  latitude: number;
+  longitude: number;
+  updatedAt: Date | string;
+  speed: number | null;
+  remainFuel: number | null;
+  fuelAmount: number | null;
+  resistanceTankToGround: number | null;
+  resistanceTankToNozzle: number | null;
+  resistanceGroundToVehicle: number | null;
+};
+
+function toHistorySelectRows(rows: unknown): HistorySelectRow[] {
+  return rows as HistorySelectRow[];
+}
+
+function toHistoryResistance(
+  row: HistorySelectRow,
+): TankResistanceReadings | undefined {
+  if (
+    row.resistanceTankToGround == null ||
+    row.resistanceTankToNozzle == null ||
+    row.resistanceGroundToVehicle == null
+  ) {
+    return undefined;
+  }
+
+  return {
+    tankToGround: row.resistanceTankToGround,
+    tankToNozzle: row.resistanceTankToNozzle,
+    groundToVehicle: row.resistanceGroundToVehicle,
+  };
+}
+
+function toIsoTimestamp(value: Date | string): string {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  return new Date(value).toISOString();
+}
+
+function toHistoryPoint(row: HistorySelectRow): CarTelemetry {
+  return {
+    carId: row.carId,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    updatedAt: toIsoTimestamp(row.updatedAt),
+    speed: row.speed ?? undefined,
+    remainFuel: row.remainFuel ?? undefined,
+    fuelAmount: row.fuelAmount ?? undefined,
+    resistance: toHistoryResistance(row),
+  };
+}
+
 function toMarkers(
   fleet: FleetCar[],
   telemetryByCompany: CarTelemetry[][],
@@ -322,7 +442,7 @@ function toMarkers(
         name: car.name,
         licensePlate: car.licensePlate,
         companyId: car.companyId,
-        companyName: car.company.name,
+        companyName: car.company?.name ?? '',
       });
     }
   }

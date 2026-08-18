@@ -37,14 +37,13 @@ export class TenantDbService {
     context: TenantContext,
   ): Promise<void> {
     // SET LOCAL via set_config(..., true) — values die with the transaction.
+    // Always set both GUCs so a pooled connection cannot keep a previous
+    // company id (or an empty string leftover) for this transaction.
     await tx.execute(
       sql`SELECT set_config('app.is_internal', ${context.isInternal ? 'true' : 'false'}, true)`,
     );
-
-    if (context.companyId) {
-      await tx.execute(
-        sql`SELECT set_config('app.current_company_id', ${context.companyId}, true)`,
-      );
-    }
+    await tx.execute(
+      sql`SELECT set_config('app.current_company_id', ${context.companyId ?? ''}, true)`,
+    );
   }
 }

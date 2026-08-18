@@ -372,7 +372,7 @@ type RootTranslation = {
 			 */
 			vehiclesOnMap: RequiredParams<'count'>
 			/**
-			 * V​i​e​w​ ​v​e​h​i​c​l​e
+			 * V​i​e​w
 			 */
 			viewVehicle: string
 			/**
@@ -409,6 +409,72 @@ type RootTranslation = {
 			 * @param {number} count
 			 */
 			vehiclesOnMapForCompany: RequiredParams<'company' | 'count'>
+			/**
+			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
+			 */
+			selectVehicle: string
+			/**
+			 * V​e​h​i​c​l​e
+			 */
+			selectedVehicle: string
+			/**
+			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
+			 */
+			clickVehicleHint: string
+			/**
+			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
+			 */
+			chooseTimeRange: string
+			/**
+			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
+			 * @param {unknown} vehicle
+			 */
+			selectedVehiclePrompt: RequiredParams<'vehicle'>
+			/**
+			 * C​h​a​n​g​e​ ​v​e​h​i​c​l​e
+			 */
+			changeVehicle: string
+			/**
+			 * S​t​a​r​t
+			 */
+			startDateTime: string
+			/**
+			 * E​n​d
+			 */
+			endDateTime: string
+			/**
+			 * P​i​c​k​ ​d​a​t​e​ ​a​n​d​ ​t​i​m​e
+			 */
+			dateTimePlaceholder: string
+			/**
+			 * S​h​o​w​ ​r​o​u​t​e
+			 */
+			showTrajectory: string
+			/**
+			 * R​e​p​l​a​y​i​n​g​ ​r​o​u​t​e​…
+			 */
+			showingTrajectory: string
+			/**
+			 * L​o​a​d​i​n​g​ ​r​o​u​t​e​…
+			 */
+			showTrajectoryLoading: string
+			/**
+			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 */
+			trajectoryHint: string
+			/**
+			 * N​o​ ​r​o​u​t​e​ ​d​a​t​a​ ​w​a​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​i​n​ ​t​h​e​ ​s​e​l​e​c​t​e​d​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 */
+			noTrajectoryData: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​l​i​v​e​ ​m​a​p
+			 */
+			backToLiveMap: string
+			/**
+			 * S​h​o​w​i​n​g​ ​r​o​u​t​e​ ​f​o​r​ ​{​v​e​h​i​c​l​e​}
+			 * @param {string} vehicle
+			 */
+			selectedTimeRange: RequiredParams<'vehicle'>
 		}
 		auditLogs: {
 			/**
@@ -1808,7 +1874,7 @@ type RootTranslation = {
 			 */
 			vehiclesOnMap: RequiredParams<'count'>
 			/**
-			 * V​i​e​w​ ​v​e​h​i​c​l​e
+			 * V​i​e​w
 			 */
 			viewVehicle: string
 			/**
@@ -1827,6 +1893,72 @@ type RootTranslation = {
 			 * @param {string} tankToNozzle
 			 */
 			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
+			/**
+			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
+			 */
+			selectVehicle: string
+			/**
+			 * V​e​h​i​c​l​e
+			 */
+			selectedVehicle: string
+			/**
+			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
+			 */
+			clickVehicleHint: string
+			/**
+			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
+			 */
+			chooseTimeRange: string
+			/**
+			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
+			 * @param {unknown} vehicle
+			 */
+			selectedVehiclePrompt: RequiredParams<'vehicle'>
+			/**
+			 * C​h​a​n​g​e​ ​v​e​h​i​c​l​e
+			 */
+			changeVehicle: string
+			/**
+			 * S​t​a​r​t
+			 */
+			startDateTime: string
+			/**
+			 * E​n​d
+			 */
+			endDateTime: string
+			/**
+			 * P​i​c​k​ ​d​a​t​e​ ​a​n​d​ ​t​i​m​e
+			 */
+			dateTimePlaceholder: string
+			/**
+			 * S​h​o​w​ ​r​o​u​t​e
+			 */
+			showTrajectory: string
+			/**
+			 * R​e​p​l​a​y​i​n​g​ ​r​o​u​t​e​…
+			 */
+			showingTrajectory: string
+			/**
+			 * L​o​a​d​i​n​g​ ​r​o​u​t​e​…
+			 */
+			showTrajectoryLoading: string
+			/**
+			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 */
+			trajectoryHint: string
+			/**
+			 * N​o​ ​r​o​u​t​e​ ​d​a​t​a​ ​w​a​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​i​n​ ​t​h​e​ ​s​e​l​e​c​t​e​d​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 */
+			noTrajectoryData: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​l​i​v​e​ ​m​a​p
+			 */
+			backToLiveMap: string
+			/**
+			 * S​h​o​w​i​n​g​ ​r​o​u​t​e​ ​f​o​r​ ​{​v​e​h​i​c​l​e​}
+			 * @param {string} vehicle
+			 */
+			selectedTimeRange: RequiredParams<'vehicle'>
 		}
 		auditLogs: {
 			/**
@@ -2359,7 +2491,7 @@ export type TranslationFunctions = {
 			 */
 			vehiclesOnMap: (arg: { count: number }) => LocalizedString
 			/**
-			 * View vehicle
+			 * View
 			 */
 			viewVehicle: () => LocalizedString
 			/**
@@ -2390,6 +2522,70 @@ export type TranslationFunctions = {
 			 * {count} vehicles · {company}
 			 */
 			vehiclesOnMapForCompany: (arg: { company: string, count: number }) => LocalizedString
+			/**
+			 * Select vehicle
+			 */
+			selectVehicle: () => LocalizedString
+			/**
+			 * Vehicle
+			 */
+			selectedVehicle: () => LocalizedString
+			/**
+			 * Open a vehicle popup and choose a time range to replay its route.
+			 */
+			clickVehicleHint: () => LocalizedString
+			/**
+			 * Display trajectory
+			 */
+			chooseTimeRange: () => LocalizedString
+			/**
+			 * {vehicle} selected. Choose start and end times.
+			 */
+			selectedVehiclePrompt: (arg: { vehicle: unknown }) => LocalizedString
+			/**
+			 * Change vehicle
+			 */
+			changeVehicle: () => LocalizedString
+			/**
+			 * Start
+			 */
+			startDateTime: () => LocalizedString
+			/**
+			 * End
+			 */
+			endDateTime: () => LocalizedString
+			/**
+			 * Pick date and time
+			 */
+			dateTimePlaceholder: () => LocalizedString
+			/**
+			 * Show route
+			 */
+			showTrajectory: () => LocalizedString
+			/**
+			 * Replaying route…
+			 */
+			showingTrajectory: () => LocalizedString
+			/**
+			 * Loading route…
+			 */
+			showTrajectoryLoading: () => LocalizedString
+			/**
+			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
+			 */
+			trajectoryHint: () => LocalizedString
+			/**
+			 * No route data was recorded for this vehicle in the selected time range.
+			 */
+			noTrajectoryData: () => LocalizedString
+			/**
+			 * Back to live map
+			 */
+			backToLiveMap: () => LocalizedString
+			/**
+			 * Showing route for {vehicle}
+			 */
+			selectedTimeRange: (arg: { vehicle: string }) => LocalizedString
 		}
 		auditLogs: {
 			/**
@@ -3769,7 +3965,7 @@ export type TranslationFunctions = {
 			 */
 			vehiclesOnMap: (arg: { count: number }) => LocalizedString
 			/**
-			 * View vehicle
+			 * View
 			 */
 			viewVehicle: () => LocalizedString
 			/**
@@ -3784,6 +3980,70 @@ export type TranslationFunctions = {
 			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
 			 */
 			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
+			/**
+			 * Select vehicle
+			 */
+			selectVehicle: () => LocalizedString
+			/**
+			 * Vehicle
+			 */
+			selectedVehicle: () => LocalizedString
+			/**
+			 * Open a vehicle popup and choose a time range to replay its route.
+			 */
+			clickVehicleHint: () => LocalizedString
+			/**
+			 * Display trajectory
+			 */
+			chooseTimeRange: () => LocalizedString
+			/**
+			 * {vehicle} selected. Choose start and end times.
+			 */
+			selectedVehiclePrompt: (arg: { vehicle: unknown }) => LocalizedString
+			/**
+			 * Change vehicle
+			 */
+			changeVehicle: () => LocalizedString
+			/**
+			 * Start
+			 */
+			startDateTime: () => LocalizedString
+			/**
+			 * End
+			 */
+			endDateTime: () => LocalizedString
+			/**
+			 * Pick date and time
+			 */
+			dateTimePlaceholder: () => LocalizedString
+			/**
+			 * Show route
+			 */
+			showTrajectory: () => LocalizedString
+			/**
+			 * Replaying route…
+			 */
+			showingTrajectory: () => LocalizedString
+			/**
+			 * Loading route…
+			 */
+			showTrajectoryLoading: () => LocalizedString
+			/**
+			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
+			 */
+			trajectoryHint: () => LocalizedString
+			/**
+			 * No route data was recorded for this vehicle in the selected time range.
+			 */
+			noTrajectoryData: () => LocalizedString
+			/**
+			 * Back to live map
+			 */
+			backToLiveMap: () => LocalizedString
+			/**
+			 * Showing route for {vehicle}
+			 */
+			selectedTimeRange: (arg: { vehicle: string }) => LocalizedString
 		}
 		auditLogs: {
 			/**

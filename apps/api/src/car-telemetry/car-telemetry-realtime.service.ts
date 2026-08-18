@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import Redis from 'ioredis';
 import { REDIS } from '../redis/redis.tokens';
-import type { CarTelemetryRealtimeEvent } from './car-telemetry.types';
+import type { CarTelemetryRealtimeEvent } from '@fuel-carrier/shared-types/car-telemetry';
 
 export const CAR_TELEMETRY_UPDATES_CHANNEL = 'car-telemetry-updates';
 

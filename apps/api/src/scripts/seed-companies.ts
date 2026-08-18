@@ -5,17 +5,13 @@ import Redis from 'ioredis';
 import { Pool } from 'pg';
 import { parseZodValue } from '../common/validation/zod.utils';
 import { hashPassword } from '../auth/password.utils';
-import {
-  companyCarTelemetryKey,
-  serializeCarTelemetry,
-} from '../car-telemetry/car-telemetry.redis';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
 import { drivers } from '../database/schema/drivers';
 import { cars } from '../database/schema/cars';
-import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import * as schema from '../database/schema';
+import { writeCityTrajectory } from './write-city-trajectory';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import {
   seedCompaniesDtoSchema,
@@ -210,29 +206,20 @@ async function writeSeedCarTelemetry(
     carSeed: SeedCar;
   },
 ): Promise<void> {
-  if (input.carSeed.latitude == null || input.carSeed.longitude == null) {
-    return;
-  }
+  const fallback =
+    input.carSeed.latitude != null && input.carSeed.longitude != null
+      ? {
+          latitude: input.carSeed.latitude,
+          longitude: input.carSeed.longitude,
+        }
+      : null;
 
-  const recordedAt = new Date();
-
-  await tx.insert(carTelemetryHistory).values({
-    time: recordedAt,
-    carId: input.carId,
+  await writeCityTrajectory(tx, redis, {
     companyId: input.companyId,
-    latitude: input.carSeed.latitude,
-    longitude: input.carSeed.longitude,
+    carId: input.carId,
+    licensePlate: input.carSeed.licensePlate,
+    fallback,
   });
-
-  await redis.hset(
-    companyCarTelemetryKey(input.companyId),
-    input.carId,
-    serializeCarTelemetry({
-      latitude: input.carSeed.latitude,
-      longitude: input.carSeed.longitude,
-      updatedAt: recordedAt,
-    }),
-  );
 }
 
 async function applyInternalContext(tx: TenantTransaction): Promise<void> {

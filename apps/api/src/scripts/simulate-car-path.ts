@@ -1,4 +1,8 @@
 import 'dotenv/config';
+import {
+  CarTelemetrySocketEvents,
+  type CarTelemetryRealtimeEvent,
+} from '@fuel-carrier/shared-types/car-telemetry';
 import { eq, sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import Redis from 'ioredis';
@@ -8,10 +12,6 @@ import {
   serializeCarTelemetry,
 } from '../car-telemetry/car-telemetry.redis';
 import { CAR_TELEMETRY_UPDATES_CHANNEL } from '../car-telemetry/car-telemetry-realtime.service';
-import {
-  CarTelemetrySocketEvents,
-  type CarTelemetryRealtimeEvent,
-} from '../car-telemetry/car-telemetry.types';
 import { cars } from '../database/schema/cars';
 import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import * as schema from '../database/schema';
