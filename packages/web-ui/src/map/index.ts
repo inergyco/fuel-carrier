@@ -9,7 +9,6 @@ export type {
   TrajectoryMapViewProps,
 } from './TrajectoryMapView'
 export { TrajectoryControls } from './TrajectoryControls'
-export { useTrajectoryMap } from './useTrajectoryMap'
 export {
   carTelemetryKeys,
   fetchCarTelemetry,

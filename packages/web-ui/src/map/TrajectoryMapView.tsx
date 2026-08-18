@@ -6,7 +6,10 @@ import { CarsMap } from './CarsMap';
 import { CompanyColorLegend } from './CompanyColorLegend';
 import { TrajectoryControls } from './TrajectoryControls';
 import type { TrajectoryMapViewLabels } from './trajectory-map.types';
-import { useTrajectoryMap } from './useTrajectoryMap';
+import { getVehicleLabel, resolveTrajectoryStatusText } from './trajectory-utils';
+import { useCompanyMapFilter } from './useCompanyMapFilter';
+import { useTrajectoryHistory } from './useTrajectoryHistory';
+import { useTrajectorySelection } from './useTrajectorySelection';
 
 export type { TrajectoryMapViewLabels } from './trajectory-map.types';
 
@@ -33,14 +36,37 @@ export function TrajectoryMapView({
   titleAs = 'h1',
   colorByCompany = false,
 }: TrajectoryMapViewProps) {
-  const trajectory = useTrajectoryMap({
-    api,
-    cars,
+  const selection = useTrajectorySelection();
+  const companyFilter = useCompanyMapFilter({
     markers,
-    isLoading,
-    labels,
-    colorByCompany,
+    unnamedCompanyLabel: labels.unnamedCompany?.() ?? '',
+    enabled: colorByCompany,
   });
+  const selectedCar = cars.find(function matchCar(car) {
+    return car.id === selection.selectedCarId;
+  });
+  const selectedLiveMarker =
+    markers.find(function matchMarker(marker) {
+      return marker.carId === selection.selectedCarId;
+    }) ?? null;
+  const history = useTrajectoryHistory({
+    api,
+    historyRequest: selection.historyRequest,
+    selectedCar,
+    selectedLiveMarker,
+  });
+  const vehicleLabel = getVehicleLabel({
+    car: selectedCar,
+    marker: selectedLiveMarker,
+    fallback: labels.unnamedVehicle(),
+  });
+  const companyLegendLabel = labels.companyLegend;
+  const showAllCompaniesLabel = labels.showAllCompanies;
+  const showLegend =
+    colorByCompany &&
+    !selection.isHistoryMode &&
+    companyLegendLabel != null &&
+    showAllCompaniesLabel != null;
 
   return (
     <section
@@ -49,42 +75,99 @@ export function TrajectoryMapView({
       <TrajectoryControls
         labels={labels}
         titleAs={titleAs}
-        statusText={trajectory.statusText}
-        isHistoryMode={trajectory.isHistoryMode}
-        hasSelectedCar={trajectory.hasSelectedCar}
-        vehicleLabel={trajectory.vehicleLabel}
-        controls={trajectory.controls}
+        statusText={resolveTrajectoryStatusText({
+          labels,
+          isHistoryMode: selection.isHistoryMode,
+          isHistoryLoading: history.isLoading,
+          hasHistoryData: history.hasHistoryData,
+          vehicleLabel,
+          liveMarkerCount: companyFilter.visibleMarkers.length,
+          isLiveLoading: isLoading,
+          selectedCompanyName: companyFilter.selectedCompanyName,
+          hasSelectedCar: selection.hasSelectedCar,
+        })}
+        isHistoryMode={selection.isHistoryMode}
+        hasSelectedCar={selection.hasSelectedCar}
+        vehicleLabel={vehicleLabel}
+        startAt={selection.startAt}
+        endAt={selection.endAt}
+        canSubmit={selection.canSubmit}
+        isSubmitting={history.isLoading}
+        onStartChange={selection.setStartAt}
+        onEndChange={selection.setEndAt}
+        onShowTrajectory={selection.handleShowTrajectory}
+        onBackToLiveMap={selection.handleBackToLiveMap}
+        onClearSelection={selection.handleClearSelection}
       />
 
-      {trajectory.legend && labels.companyLegend && labels.showAllCompanies ? (
+      {showLegend ? (
         <CompanyColorLegend
-          title={labels.companyLegend()}
-          showAllLabel={labels.showAllCompanies()}
-          items={trajectory.legend.items}
-          selectedCompanyId={trajectory.legend.activeCompanyId}
-          onSelectCompany={trajectory.legend.onSelectCompany}
-          onShowAll={trajectory.legend.onShowAll}
+          title={companyLegendLabel()}
+          showAllLabel={showAllCompaniesLabel()}
+          items={companyFilter.legendItems}
+          selectedCompanyId={companyFilter.activeCompanyId}
+          onSelectCompany={companyFilter.handleSelectCompany}
+          onShowAll={companyFilter.handleShowAllCompanies}
         />
       ) : null}
 
-      {trajectory.isMapLoading ? (
+      {isLoading ? (
         <div className="flex h-full items-center justify-center bg-base-300/40 text-sm text-base-content/50">
           {labels.loading()}
         </div>
       ) : (
         <div className="absolute inset-0">
           <CarsMap
-            markers={trajectory.map.markers}
+            markers={resolveMapMarkers({
+              isHistoryMode: selection.isHistoryMode,
+              historyMarker: history.historyMarker,
+              selectedLiveMarker,
+              liveMarkers: companyFilter.visibleMarkers,
+            })}
             labels={labels}
             renderVehicleLink={renderVehicleLink}
-            companyColors={trajectory.map.companyColors}
-            pathPoints={trajectory.map.pathPoints}
-            instantMarkerUpdates={trajectory.map.instantMarkerUpdates}
-            selectedCarId={trajectory.map.selectedCarId}
-            onMarkerSelect={trajectory.map.onMarkerSelect}
+            companyColors={
+              !selection.isHistoryMode && colorByCompany
+                ? companyFilter.companyColors
+                : undefined
+            }
+            pathPoints={
+              selection.isHistoryMode ? history.historyPathPoints : undefined
+            }
+            instantMarkerUpdates={selection.isHistoryMode}
+            selectedCarId={selection.selectedCarId || null}
+            onMarkerSelect={
+              selection.isHistoryMode ? undefined : selection.handleSelectMarker
+            }
           />
         </div>
       )}
     </section>
   );
+}
+
+function resolveMapMarkers({
+  isHistoryMode,
+  historyMarker,
+  selectedLiveMarker,
+  liveMarkers,
+}: {
+  isHistoryMode: boolean;
+  historyMarker: CarTelemetryMarker | null;
+  selectedLiveMarker: CarTelemetryMarker | null;
+  liveMarkers: CarTelemetryMarker[];
+}): CarTelemetryMarker[] {
+  if (!isHistoryMode) {
+    return liveMarkers;
+  }
+
+  if (historyMarker) {
+    return [historyMarker];
+  }
+
+  if (selectedLiveMarker) {
+    return [selectedLiveMarker];
+  }
+
+  return [];
 }

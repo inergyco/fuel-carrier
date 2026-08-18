@@ -14,17 +14,15 @@ type TrajectoryControlsProps = {
   isHistoryMode: boolean;
   hasSelectedCar: boolean;
   vehicleLabel: string;
-  controls: {
-    startAt: Date | null;
-    endAt: Date | null;
-    canSubmit: boolean;
-    isSubmitting: boolean;
-    onStartChange: (value: Date | null) => void;
-    onEndChange: (value: Date | null) => void;
-    onShowTrajectory: () => void;
-    onBackToLiveMap: () => void;
-    onClearSelection: () => void;
-  };
+  startAt: Date | null;
+  endAt: Date | null;
+  canSubmit: boolean;
+  isSubmitting: boolean;
+  onStartChange: (value: Date | null) => void;
+  onEndChange: (value: Date | null) => void;
+  onShowTrajectory: () => void;
+  onBackToLiveMap: () => void;
+  onClearSelection: () => void;
 };
 
 export function TrajectoryControls({
@@ -34,7 +32,15 @@ export function TrajectoryControls({
   isHistoryMode,
   hasSelectedCar,
   vehicleLabel,
-  controls,
+  startAt,
+  endAt,
+  canSubmit,
+  isSubmitting,
+  onStartChange,
+  onEndChange,
+  onShowTrajectory,
+  onBackToLiveMap,
+  onClearSelection,
 }: TrajectoryControlsProps) {
   const showTrajectoryForm = hasSelectedCar || isHistoryMode;
 
@@ -45,15 +51,15 @@ export function TrajectoryControls({
           labels={labels}
           isHistoryMode={isHistoryMode}
           vehicleLabel={vehicleLabel}
-          startAt={controls.startAt}
-          endAt={controls.endAt}
-          canSubmit={controls.canSubmit}
-          isSubmitting={controls.isSubmitting}
-          onStartChange={controls.onStartChange}
-          onEndChange={controls.onEndChange}
-          onShowTrajectory={controls.onShowTrajectory}
-          onBackToLiveMap={controls.onBackToLiveMap}
-          onClearSelection={controls.onClearSelection}
+          startAt={startAt}
+          endAt={endAt}
+          canSubmit={canSubmit}
+          isSubmitting={isSubmitting}
+          onStartChange={onStartChange}
+          onEndChange={onEndChange}
+          onShowTrajectory={onShowTrajectory}
+          onBackToLiveMap={onBackToLiveMap}
+          onClearSelection={onClearSelection}
         />
       ) : (
         <TrajectoryStatusCard
