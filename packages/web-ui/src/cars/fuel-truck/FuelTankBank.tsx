@@ -1,5 +1,5 @@
 import { FuelTank } from './FuelTank'
-import { getVisibleTankSlots, MANIFOLD_Y } from './layout'
+import { getVisibleTankSlots } from './layout'
 
 export type FuelTankBankProps = {
   capacity: number
@@ -14,36 +14,16 @@ export function FuelTankBank({ capacity, filled, idPrefix }: FuelTankBankProps) 
     return null
   }
 
-  const manifoldStart = slots[0]!.cx - 12
-  const manifoldEnd = slots[slots.length - 1]!.cx + 12
-
   return (
     <g data-tank-bank="">
-      <rect
-        x={manifoldStart}
-        y={MANIFOLD_Y}
-        width={manifoldEnd - manifoldStart}
-        height={8}
-        rx={4}
-        fill="#475569"
-        stroke="#334155"
-        strokeWidth={1.5}
-      />
-      <rect
-        x={manifoldStart + 3}
-        y={MANIFOLD_Y + 2}
-        width={manifoldEnd - manifoldStart - 6}
-        height={2}
-        rx={1}
-        fill="#94a3b8"
-      />
-
       {slots.map(function renderTank(slot) {
         return (
           <FuelTank
             key={`${idPrefix}-tank-${slot.index}`}
             id={`${idPrefix}-tank-${slot.index}`}
             cx={slot.cx}
+            cy={slot.cy}
+            r={slot.r}
             capacity={capacity}
             filled={slot.filled}
           />

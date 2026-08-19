@@ -1,11 +1,8 @@
 import { useId } from "react";
 import { cn } from "../../utils";
+import truckArtUrl from "./boniz-500.png";
 import { FuelTankBank } from "./FuelTankBank";
 import { FuelTankLabels } from "./FuelTankLabels";
-import { FuelTruckGradients } from "./FuelTruckGradients";
-import { TruckBody } from "./TruckBody";
-import { TruckCab } from "./TruckCab";
-import { TruckChassis } from "./TruckChassis";
 import { formatVolume, VIEWBOX_HEIGHT, VIEWBOX_WIDTH } from "./layout";
 
 export type FuelTruckDiagramProps = {
@@ -24,7 +21,6 @@ export function FuelTruckDiagram({
   className,
 }: FuelTruckDiagramProps) {
   const reactId = useId().replace(/:/g, "");
-  const chassisGradientId = `${reactId}-chassis`;
 
   const volumeText = `${formatVolume(capacity)}${unitLabel ? ` ${unitLabel}` : ""}`;
   const sharedCapacity = capacityLabel ?? `Capacity per tank: ${volumeText}`;
@@ -58,21 +54,20 @@ export function FuelTruckDiagram({
           <svg
             viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
             role="img"
-            aria-label="Fuel carrier truck side view"
+            aria-label="BONIZ 500 fuel carrier side view"
             preserveAspectRatio="xMidYMid meet"
             className="absolute inset-0 size-full text-base-content"
           >
-            <defs>
-              <FuelTruckGradients chassisGradientId={chassisGradientId} />
-            </defs>
-
-            <TruckChassis chassisGradientId={chassisGradientId} />
-            <TruckCab />
-            <TruckBody />
             <FuelTankBank
               capacity={capacity}
               filled={filled}
               idPrefix={reactId}
+            />
+            <image
+              href={truckArtUrl}
+              width={VIEWBOX_WIDTH}
+              height={VIEWBOX_HEIGHT}
+              className="pointer-events-none [html[data-theme='dark']_&]:invert [html[data-theme$='-dark']_&]:invert"
             />
           </svg>
         </div>
