@@ -1,13 +1,15 @@
 import { ConfigService } from '@nestjs/config';
 import { type NestFastifyApplication } from '@nestjs/platform-fastify';
 import helmet from '@fastify/helmet';
+import { isSwaggerEnabled } from '../swagger/is-swagger-enabled';
 
 export async function setupSecurityHeaders(
   app: NestFastifyApplication,
 ): Promise<void> {
   const configService = app.get(ConfigService);
-  const swaggerEnabled =
-    configService.get<string>('SWAGGER_ENABLED', 'true') === 'true';
+  const swaggerEnabled = isSwaggerEnabled(
+    configService.get<string>('SWAGGER_ENABLED'),
+  );
   const isProduction = process.env.NODE_ENV === 'production';
 
   await app.register(helmet, {
@@ -20,7 +22,7 @@ export async function setupSecurityHeaders(
             imgSrc: ["'self'", 'data:', 'https:'],
           },
         }
-      : false,
+      : true,
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     hsts: isProduction

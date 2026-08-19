@@ -42,9 +42,11 @@ export const envSchema = z.object({
   MQTT_TELEMETRY_TOPIC: z.string().min(1).default('telemetry/#'),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
-    .default('true')
+    .default(function swaggerDefault() {
+      return process.env.NODE_ENV === 'production' ? 'false' : 'true';
+    })
     .describe(
-      'Expose OpenAPI docs at /api/docs/internal and /api/docs/external',
+      'Expose OpenAPI docs at /api/docs/internal and /api/docs/external. Ignored in production (always off).',
     ),
 });
 

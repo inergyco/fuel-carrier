@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExternalModule } from '../external/external.module';
 import { InternalModule } from '../internal/internal.module';
+import { isSwaggerEnabled } from './is-swagger-enabled';
 import { AUTH_COOKIE_SCHEME } from './swagger.constants';
 
 export function setupSwagger(app: INestApplication): void {
   const configService = app.get(ConfigService);
-  const swaggerEnabled = configService.get<string>('SWAGGER_ENABLED', 'true');
 
-  if (swaggerEnabled !== 'true') {
+  if (!isSwaggerEnabled(configService.get<string>('SWAGGER_ENABLED'))) {
     return;
   }
 
