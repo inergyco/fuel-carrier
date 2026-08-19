@@ -1,9 +1,10 @@
-import { applyDecorators, type Type } from '@nestjs/common';
+import { applyDecorators, HttpStatus, type Type } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiResponse,
   ApiUnauthorizedResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -89,6 +90,22 @@ export function ApiEnvelopeBadRequestResponse() {
   return applyDecorators(
     ApiExtraModels(ApiErrorBodyDto),
     ApiBadRequestResponse({
+      schema: {
+        type: 'object',
+        required: ['error'],
+        properties: {
+          error: { $ref: getSchemaPath(ApiErrorBodyDto) },
+        },
+      },
+    }),
+  );
+}
+
+export function ApiEnvelopeTooManyRequestsResponse() {
+  return applyDecorators(
+    ApiExtraModels(ApiErrorBodyDto),
+    ApiResponse({
+      status: HttpStatus.TOO_MANY_REQUESTS,
       schema: {
         type: 'object',
         required: ['error'],

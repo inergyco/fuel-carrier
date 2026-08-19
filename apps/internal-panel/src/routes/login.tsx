@@ -65,6 +65,14 @@ function LoginPage() {
         return
       }
 
+      if (
+        isApiClientError(error) &&
+        error.apiError.code === ApiErrorCode.TOO_MANY_REQUESTS
+      ) {
+        setServerError(LL.internalPanel.login.tooManyAttempts())
+        return
+      }
+
       if (isApiClientError(error)) {
         setServerError(error.apiError.message)
         return

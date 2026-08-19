@@ -40,6 +40,13 @@ export const envSchema = z.object({
   MQTT_USERNAME: z.string().min(1).optional(),
   MQTT_PASSWORD: z.string().min(1).optional(),
   MQTT_TELEMETRY_TOPIC: z.string().min(1).default('telemetry/#'),
+  LOGIN_ATTEMPT_USER_LIMIT: z.coerce.number().int().positive().default(5),
+  LOGIN_ATTEMPT_IP_LIMIT: z.coerce.number().int().positive().default(20),
+  LOGIN_ATTEMPT_WINDOW_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(15 * 60),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
     .default(function swaggerDefault() {

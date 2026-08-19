@@ -20,6 +20,7 @@ const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
   [HttpStatus.UNAUTHORIZED, ApiErrorCode.UNAUTHORIZED],
   [HttpStatus.FORBIDDEN, ApiErrorCode.FORBIDDEN],
   [HttpStatus.NOT_FOUND, ApiErrorCode.NOT_FOUND],
+  [HttpStatus.TOO_MANY_REQUESTS, ApiErrorCode.TOO_MANY_REQUESTS],
 ]);
 
 @Catch()
@@ -58,7 +59,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
         return {
           status,
           error: {
-            code: this.statusToCode(status),
+            code: this._statusToCode(status),
             message: exceptionResponse,
           },
         };
@@ -71,7 +72,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
           return {
             status,
             error: {
-              code: this.statusToCode(status),
+              code: this._statusToCode(status),
               message: body.message,
             },
           };
@@ -111,7 +112,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
     };
   }
 
-  private statusToCode(status: number): ApiErrorCode {
+  private _statusToCode(status: number): ApiErrorCode {
     return STATUS_TO_CODE.get(status) ?? ApiErrorCode.INTERNAL_ERROR;
   }
 }

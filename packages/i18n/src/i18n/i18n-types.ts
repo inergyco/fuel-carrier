@@ -197,6 +197,10 @@ type RootTranslation = {
 			 */
 			invalidCredentials: string
 			/**
+			 * T​o​o​ ​m​a​n​y​ ​s​i​g​n​-​i​n​ ​a​t​t​e​m​p​t​s​.​ ​T​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+			 */
+			tooManyAttempts: string
+			/**
 			 * S​i​g​n​i​n​g​ ​i​n
 			 */
 			signingIn: string
@@ -1168,6 +1172,10 @@ type RootTranslation = {
 			 * I​n​v​a​l​i​d​ ​u​s​e​r​n​a​m​e​ ​o​r​ ​p​a​s​s​w​o​r​d​.
 			 */
 			invalidCredentials: string
+			/**
+			 * T​o​o​ ​m​a​n​y​ ​s​i​g​n​-​i​n​ ​a​t​t​e​m​p​t​s​.​ ​T​r​y​ ​a​g​a​i​n​ ​l​a​t​e​r​.
+			 */
+			tooManyAttempts: string
 			/**
 			 * S​i​g​n​i​n​g​ ​i​n
 			 */
@@ -2321,6 +2329,10 @@ export type TranslationFunctions = {
 			 */
 			invalidCredentials: () => LocalizedString
 			/**
+			 * Too many sign-in attempts. Try again later.
+			 */
+			tooManyAttempts: () => LocalizedString
+			/**
 			 * Signing in
 			 */
 			signingIn: () => LocalizedString
@@ -3272,6 +3284,10 @@ export type TranslationFunctions = {
 			 * Invalid username or password.
 			 */
 			invalidCredentials: () => LocalizedString
+			/**
+			 * Too many sign-in attempts. Try again later.
+			 */
+			tooManyAttempts: () => LocalizedString
 			/**
 			 * Signing in
 			 */

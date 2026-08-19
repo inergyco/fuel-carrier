@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiCookieAuth,
@@ -6,13 +14,14 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import type { FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { UserRole, type AuthSession } from '@fuel-carrier/shared-types';
 import { AuditActions } from '@fuel-carrier/shared-types';
 import { changePasswordDtoSchema } from '@fuel-carrier/shared-validation/auth/change-password';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeOkResponse,
+  ApiEnvelopeTooManyRequestsResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
 import { AuthPayloadDto } from '../swagger/dto/auth-payload.dto';
@@ -28,6 +37,8 @@ import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalCompanyAuthGuard } from './local-company-auth.guard';
+import { LoginAttemptService } from './login-attempt.service';
+import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 
@@ -42,19 +53,23 @@ export class ExternalAuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly auditLogService: AuditLogService,
+    private readonly loginAttempts: LoginAttemptService,
   ) {}
 
   @Post('login')
-  @UseGuards(LocalCompanyAuthGuard)
+  @UseGuards(LoginRateLimitGuard, LocalCompanyAuthGuard)
   @ApiOperation({ summary: 'Sign in with company user credentials' })
   @ApiBody({ type: LoginRequestDto })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  login(
+  @ApiEnvelopeTooManyRequestsResponse()
+  async login(
     @CurrentUser() user: AuthSession,
+    @Req() request: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<AuthPayload> {
+    await this.loginAttempts.recordSuccess(request);
     this._setAuthCookie(res, user);
 
     return this.auditLogService

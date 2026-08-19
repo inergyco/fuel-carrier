@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalAdminStrategy } from './local-admin.strategy';
 import { LocalCompanyStrategy } from './local-company.strategy';
+import { LoginAttemptService } from './login-attempt.service';
+import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { RolesGuard } from './roles.guard';
 import { MustChangePasswordGuard } from './must-change-password.guard';
 import { CompanyUserAdminGuard } from './company-user-admin.guard';
@@ -27,6 +29,8 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
   ],
   providers: [
     AuthService,
+    LoginAttemptService,
+    LoginRateLimitGuard,
     LocalAdminStrategy,
     LocalCompanyStrategy,
     JwtStrategy,
@@ -40,6 +44,8 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
     RolesGuard,
     MustChangePasswordGuard,
     CompanyUserAdminGuard,
+    LoginRateLimitGuard,
+    LoginAttemptService,
   ],
 })
 export class AuthModule {}

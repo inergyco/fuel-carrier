@@ -4,6 +4,7 @@ import { Strategy as LocalStrategyBase } from 'passport-local';
 import { eq } from 'drizzle-orm';
 import type { AuthSession } from '@fuel-carrier/shared-types';
 import { AuditActions, UserRole } from '@fuel-carrier/shared-types';
+import type { FastifyRequest } from 'fastify';
 import { parseZodDto } from '../common/validation/zod.utils';
 import {
   loginDtoSchema,
@@ -15,6 +16,7 @@ import type { Database } from '../database/database.types';
 import { companyUsers } from '../database/schema/company-users';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { AuthService } from './auth.service';
+import { LoginAttemptService } from './login-attempt.service';
 
 @Injectable()
 export class LocalCompanyStrategy extends PassportStrategy(
@@ -24,15 +26,21 @@ export class LocalCompanyStrategy extends PassportStrategy(
   constructor(
     private readonly authService: AuthService,
     private readonly auditLogService: AuditLogService,
+    private readonly loginAttempts: LoginAttemptService,
     @Inject(DATABASE) private readonly db: Database,
   ) {
     super({
       usernameField: 'username',
       passwordField: 'password',
+      passReqToCallback: true,
     });
   }
 
-  async validate(username: string, password: string): Promise<AuthSession> {
+  async validate(
+    request: FastifyRequest,
+    username: string,
+    password: string,
+  ): Promise<AuthSession> {
     const credentials: LoginDto = parseZodDto(loginDtoSchema, {
       username,
       password,
@@ -44,6 +52,7 @@ export class LocalCompanyStrategy extends PassportStrategy(
     );
 
     if (!session) {
+      await this.loginAttempts.recordFailure(request);
       const companyUser = await this.db.query.companyUsers.findFirst({
         where: eq(companyUsers.username, credentials.username),
         columns: { companyId: true },

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import {
   ApiBody,
   ApiCookieAuth,
@@ -6,12 +6,13 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import type { FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { AuthSession } from '@fuel-carrier/shared-types';
 import { AuditActions, UserRole } from '@fuel-carrier/shared-types';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeOkResponse,
+  ApiEnvelopeTooManyRequestsResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
 import { AuthPayloadDto } from '../swagger/dto/auth-payload.dto';
@@ -23,6 +24,8 @@ import { AuthService } from './auth.service';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAdminAuthGuard } from './local-admin-auth.guard';
+import { LoginAttemptService } from './login-attempt.service';
+import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
 
@@ -37,19 +40,23 @@ export class InternalAuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly auditLogService: AuditLogService,
+    private readonly loginAttempts: LoginAttemptService,
   ) {}
 
   @Post('login')
-  @UseGuards(LocalAdminAuthGuard)
+  @UseGuards(LoginRateLimitGuard, LocalAdminAuthGuard)
   @ApiOperation({ summary: 'Sign in with internal admin credentials' })
   @ApiBody({ type: LoginRequestDto })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  login(
+  @ApiEnvelopeTooManyRequestsResponse()
+  async login(
     @CurrentUser() user: AuthSession,
+    @Req() request: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<AuthPayload> {
+    await this.loginAttempts.recordSuccess(request);
     const token = this.authService.signToken(user);
 
     void res.setCookie(this.authService.getInternalAuthCookieName(), token, {
