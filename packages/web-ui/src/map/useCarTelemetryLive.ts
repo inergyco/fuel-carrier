@@ -19,6 +19,41 @@ export function fetchCarTelemetry(
   return api.get('car-telemetry').json<CarTelemetryMarker[]>()
 }
 
+function telemetryPortal(): 'internal' | 'external' {
+  const prefix = String(import.meta.env.VITE_API_URL ?? '')
+  return prefix.includes('/external') ? 'external' : 'internal'
+}
+
+export function applyTelemetryUpdated(
+  previous: CarTelemetryMarker[] | undefined,
+  marker: CarTelemetryMarker,
+): CarTelemetryMarker[] {
+  if (!previous) {
+    return [marker]
+  }
+
+  const index = previous.findIndex(function matchCar(item) {
+    return item.carId === marker.carId
+  })
+
+  if (index === -1) {
+    const knownCompanyIds = new Set(
+      previous.map(function toCompanyId(item) {
+        return item.companyId
+      }),
+    )
+    if (knownCompanyIds.size > 0 && !knownCompanyIds.has(marker.companyId)) {
+      return previous
+    }
+
+    return [...previous, marker]
+  }
+
+  const next = previous.slice()
+  next[index] = marker
+  return next
+}
+
 /**
  * Initial snapshot via REST; live patches via Socket.IO.
  * Keeps a slow REST fallback if the socket drops.
@@ -26,6 +61,7 @@ export function fetchCarTelemetry(
  */
 export function useCarTelemetryLive(api: KyInstance) {
   const queryClient = useQueryClient()
+  const portal = telemetryPortal()
 
   const telemetryQuery = useQuery({
     queryKey: carTelemetryKeys.all,
@@ -41,6 +77,7 @@ export function useCarTelemetryLive(api: KyInstance) {
       const socket: Socket = io('/car-telemetry', {
         path: '/api/socket.io',
         withCredentials: true,
+        query: { portal },
         transports: ['websocket', 'polling'],
       })
 
@@ -48,21 +85,7 @@ export function useCarTelemetryLive(api: KyInstance) {
         queryClient.setQueryData<CarTelemetryMarker[]>(
           carTelemetryKeys.all,
           function upsertMarker(previous) {
-            if (!previous) {
-              return [marker]
-            }
-
-            const index = previous.findIndex(function matchCar(item) {
-              return item.carId === marker.carId
-            })
-
-            if (index === -1) {
-              return [...previous, marker]
-            }
-
-            const next = previous.slice()
-            next[index] = marker
-            return next
+            return applyTelemetryUpdated(previous, marker)
           },
         )
       }
@@ -97,7 +120,7 @@ export function useCarTelemetryLive(api: KyInstance) {
         socket.disconnect()
       }
     },
-    [queryClient],
+    [portal, queryClient],
   )
 
   return telemetryQuery

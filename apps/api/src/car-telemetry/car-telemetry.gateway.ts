@@ -115,16 +115,17 @@ export class CarTelemetryGateway
 
   private async _authenticate(client: Socket): Promise<AuthSession | null> {
     const cookieHeader = client.handshake.headers.cookie;
-    const tokens = [
-      getCookieValue(
-        cookieHeader,
-        this.authService.getInternalAuthCookieName(),
-      ),
-      getCookieValue(
-        cookieHeader,
-        this.authService.getExternalAuthCookieName(),
-      ),
-    ];
+    const portal = firstQueryValue(client.handshake.query.portal);
+    const internalToken = getCookieValue(
+      cookieHeader,
+      this.authService.getInternalAuthCookieName(),
+    );
+    const externalToken = getCookieValue(
+      cookieHeader,
+      this.authService.getExternalAuthCookieName(),
+    );
+
+    const tokens = tokensForHandshake(portal, internalToken, externalToken);
 
     for (const token of tokens) {
       const session = await this._sessionFromToken(token);
@@ -178,4 +179,37 @@ export class CarTelemetryGateway
       return null;
     }
   }
+}
+
+function firstQueryValue(value: string | string[] | undefined): string | null {
+  if (Array.isArray(value)) {
+    return value[0] ?? null;
+  }
+
+  return value ?? null;
+}
+
+/**
+ * Cookies are host-scoped, not port-scoped. Both panels on localhost send
+ * both cookies. Preferring the internal token would put a company session
+ * in the all-fleet room. If both are present, require `portal=`.
+ */
+function tokensForHandshake(
+  portal: string | null,
+  internalToken: string | null,
+  externalToken: string | null,
+): Array<string | null> {
+  if (portal === 'internal') {
+    return [internalToken];
+  }
+
+  if (portal === 'external') {
+    return [externalToken];
+  }
+
+  if (internalToken && externalToken) {
+    return [];
+  }
+
+  return [internalToken, externalToken];
 }

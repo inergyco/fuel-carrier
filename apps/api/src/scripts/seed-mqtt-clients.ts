@@ -11,8 +11,10 @@ import { hashMqttSecret } from '../mqtt/mqtt-secret.utils';
 /** Fixed local-dev defaults — override with MQTT_SEED_* env vars for production. */
 const BACKEND_USERNAME = 'backend';
 const DEVICE_USERNAME = 'device1';
+const SIMULATOR_USERNAME = 'simulator';
 const DEV_BACKEND_PASSWORD = 'dev-backend-secret';
 const DEV_DEVICE_PASSWORD = 'dev-device-secret';
+const DEV_SIMULATOR_PASSWORD = 'dev-simulator-secret';
 
 type Db = NodePgDatabase<typeof schema>;
 
@@ -82,6 +84,34 @@ async function seedMqttClients(): Promise<void> {
       });
       console.log(
         `  ${DEVICE_USERNAME} / ${password}  → publish telemetry/${DEVICE_USERNAME}/#`,
+      );
+    }
+
+    const seedSimulator = isProd
+      ? process.env.MQTT_SEED_SIMULATOR === 'true'
+      : process.env.MQTT_SEED_SIMULATOR !== 'false';
+    if (seedSimulator) {
+      const password = isProd
+        ? process.env.MQTT_SEED_SIMULATOR_PASSWORD
+        : (process.env.MQTT_SEED_SIMULATOR_PASSWORD ?? DEV_SIMULATOR_PASSWORD);
+      if (!password) {
+        throw new Error(
+          'MQTT_SEED_SIMULATOR_PASSWORD is required when MQTT_SEED_SIMULATOR=true in production',
+        );
+      }
+      if (isProd && password === DEV_SIMULATOR_PASSWORD) {
+        throw new Error(
+          'Refusing to seed production with the local-dev simulator password',
+        );
+      }
+      await upsertClient({
+        db,
+        username: SIMULATOR_USERNAME,
+        password,
+        acls: [{ topic: 'telemetry/#', access: 'write' }],
+      });
+      console.log(
+        `  ${SIMULATOR_USERNAME} / ${password}  → publish telemetry/# (local fleet sim)`,
       );
     }
   } finally {
