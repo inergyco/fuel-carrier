@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
+import { AccessTokenService } from './access-token.service';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalAdminStrategy } from './local-admin.strategy';
@@ -29,6 +30,7 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
   ],
   providers: [
     AuthService,
+    AccessTokenService,
     LoginAttemptService,
     LoginRateLimitGuard,
     LocalAdminStrategy,
@@ -46,6 +48,7 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
     CompanyUserAdminGuard,
     LoginRateLimitGuard,
     LoginAttemptService,
+    AccessTokenService,
   ],
 })
 export class AuthModule {}

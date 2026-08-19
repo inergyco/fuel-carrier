@@ -147,6 +147,10 @@ export class CarTelemetryGateway
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
 
+      if (await this.authService.isAccessTokenRevoked(payload.jti)) {
+        return null;
+      }
+
       if (payload.role === UserRole.INTERNAL_ADMIN) {
         return {
           userId: payload.sub,

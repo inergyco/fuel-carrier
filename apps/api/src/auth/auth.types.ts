@@ -14,4 +14,8 @@ export type JwtPayload = {
   firstName: string;
   lastName: string;
   mustChangePassword?: boolean;
+  /** Unique id of this token (jwt `jti`). Used to revoke on logout. */
+  jti: string;
+  /** Unix expiry from the signed token. */
+  exp?: number;
 };

@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { eq } from 'drizzle-orm';
@@ -11,6 +12,8 @@ import type { Database } from '../database/database.types';
 import { admins } from '../database/schema/admins';
 import { companyUsers } from '../database/schema/company-users';
 import type { JwtPayload } from './auth.types';
+import type { AccessTokenClaims } from './access-token.constants';
+import { AccessTokenService } from './access-token.service';
 import { getAuthCookieMaxAgeMs } from './cookie.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { hashPassword } from './password.utils';
@@ -21,6 +24,7 @@ export class AuthService {
     @Inject(DATABASE) private readonly db: Database,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly accessTokens: AccessTokenService,
   ) {}
 
   async validateAdminCredentials(
@@ -167,6 +171,7 @@ export class AuthService {
       firstName: session.firstName,
       lastName: session.lastName,
       mustChangePassword: session.mustChangePassword,
+      jti: randomUUID(),
     };
 
     return this.jwtService.sign(payload);
@@ -174,6 +179,24 @@ export class AuthService {
 
   getAuthCookieMaxAgeMs(): number {
     return getAuthCookieMaxAgeMs(this._getJwtExpiresIn());
+  }
+
+  async revokeAccessToken(
+    claims: AccessTokenClaims | undefined,
+  ): Promise<void> {
+    if (!claims?.jti) {
+      return;
+    }
+
+    await this.accessTokens.revoke(
+      claims.jti,
+      claims.exp,
+      getAuthCookieMaxAgeMs(this._getJwtExpiresIn()) / 1000,
+    );
+  }
+
+  async isAccessTokenRevoked(jti: string | undefined): Promise<boolean> {
+    return this.accessTokens.isRevoked(jti);
   }
 }
 

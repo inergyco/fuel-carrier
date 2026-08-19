@@ -21,6 +21,7 @@ import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { AuthService } from './auth.service';
+import { getRequestAccessToken } from './access-token.constants';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAdminAuthGuard } from './local-admin-auth.guard';
@@ -83,10 +84,12 @@ export class InternalAuthController {
   @Roles(UserRole.INTERNAL_ADMIN)
   @ApiOperation({ summary: 'Clear the auth cookie' })
   @ApiNoContentResponse({ description: 'Signed out successfully' })
-  logout(
+  async logout(
     @CurrentUser() user: AuthSession,
+    @Req() request: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<null> {
+    await this.authService.revokeAccessToken(getRequestAccessToken(request));
     void res.clearCookie(this.authService.getInternalAuthCookieName(), {
       path: '/api',
     });

@@ -17,7 +17,7 @@ export const envSchema = z.object({
     )
     .optional(),
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
-  JWT_EXPIRES_IN: z.string().default('7d'),
+  JWT_EXPIRES_IN: z.string().default('8h'),
   INTERNAL_AUTH_COOKIE_NAME: z.string().min(1).default('internal_auth_token'),
   EXTERNAL_AUTH_COOKIE_NAME: z.string().min(1).default('external_auth_token'),
   AUTH_COOKIE_SAME_SITE: z.enum(['lax', 'strict', 'none']).default('lax'),

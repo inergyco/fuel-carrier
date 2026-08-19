@@ -34,6 +34,7 @@ import { AuditLogService } from '../audit-logs/audit-log.service';
 import { AUDIT_REDACTED_VALUE } from '../audit-logs/audit-log.utils';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import { AuthService } from './auth.service';
+import { getRequestAccessToken } from './access-token.constants';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalCompanyAuthGuard } from './local-company-auth.guard';
@@ -89,10 +90,12 @@ export class ExternalAuthController {
   @Roles(UserRole.COMPANY_USER)
   @ApiOperation({ summary: 'Clear the auth cookie' })
   @ApiNoContentResponse({ description: 'Signed out successfully' })
-  logout(
+  async logout(
     @CurrentUser() user: AuthSession,
+    @Req() request: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
   ): Promise<null> {
+    await this.authService.revokeAccessToken(getRequestAccessToken(request));
     void res.clearCookie(this.authService.getExternalAuthCookieName(), {
       path: '/api',
     });
@@ -133,6 +136,7 @@ export class ExternalAuthController {
     @Body(new ZodValidationPipe(changePasswordDtoSchema))
     dto: ChangePasswordDto,
     @Res({ passthrough: true }) res: FastifyReply,
+    @Req() request: FastifyRequest,
   ): Promise<AuthPayload> {
     const updated = await this.authService.changeCompanyUserPassword(
       user,
@@ -140,6 +144,7 @@ export class ExternalAuthController {
       dto.newPassword,
     );
 
+    await this.authService.revokeAccessToken(getRequestAccessToken(request));
     this._setAuthCookie(res, updated);
 
     await this.auditLogService.record(tenantContextFromSession(updated), {
