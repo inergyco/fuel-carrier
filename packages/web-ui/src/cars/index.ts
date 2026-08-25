@@ -2,6 +2,7 @@ export {
   FuelTruckDiagram,
   type FuelTruckDiagramProps,
 } from './fuel-truck'
+export { formatVolume } from './fuel-truck'
 export {
   CarTanksSection,
   type CarTanksSectionLabels,

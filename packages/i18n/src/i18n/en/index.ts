@@ -64,6 +64,18 @@ const en: BaseTranslation = {
       signedInAs: 'Signed in as {firstName:string} {lastName:string} ({username:string})',
       signingOut: 'Signing out…',
       signOut: 'Sign out',
+      loading: 'Loading companies…',
+      empty: 'No companies yet. Add your first company to see fleet overview.',
+      summary:
+        '{companies:number} companies · {vehicles:number} vehicles · {live:number} live',
+      vehiclesCount: '{count:number} vehicles',
+      driversCount: '{count:number} drivers',
+      liveCount: '{count:number} live',
+      noVehicles: 'No vehicles registered',
+      viewCompany: 'View company',
+      vehicleLive: 'Live',
+      vehicleOffline: 'Offline',
+      unassignedDriver: 'Unassigned',
     },
     nav: {
       dashboard: 'Dashboard',

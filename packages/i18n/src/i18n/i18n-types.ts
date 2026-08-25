@@ -234,6 +234,56 @@ type RootTranslation = {
 			 * S​i​g​n​ ​o​u​t
 			 */
 			signOut: string
+			/**
+			 * L​o​a​d​i​n​g​ ​c​o​m​p​a​n​i​e​s​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​c​o​m​p​a​n​y​ ​t​o​ ​s​e​e​ ​f​l​e​e​t​ ​o​v​e​r​v​i​e​w​.
+			 */
+			empty: string
+			/**
+			 * {​c​o​m​p​a​n​i​e​s​}​ ​c​o​m​p​a​n​i​e​s​ ​·​ ​{​v​e​h​i​c​l​e​s​}​ ​v​e​h​i​c​l​e​s​ ​·​ ​{​l​i​v​e​}​ ​l​i​v​e
+			 * @param {number} companies
+			 * @param {number} live
+			 * @param {number} vehicles
+			 */
+			summary: RequiredParams<'companies' | 'live' | 'vehicles'>
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s
+			 * @param {number} count
+			 */
+			vehiclesCount: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​d​r​i​v​e​r​s
+			 * @param {number} count
+			 */
+			driversCount: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​l​i​v​e
+			 * @param {number} count
+			 */
+			liveCount: RequiredParams<'count'>
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​s​ ​r​e​g​i​s​t​e​r​e​d
+			 */
+			noVehicles: string
+			/**
+			 * V​i​e​w​ ​c​o​m​p​a​n​y
+			 */
+			viewCompany: string
+			/**
+			 * L​i​v​e
+			 */
+			vehicleLive: string
+			/**
+			 * O​f​f​l​i​n​e
+			 */
+			vehicleOffline: string
+			/**
+			 * U​n​a​s​s​i​g​n​e​d
+			 */
+			unassignedDriver: string
 		}
 		nav: {
 			/**
@@ -2362,6 +2412,50 @@ export type TranslationFunctions = {
 			 * Sign out
 			 */
 			signOut: () => LocalizedString
+			/**
+			 * Loading companies…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No companies yet. Add your first company to see fleet overview.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * {companies} companies · {vehicles} vehicles · {live} live
+			 */
+			summary: (arg: { companies: number, live: number, vehicles: number }) => LocalizedString
+			/**
+			 * {count} vehicles
+			 */
+			vehiclesCount: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} drivers
+			 */
+			driversCount: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} live
+			 */
+			liveCount: (arg: { count: number }) => LocalizedString
+			/**
+			 * No vehicles registered
+			 */
+			noVehicles: () => LocalizedString
+			/**
+			 * View company
+			 */
+			viewCompany: () => LocalizedString
+			/**
+			 * Live
+			 */
+			vehicleLive: () => LocalizedString
+			/**
+			 * Offline
+			 */
+			vehicleOffline: () => LocalizedString
+			/**
+			 * Unassigned
+			 */
+			unassignedDriver: () => LocalizedString
 		}
 		nav: {
 			/**

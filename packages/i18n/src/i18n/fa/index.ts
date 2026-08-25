@@ -62,6 +62,18 @@ const fa: Translation = {
       signedInAs: "وارد شده به عنوان {firstName} {lastName} ({username})",
       signingOut: "در حال خروج…",
       signOut: "خروج",
+      loading: "در حال بارگذاری شرکت‌ها…",
+      empty: "هنوز شرکتی ثبت نشده است. اولین شرکت را اضافه کنید تا نمای ناوگان را ببینید.",
+      summary:
+        "{companies} شرکت · {vehicles} خودرو · {live} آنلاین",
+      vehiclesCount: "{count} خودرو",
+      driversCount: "{count} راننده",
+      liveCount: "{count} آنلاین",
+      noVehicles: "خودرویی ثبت نشده است",
+      viewCompany: "مشاهده شرکت",
+      vehicleLive: "آنلاین",
+      vehicleOffline: "آفلاین",
+      unassignedDriver: "بدون راننده",
     },
     nav: {
       dashboard: "داشبورد",
