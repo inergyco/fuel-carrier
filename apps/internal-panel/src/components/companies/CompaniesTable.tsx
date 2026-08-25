@@ -1,6 +1,7 @@
 import type { Company } from "@fuel-carrier/shared-types";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
+  CompanyBrandLogo,
   DataTable,
   DataTableBody,
   DataTableCell,
@@ -40,7 +41,12 @@ export function CompaniesTable({
         {companies.map(function renderCompanyRow(company) {
           return (
             <DataTableRow key={company.id}>
-              <DataTableCell className="font-medium">{company.name}</DataTableCell>
+              <DataTableCell>
+                <div className="flex items-center gap-3">
+                  <CompanyBrandLogo logoUrl={company.logoUrl} />
+                  <span className="font-medium text-nowrap">{company.name}</span>
+                </div>
+              </DataTableCell>
               <DataTableCell className="font-mono text-sm">
                 {company.nationalId}
               </DataTableCell>

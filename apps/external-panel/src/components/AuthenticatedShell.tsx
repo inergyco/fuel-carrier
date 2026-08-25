@@ -6,6 +6,7 @@ import {
 import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   Button,
+  CompanyBrandLogo,
   ConfirmModal,
   ICON_STROKE_WIDTH,
   PanelShell,
@@ -24,7 +25,6 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
 import { redirectToLoginPage } from "../lib/redirect";
-import { CompanyBrandLogo } from "./CompanyBrandLogo";
 import { InergyFooter } from "./InergyFooter";
 
 interface AuthenticatedShellProps {

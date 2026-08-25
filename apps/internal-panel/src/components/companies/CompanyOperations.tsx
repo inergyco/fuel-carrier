@@ -39,7 +39,7 @@ export function CompanyOperations({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-center gap-2',
+        'flex items-center gap-2 flex-nowrap',
         isStacked && 'justify-center',
       )}
     >

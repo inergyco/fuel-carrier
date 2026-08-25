@@ -22,6 +22,7 @@ export {
   iconXlClassName,
 } from './iconClassName'
 export { ConfirmModal } from './ConfirmModal'
+export { CompanyBrandLogo } from './CompanyBrandLogo'
 export {
   DataTable,
   DataTableBody,

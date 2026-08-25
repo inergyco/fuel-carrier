@@ -1,5 +1,6 @@
 import type { Company } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { CompanyBrandLogo } from '@fuel-carrier/web-ui/ui'
 import { CompanyOperations } from './CompanyOperations'
 
 interface CompaniesCardListProps {
@@ -23,7 +24,8 @@ export function CompaniesCardList({
             key={company.id}
             className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
           >
-            <div className="mb-3 flex items-start justify-between gap-3">
+            <div className="mb-3 flex items-center gap-3">
+              <CompanyBrandLogo logoUrl={company.logoUrl} />
               <p className="text-base font-medium tracking-tight">{company.name}</p>
             </div>
 

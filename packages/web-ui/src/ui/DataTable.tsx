@@ -94,7 +94,7 @@ export function DataTableCell({
   return (
     <td
       className={cn(
-        'border-e border-base-content/8 px-4 py-3.5 align-middle text-base-content/90 last:border-e-0 first:ps-5 last:pe-5',
+        'flex-nowrap border-e border-base-content/8 px-4 py-3.5 align-middle text-base-content/90 last:border-e-0 first:ps-5 last:pe-5',
         className,
       )}
       {...props}

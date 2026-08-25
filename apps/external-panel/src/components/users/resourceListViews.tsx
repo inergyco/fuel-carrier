@@ -196,7 +196,7 @@ function ResourceOperations<T>({
   return (
     <div
       className={cn(
-        "flex flex-wrap items-center gap-2",
+        "flex flex-nowrap items-center gap-2",
         stacked && "justify-center",
       )}
     >
