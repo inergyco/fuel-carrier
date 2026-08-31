@@ -9,7 +9,6 @@ import {
   createLoginDtoSchema,
   type LoginDto,
 } from "@fuel-carrier/shared-validation/admin/login";
-import { PASSWORD_MIN_LENGTH } from "@fuel-carrier/shared-validation/password";
 import { zodResolver, Form, useForm } from "@fuel-carrier/web-ui/form";
 import { isApiClientError } from "@fuel-carrier/web-ui/api";
 import { Button, FormInput } from "@fuel-carrier/web-ui/ui";
@@ -37,15 +36,6 @@ function LoginPage() {
         usernameRequired: LL.validation.usernameRequired(),
         usernameInvalid: LL.validation.usernameInvalid(),
         passwordRequired: LL.validation.passwordRequired(),
-        passwordStrength: {
-          minLength: LL.validation.passwordMinLength({
-            min: PASSWORD_MIN_LENGTH,
-          }),
-          uppercase: LL.validation.passwordUppercase(),
-          lowercase: LL.validation.passwordLowercase(),
-          digit: LL.validation.passwordDigit(),
-          special: LL.validation.passwordSpecial(),
-        },
       });
     },
     [LL],

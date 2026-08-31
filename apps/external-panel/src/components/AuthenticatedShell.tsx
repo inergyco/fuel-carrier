@@ -64,12 +64,12 @@ export function AuthenticatedShell({
         {
           to: "/drivers",
           label: LL.externalPanel.nav.drivers(),
-          icon: <Car strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+          icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/cars",
           label: LL.externalPanel.nav.cars(),
-          icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+          icon: <Car strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
           to: "/map",

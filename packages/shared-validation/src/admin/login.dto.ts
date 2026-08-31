@@ -14,7 +14,6 @@ export type LoginValidationMessages = {
   usernameRequired: string;
   usernameInvalid: string;
   passwordRequired: string;
-  passwordStrength: PasswordStrengthMessages;
 };
 
 export function createStrongPasswordSchema(messages: PasswordStrengthMessages) {
@@ -42,20 +41,11 @@ export function createStrongPasswordSchema(messages: PasswordStrengthMessages) {
   });
 }
 
-const defaultPasswordStrengthMessages: PasswordStrengthMessages = {
-  minLength: `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
-  uppercase: 'Password must contain at least one uppercase letter',
-  lowercase: 'Password must contain at least one lowercase letter',
-  digit: 'Password must contain at least one number',
-  special: 'Password must contain at least one special character',
-};
-
 const defaultLoginValidationMessages: LoginValidationMessages = {
   usernameRequired: 'Username is required',
   usernameInvalid:
     'Username must be 3–32 characters and contain only letters, numbers, underscores, and hyphens',
   passwordRequired: 'Password is required',
-  passwordStrength: defaultPasswordStrengthMessages,
 };
 
 export function createLoginDtoSchema(messages: LoginValidationMessages) {
@@ -66,10 +56,7 @@ export function createLoginDtoSchema(messages: LoginValidationMessages) {
       .refine(isValidUsername, {
         message: messages.usernameInvalid,
       }),
-    password: z
-      .string()
-      .min(1, messages.passwordRequired)
-      .pipe(createStrongPasswordSchema(messages.passwordStrength)),
+    password: z.string().min(1, messages.passwordRequired),
   });
 }
 

@@ -25,7 +25,7 @@ export const seedSuperAdminDtoSchema: z.ZodType<SeedSuperAdminDto> = z.object({
       message:
         'SUPER_ADMIN_USERNAME must be 3–32 characters and contain only letters, numbers, underscores, and hyphens',
     }),
-  SUPER_ADMIN_PASSWORD: strongPasswordSchema,
+  SUPER_ADMIN_PASSWORD: z.string().trim().pipe(strongPasswordSchema),
   SUPER_ADMIN_FIRST_NAME: z
     .string()
     .trim()

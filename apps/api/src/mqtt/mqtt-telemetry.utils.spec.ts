@@ -62,7 +62,9 @@ describe('mqtt-telemetry.utils', () => {
   });
 
   it('rejects invalid payloads', () => {
-    expect(parseTelemetryPayload(`telemetry/${carId}/packet`, '{bad')).toBeNull();
+    expect(
+      parseTelemetryPayload(`telemetry/${carId}/packet`, '{bad'),
+    ).toBeNull();
     expect(
       parseTelemetryPayload(
         `telemetry/${carId}/packet`,

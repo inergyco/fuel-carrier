@@ -49,7 +49,9 @@ describe('AppController (e2e)', () => {
   });
 
   it('/api/health/ready (GET) returns readiness without envelope', async () => {
-    const response = await request(app.getHttpServer()).get('/api/health/ready');
+    const response = await request(app.getHttpServer()).get(
+      '/api/health/ready',
+    );
 
     expect(response.status).toBe(200);
     expect(response.body.status).toBe('ok');

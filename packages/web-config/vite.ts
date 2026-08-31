@@ -5,7 +5,10 @@ import { defineConfig, type UserConfig } from "vite";
 
 const defaultApiProxyTarget = "http://localhost:3000";
 
-export function createPanelViteConfig(overrides: UserConfig = {}) {
+export function createPanelViteConfig(
+  port?: number,
+  overrides: UserConfig = {},
+) {
   return defineConfig({
     plugins: createPanelPlugins(),
     optimizeDeps: {
@@ -18,6 +21,7 @@ export function createPanelViteConfig(overrides: UserConfig = {}) {
       ],
     },
     server: {
+      ...(port != null ? { port, strictPort: true } : {}),
       fs: {
         // Allow importing from workspace packages (e.g. @fuel-carrier/web-ui).
         allow: ["../.."],
