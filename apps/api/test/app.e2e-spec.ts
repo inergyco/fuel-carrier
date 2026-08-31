@@ -31,9 +31,9 @@ describe('AppController (e2e)', () => {
     await app.getHttpAdapter().getInstance().ready();
   });
 
-  it('/api/internal (GET) includes security headers', () => {
+  it('/api/health/live (GET) includes security headers', () => {
     return request(app.getHttpServer())
-      .get('/api/internal')
+      .get('/api/health/live')
       .expect(200)
       .expect('x-content-type-options', 'nosniff')
       .expect('x-frame-options', 'DENY')
@@ -41,26 +41,20 @@ describe('AppController (e2e)', () => {
       .expect('cross-origin-resource-policy', 'cross-origin');
   });
 
-  it('/api/internal (GET) returns a success envelope', () => {
+  it('/api/health/live (GET) returns liveness without envelope', () => {
     return request(app.getHttpServer())
-      .get('/api/internal')
+      .get('/api/health/live')
       .expect(200)
-      .expect({
-        data: {
-          status: 'ok',
-        },
-      });
+      .expect({ status: 'ok' });
   });
 
-  it('/api/external (GET) returns a success envelope', () => {
-    return request(app.getHttpServer())
-      .get('/api/external')
-      .expect(200)
-      .expect({
-        data: {
-          status: 'ok',
-        },
-      });
+  it('/api/health/ready (GET) returns readiness without envelope', async () => {
+    const response = await request(app.getHttpServer()).get('/api/health/ready');
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('ok');
+    expect(response.body.checks.postgres.status).toBe('up');
+    expect(response.body.checks.redis.status).toBe('up');
   });
 
   it('/api/internal/companies (GET) returns an unauthorized error envelope', () => {

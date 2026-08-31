@@ -10,7 +10,6 @@ import { ExternalAuditLogsController } from '../audit-logs/external-audit-logs.c
 import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 import { DriversModule } from '../drivers/drivers.module';
 import { MqttModule } from '../mqtt/mqtt.module';
-import { ExternalHealthController } from './external-health.controller';
 import { ExternalDriversController } from '../drivers/external-drivers.controller';
 
 @Module({
@@ -23,7 +22,6 @@ import { ExternalDriversController } from '../drivers/external-drivers.controlle
     MqttModule,
   ],
   controllers: [
-    ExternalHealthController,
     ExternalAuthController,
     ExternalCompanyUsersController,
     ExternalCarsController,

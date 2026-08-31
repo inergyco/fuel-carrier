@@ -8,6 +8,7 @@ import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { ExternalModule } from './external/external.module';
 import { InternalModule } from './internal/internal.module';
 import { MqttModule } from './mqtt/mqtt.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MqttModule } from './mqtt/mqtt.module';
     AuditLogsModule,
     AuthModule,
     MqttModule,
+    HealthModule,
     InternalModule,
     ExternalModule,
   ],

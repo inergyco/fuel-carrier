@@ -11,9 +11,11 @@ import {
   type ApiErrorBody,
   type ApiFieldError,
 } from '@fuel-carrier/shared-types';
-import type { FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ApiExceptionBody } from '../exceptions/api.exception';
+import type { ReadinessResult } from '../../health/health.types';
 import { httpMessagesToFieldErrors } from '../validation/field-errors.utils';
+import { isHealthProbeRequest } from '../health-probe.utils';
 
 const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
   [HttpStatus.BAD_REQUEST, ApiErrorCode.VALIDATION_ERROR],
@@ -29,6 +31,21 @@ export class ApiExceptionFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply>();
+    const request = host.switchToHttp().getRequest<FastifyRequest>();
+
+    if (isHealthProbeRequest(request.url)) {
+      const healthError = this.toHealthProbeError(exception);
+
+      if (healthError) {
+        if (healthError.status >= 500) {
+          this.logger.error(healthError.message);
+        }
+
+        void response.status(healthError.status).send(healthError.body);
+        return;
+      }
+    }
+
     const { status, error } = this.toApiError(exception);
 
     if (status >= 500) {
@@ -41,6 +58,29 @@ export class ApiExceptionFilter implements ExceptionFilter {
     }
 
     void response.status(status).send({ error });
+  }
+
+  private toHealthProbeError(exception: unknown): {
+    status: number;
+    body: ReadinessResult;
+    message: string;
+  } | null {
+    if (!(exception instanceof HttpException)) {
+      return null;
+    }
+
+    const status = exception.getStatus();
+    const body = exception.getResponse();
+
+    if (!isReadinessResult(body)) {
+      return null;
+    }
+
+    return {
+      status,
+      body,
+      message: formatReadinessFailure(body),
+    };
   }
 
   private toApiError(exception: unknown): {
@@ -128,6 +168,27 @@ function isApiFieldError(value: unknown): value is ApiFieldError {
     typeof fieldError.field === 'string' &&
     typeof fieldError.message === 'string'
   );
+}
+
+function isReadinessResult(value: unknown): value is ReadinessResult {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const body = value as Record<string, unknown>;
+
+  return (
+    (body.status === 'ok' || body.status === 'error') &&
+    typeof body.checks === 'object' &&
+    body.checks !== null
+  );
+}
+
+function formatReadinessFailure(result: ReadinessResult): string {
+  return Object.entries(result.checks)
+    .filter(([, check]) => check.status === 'down')
+    .map(([name, check]) => `${name}: ${check.message ?? 'unavailable'}`)
+    .join('; ');
 }
 
 function isApiExceptionBody(value: unknown): value is ApiExceptionBody {

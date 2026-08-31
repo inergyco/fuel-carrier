@@ -70,3 +70,16 @@ jobs:
         run: |
           ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
             'sudo systemctl restart fuel-carrier-api && sudo systemctl is-active fuel-carrier-api'
+
+      - name: Verify API readiness
+        run: |
+          ssh "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" \
+            'for attempt in $(seq 1 30); do
+              if curl -sf http://127.0.0.1:3000/api/health/ready; then
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "API readiness check failed after 60s"
+            curl -sS http://127.0.0.1:3000/api/health/ready || true
+            exit 1'
