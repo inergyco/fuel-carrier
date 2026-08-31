@@ -1,3 +1,4 @@
+import './setup-maplibre-worker';
 import { maplibreGL } from '@maplibre/maplibre-gl-leaflet';
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
