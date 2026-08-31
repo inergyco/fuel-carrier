@@ -26,6 +26,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ApiResponseInterceptor());
   app.useGlobalFilters(new ApiExceptionFilter());
   setupSwagger(app);
-  await app.listen(configService.getOrThrow<number>('PORT'), '0.0.0.0');
+  await app.listen(
+    configService.getOrThrow<number>('PORT'),
+    configService.getOrThrow<string>('HOST'),
+  );
 }
 void bootstrap();

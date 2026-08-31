@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
 export const envSchema = z.object({
+  HOST: z
+    .string()
+    .default('127.0.0.1')
+    .describe(
+      'Address the API listens on. Use 127.0.0.1 in production (nginx proxies locally).',
+    ),
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z
     .string()
