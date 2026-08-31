@@ -1,21 +1,16 @@
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
 import { useMemo, type ReactNode } from 'react';
-import { MapContainer, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './leaflet-fix.css';
-import { useTheme, type ThemeMode } from '../ui/theme-context';
 import { AnimatedCarMarker } from './AnimatedCarMarker';
 import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
 import { FitMarkers } from './FitMarkers';
-import { DEFAULT_ZOOM, IRAN_CENTER, cartoRasterTileUrl } from './map-constants';
+import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
+import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
 import { createSmoothedPath, type PathPoint } from './path-smoothing';
 import { TrajectoryPathLayer } from './TrajectoryPathLayer';
-
-const TILE_URLS: Record<ThemeMode, string> = {
-  light: cartoRasterTileUrl('light_all'),
-  dark: cartoRasterTileUrl('dark_all'),
-};
 
 export type CarsMapLabels = {
   unnamedVehicle: () => string;
@@ -52,7 +47,6 @@ export function CarsMap({
   selectedCarId = null,
   onMarkerSelect,
 }: CarsMapProps) {
-  const { theme } = useTheme();
   const smoothedPath = useMemo(
     function buildSmoothedPath() {
       return createSmoothedPath(pathPoints ?? []);
@@ -67,11 +61,7 @@ export function CarsMap({
       className="h-full w-full bg-base-300"
       scrollWheelZoom
     >
-      <TileLayer
-        key={theme}
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url={TILE_URLS[theme]}
-      />
+      <OpenFreeMapBasemap />
       <FitMarkers markers={markers} pathPoints={pathPoints} />
       {pathPoints && pathPoints.length > 0 ? (
         <TrajectoryPathLayer

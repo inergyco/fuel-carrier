@@ -9,12 +9,8 @@ echo "==> Building API"
 pnpm --filter api build
 
 echo "==> Building panels"
-if [ -z "${VITE_CARTO_API_KEY:-}" ]; then
-  echo "ERROR: VITE_CARTO_API_KEY is required (free key: https://carto.com/basemaps/apikey)" >&2
-  exit 1
-fi
-VITE_API_URL=/api/internal VITE_CARTO_API_KEY="$VITE_CARTO_API_KEY" pnpm --filter internal-panel build
-VITE_API_URL=/api/external VITE_CARTO_API_KEY="$VITE_CARTO_API_KEY" pnpm --filter external-panel build
+VITE_API_URL=/api/internal pnpm --filter internal-panel build
+VITE_API_URL=/api/external pnpm --filter external-panel build
 
 echo "==> Packaging API with production dependencies"
 rm -rf deploy
