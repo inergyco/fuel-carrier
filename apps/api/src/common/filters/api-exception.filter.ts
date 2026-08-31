@@ -14,6 +14,7 @@ import {
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { ApiExceptionBody } from '../exceptions/api.exception';
 import type { ReadinessResult } from '../../health/health.types';
+import { formatReadinessFailure } from '../../health/health.utils';
 import { httpMessagesToFieldErrors } from '../validation/field-errors.utils';
 import { isHealthProbeRequest } from '../health-probe.utils';
 
@@ -182,13 +183,6 @@ function isReadinessResult(value: unknown): value is ReadinessResult {
     typeof body.checks === 'object' &&
     body.checks !== null
   );
-}
-
-function formatReadinessFailure(result: ReadinessResult): string {
-  return Object.entries(result.checks)
-    .filter(([, check]) => check.status === 'down')
-    .map(([name, check]) => `${name}: ${check.message ?? 'unavailable'}`)
-    .join('; ');
 }
 
 function isApiExceptionBody(value: unknown): value is ApiExceptionBody {
