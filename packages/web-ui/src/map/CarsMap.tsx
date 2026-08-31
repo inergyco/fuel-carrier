@@ -8,13 +8,13 @@ import { AnimatedCarMarker } from './AnimatedCarMarker';
 import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
 import { FitMarkers } from './FitMarkers';
-import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
+import { DEFAULT_ZOOM, IRAN_CENTER, cartoRasterTileUrl } from './map-constants';
 import { createSmoothedPath, type PathPoint } from './path-smoothing';
 import { TrajectoryPathLayer } from './TrajectoryPathLayer';
 
 const TILE_URLS: Record<ThemeMode, string> = {
-  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  light: cartoRasterTileUrl('light_all'),
+  dark: cartoRasterTileUrl('dark_all'),
 };
 
 export type CarsMapLabels = {
