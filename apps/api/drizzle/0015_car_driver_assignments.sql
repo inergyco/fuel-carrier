@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS "car_driver_assignments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"car_id" uuid NOT NULL,
+	"car_id" uuid,
 	"driver_id" uuid,
-	"company_id" uuid NOT NULL,
+	"company_id" uuid,
 	"assigned_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"unassigned_at" timestamp with time zone,
 	"assigned_by_user_id" uuid
@@ -15,7 +15,7 @@ BEGIN
   ) THEN
     ALTER TABLE "car_driver_assignments"
       ADD CONSTRAINT "car_driver_assignments_car_id_cars_id_fk"
-      FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;
+      FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE set null ON UPDATE no action;
   END IF;
 END
 $migration$;--> statement-breakpoint
@@ -37,7 +37,7 @@ BEGIN
   ) THEN
     ALTER TABLE "car_driver_assignments"
       ADD CONSTRAINT "car_driver_assignments_company_id_companies_id_fk"
-      FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE cascade ON UPDATE no action;
+      FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE set null ON UPDATE no action;
   END IF;
 END
 $migration$;--> statement-breakpoint
@@ -55,7 +55,7 @@ $migration$;--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "car_driver_assignments_car_id_assigned_at_idx" ON "car_driver_assignments" USING btree ("car_id","assigned_at" DESC);--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "car_driver_assignments_driver_id_assigned_at_idx" ON "car_driver_assignments" USING btree ("driver_id","assigned_at" DESC);--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "car_driver_assignments_company_id_assigned_at_idx" ON "car_driver_assignments" USING btree ("company_id","assigned_at" DESC);--> statement-breakpoint
-CREATE UNIQUE INDEX IF NOT EXISTS "car_driver_assignments_car_id_open_unique" ON "car_driver_assignments" USING btree ("car_id") WHERE "unassigned_at" IS NULL;--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "car_driver_assignments_car_id_open_unique" ON "car_driver_assignments" USING btree ("car_id") WHERE "unassigned_at" IS NULL AND "car_id" IS NOT NULL;--> statement-breakpoint
 ALTER TABLE "car_driver_assignments" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "car_driver_assignments" FORCE ROW LEVEL SECURITY;--> statement-breakpoint
 DO $migration$
