@@ -2,6 +2,19 @@
 
 Automated by [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml): migrate → build → rsync → restart.
 
+## Production VPS
+
+| Resource | Value |
+|----------|--------|
+| CPU | 2 vCPU |
+| RAM | 4 GB |
+| Disk | 50 GB |
+| OS | Ubuntu |
+| IP | `37.32.9.189` |
+| Deploy user | `deploy` |
+
+Hosts nginx, the NestJS API, Postgres, Redis, Mosquitto, and both panel SPAs. Watch disk usage over time — telemetry (TimescaleDB) and Docker logs are the main growth drivers on 50 GB.
+
 ## One-time VPS prep
 
 ### 1. Deploy SSH key (CI only)
