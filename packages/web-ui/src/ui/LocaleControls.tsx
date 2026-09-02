@@ -8,7 +8,7 @@ interface LocaleControlsProps {
 
 export function LocaleControls({ className }: LocaleControlsProps) {
   return (
-    <div className={cn('absolute top-4 end-4 flex items-center gap-1', className)}>
+    <div className={cn('absolute top-4 end-4 z-20 flex items-center gap-1', className)}>
       <LanguageToggle />
       <ThemeToggle />
     </div>
