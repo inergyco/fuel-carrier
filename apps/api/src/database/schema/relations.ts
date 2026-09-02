@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { admins } from './admins';
 import { auditLogs } from './audit-logs';
+import { carDriverAssignments } from './car-driver-assignments';
 import { carTelemetryHistory } from './car-telemetry-history';
 import { cars } from './cars';
 import { companies } from './companies';
@@ -20,6 +21,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     references: [companyUsers.userId],
   }),
   auditLogs: many(auditLogs),
+  carDriverAssignments: many(carDriverAssignments),
 }));
 
 export const adminsRelations = relations(admins, ({ one }) => ({
@@ -34,6 +36,7 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   cars: many(cars),
   companyUsers: many(companyUsers),
   auditLogs: many(auditLogs),
+  carDriverAssignments: many(carDriverAssignments),
   carTelemetryHistory: many(carTelemetryHistory),
 }));
 
@@ -48,7 +51,7 @@ export const companyUsersRelations = relations(companyUsers, ({ one }) => ({
   }),
 }));
 
-export const driversRelations = relations(drivers, ({ one }) => ({
+export const driversRelations = relations(drivers, ({ one, many }) => ({
   company: one(companies, {
     fields: [drivers.companyId],
     references: [companies.id],
@@ -57,6 +60,7 @@ export const driversRelations = relations(drivers, ({ one }) => ({
     fields: [drivers.id],
     references: [cars.driverId],
   }),
+  assignments: many(carDriverAssignments),
 }));
 
 export const carsRelations = relations(cars, ({ one, many }) => ({
@@ -68,6 +72,7 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
     fields: [cars.driverId],
     references: [drivers.id],
   }),
+  driverAssignments: many(carDriverAssignments),
   telemetryHistory: many(carTelemetryHistory),
   mqttClient: one(mqttClients, {
     fields: [cars.id],
@@ -89,6 +94,28 @@ export const mqttAclsRelations = relations(mqttAcls, ({ one }) => ({
     references: [mqttClients.id],
   }),
 }));
+
+export const carDriverAssignmentsRelations = relations(
+  carDriverAssignments,
+  ({ one }) => ({
+    car: one(cars, {
+      fields: [carDriverAssignments.carId],
+      references: [cars.id],
+    }),
+    driver: one(drivers, {
+      fields: [carDriverAssignments.driverId],
+      references: [drivers.id],
+    }),
+    company: one(companies, {
+      fields: [carDriverAssignments.companyId],
+      references: [companies.id],
+    }),
+    assignedByUser: one(users, {
+      fields: [carDriverAssignments.assignedByUserId],
+      references: [users.id],
+    }),
+  }),
+);
 
 export const carTelemetryHistoryRelations = relations(
   carTelemetryHistory,

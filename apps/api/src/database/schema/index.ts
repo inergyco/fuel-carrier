@@ -4,6 +4,7 @@ export * from './companies';
 export * from './company-users';
 export * from './drivers';
 export * from './cars';
+export * from './car-driver-assignments';
 export * from './car-telemetry-history';
 export * from './mqtt-clients';
 export * from './mqtt-acls';
