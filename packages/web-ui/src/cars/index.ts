@@ -13,3 +13,12 @@ export {
   type CarOverviewSectionLabels,
   type CarOverviewSectionProps,
 } from './CarOverviewSection'
+export {
+  carDriverAssignmentKeys,
+  fetchCarDriverAssignments,
+} from './car-driver-assignments'
+export {
+  CarDriverAssignmentHistorySection,
+  type CarDriverAssignmentHistoryLabelScope,
+  type CarDriverAssignmentHistorySectionProps,
+} from './CarDriverAssignmentHistorySection'

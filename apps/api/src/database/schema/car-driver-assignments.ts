@@ -54,8 +54,6 @@ export const carDriverAssignments = pgTable(
     ),
     uniqueIndex('car_driver_assignments_car_id_open_unique')
       .on(table.carId)
-      .where(
-        sql`${table.unassignedAt} IS NULL AND ${table.carId} IS NOT NULL`,
-      ),
+      .where(sql`${table.unassignedAt} IS NULL AND ${table.carId} IS NOT NULL`),
   ],
 );

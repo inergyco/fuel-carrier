@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,12 +14,15 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import type {
   AuthSession,
   Car,
+  CarDriverAssignment,
   CarMqttCredentials,
+  PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
@@ -32,17 +36,24 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  paginationQuerySchema,
+  type PaginationQueryDto,
+} from '../common/dto/pagination-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
   ApiEnvelopeOkListResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
+import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsService } from './cars.service';
 
 @ApiTags('cars')
@@ -53,6 +64,7 @@ import { CarsService } from './cars.service';
 export class InternalCarsController {
   constructor(
     private readonly carsService: CarsService,
+    private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     private readonly mqttCredentialsService: MqttCredentialsService,
   ) {}
 
@@ -80,6 +92,26 @@ export class InternalCarsController {
     return this.mqttCredentialsService.provisionForCar(
       internalTenantContext(user),
       id,
+    );
+  }
+
+  @Get(':id/driver-assignments')
+  @ApiOperation({ summary: 'List driver custody history for a car' })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(CarDriverAssignmentDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  listDriverAssignments(
+    @Param('id') id: string,
+    @Query(new ZodValidationPipe(paginationQuerySchema))
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<CarDriverAssignment>> {
+    return this.carDriverAssignmentsService.listByCar(
+      internalTenantContext(),
+      id,
+      query,
     );
   }
 

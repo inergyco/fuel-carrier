@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,9 +14,15 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types';
+import type {
+  Car,
+  CarDriverAssignment,
+  CarMqttCredentials,
+  PaginatedResult,
+} from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createExternalCarDtoSchema,
@@ -31,17 +38,24 @@ import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  paginationQuerySchema,
+  type PaginationQueryDto,
+} from '../common/dto/pagination-query.dto';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
   ApiEnvelopeOkListResponse,
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
+import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsService } from './cars.service';
 
 @ApiTags('cars')
@@ -52,6 +66,7 @@ import { CarsService } from './cars.service';
 export class ExternalCarsController {
   constructor(
     private readonly carsService: CarsService,
+    private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     private readonly mqttCredentialsService: MqttCredentialsService,
   ) {}
 
@@ -61,6 +76,29 @@ export class ExternalCarsController {
   @ApiEnvelopeUnauthorizedResponse()
   list(@CurrentUser() user: AuthSession): Promise<Car[]> {
     return this.carsService.list(tenantContextFromSession(user));
+  }
+
+  @Get(':id/driver-assignments')
+  @ApiOperation({
+    summary: 'List driver custody history for a company car',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(CarDriverAssignmentDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  listDriverAssignments(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Query(new ZodValidationPipe(paginationQuerySchema))
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<CarDriverAssignment>> {
+    return this.carDriverAssignmentsService.listByCar(
+      tenantContextFromSession(user),
+      id,
+      query,
+    );
   }
 
   @Get(':id')

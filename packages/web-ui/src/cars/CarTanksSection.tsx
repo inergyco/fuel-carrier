@@ -93,8 +93,8 @@ function ResistancePanel({ labels, resistance }: ResistancePanelProps) {
   const unit = labels.resistanceUnit()
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 shadow-[0_0_32px_-20px] shadow-primary/30 backdrop-blur-xl sm:p-5">
-      <div className="mb-4 flex items-center gap-2">
+    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 shadow-[0_0_32px_-20px] shadow-primary/30 backdrop-blur-xl sm:p-6">
+      <div className="mb-5 flex items-center gap-2.5">
         <span className="flex size-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
           <Gauge className="size-4" aria-hidden />
         </span>
@@ -108,7 +108,7 @@ function ResistancePanel({ labels, resistance }: ResistancePanelProps) {
           {labels.resistanceUnknown()}
         </p>
       ) : (
-        <dl className="grid gap-3 sm:grid-cols-3">
+        <dl className="grid gap-3 sm:grid-cols-3 sm:gap-4">
           <ResistanceStat
             fromLabel={labels.resistanceTank()}
             toLabel={labels.resistanceGround()}
@@ -147,7 +147,7 @@ function ResistanceStat({
   unit,
 }: ResistanceStatProps) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border border-base-content/8 bg-base-100/40 px-3 py-3 transition-all hover:border-primary/25 hover:bg-primary/5">
+    <div className="group relative overflow-hidden rounded-xl border border-base-content/8 bg-base-100/40 px-4 py-4 transition-all hover:border-primary/25 hover:bg-primary/5 sm:px-5 sm:py-4">
       <div
         aria-hidden
         className="pointer-events-none absolute -end-6 -top-6 size-16 rounded-full bg-primary/10 blur-2xl transition-opacity group-hover:opacity-100"
@@ -162,7 +162,7 @@ function ResistanceStat({
           <span>{toLabel}</span>
         </span>
       </dt>
-      <dd className="relative mt-2 flex items-center gap-1 font-mono text-lg font-semibold tabular-nums tracking-tight text-base-content">
+      <dd className="relative mt-2.5 flex items-center gap-1 font-mono text-lg font-semibold tabular-nums tracking-tight text-base-content">
         <span className="ms-1 text-sm font-medium text-base-content/45">
           {unit}
         </span>

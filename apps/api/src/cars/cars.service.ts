@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
-import type { Car, TenantContext } from '@fuel-carrier/shared-types';
+import type { Car } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
@@ -26,7 +26,9 @@ import {
   rethrowPostgresError,
 } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
+import type { ApiTenantContext } from '../database/tenant-context.types';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsReader } from './cars-reader.service';
 
 type CreateCarPayload = {
@@ -61,9 +63,10 @@ export class CarsService {
     private readonly auditLogService: AuditLogService,
     private readonly carTelemetryService: CarTelemetryService,
     private readonly carsReader: CarsReader,
+    private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
-  async list(context: TenantContext): Promise<Car[]> {
+  async list(context: ApiTenantContext): Promise<Car[]> {
     return this.tenantDb.run(context, async (tx) => {
       const rows = await tx.select().from(cars).orderBy(desc(cars.createdAt));
 
@@ -71,15 +74,20 @@ export class CarsService {
     });
   }
 
-  async getById(context: TenantContext, id: string): Promise<Car> {
+  async getById(context: ApiTenantContext, id: string): Promise<Car> {
     return this.tenantDb.run(context, (tx) => this.carsReader.getById(tx, id));
   }
 
-  async create(context: TenantContext, dto: CreateCarPayload): Promise<Car> {
+  async create(context: ApiTenantContext, dto: CreateCarPayload): Promise<Car> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
         if (dto.driverId) {
           await this._assertDriverAccessible(tx, dto.driverId);
+          await this.carDriverAssignmentsService.releaseDriverFromOtherCarInTx(
+            tx,
+            dto.driverId,
+            null,
+          );
         }
 
         const [row] = await tx
@@ -98,6 +106,18 @@ export class CarsService {
             HttpStatus.INTERNAL_SERVER_ERROR,
             ApiErrorCode.INTERNAL_ERROR,
             'Failed to create car',
+          );
+        }
+
+        if (dto.driverId) {
+          await this.carDriverAssignmentsService.insertOpenAssignmentInTx(
+            tx,
+            context,
+            {
+              carId: row.id,
+              driverId: dto.driverId,
+              companyId: row.companyId,
+            },
           );
         }
 
@@ -126,7 +146,7 @@ export class CarsService {
   }
 
   async update(
-    context: TenantContext,
+    context: ApiTenantContext,
     id: string,
     dto: UpdateCarPayload,
   ): Promise<Car> {
@@ -135,6 +155,22 @@ export class CarsService {
 
       if (dto.driverId) {
         await this._assertDriverAccessible(tx, dto.driverId);
+      }
+
+      const nextCompanyId =
+        dto.companyId !== undefined ? dto.companyId : existing.companyId;
+
+      if (dto.driverId !== undefined && dto.driverId !== existing.driverId) {
+        await this.carDriverAssignmentsService.syncDriverChangeInTx(
+          tx,
+          context,
+          {
+            carId: id,
+            companyId: nextCompanyId,
+            previousDriverId: existing.driverId,
+            nextDriverId: dto.driverId,
+          },
+        );
       }
 
       const [row] = await tx
@@ -180,9 +216,14 @@ export class CarsService {
     });
   }
 
-  async delete(context: TenantContext, id: string): Promise<null> {
+  async delete(context: ApiTenantContext, id: string): Promise<null> {
     const deleted = await this.tenantDb.run(context, async (tx) => {
       const existing = await this.carsReader.getById(tx, id);
+
+      await this.carDriverAssignmentsService.closeOpenAssignmentsForCarInTx(
+        tx,
+        id,
+      );
 
       const [row] = await tx
         .delete(cars)

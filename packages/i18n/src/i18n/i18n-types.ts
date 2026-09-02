@@ -940,6 +940,54 @@ type RootTranslation = {
 				 */
 				carDetailSubtitle: string
 				/**
+				 * D​r​i​v​e​r​ ​c​u​s​t​o​d​y​ ​h​i​s​t​o​r​y
+				 */
+				driverAssignmentHistoryTitle: string
+				/**
+				 * W​h​e​n​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​w​a​s​ ​a​s​s​i​g​n​e​d​ ​t​o​ ​e​a​c​h​ ​d​r​i​v​e​r
+				 */
+				driverAssignmentHistorySubtitle: string
+				/**
+				 * L​o​a​d​i​n​g​ ​d​r​i​v​e​r​ ​h​i​s​t​o​r​y​…
+				 */
+				driverAssignmentHistoryLoading: string
+				/**
+				 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​m​e​n​t​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​y​e​t​.
+				 */
+				driverAssignmentHistoryEmpty: string
+				/**
+				 * D​r​i​v​e​r
+				 */
+				driverAssignmentHistoryDriver: string
+				/**
+				 * A​s​s​i​g​n​e​d​ ​b​y
+				 */
+				driverAssignmentHistoryAssignedBy: string
+				/**
+				 * A​s​s​i​g​n​e​d​ ​a​t
+				 */
+				driverAssignmentHistoryAssignedAt: string
+				/**
+				 * U​n​a​s​s​i​g​n​e​d​ ​a​t
+				 */
+				driverAssignmentHistoryUnassignedAt: string
+				/**
+				 * C​u​r​r​e​n​t
+				 */
+				driverAssignmentHistoryCurrent: string
+				/**
+				 * U​n​k​n​o​w​n​ ​d​r​i​v​e​r
+				 */
+				driverAssignmentHistoryUnknownDriver: string
+				/**
+				 * U​n​k​n​o​w​n​ ​u​s​e​r
+				 */
+				driverAssignmentHistoryUnknownAssigner: string
+				/**
+				 * S​t​i​l​l​ ​a​s​s​i​g​n​e​d
+				 */
+				driverAssignmentHistoryOpenEnded: string
+				/**
 				 * L
 				 */
 				tankUnit: string
@@ -1862,6 +1910,54 @@ type RootTranslation = {
 			 * O​v​e​r​v​i​e​w​ ​o​f​ ​t​h​i​s​ ​v​e​h​i​c​l​e
 			 */
 			detailSubtitle: string
+			/**
+			 * D​r​i​v​e​r​ ​c​u​s​t​o​d​y​ ​h​i​s​t​o​r​y
+			 */
+			driverAssignmentHistoryTitle: string
+			/**
+			 * W​h​e​n​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​w​a​s​ ​a​s​s​i​g​n​e​d​ ​t​o​ ​e​a​c​h​ ​d​r​i​v​e​r
+			 */
+			driverAssignmentHistorySubtitle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​d​r​i​v​e​r​ ​h​i​s​t​o​r​y​…
+			 */
+			driverAssignmentHistoryLoading: string
+			/**
+			 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​m​e​n​t​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​y​e​t​.
+			 */
+			driverAssignmentHistoryEmpty: string
+			/**
+			 * D​r​i​v​e​r
+			 */
+			driverAssignmentHistoryDriver: string
+			/**
+			 * A​s​s​i​g​n​e​d​ ​b​y
+			 */
+			driverAssignmentHistoryAssignedBy: string
+			/**
+			 * A​s​s​i​g​n​e​d​ ​a​t
+			 */
+			driverAssignmentHistoryAssignedAt: string
+			/**
+			 * U​n​a​s​s​i​g​n​e​d​ ​a​t
+			 */
+			driverAssignmentHistoryUnassignedAt: string
+			/**
+			 * C​u​r​r​e​n​t
+			 */
+			driverAssignmentHistoryCurrent: string
+			/**
+			 * U​n​k​n​o​w​n​ ​d​r​i​v​e​r
+			 */
+			driverAssignmentHistoryUnknownDriver: string
+			/**
+			 * U​n​k​n​o​w​n​ ​u​s​e​r
+			 */
+			driverAssignmentHistoryUnknownAssigner: string
+			/**
+			 * S​t​i​l​l​ ​a​s​s​i​g​n​e​d
+			 */
+			driverAssignmentHistoryOpenEnded: string
 			/**
 			 * L
 			 */
@@ -3098,6 +3194,54 @@ export type TranslationFunctions = {
 				 */
 				carDetailSubtitle: () => LocalizedString
 				/**
+				 * Driver custody history
+				 */
+				driverAssignmentHistoryTitle: () => LocalizedString
+				/**
+				 * When this vehicle was assigned to each driver
+				 */
+				driverAssignmentHistorySubtitle: () => LocalizedString
+				/**
+				 * Loading driver history…
+				 */
+				driverAssignmentHistoryLoading: () => LocalizedString
+				/**
+				 * No driver assignments recorded for this vehicle yet.
+				 */
+				driverAssignmentHistoryEmpty: () => LocalizedString
+				/**
+				 * Driver
+				 */
+				driverAssignmentHistoryDriver: () => LocalizedString
+				/**
+				 * Assigned by
+				 */
+				driverAssignmentHistoryAssignedBy: () => LocalizedString
+				/**
+				 * Assigned at
+				 */
+				driverAssignmentHistoryAssignedAt: () => LocalizedString
+				/**
+				 * Unassigned at
+				 */
+				driverAssignmentHistoryUnassignedAt: () => LocalizedString
+				/**
+				 * Current
+				 */
+				driverAssignmentHistoryCurrent: () => LocalizedString
+				/**
+				 * Unknown driver
+				 */
+				driverAssignmentHistoryUnknownDriver: () => LocalizedString
+				/**
+				 * Unknown user
+				 */
+				driverAssignmentHistoryUnknownAssigner: () => LocalizedString
+				/**
+				 * Still assigned
+				 */
+				driverAssignmentHistoryOpenEnded: () => LocalizedString
+				/**
 				 * L
 				 */
 				tankUnit: () => LocalizedString
@@ -4008,6 +4152,54 @@ export type TranslationFunctions = {
 			 * Overview of this vehicle
 			 */
 			detailSubtitle: () => LocalizedString
+			/**
+			 * Driver custody history
+			 */
+			driverAssignmentHistoryTitle: () => LocalizedString
+			/**
+			 * When this vehicle was assigned to each driver
+			 */
+			driverAssignmentHistorySubtitle: () => LocalizedString
+			/**
+			 * Loading driver history…
+			 */
+			driverAssignmentHistoryLoading: () => LocalizedString
+			/**
+			 * No driver assignments recorded for this vehicle yet.
+			 */
+			driverAssignmentHistoryEmpty: () => LocalizedString
+			/**
+			 * Driver
+			 */
+			driverAssignmentHistoryDriver: () => LocalizedString
+			/**
+			 * Assigned by
+			 */
+			driverAssignmentHistoryAssignedBy: () => LocalizedString
+			/**
+			 * Assigned at
+			 */
+			driverAssignmentHistoryAssignedAt: () => LocalizedString
+			/**
+			 * Unassigned at
+			 */
+			driverAssignmentHistoryUnassignedAt: () => LocalizedString
+			/**
+			 * Current
+			 */
+			driverAssignmentHistoryCurrent: () => LocalizedString
+			/**
+			 * Unknown driver
+			 */
+			driverAssignmentHistoryUnknownDriver: () => LocalizedString
+			/**
+			 * Unknown user
+			 */
+			driverAssignmentHistoryUnknownAssigner: () => LocalizedString
+			/**
+			 * Still assigned
+			 */
+			driverAssignmentHistoryOpenEnded: () => LocalizedString
 			/**
 			 * L
 			 */

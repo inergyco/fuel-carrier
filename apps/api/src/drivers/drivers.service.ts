@@ -25,6 +25,7 @@ import {
   rethrowPostgresError,
 } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
+import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 
 type CreateDriverPayload = {
   firstName: string;
@@ -55,6 +56,7 @@ export class DriversService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
+    private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
   async list(context: TenantContext): Promise<Driver[]> {
@@ -205,6 +207,11 @@ export class DriversService {
           'Driver not found',
         );
       }
+
+      await this.carDriverAssignmentsService.closeOpenAssignmentsForDriverInTx(
+        tx,
+        id,
+      );
 
       const [row] = await tx
         .delete(drivers)

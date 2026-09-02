@@ -10,6 +10,14 @@ import { ApiExceptionFilter } from './../src/common/filters/api-exception.filter
 import { ApiResponseInterceptor } from './../src/common/interceptors/api-response.interceptor';
 import { setupSecurityHeaders } from './../src/security/security-headers.setup';
 
+type HealthReadyResponse = {
+  status: string;
+  checks: {
+    postgres: { status: string };
+    redis: { status: string };
+  };
+};
+
 describe('AppController (e2e)', () => {
   let app: NestFastifyApplication;
 
@@ -52,11 +60,12 @@ describe('AppController (e2e)', () => {
     const response = await request(app.getHttpServer()).get(
       '/api/health/ready',
     );
+    const body = response.body as HealthReadyResponse;
 
     expect(response.status).toBe(200);
-    expect(response.body.status).toBe('ok');
-    expect(response.body.checks.postgres.status).toBe('up');
-    expect(response.body.checks.redis.status).toBe('up');
+    expect(body.status).toBe('ok');
+    expect(body.checks.postgres.status).toBe('up');
+    expect(body.checks.redis.status).toBe('up');
   });
 
   it('/api/internal/companies (GET) returns an unauthorized error envelope', () => {

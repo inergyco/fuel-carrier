@@ -5,6 +5,7 @@ import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import {
   CarOverviewSection,
   CarTanksSection,
+  CarDriverAssignmentHistorySection,
 } from '@fuel-carrier/web-ui/cars'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchCar } from '../../../lib/api/cars'
@@ -47,6 +48,7 @@ export function CompanyCarDetailPage({
   }
 
   const car = carQuery.data
+  const detailLabels = LL.internalPanel.companies.detail
 
   return (
     <div>
@@ -59,13 +61,17 @@ export function CompanyCarDetailPage({
         <CarOverviewSection
           car={car}
           labels={{
-            detailTitle: LL.internalPanel.companies.detail.carDetailTitle,
-            detailSubtitle: LL.internalPanel.companies.detail.carDetailSubtitle,
-            licensePlate: LL.internalPanel.companies.detail.licensePlate,
+            detailTitle: detailLabels.carDetailTitle,
+            detailSubtitle: detailLabels.carDetailSubtitle,
+            licensePlate: detailLabels.licensePlate,
             name: LL.internalPanel.companies.name,
             note: LL.internalPanel.companies.note,
             emptyCell: LL.internalPanel.companies.emptyCell,
           }}
+        />
+        <CarDriverAssignmentHistorySection
+          carId={car.id}
+          labelScope="internal"
         />
       </div>
     </div>
