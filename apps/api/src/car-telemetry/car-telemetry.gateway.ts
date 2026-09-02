@@ -36,10 +36,6 @@ type SocketWithSession = Socket<
 @WebSocketGateway({
   namespace: '/car-telemetry',
   path: '/api/socket.io',
-  cors: {
-    origin: true,
-    credentials: true,
-  },
 })
 export class CarTelemetryGateway
   implements OnGatewayConnection, OnModuleInit, OnModuleDestroy

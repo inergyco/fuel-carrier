@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { corsAllowedOriginsSchema } from './cors.config';
 
 export const envSchema = z.object({
   HOST: z
@@ -61,6 +62,9 @@ export const envSchema = z.object({
     .describe(
       'Expose OpenAPI docs at /api/docs/internal and /api/docs/external. Ignored in production (always off).',
     ),
+  CORS_ALLOWED_ORIGINS: corsAllowedOriginsSchema().describe(
+    'Comma-separated panel origins allowed for HTTP and Socket.IO CORS. Required in production.',
+  ),
 });
 
 export type Env = z.infer<typeof envSchema>;

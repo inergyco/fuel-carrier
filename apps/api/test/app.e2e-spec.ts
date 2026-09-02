@@ -8,6 +8,7 @@ import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { ApiExceptionFilter } from './../src/common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './../src/common/interceptors/api-response.interceptor';
+import { setupCors } from './../src/security/cors.setup';
 import { setupSecurityHeaders } from './../src/security/security-headers.setup';
 
 jest.mock('../src/health/mqtt-health.utils', () => ({
@@ -36,6 +37,7 @@ describe('AppController (e2e)', () => {
     );
 
     await setupSecurityHeaders(app);
+    await setupCors(app);
     await app.register(fastifyCookie);
     app.setGlobalPrefix('api');
     app.useGlobalInterceptors(new ApiResponseInterceptor());

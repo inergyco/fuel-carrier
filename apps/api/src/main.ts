@@ -4,12 +4,14 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { IoAdapter } from '@nestjs/platform-socket.io';
 import fastifyCookie from '@fastify/cookie';
 import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
+import type { Env } from './config/env.schema';
+import { setupCors } from './security/cors.setup';
 import { setupSecurityHeaders } from './security/security-headers.setup';
+import { ConfigurableIoAdapter } from './security/socket-io.adapter';
 import { setupSwagger } from './swagger/swagger.setup';
 
 async function bootstrap() {
@@ -19,8 +21,13 @@ async function bootstrap() {
   );
   const configService = app.get(ConfigService);
 
-  app.useWebSocketAdapter(new IoAdapter(app));
+  const allowedOrigins = configService.getOrThrow<Env['CORS_ALLOWED_ORIGINS']>(
+    'CORS_ALLOWED_ORIGINS',
+  );
+
+  app.useWebSocketAdapter(new ConfigurableIoAdapter(app, allowedOrigins));
   await setupSecurityHeaders(app);
+  await setupCors(app);
   await app.register(fastifyCookie);
   app.setGlobalPrefix('api');
   app.useGlobalInterceptors(new ApiResponseInterceptor());
