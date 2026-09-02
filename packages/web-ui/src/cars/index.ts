@@ -22,3 +22,12 @@ export {
   type CarDriverAssignmentHistoryLabelScope,
   type CarDriverAssignmentHistorySectionProps,
 } from './CarDriverAssignmentHistorySection'
+export { ResistancePanel, type ResistancePanelLabels, type ResistancePanelProps } from './ResistancePanel'
+export { ResistanceValue } from './ResistanceValue'
+export {
+  formatResistanceValue,
+  getResistanceStatus,
+  getResistanceStatusStyles,
+  getWorstResistanceStatus,
+  type ResistanceStatus,
+} from './resistance-status'

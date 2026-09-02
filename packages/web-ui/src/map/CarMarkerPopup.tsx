@@ -1,6 +1,7 @@
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
 import type { ReactNode } from 'react';
 import { useMap } from 'react-leaflet';
+import { ResistanceValue } from '../cars/ResistanceValue';
 import { Button } from '../ui';
 import type { CarsMapLabels } from './CarsMap';
 import { mapPopupActionClassName } from './map-popup-actions';
@@ -48,13 +49,31 @@ export function CarMarkerPopup({
         </p>
       ) : null}
       {marker.resistance ? (
-        <p className="text-xs text-base-content/70">
-          {labels.resistanceSummary({
-            tankToGround: String(marker.resistance.tankToGround),
-            tankToNozzle: String(marker.resistance.tankToNozzle),
-            groundToVehicle: String(marker.resistance.groundToVehicle),
-          })}
-        </p>
+        <div className="space-y-1.5">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-base-content/45">
+            R
+          </p>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <ResistanceValue
+              value={marker.resistance.tankToGround}
+              compact
+            />
+            <span className="text-base-content/30" aria-hidden>
+              /
+            </span>
+            <ResistanceValue
+              value={marker.resistance.tankToNozzle}
+              compact
+            />
+            <span className="text-base-content/30" aria-hidden>
+              /
+            </span>
+            <ResistanceValue
+              value={marker.resistance.groundToVehicle}
+              compact
+            />
+          </div>
+        </div>
       ) : null}
       <div className="flex gap-2 pt-1">
         {renderVehicleLink(marker)}

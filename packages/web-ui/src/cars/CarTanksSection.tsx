@@ -1,5 +1,5 @@
 import { api } from '../api/index'
-import { ArrowRight, Droplets, Gauge } from '../icons/index'
+import { Droplets, Gauge } from '../icons/index'
 import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
@@ -8,6 +8,7 @@ import {
   formatVolume,
   FuelTruckDiagram,
 } from './fuel-truck'
+import { ResistancePanel } from './ResistancePanel'
 
 export type CarTanksSectionLabels = {
   tankUnit: () => string
@@ -76,98 +77,6 @@ export function CarTanksSection({ carId, labels }: CarTanksSectionProps) {
       </div>
 
       <ResistancePanel labels={labels} resistance={telemetry?.resistance} />
-    </div>
-  )
-}
-
-type ResistancePanelProps = {
-  labels: CarTanksSectionLabels
-  resistance?: {
-    tankToGround: number
-    tankToNozzle: number
-    groundToVehicle: number
-  }
-}
-
-function ResistancePanel({ labels, resistance }: ResistancePanelProps) {
-  const unit = labels.resistanceUnit()
-
-  return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 shadow-[0_0_32px_-20px] shadow-primary/30 backdrop-blur-xl sm:p-6">
-      <div className="mb-5 flex items-center gap-2.5">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
-          <Gauge className="size-4" aria-hidden />
-        </span>
-        <h3 className="text-sm font-semibold tracking-tight">
-          {labels.resistanceTitle()}
-        </h3>
-      </div>
-
-      {resistance == null ? (
-        <p className="text-sm text-base-content/50">
-          {labels.resistanceUnknown()}
-        </p>
-      ) : (
-        <dl className="grid gap-3 sm:grid-cols-3 sm:gap-4">
-          <ResistanceStat
-            fromLabel={labels.resistanceTank()}
-            toLabel={labels.resistanceGround()}
-            value={resistance.tankToGround}
-            unit={unit}
-          />
-          <ResistanceStat
-            fromLabel={labels.resistanceTank()}
-            toLabel={labels.resistanceNozzle()}
-            value={resistance.tankToNozzle}
-            unit={unit}
-          />
-          <ResistanceStat
-            fromLabel={labels.resistanceGround()}
-            toLabel={labels.resistanceVehicle()}
-            value={resistance.groundToVehicle}
-            unit={unit}
-          />
-        </dl>
-      )}
-    </section>
-  )
-}
-
-type ResistanceStatProps = {
-  fromLabel: string
-  toLabel: string
-  value: number
-  unit: string
-}
-
-function ResistanceStat({
-  fromLabel,
-  toLabel,
-  value,
-  unit,
-}: ResistanceStatProps) {
-  return (
-    <div className="group relative overflow-hidden rounded-xl border border-base-content/8 bg-base-100/40 px-4 py-4 transition-all hover:border-primary/25 hover:bg-primary/5 sm:px-5 sm:py-4">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -end-6 -top-6 size-16 rounded-full bg-primary/10 blur-2xl transition-opacity group-hover:opacity-100"
-      />
-      <dt className="relative">
-        <span
-          dir="ltr"
-          className="inline-flex items-center gap-1.5 text-xs text-base-content/50"
-        >
-          <span>{fromLabel}</span>
-          <ArrowRight className="size-3.5 shrink-0 text-primary" aria-hidden />
-          <span>{toLabel}</span>
-        </span>
-      </dt>
-      <dd className="relative mt-2.5 flex items-center gap-1 font-mono text-lg font-semibold tabular-nums tracking-tight text-base-content">
-        <span className="ms-1 text-sm font-medium text-base-content/45">
-          {unit}
-        </span>
-        {value}
-      </dd>
     </div>
   )
 }
