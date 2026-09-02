@@ -29,7 +29,7 @@ export class HealthController {
   @ApiOperation({
     summary: 'Readiness probe',
     description:
-      'Returns 200 when required dependencies (Postgres, Redis) are reachable; otherwise 503.',
+      'Returns 200 when required dependencies (Postgres, Redis, and Mosquitto when MQTT_URL is set) are reachable; otherwise 503.',
   })
   async getReadiness(): Promise<ReadinessResult> {
     const result = await this.healthService.checkReadiness();

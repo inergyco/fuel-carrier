@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { sql } from 'drizzle-orm';
 import type Redis from 'ioredis';
 import { DATABASE } from '../database/database.tokens';
@@ -10,6 +11,7 @@ import type {
   ReadinessResult,
 } from './health.types';
 import { formatReadinessFailure } from './health.utils';
+import { probeMqttBroker } from './mqtt-health.utils';
 
 const PROBE_TIMEOUT_MS = 3_000;
 
@@ -20,14 +22,16 @@ export class HealthService {
   constructor(
     @Inject(DATABASE) private readonly database: Database,
     @Inject(REDIS) private readonly redis: Redis,
+    private readonly configService: ConfigService,
   ) {}
 
   async checkReadiness(): Promise<ReadinessResult> {
-    const [postgres, redis] = await Promise.all([
+    const [postgres, redis, mqtt] = await Promise.all([
       this._checkPostgres(),
       this._checkRedis(),
+      this._checkMqtt(),
     ]);
-    const checks: ReadinessChecks = { postgres, redis };
+    const checks: ReadinessChecks = { postgres, redis, mqtt };
     const status = this._isReady(checks) ? 'ok' : 'error';
 
     if (status === 'error') {
@@ -40,7 +44,7 @@ export class HealthService {
   }
 
   private _isReady(checks: ReadinessChecks): boolean {
-    return Object.values(checks).every((check) => check.status === 'up');
+    return Object.values(checks).every((check) => check.status !== 'down');
   }
 
   private async _checkPostgres(): Promise<DependencyCheck> {
@@ -66,6 +70,40 @@ export class HealthService {
         };
       }
 
+      return { status: 'up' };
+    } catch (error) {
+      return {
+        status: 'down',
+        message: toErrorMessage(error),
+      };
+    }
+  }
+
+  private async _checkMqtt(): Promise<DependencyCheck> {
+    const url = this.configService.get<string>('MQTT_URL');
+
+    if (!url) {
+      return { status: 'skipped' };
+    }
+
+    const username = this.configService.get<string>('MQTT_USERNAME');
+    const password = this.configService.get<string>('MQTT_PASSWORD');
+
+    if (!username || !password) {
+      return {
+        status: 'down',
+        message:
+          'MQTT_URL is set but MQTT_USERNAME / MQTT_PASSWORD are missing',
+      };
+    }
+
+    try {
+      await probeMqttBroker({
+        url,
+        username,
+        password,
+        timeoutMs: PROBE_TIMEOUT_MS,
+      });
       return { status: 'up' };
     } catch (error) {
       return {

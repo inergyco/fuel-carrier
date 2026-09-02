@@ -1,4 +1,4 @@
-export type DependencyStatus = 'up' | 'down';
+export type DependencyStatus = 'up' | 'down' | 'skipped';
 
 export type DependencyCheck = {
   status: DependencyStatus;
@@ -8,6 +8,7 @@ export type DependencyCheck = {
 export type ReadinessChecks = {
   postgres: DependencyCheck;
   redis: DependencyCheck;
+  mqtt: DependencyCheck;
 };
 
 export type ReadinessResult = {

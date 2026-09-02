@@ -10,11 +10,16 @@ import { ApiExceptionFilter } from './../src/common/filters/api-exception.filter
 import { ApiResponseInterceptor } from './../src/common/interceptors/api-response.interceptor';
 import { setupSecurityHeaders } from './../src/security/security-headers.setup';
 
+jest.mock('../src/health/mqtt-health.utils', () => ({
+  probeMqttBroker: jest.fn().mockResolvedValue(undefined),
+}));
+
 type HealthReadyResponse = {
   status: string;
   checks: {
     postgres: { status: string };
     redis: { status: string };
+    mqtt: { status: string };
   };
 };
 
@@ -66,6 +71,9 @@ describe('AppController (e2e)', () => {
     expect(body.status).toBe('ok');
     expect(body.checks.postgres.status).toBe('up');
     expect(body.checks.redis.status).toBe('up');
+    expect(body.checks.mqtt.status).toBe(
+      process.env.MQTT_URL ? 'up' : 'skipped',
+    );
   });
 
   it('/api/internal/companies (GET) returns an unauthorized error envelope', () => {
