@@ -10,7 +10,39 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: API unit tests
+        run: pnpm --filter api test
+
+      - name: API build (typecheck + compile)
+        run: pnpm --filter api build
+
+      - name: Typecheck apps and packages
+        run: pnpm -r --if-present typecheck
+
   deploy:
+    name: Deploy
+    needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -20,7 +52,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        # version comes from package.json "packageManager"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

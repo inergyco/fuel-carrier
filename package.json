@@ -9,7 +9,7 @@
     "dev:internal": "pnpm --filter internal-panel dev",
     "dev:external": "pnpm --filter external-panel dev",
     "pack:deploy": "bash scripts/pack-deploy.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ci:verify": "pnpm --filter api test && pnpm --filter api build && pnpm -r --if-present typecheck"
   },
   "keywords": [],
   "author": "",

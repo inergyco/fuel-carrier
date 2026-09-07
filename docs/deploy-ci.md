@@ -1,6 +1,21 @@
 # CI/CD deploy (GitHub Actions → VPS)
 
-Automated by [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml): migrate → build → rsync → restart.
+## Gate then deploy
+
+1. **CI / Verify** ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml) on PRs; also the `verify` job in deploy):
+   - API unit tests
+   - API build
+   - Typecheck for apps/packages that define `typecheck`
+2. **Deploy** ([`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)) runs only if verify passes:
+   - migrate → pack → rsync → restart → health check
+
+Local equivalent:
+
+```bash
+pnpm ci:verify
+```
+
+If verify fails, production is not touched.
 
 ## Production VPS
 
