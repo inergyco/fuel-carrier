@@ -58,9 +58,32 @@ function write_status() {
     >"$STATUS_FILE"
 }
 
+# Optional Uptime Kuma Push monitor. Success = heartbeat "up". Failure = "down".
+# If the job never runs, Kuma also goes down after the heartbeat timeout.
+function notify_kuma() {
+  local status="$1"
+  local message="$2"
+  if [[ -z "${KUMA_BACKUP_PUSH_URL:-}" ]]; then
+    return 0
+  fi
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "KUMA_BACKUP_PUSH_URL set but curl is missing; skip notify" >&2
+    return 0
+  fi
+  # msg must be URL-encoded enough for spaces; keep it simple.
+  local encoded
+  encoded="$(
+    printf '%s' "$message" | sed 's/ /%20/g; s/&/%26/g; s/?/%3F/g'
+  )"
+  curl -fsS -m 15 \
+    "${KUMA_BACKUP_PUSH_URL}?status=${status}&msg=${encoded}&ping=" \
+    >/dev/null || echo "Warning: Uptime Kuma push failed" >&2
+}
+
 function fail() {
   local message="$1"
   write_status "0" "$message"
+  notify_kuma "down" "$message"
   echo "$message" >&2
   exit 1
 }
@@ -113,4 +136,5 @@ if ((${#remote_dumps[@]} > KEEP_REMOTE)); then
 fi
 
 write_status "1" "Backup ok: ${dump_name}"
+notify_kuma "up" "Backup ok: ${dump_name}"
 echo "==> Done: ${dump_name}"

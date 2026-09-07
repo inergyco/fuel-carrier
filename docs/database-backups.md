@@ -242,7 +242,39 @@ Log into both panels. Spot-check a company, a car, recent telemetry if relevant.
 - Don’t use `pg_restore --clean` / `-j` on Timescale dumps — use `restore-postgres.sh`  
 - Don’t delete the broken DB or old dumps until the app has been healthy for a while  
 
-Uptime Kuma (next task) can alert you when **backups** fail so you don’t discover a missing dump only during step 3.
+Uptime Kuma can alert you when **backups** fail so you don’t discover a missing dump only during step 3.
+
+## Uptime Kuma: alert if backup fails
+
+The backup script can “check in” with a Kuma **Push** monitor:
+
+- Success → `status=up`
+- Failure → `status=down`
+- Job never runs → no check-in → Kuma goes down after the heartbeat timeout
+
+### 1. Create a Push monitor in Kuma
+
+1. Open Uptime Kuma → **Add New Monitor**
+2. Monitor Type: **Push**
+3. Name: `fuel-carrier DB backup`
+4. Heartbeat interval: **26** hours (nightly + slack)
+5. Save — copy the **Push URL** (`https://…/api/push/TOKEN`)
+
+### 2. Wire it on the VPS
+
+Add to `/etc/fuel-carrier/backup.env`:
+
+```bash
+KUMA_BACKUP_PUSH_URL=https://YOUR_KUMA_HOST/api/push/YOUR_TOKEN
+```
+
+Install the updated `backup-postgres.sh`, then:
+
+```bash
+sudo /usr/local/lib/fuel-carrier/backup-postgres.sh
+```
+
+Kuma should show the monitor **Up**.
 
 ## Defaults
 
@@ -251,5 +283,4 @@ Uptime Kuma (next task) can alert you when **backups** fail so you don’t disco
 | `KEEP_LOCAL=7` | Last 7 dumps on the VPS |
 | `KEEP_REMOTE=30` | Last 30 dumps in Arvan |
 | Status file | `/var/backups/fuel-carrier/last-status` (`ok=1` / `ok=0`) |
-
-Uptime Kuma can later watch that status file or a tiny HTTP check — do that as a follow-up after backups are solid.
+| `KUMA_BACKUP_PUSH_URL` | Optional Push URL for backup heartbeats |
