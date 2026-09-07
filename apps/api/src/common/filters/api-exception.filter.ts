@@ -4,7 +4,7 @@ import {
   type ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger,
+  Injectable,
 } from '@nestjs/common';
 import {
   ApiErrorCode,
@@ -12,11 +12,13 @@ import {
   type ApiFieldError,
 } from '@fuel-carrier/shared-types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import type { ApiExceptionBody } from '../exceptions/api.exception';
 import type { ReadinessResult } from '../../health/health.types';
 import { formatReadinessFailure } from '../../health/health.utils';
 import { httpMessagesToFieldErrors } from '../validation/field-errors.utils';
 import { isHealthProbeRequest } from '../health-probe.utils';
+import { getRequestId } from '../logging';
 
 const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
   [HttpStatus.BAD_REQUEST, ApiErrorCode.VALIDATION_ERROR],
@@ -27,8 +29,12 @@ const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
 ]);
 
 @Catch()
+@Injectable()
 export class ApiExceptionFilter implements ExceptionFilter {
-  private readonly logger = new Logger(ApiExceptionFilter.name);
+  constructor(
+    @InjectPinoLogger(ApiExceptionFilter.name)
+    private readonly logger: PinoLogger,
+  ) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const response = host.switchToHttp().getResponse<FastifyReply>();
@@ -39,7 +45,14 @@ export class ApiExceptionFilter implements ExceptionFilter {
 
       if (healthError) {
         if (healthError.status >= 500) {
-          this.logger.error(healthError.message);
+          this.logger.error(
+            {
+              msg: 'health_probe_error',
+              requestId: getRequestId(request),
+              error: healthError.message,
+            },
+            healthError.message,
+          );
         }
 
         void response.status(healthError.status).send(healthError.body);
@@ -53,8 +66,16 @@ export class ApiExceptionFilter implements ExceptionFilter {
       const detail =
         exception instanceof Error ? exception.message : String(exception);
       this.logger.error(
+        {
+          msg: 'http_error',
+          requestId: getRequestId(request),
+          method: request.method,
+          url: request.url,
+          statusCode: status,
+          err: exception instanceof Error ? exception : undefined,
+          error: detail,
+        },
         detail,
-        exception instanceof Error ? exception.stack : undefined,
       );
     }
 

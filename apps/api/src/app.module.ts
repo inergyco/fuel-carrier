@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { validateEnv } from './config/env.schema';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter';
+import { createPinoHttpOptions } from './common/logging';
+import { type Env, validateEnv } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
@@ -17,6 +20,20 @@ import { HealthModule } from './health/health.module';
       envFilePath: '.env',
       validate: validateEnv,
     }),
+    LoggerModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: function createPinoLoggerOptions(
+        configService: ConfigService<Env, true>,
+      ) {
+        return {
+          pinoHttp: createPinoHttpOptions({
+            level: configService.get('LOG_LEVEL', { infer: true }),
+            isProduction:
+              configService.get('NODE_ENV', { infer: true }) === 'production',
+          }),
+        };
+      },
+    }),
     DatabaseModule,
     RedisModule,
     AuditLogsModule,
@@ -26,5 +43,6 @@ import { HealthModule } from './health/health.module';
     InternalModule,
     ExternalModule,
   ],
+  providers: [ApiExceptionFilter],
 })
 export class AppModule {}

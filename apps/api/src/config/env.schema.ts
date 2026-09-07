@@ -2,6 +2,10 @@ import { z } from 'zod';
 import { corsAllowedOriginsSchema } from './cors.config';
 
 export const envSchema = z.object({
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development')
+    .describe('Node runtime environment (set by process launcher / .env).'),
   HOST: z
     .string()
     .default('127.0.0.1')
@@ -54,6 +58,10 @@ export const envSchema = z.object({
     .int()
     .positive()
     .default(15 * 60),
+  LOG_LEVEL: z
+    .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+    .default('info')
+    .describe('Pino log level for the API process.'),
   SWAGGER_ENABLED: z
     .enum(['true', 'false'])
     .default(function swaggerDefault() {
