@@ -26,6 +26,9 @@ async function bootstrap() {
     { bufferLogs: true },
   );
   app.useLogger(app.get(Logger));
+  // Listen for SIGTERM/SIGINT so Nest runs OnModuleDestroy / OnApplicationShutdown
+  // (MQTT, Redis subscriber, DB pool) instead of hard-killing the process.
+  app.enableShutdownHooks();
 
   const configService = app.get(ConfigService);
 
