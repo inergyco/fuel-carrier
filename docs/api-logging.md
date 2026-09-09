@@ -64,3 +64,19 @@ When Kuma alerts, filter `http_error` (or high `statusCode`) around the outage t
 |-------------|-----------|
 | Local / non-production | `pino-pretty` (readable) |
 | `NODE_ENV=production` | raw JSON (best for journal + future log tools) |
+
+## Error tracking (deferred)
+
+We want application error tracking (stack traces + alerts), but **do not** run it on the production app VPS today.
+
+| Option | Verdict |
+|--------|---------|
+| Cloud Sentry (or similar US SaaS) | Unreliable under sanctions / OFAC — don’t build ops on it |
+| Full self-hosted Sentry | Too heavy for our box |
+| Light self-host (GlitchTip, Bugsink) | Fine in principle; **not** on the 4 GB / 2 vCPU / 50 GB app server |
+
+That VPS already runs nginx, the API, Postgres (Timescale), Redis, Mosquitto, both panels, and Uptime Kuma. Extra containers would fight for RAM and risk OOM/swap; disk is already pressured by telemetry and Docker logs.
+
+**Current approach:** Pino + `journalctl` + Uptime Kuma (see above).
+
+**Later:** host a light Sentry-compatible tracker (e.g. GlitchTip or Bugsink) on a **separate** small host, then point Nest `@sentry/node` at that DSN. Keep this app VPS for the product only.

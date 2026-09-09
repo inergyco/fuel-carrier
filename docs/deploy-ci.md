@@ -30,6 +30,8 @@ If verify fails, production is not touched.
 
 Hosts nginx, the NestJS API, Postgres, Redis, Mosquitto, and both panel SPAs. Watch disk usage over time — telemetry (TimescaleDB) and Docker logs are the main growth drivers on 50 GB.
 
+Do **not** add error-tracking / log-UI stacks (GlitchTip, Bugsink, Loki, Dozzle, self-hosted Sentry) on this host — RAM and disk are too tight. See [api-logging.md](./api-logging.md#error-tracking-deferred).
+
 ## One-time VPS prep
 
 ### 1. Deploy SSH key (CI only)
