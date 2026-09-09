@@ -896,6 +896,10 @@ type RootTranslation = {
 				 */
 				mqttCredentialsTopic: string
 				/**
+				 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​A​C​K​)
+				 */
+				mqttCredentialsSubscribeTopic: string
+				/**
 				 * C​o​p​y
 				 */
 				mqttCredentialsCopy: string
@@ -1866,6 +1870,10 @@ type RootTranslation = {
 			 * P​u​b​l​i​s​h​ ​t​o​p​i​c
 			 */
 			mqttCredentialsTopic: string
+			/**
+			 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​A​C​K​)
+			 */
+			mqttCredentialsSubscribeTopic: string
 			/**
 			 * C​o​p​y
 			 */
@@ -3150,6 +3158,10 @@ export type TranslationFunctions = {
 				 */
 				mqttCredentialsTopic: () => LocalizedString
 				/**
+				 * Subscribe topic (ACK)
+				 */
+				mqttCredentialsSubscribeTopic: () => LocalizedString
+				/**
 				 * Copy
 				 */
 				mqttCredentialsCopy: () => LocalizedString
@@ -4108,6 +4120,10 @@ export type TranslationFunctions = {
 			 * Publish topic
 			 */
 			mqttCredentialsTopic: () => LocalizedString
+			/**
+			 * Subscribe topic (ACK)
+			 */
+			mqttCredentialsSubscribeTopic: () => LocalizedString
 			/**
 			 * Copy
 			 */

@@ -21,6 +21,12 @@ export class CarMqttCredentialsDto {
   publishTopic!: string;
 
   @ApiProperty({
+    description: 'Topic pattern the device may subscribe to for ingest ACKs',
+    example: 'ack/a1b2c3d4-e5f6-7890-abcd-ef1234567890/#',
+  })
+  subscribeTopic!: string;
+
+  @ApiProperty({
     description: 'True when an existing credential was replaced',
     example: false,
   })

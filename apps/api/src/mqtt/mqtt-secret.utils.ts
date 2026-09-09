@@ -16,3 +16,13 @@ export async function hashMqttSecret(secret: string): Promise<string> {
 export function buildMqttTelemetryTopic(carId: string): string {
   return `telemetry/${carId}/#`;
 }
+
+/** Exact topic the backend publishes telemetry ACKs to. */
+export function buildMqttAckTopic(carId: string): string {
+  return `ack/${carId}`;
+}
+
+/** Topic pattern the device may subscribe to for ACKs. */
+export function buildMqttAckSubscribeTopic(carId: string): string {
+  return `ack/${carId}/#`;
+}

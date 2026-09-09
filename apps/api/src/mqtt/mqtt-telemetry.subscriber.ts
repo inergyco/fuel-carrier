@@ -7,7 +7,9 @@ import {
 import { ConfigService } from '@nestjs/config';
 import mqtt, { type MqttClient } from 'mqtt';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
+import { buildMqttAckTopic } from './mqtt-secret.utils';
 import {
+  buildTelemetryAck,
   parseTelemetryPayload,
   type TelemetrySample,
 } from './mqtt-telemetry.utils';
@@ -92,12 +94,43 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     }
 
     try {
-      await this.carTelemetryService.ingestDeviceTelemetry(sample);
+      const stored =
+        await this.carTelemetryService.ingestDeviceTelemetry(sample);
+      if (!stored) {
+        return;
+      }
+
+      await this._publishAck(sample);
     } catch (error) {
       this.logger.error(
         `Failed to ingest telemetry for car ${sample.carId}`,
         error instanceof Error ? error.stack : undefined,
       );
     }
+  }
+
+  private async _publishAck(sample: TelemetrySample): Promise<void> {
+    if (!this.client?.connected) {
+      this.logger.warn(
+        `Skipping ACK for car ${sample.carId}: MQTT client not connected`,
+      );
+      return;
+    }
+
+    const ackTopic = buildMqttAckTopic(sample.carId);
+    const ack = buildTelemetryAck({ sample });
+    const body = JSON.stringify(ack);
+
+    await new Promise<void>((resolve) => {
+      this.client?.publish(ackTopic, body, { qos: 1 }, (error) => {
+        if (error) {
+          this.logger.error(
+            `Failed to publish ACK on ${ackTopic}`,
+            error.stack,
+          );
+        }
+        resolve();
+      });
+    });
   }
 }

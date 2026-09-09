@@ -23,6 +23,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import {
   generateMqttSecret,
   hashMqttSecret,
+  buildMqttAckSubscribeTopic,
   buildMqttTelemetryTopic,
 } from './mqtt-secret.utils';
 
@@ -45,6 +46,7 @@ export class MqttCredentialsService {
     const passwordHash = await hashMqttSecret(password);
     const username = carId;
     const publishTopic = buildMqttTelemetryTopic(carId);
+    const subscribeTopic = buildMqttAckSubscribeTopic(carId);
 
     return this.tenantDb.run(context, async (tx) => {
       const [car] = await tx
@@ -104,11 +106,18 @@ export class MqttCredentialsService {
         clientId = created.id;
       }
 
-      await tx.insert(mqttAcls).values({
-        clientId,
-        topic: publishTopic,
-        access: 'write',
-      });
+      await tx.insert(mqttAcls).values([
+        {
+          clientId,
+          topic: publishTopic,
+          access: 'write',
+        },
+        {
+          clientId,
+          topic: subscribeTopic,
+          access: 'read',
+        },
+      ]);
 
       const companyName = await fetchCompanyName(tx, car.companyId);
 
@@ -132,6 +141,7 @@ export class MqttCredentialsService {
         username,
         password,
         publishTopic,
+        subscribeTopic,
         rotated,
       };
     });

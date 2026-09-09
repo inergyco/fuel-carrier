@@ -92,6 +92,10 @@ export function CarMqttCredentialsModals({
               label={LL.internalPanel.companies.detail.mqttCredentialsTopic()}
               value={credentials.publishTopic}
             />
+            <CopyableCredentialField
+              label={LL.internalPanel.companies.detail.mqttCredentialsSubscribeTopic()}
+              value={credentials.subscribeTopic}
+            />
           </div>
         ) : null}
       </Modal>

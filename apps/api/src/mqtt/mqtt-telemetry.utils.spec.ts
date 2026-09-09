@@ -1,4 +1,5 @@
 import {
+  buildTelemetryAck,
   parseTelemetryCarId,
   parseTelemetryPayload,
 } from './mqtt-telemetry.utils';
@@ -53,11 +54,38 @@ describe('mqtt-telemetry.utils', () => {
       speed: 12.5,
       remainFuel: 1140,
       fuelAmount: 14.76,
+      companyId: 'COMPANY_001',
+      deviceId: 'TRUCK_12',
+      transactionId: 125,
       resistance: {
         tankToGround: 5.34,
         tankToNozzle: 4.25,
         groundToVehicle: 1.8,
       },
+    });
+  });
+
+  it('builds the device ACK payload after successful ingest', () => {
+    const ack = buildTelemetryAck({
+      sample: {
+        carId,
+        latitude: 35.72154,
+        longitude: 51.39485,
+        companyId: 'COMPANY_001',
+        deviceId: 'TRUCK_12',
+        transactionId: 125,
+      },
+      serverTime: new Date('2026-06-05T13:45:13Z'),
+    });
+
+    expect(ack).toEqual({
+      success: true,
+      companyId: 'COMPANY_001',
+      deviceId: 'TRUCK_12',
+      transactionId: 125,
+      duplicate: false,
+      message: 'Stored Successfully',
+      serverTime: '2026-06-05T13:45:13.000Z',
     });
   });
 
