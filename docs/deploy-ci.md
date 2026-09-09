@@ -70,6 +70,8 @@ sudo visudo -cf /etc/sudoers.d/fuel-carrier-deploy
 - API env (not overwritten by CI): `/var/www/fuel-carrier/api/.env`
 - Service: `fuel-carrier-api.service`
 
+Checked-in edge templates (systemd + nginx panel sites + MQTT stream) and install notes: [vps-edge.md](./vps-edge.md).
+
 ## GitHub Actions secrets
 
 Repo → **Settings → Secrets and variables → Actions**:
