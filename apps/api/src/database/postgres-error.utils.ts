@@ -19,17 +19,41 @@ export type PostgresConstraintMapping = {
   message: string;
 };
 
+/**
+ * Drizzle (and some drivers) wrap node-pg errors in `cause`. Walk the chain so
+ * unique/FK mappings still match.
+ */
 export function getPostgresError(error: unknown): PostgresError | null {
-  if (error === null || typeof error !== 'object') {
-    return null;
+  let current: unknown = error;
+  const seen = new Set<object>();
+  let fallback: PostgresError | null = null;
+
+  while (current !== null && typeof current === 'object') {
+    if (seen.has(current)) {
+      break;
+    }
+    seen.add(current);
+
+    const candidate = current as PostgresError & { cause?: unknown };
+    if (typeof candidate.code === 'string') {
+      const pg: PostgresError = {
+        code: candidate.code,
+        ...(typeof candidate.constraint === 'string'
+          ? { constraint: candidate.constraint }
+          : {}),
+      };
+
+      if (pg.constraint) {
+        return pg;
+      }
+
+      fallback ??= pg;
+    }
+
+    current = 'cause' in candidate ? candidate.cause : undefined;
   }
 
-  const pg = error as PostgresError;
-  if (!pg.code) {
-    return null;
-  }
-
-  return pg;
+  return fallback;
 }
 
 /** Map known PostgreSQL constraint errors to API validation responses; rethrow the rest. */
