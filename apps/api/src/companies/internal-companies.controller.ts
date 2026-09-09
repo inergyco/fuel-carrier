@@ -16,6 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import type { AuthSession, Company } from '@fuel-carrier/shared-types';
+import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createCompanyDtoSchema,
   type CreateCompanyDto,
@@ -26,6 +27,8 @@ import {
 } from '@fuel-carrier/shared-validation/company/update';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
@@ -45,7 +48,8 @@ import { CompaniesService } from './companies.service';
 
 @ApiTags('companies')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.INTERNAL_ADMIN)
 @Controller('internal/companies')
 export class InternalCompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
