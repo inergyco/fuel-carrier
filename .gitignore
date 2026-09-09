@@ -7,3 +7,4 @@ node_modules
 
 # Mosquitto DB connection secrets (never commit real passwords)
 infra/mosquitto/config/secrets/postgres.conf
+docs/qa-security-audit-2026-09-09.md
