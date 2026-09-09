@@ -16,7 +16,7 @@ services:
       - |
         cat /etc/mosquitto/mosquitto.conf /etc/mosquitto/secrets/postgres.conf > /tmp/mosquitto.conf
         exec /usr/bin/tini -- /usr/sbin/mosquitto -c /tmp/mosquitto.conf
-    restart: "no"
+    restart: unless-stopped
 
 volumes:
   mosquitto-data:
