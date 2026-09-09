@@ -72,6 +72,8 @@ sudo visudo -cf /etc/sudoers.d/fuel-carrier-deploy
 
 Checked-in edge templates (systemd + nginx panel sites + MQTT stream) and install notes: [vps-edge.md](./vps-edge.md).
 
+Production MQTT client/ACL seeding and other DB admin **from your laptop via SSH tunnel** (never `pnpm install` on the VPS deploy folder): [mqtt-db-admin.md](./mqtt-db-admin.md).
+
 ## GitHub Actions secrets
 
 Repo → **Settings → Secrets and variables → Actions**:
