@@ -120,6 +120,13 @@
       "when": 1788346000000,
       "tag": "0016_backfill_car_driver_assignments",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1788400000000,
+      "tag": "0017_car_driver_same_company",
+      "breakpoints": true
     }
   ]
 }

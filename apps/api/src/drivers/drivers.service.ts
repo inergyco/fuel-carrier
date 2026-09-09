@@ -49,6 +49,13 @@ const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
     field: 'companyId',
     message: 'Company not found',
   },
+  {
+    code: POSTGRES_FOREIGN_KEY_VIOLATION,
+    constraint: 'cars_driver_id_company_id_drivers_id_company_id_fk',
+    field: 'companyId',
+    message:
+      'Cannot change company while the driver is assigned to a car; unassign first',
+  },
 ];
 
 @Injectable()
@@ -212,6 +219,12 @@ export class DriversService {
         tx,
         id,
       );
+
+      // Composite FK on cars(driver_id, company_id) is NO ACTION — clear first.
+      await tx
+        .update(cars)
+        .set({ driverId: null })
+        .where(eq(cars.driverId, id));
 
       const [row] = await tx
         .delete(drivers)

@@ -54,6 +54,12 @@ const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
     field: 'companyId',
     message: 'Company not found',
   },
+  {
+    code: POSTGRES_FOREIGN_KEY_VIOLATION,
+    constraint: 'cars_driver_id_company_id_drivers_id_company_id_fk',
+    field: 'driverId',
+    message: 'Driver must belong to the same company as the car',
+  },
 ];
 
 @Injectable()
@@ -82,7 +88,11 @@ export class CarsService {
     try {
       return await this.tenantDb.run(context, async (tx) => {
         if (dto.driverId) {
-          await this._assertDriverAccessible(tx, dto.driverId);
+          await this._assertDriverBelongsToCompany(
+            tx,
+            dto.driverId,
+            dto.companyId,
+          );
           await this.carDriverAssignmentsService.releaseDriverFromOtherCarInTx(
             tx,
             dto.driverId,
@@ -150,70 +160,82 @@ export class CarsService {
     id: string,
     dto: UpdateCarPayload,
   ): Promise<Car> {
-    return this.tenantDb.run(context, async (tx) => {
-      const existing = await this.carsReader.getById(tx, id);
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const existing = await this.carsReader.getById(tx, id);
 
-      if (dto.driverId) {
-        await this._assertDriverAccessible(tx, dto.driverId);
-      }
+        const nextCompanyId =
+          dto.companyId !== undefined ? dto.companyId : existing.companyId;
+        const nextDriverId =
+          dto.driverId !== undefined ? dto.driverId : existing.driverId;
 
-      const nextCompanyId =
-        dto.companyId !== undefined ? dto.companyId : existing.companyId;
+        if (nextDriverId) {
+          await this._assertDriverBelongsToCompany(
+            tx,
+            nextDriverId,
+            nextCompanyId,
+          );
+        }
 
-      if (dto.driverId !== undefined && dto.driverId !== existing.driverId) {
-        await this.carDriverAssignmentsService.syncDriverChangeInTx(
-          tx,
-          context,
-          {
-            carId: id,
-            companyId: nextCompanyId,
-            previousDriverId: existing.driverId,
-            nextDriverId: dto.driverId,
+        if (dto.driverId !== undefined && dto.driverId !== existing.driverId) {
+          await this.carDriverAssignmentsService.syncDriverChangeInTx(
+            tx,
+            context,
+            {
+              carId: id,
+              companyId: nextCompanyId,
+              previousDriverId: existing.driverId,
+              nextDriverId: dto.driverId,
+            },
+          );
+        }
+
+        const [row] = await tx
+          .update(cars)
+          .set({
+            ...(dto.name !== undefined ? { name: dto.name } : {}),
+            ...(dto.licensePlate !== undefined
+              ? { licensePlate: dto.licensePlate }
+              : {}),
+            ...(dto.companyId !== undefined
+              ? { companyId: dto.companyId }
+              : {}),
+            ...(dto.driverId !== undefined ? { driverId: dto.driverId } : {}),
+            ...(dto.note !== undefined ? { note: dto.note } : {}),
+          })
+          .where(eq(cars.id, id))
+          .returning();
+
+        if (!row) {
+          throw createApiException(
+            HttpStatus.NOT_FOUND,
+            ApiErrorCode.NOT_FOUND,
+            'Car not found',
+          );
+        }
+
+        const car = _mapCar(row);
+        const companyName = await fetchCompanyName(tx, car.companyId);
+
+        await this.auditLogService.record(context, {
+          action: AuditActions.CAR_UPDATED,
+          companyId: car.companyId,
+          entityType: AuditEntityType.CAR,
+          entityId: car.id,
+          metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditCarLabel(car),
+            }),
+            changes: diffAuditChanges(existing, car, CAR_AUDIT_FIELDS),
           },
-        );
-      }
+        });
 
-      const [row] = await tx
-        .update(cars)
-        .set({
-          ...(dto.name !== undefined ? { name: dto.name } : {}),
-          ...(dto.licensePlate !== undefined
-            ? { licensePlate: dto.licensePlate }
-            : {}),
-          ...(dto.companyId !== undefined ? { companyId: dto.companyId } : {}),
-          ...(dto.driverId !== undefined ? { driverId: dto.driverId } : {}),
-          ...(dto.note !== undefined ? { note: dto.note } : {}),
-        })
-        .where(eq(cars.id, id))
-        .returning();
-
-      if (!row) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
-
-      const car = _mapCar(row);
-      const companyName = await fetchCompanyName(tx, car.companyId);
-
-      await this.auditLogService.record(context, {
-        action: AuditActions.CAR_UPDATED,
-        companyId: car.companyId,
-        entityType: AuditEntityType.CAR,
-        entityId: car.id,
-        metadata: {
-          ...buildAuditContext({
-            companyName,
-            entityLabel: formatAuditCarLabel(car),
-          }),
-          changes: diffAuditChanges(existing, car, CAR_AUDIT_FIELDS),
-        },
+        return car;
       });
-
-      return car;
-    });
+    } catch (error) {
+      rethrowPostgresError(error, CAR_POSTGRES_MAPPINGS);
+    }
   }
 
   async delete(context: ApiTenantContext, id: string): Promise<null> {
@@ -266,20 +288,22 @@ export class CarsService {
   }
 
   /**
-   * RLS hides drivers from other companies, but we still validate explicitly
-   * so callers get a clear business error instead of a silent FK/RLS failure.
+   * Driver and car must share companyId. RLS hides other-company drivers for
+   * company users; internal admins see all drivers, so this check is required.
+   * A composite FK on cars(driver_id, company_id) is the DB backstop.
    */
-  private async _assertDriverAccessible(
+  private async _assertDriverBelongsToCompany(
     tx: TenantTransaction,
     driverId: string,
+    companyId: string,
   ): Promise<void> {
     const [driver] = await tx
-      .select({ id: drivers.id })
+      .select({ id: drivers.id, companyId: drivers.companyId })
       .from(drivers)
       .where(eq(drivers.id, driverId))
       .limit(1);
 
-    if (!driver) {
+    if (!driver || driver.companyId !== companyId) {
       throw createApiException(
         HttpStatus.BAD_REQUEST,
         ApiErrorCode.VALIDATION_ERROR,
@@ -287,8 +311,7 @@ export class CarsService {
         [
           {
             field: 'driverId',
-            message:
-              'Driver not found or does not belong to the current company',
+            message: 'Driver must belong to the same company as the car',
           },
         ],
       );
