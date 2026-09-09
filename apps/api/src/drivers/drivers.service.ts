@@ -25,6 +25,7 @@ import {
   rethrowPostgresError,
 } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
+import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 
 type CreateDriverPayload = {
@@ -157,6 +158,13 @@ export class DriversService {
           );
         }
 
+        if (
+          dto.companyId !== undefined &&
+          dto.companyId !== existing.companyId
+        ) {
+          await this._assertDriverNotAssigned(tx, id);
+        }
+
         const [row] = await tx
           .update(drivers)
           .set(dto)
@@ -258,6 +266,36 @@ export class DriversService {
 
       return null;
     });
+  }
+
+  /**
+   * Company moves must not leave cross-tenant custody. Reject; caller unassigns first.
+   * Composite FK on cars(driver_id, company_id) is the DB backstop.
+   */
+  private async _assertDriverNotAssigned(
+    tx: TenantTransaction,
+    driverId: string,
+  ): Promise<void> {
+    const [assignedCar] = await tx
+      .select({ id: cars.id })
+      .from(cars)
+      .where(eq(cars.driverId, driverId))
+      .limit(1);
+
+    if (assignedCar) {
+      throw createApiException(
+        HttpStatus.BAD_REQUEST,
+        ApiErrorCode.VALIDATION_ERROR,
+        'Validation failed',
+        [
+          {
+            field: 'companyId',
+            message:
+              'Cannot change company while the driver is assigned to a car; unassign first',
+          },
+        ],
+      );
+    }
   }
 }
 
