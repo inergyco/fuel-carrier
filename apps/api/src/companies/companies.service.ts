@@ -7,6 +7,7 @@ import {
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -43,6 +44,8 @@ export class CompaniesService {
   }
 
   async getById(id: string): Promise<Company> {
+    assertUuidParam(id);
+
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
       const row = await _findCompanyById(tx, id);
       return _mapCompany(row);

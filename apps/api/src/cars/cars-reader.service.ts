@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import type { Car } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
-import { isUuid } from '../common/validation/uuid.utils';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
@@ -11,13 +11,7 @@ import type { TenantTransaction } from '../database/tenant-db.types';
 @Injectable()
 export class CarsReader {
   async getById(tx: TenantTransaction, id: string): Promise<Car> {
-    if (!isUuid(id)) {
-      throw createApiException(
-        HttpStatus.NOT_FOUND,
-        ApiErrorCode.NOT_FOUND,
-        'Car not found',
-      );
-    }
+    assertUuidParam(id);
 
     const [row] = await tx.select().from(cars).where(eq(cars.id, id)).limit(1);
 

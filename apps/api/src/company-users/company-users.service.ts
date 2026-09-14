@@ -22,6 +22,7 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { resolveCompanyUserLevel } from '../common/company-user-level';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
@@ -50,6 +51,8 @@ export class CompanyUsersService {
   }
 
   async getById(context: TenantContext, id: string): Promise<CompanyUser> {
+    assertUuidParam(id);
+
     return this.tenantDb.run(context, async (tx) => {
       const row = await _findCompanyUserForContext(tx, context, id);
 

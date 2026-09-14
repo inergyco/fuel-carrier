@@ -16,6 +16,7 @@ import {
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
 import {
@@ -79,6 +80,8 @@ export class DriversService {
   }
 
   async getById(context: TenantContext, id: string): Promise<Driver> {
+    assertUuidParam(id);
+
     return this.tenantDb.run(context, async (tx) => {
       const row = await tx.query.drivers.findFirst({
         where: eq(drivers.id, id),
