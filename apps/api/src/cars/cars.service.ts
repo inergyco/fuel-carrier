@@ -19,16 +19,12 @@ import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { createApiException } from '../common/exceptions/api.exception';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
-import {
-  POSTGRES_FOREIGN_KEY_VIOLATION,
-  POSTGRES_UNIQUE_VIOLATION,
-  type PostgresConstraintMapping,
-  rethrowPostgresError,
-} from '../database/postgres-error.utils';
+import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
+import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
 import { CarsReader } from './cars-reader.service';
 
 type CreateCarPayload = {
@@ -40,27 +36,6 @@ type CreateCarPayload = {
 };
 
 type UpdateCarPayload = Partial<CreateCarPayload>;
-
-const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
-  {
-    code: POSTGRES_UNIQUE_VIOLATION,
-    constraint: 'cars_license_plate_unique',
-    field: 'licensePlate',
-    message: 'A car with this license plate already exists',
-  },
-  {
-    code: POSTGRES_FOREIGN_KEY_VIOLATION,
-    constraint: 'cars_company_id_companies_id_fk',
-    field: 'companyId',
-    message: 'Company not found',
-  },
-  {
-    code: POSTGRES_FOREIGN_KEY_VIOLATION,
-    constraint: 'cars_driver_id_company_id_drivers_id_company_id_fk',
-    field: 'driverId',
-    message: 'Driver must belong to the same company as the car',
-  },
-];
 
 @Injectable()
 export class CarsService {
