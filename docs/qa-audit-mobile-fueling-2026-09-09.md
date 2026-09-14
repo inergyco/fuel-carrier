@@ -1,7 +1,8 @@
 # Mobile Fueling — E2E Business Workflow Audit
 
-**Date:** 2026-09-09  
-**Assurance Degree:** **54 / 100** (major reliability concerns)  
+**Date:** 2026-09-09 (live audit) · **Remediation review:** 2026-09-14  
+**Assurance Degree:** **79 / 100** (estimated after code remediations; pending live re-probe)  
+**Original live score (2026-09-09):** **54 / 100**  
 **Targets:**
 - Company panel: https://mobile-fueling.inergy.ir/
 - Admin panel: https://mobile-fueling-admin.inergy.ir/
@@ -11,22 +12,17 @@
 
 Disposable QA entities were cleaned up. Kimia seed assignment for plate `۲۳ب۴۵۶-۷۸` → driver حسین was restored after cross-company tests. A privilege-escalation test company (“Hacked Co”) was deleted immediately after creation.
 
+> **Remediation (2026-09-14):** Critical items (AUTHZ-COMPANIES, PATCH-DEFAULTS, ISO-05, ISO-06), VAL-500, PAGE-03, and AUTH-03 are implemented in code. Soft-delete/INACTIVE/CUST-09 remain open. Score revised to **79** on that basis — confirm with deploy + live re-probe. See [§ Status](#status). Findings in §§3–6 are the original audit evidence unless marked remediated in Status.
+
 ---
 
 ## 1. Executive summary
 
-Company-tenant happy paths are largely solid: login, logout, Pars/Kimia isolation, viewer write denial, and 1:1 driver↔vehicle custody behave correctly for company users.
+**At audit time (2026-09-09):** Company-tenant happy paths were largely solid (login, logout, Pars/Kimia isolation, viewer write denial, 1:1 custody). Four Critical admin/API issues undermined multi-tenant integrity, and unique violations returned HTTP 500.
 
-The product is **not** equally safe on the admin/API side. Four Critical issues undermine multi-tenant integrity and authorization:
+**After code remediations (2026-09-14):** Those Critical paths, unique→400 mapping, list pagination, and login body validation (empty `{}` → 400) are fixed in the repo. The remaining material gap from this audit is the lack of an inactive/soft-delete model (hard delete still drops reachable car-scoped history).
 
-1. A company JWT can manage companies on the internal API (missing role guard).
-2. Partial car `PATCH` silently ends custody and wipes fields (Zod create-defaults on update schemas).
-3. Admins can assign a driver from Company B to a car of Company A.
-4. Moving an assigned driver to another company leaves live cross-tenant custody.
-
-Duplicate unique violations also return HTTP 500 instead of field validation errors.
-
-**Verdict:** Do not treat the polished UI as proof of production readiness for multi-company admin operations. Company-panel day-to-day use is stronger than overall system assurance.
+**Verdict:** Core custody and tenancy rules look production-credible in code once deployed. Do not treat the **79** as a re-tested live score until remediations are re-probed on the deployed API. Soft-delete/status is the main product gap left from this audit.
 
 ---
 
@@ -36,13 +32,18 @@ Duplicate unique violations also return HTTP 500 instead of field validation err
 |------|---------|
 | 90–100 | Highly reliable |
 | 80–89 | Good, minor issues |
-| 70–79 | Acceptable but meaningful issues |
+| **70–79** | **Acceptable but meaningful issues** ← **79 estimated (2026-09-14)** |
 | 60–69 | Risky |
-| **40–59** | **Major reliability concerns** ← **54 assigned** |
+| 40–59 | Major reliability concerns ← **54 live (2026-09-09)** |
 | 0–39 | Unsafe / unreliable for production |
 
-Score is evidence-based and not inflated by UI polish. Company-panel isolation/custody alone would score higher (~80); overall score includes admin authz and custody corruption paths.
+| Score | When | Basis |
+|-------|------|--------|
+| **54** | 2026-09-09 | Live API evidence (4 Critical + VAL-500 + unpaginated lists). |
+| **78** | 2026-09-14 | Critical/High/PAGE-03 fixed in code; AUTH-03 + soft-delete still open. |
+| **79** | 2026-09-14 | +AUTH-03 (`LoginBodyGuard`). Held under ~80–85 by open INACTIVE/CUST-09 and no post-deploy re-probe. |
 
+Original note still holds for the live day: company-panel isolation/custody alone would have scored ~80; the **54** was dragged down by admin authz and custody corruption paths.
 ---
 
 ## 3. Business rule answers
@@ -178,11 +179,15 @@ Score is evidence-based and not inflated by UI polish. Company-panel isolation/c
 
 ## 9. Recommended remediation priority
 
-1. **RolesGuard** on `InternalCompaniesController` (+ role/cookie binding).
-2. **Fix update car DTOs** — no create defaults on PATCH; regression tests for partial updates.
-3. **Enforce same-company** on assign; block/clear custody on driver or car company moves.
-4. **Fix Postgres unique mapping** → 400 (unwrap nested errors).
-5. Soft-delete or status + paginated lists before fleet scale.
+| # | Item | Status (code) |
+|---|------|----------------|
+| 1 | **RolesGuard** on `InternalCompaniesController` (+ role/cookie binding) | **Done** |
+| 2 | **Fix update car DTOs** — no create defaults on PATCH; regression tests | **Done** |
+| 3 | **Enforce same-company** on assign; block custody-breaking company moves | **Done** |
+| 4 | **Fix Postgres unique mapping** → 400 (unwrap nested errors) | **Done** |
+| 5a | **Paginated lists** (`page`/`limit`) on core list endpoints + both panels | **Done** |
+| 5b | Soft-delete / status model (INACTIVE + CUST-09) | **Open** |
+| — | **AUTH-03** empty login → 400 before passport | **Done** |
 
 ---
 
@@ -190,14 +195,48 @@ Score is evidence-based and not inflated by UI polish. Company-panel isolation/c
 
 | Finding | Location |
 |---------|----------|
-| Missing RolesGuard | `apps/api/src/companies/internal-companies.controller.ts` |
-| PATCH defaults | `packages/shared-validation/src/car/create-car.dto.ts` |
-| Assign / sync custody | `apps/api/src/cars/cars.service.ts`, `car-driver-assignments.service.ts` |
-| Unique error mapping | `apps/api/src/database/postgres-error.utils.ts` |
+| RolesGuard (remediated) | `apps/api/src/companies/internal-companies.controller.ts` |
+| PATCH update schemas (remediated) | `packages/shared-validation/src/car/create-car.dto.ts` |
+| Same-company assign (remediated) | `apps/api/src/cars/cars.service.ts`, composite FK on `cars` |
+| Driver company move while assigned (remediated) | `apps/api/src/drivers/drivers.service.ts` |
+| Unique error mapping (remediated) | `apps/api/src/database/postgres-error.utils.ts` |
+| Custody row locks (related) | `apps/api/src/cars/car-driver-assignments.service.ts` |
+| List pagination | `apps/api/src/common/pagination.utils.ts`, panel `usePagination` |
+| Login body validation (AUTH-03) | `apps/api/src/auth/login-body.guard.ts` |
+| Soft-delete / inactive | *(not implemented)* |
 
 ---
 
 ## Status
 
-- **AUTHZ-COMPANIES:** Remediated in code (`RolesGuard` + `@Roles(INTERNAL_ADMIN)` on `InternalCompaniesController`). Redeploy API to take effect in production.
-- Remaining Critical items (PATCH-DEFAULTS, ISO-05, ISO-06) and High/Medium findings still open.
+**Audit date:** 2026-09-09 — live score **54/100**.  
+**Remediation review:** 2026-09-14 — estimated score **79/100** (Critical/High/PAGE-03/AUTH-03 fixed in code; open soft-delete; **not** re-probed live).  
+Production still needs redeploy + re-probe before treating remediations as closed in the wild.
+
+### Implemented in code
+
+| ID | Severity | What changed |
+|----|----------|--------------|
+| **AUTHZ-COMPANIES** | Critical | `RolesGuard` + `@Roles(INTERNAL_ADMIN)` on `InternalCompaniesController`. |
+| **PATCH-DEFAULTS** | Critical | Car update DTOs no longer inherit create `.default()` (so omitted `driverId` does not unassign). Regression coverage in `car-update-dto.spec.ts`. |
+| **ISO-05** | Critical | Assign/create/update enforces driver and car share `companyId`; composite FK backstop on `cars`. |
+| **ISO-06** | Critical | Driver company change blocked while assigned (`_assertDriverNotAssigned`). Car company change with an assigned driver fails same-company / FK checks. |
+| **VAL-500** | High | Postgres error cause-chain unwrap; unique violations (`23505`) map to 400 field errors for cars/drivers (and related custody uniques). |
+| **PAGE-03** | Medium | Server pagination (`page`/`limit`) on companies, cars, drivers, company-users lists (internal + external). Both panels use paginated queries; list UI syncs `?page=`/`?limit=` via `usePagination`. Dashboard/map walk pages via `fetchAllPaginated`. |
+| **AUTH-03** | Medium | `LoginBodyGuard` validates `loginDtoSchema` before passport-local on internal and external login; empty/`{}` bodies → **400** `VALIDATION_ERROR`. |
+| *(related)* | — | Custody assign path takes row locks (`FOR UPDATE`) to reduce race windows. |
+| *(related)* | — | Malformed UUID path params → 400 (`assertUuidParam`). |
+| *(related)* | — | Internal car/driver lists accept optional `?companyId=` (admin company detail no longer client-filters a full dump). |
+| *(related)* | — | Shared types / API mappers expose timestamps as ISO strings (`iso-timestamp.utils.ts`). |
+
+### Still open
+
+| ID | Severity | Notes |
+|----|----------|-------|
+| **INACTIVE** | Medium | No status / deactivate model; hard delete only. |
+| **CUST-09** | Medium | Hard-delete car still makes car-scoped assignment history unreachable (404). Soft-delete or company-scoped history search not done. |
+| **HIST-EDIT** | Low | Still no direct history edit API (intentional immutability; PATCH-DEFAULTS fixed). |
+
+### Suggested next step
+
+Implement **soft-delete or inactive status** for cars/drivers (closes INACTIVE + largely CUST-09). After API/panel deploy, re-run the Critical/High live probes and lock the assurance score.

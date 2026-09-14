@@ -9,6 +9,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { LocalAdminStrategy } from './local-admin.strategy';
 import { LocalCompanyStrategy } from './local-company.strategy';
 import { LoginAttemptService } from './login-attempt.service';
+import { LoginBodyGuard } from './login-body.guard';
 import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { RolesGuard } from './roles.guard';
 import { MustChangePasswordGuard } from './must-change-password.guard';
@@ -33,6 +34,7 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
     AccessTokenService,
     LoginAttemptService,
     LoginRateLimitGuard,
+    LoginBodyGuard,
     LocalAdminStrategy,
     LocalCompanyStrategy,
     JwtStrategy,
@@ -47,6 +49,7 @@ import { CompanyUserAdminGuard } from './company-user-admin.guard';
     MustChangePasswordGuard,
     CompanyUserAdminGuard,
     LoginRateLimitGuard,
+    LoginBodyGuard,
     LoginAttemptService,
     AccessTokenService,
   ],

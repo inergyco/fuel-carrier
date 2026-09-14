@@ -26,6 +26,7 @@ import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalAdminAuthGuard } from './local-admin-auth.guard';
 import { LoginAttemptService } from './login-attempt.service';
+import { LoginBodyGuard } from './login-body.guard';
 import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
@@ -45,7 +46,7 @@ export class InternalAuthController {
   ) {}
 
   @Post('login')
-  @UseGuards(LoginRateLimitGuard, LocalAdminAuthGuard)
+  @UseGuards(LoginRateLimitGuard, LoginBodyGuard, LocalAdminAuthGuard)
   @ApiOperation({ summary: 'Sign in with internal admin credentials' })
   @ApiBody({ type: LoginRequestDto })
   @ApiEnvelopeOkResponse(AuthPayloadDto)

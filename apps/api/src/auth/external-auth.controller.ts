@@ -39,6 +39,7 @@ import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { LocalCompanyAuthGuard } from './local-company-auth.guard';
 import { LoginAttemptService } from './login-attempt.service';
+import { LoginBodyGuard } from './login-body.guard';
 import { LoginRateLimitGuard } from './login-rate-limit.guard';
 import { Roles } from './roles.decorator';
 import { RolesGuard } from './roles.guard';
@@ -58,7 +59,7 @@ export class ExternalAuthController {
   ) {}
 
   @Post('login')
-  @UseGuards(LoginRateLimitGuard, LocalCompanyAuthGuard)
+  @UseGuards(LoginRateLimitGuard, LoginBodyGuard, LocalCompanyAuthGuard)
   @ApiOperation({ summary: 'Sign in with company user credentials' })
   @ApiBody({ type: LoginRequestDto })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
