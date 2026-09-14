@@ -6,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import Redis from 'ioredis';
 import { extractClientIp } from '../audit-logs/audit-log.utils';
@@ -46,7 +47,7 @@ export class LoginAttemptService {
         void reply.header('Retry-After', String(retryAfterSeconds));
         throw createApiException(
           HttpStatus.TOO_MANY_REQUESTS,
-          'TOO_MANY_REQUESTS',
+          ApiErrorCode.TOO_MANY_REQUESTS,
           'Too many login attempts. Try again later.',
         );
       }
@@ -55,9 +56,16 @@ export class LoginAttemptService {
         throw error;
       }
 
-      this.logger.warn(
-        'Login rate limit check failed; allowing the request',
+      this.logger.error(
+        'Login rate limit check failed; denying the request',
         error instanceof Error ? error.stack : undefined,
+      );
+      // Fail closed so Redis outages cannot disable brute-force protection
+      // (SEC-02). 503 — not 429 — so clients do not treat this as a ban.
+      throw createApiException(
+        HttpStatus.SERVICE_UNAVAILABLE,
+        ApiErrorCode.INTERNAL_ERROR,
+        'Login temporarily unavailable. Try again later.',
       );
     }
   }

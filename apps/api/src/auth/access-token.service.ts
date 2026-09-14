@@ -22,13 +22,18 @@ export class AccessTokenService {
     try {
       await this.redis.set(revokedAccessTokenKey(jti), '1', 'EX', ttl);
     } catch (error) {
-      this.logger.warn(
+      this.logger.error(
         'Failed to revoke access token',
         error instanceof Error ? error.stack : undefined,
       );
+      throw error;
     }
   }
 
+  /**
+   * Fail closed: if Redis cannot answer, treat the token as revoked so
+   * logged-out sessions cannot slip through during an outage (SEC-02).
+   */
   async isRevoked(jti: string | undefined): Promise<boolean> {
     if (!jti) {
       return true;
@@ -38,11 +43,11 @@ export class AccessTokenService {
       const exists = await this.redis.exists(revokedAccessTokenKey(jti));
       return exists === 1;
     } catch (error) {
-      this.logger.warn(
-        'Failed to check access token revocation; allowing the request',
+      this.logger.error(
+        'Failed to check access token revocation; denying the request',
         error instanceof Error ? error.stack : undefined,
       );
-      return false;
+      return true;
     }
   }
 }
