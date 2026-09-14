@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, count, desc, eq, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNull, or } from 'drizzle-orm';
 import type {
   CarDriverAssignment,
   PaginatedResult,
@@ -15,19 +15,6 @@ import { users } from '../database/schema/users';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarsReader } from './cars-reader.service';
-
-type OpenAssignmentInput = {
-  carId: string;
-  driverId: string;
-  companyId: string;
-};
-
-type SyncDriverChangeInput = {
-  carId: string;
-  companyId: string;
-  previousDriverId: string | null;
-  nextDriverId: string | null;
-};
 
 @Injectable()
 export class CarDriverAssignmentsService {
@@ -98,12 +85,24 @@ export class CarDriverAssignmentsService {
       return;
     }
 
+    await this.lockCustodyRowsInTx(tx, input.carId, input.nextDriverId);
+
+    const [lockedCar] = await tx
+      .select({ driverId: cars.driverId })
+      .from(cars)
+      .where(eq(cars.id, input.carId))
+      .limit(1);
+
+    if (!lockedCar || lockedCar.driverId === input.nextDriverId) {
+      return;
+    }
+
     if (input.nextDriverId) {
-      await this.releaseDriverFromOtherCarInTx(
-        tx,
-        input.nextDriverId,
-        input.carId,
-      );
+      await this.releaseDriverFromOtherCarInTx(tx, {
+        driverId: input.nextDriverId,
+        exceptCarId: input.carId,
+        alreadyLocked: true,
+      });
     }
 
     await this.closeOpenAssignmentsForCarInTx(tx, input.carId);
@@ -124,7 +123,12 @@ export class CarDriverAssignmentsService {
     context: ApiTenantContext,
     input: OpenAssignmentInput,
   ): Promise<void> {
-    await this.releaseDriverFromOtherCarInTx(tx, input.driverId, input.carId);
+    await this.lockCustodyRowsInTx(tx, input.carId, input.driverId);
+    await this.releaseDriverFromOtherCarInTx(tx, {
+      driverId: input.driverId,
+      exceptCarId: input.carId,
+      alreadyLocked: true,
+    });
     await this.closeOpenAssignmentsForCarInTx(tx, input.carId);
     await this.insertOpenAssignmentInTx(tx, context, input);
   }
@@ -178,9 +182,14 @@ export class CarDriverAssignmentsService {
 
   async releaseDriverFromOtherCarInTx(
     tx: TenantTransaction,
-    driverId: string,
-    exceptCarId: string | null,
+    input: ReleaseDriverFromOtherCarInput,
   ): Promise<void> {
+    const { driverId, exceptCarId, alreadyLocked = false } = input;
+
+    if (!alreadyLocked) {
+      await this.lockCustodyRowsInTx(tx, exceptCarId, driverId);
+    }
+
     const [otherCar] = await tx
       .select({ id: cars.id })
       .from(cars)
@@ -196,6 +205,54 @@ export class CarDriverAssignmentsService {
       .update(cars)
       .set({ driverId: null })
       .where(eq(cars.id, otherCar.id));
+  }
+
+  /**
+   * Serialize custody writes with Drizzle row locks.
+   * Lock the driver first (when assigning), then involved cars by id order.
+   */
+  async lockCustodyRowsInTx(
+    tx: TenantTransaction,
+    carId: string | null,
+    driverId: string | null,
+  ): Promise<void> {
+    if (driverId) {
+      await tx
+        .select({ id: drivers.id })
+        .from(drivers)
+        .where(eq(drivers.id, driverId))
+        .for('update')
+        .limit(1);
+    }
+
+    if (carId && driverId) {
+      await tx
+        .select({ id: cars.id })
+        .from(cars)
+        .where(or(eq(cars.id, carId), eq(cars.driverId, driverId)))
+        .orderBy(asc(cars.id))
+        .for('update');
+      return;
+    }
+
+    if (carId) {
+      await tx
+        .select({ id: cars.id })
+        .from(cars)
+        .where(eq(cars.id, carId))
+        .for('update')
+        .limit(1);
+      return;
+    }
+
+    if (driverId) {
+      await tx
+        .select({ id: cars.id })
+        .from(cars)
+        .where(eq(cars.driverId, driverId))
+        .orderBy(asc(cars.id))
+        .for('update');
+    }
   }
 }
 
@@ -236,3 +293,22 @@ function _mapAssignment(row: {
         : null,
   };
 }
+
+type OpenAssignmentInput = {
+  carId: string;
+  driverId: string;
+  companyId: string;
+};
+
+type SyncDriverChangeInput = {
+  carId: string;
+  companyId: string;
+  previousDriverId: string | null;
+  nextDriverId: string | null;
+};
+
+type ReleaseDriverFromOtherCarInput = {
+  driverId: string;
+  exceptCarId: string | null;
+  alreadyLocked?: boolean;
+};

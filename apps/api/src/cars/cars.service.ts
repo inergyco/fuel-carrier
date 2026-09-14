@@ -70,8 +70,10 @@ export class CarsService {
           );
           await this.carDriverAssignmentsService.releaseDriverFromOtherCarInTx(
             tx,
-            dto.driverId,
-            null,
+            {
+              driverId: dto.driverId,
+              exceptCarId: null,
+            },
           );
         }
 
@@ -137,6 +139,14 @@ export class CarsService {
   ): Promise<Car> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
+        if (dto.driverId !== undefined) {
+          await this.carDriverAssignmentsService.lockCustodyRowsInTx(
+            tx,
+            id,
+            dto.driverId,
+          );
+        }
+
         const existing = await this.carsReader.getById(tx, id);
 
         const nextCompanyId =
