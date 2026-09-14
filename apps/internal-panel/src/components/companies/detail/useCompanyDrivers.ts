@@ -7,6 +7,8 @@ import { carKeys } from '../../../lib/api/cars'
 import { deleteDriver, driverKeys, fetchDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
 
+const EMPTY_DRIVERS: Driver[] = []
+
 export function useCompanyDrivers(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
@@ -19,7 +21,7 @@ export function useCompanyDrivers(companyId: string) {
     queryFn: () => fetchDrivers(companyId),
   })
 
-  const companyDrivers = driversQuery.data ?? []
+  const companyDrivers = driversQuery.data ?? EMPTY_DRIVERS
 
   const deleteMutation = useMutation({
     mutationFn: deleteDriver,
