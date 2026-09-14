@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq } from 'drizzle-orm';
 import type {
   Driver,
   PaginatedResult,
@@ -29,6 +29,7 @@ import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
+import { ENTITY_STATUS } from '../database/schema/entity-status';
 import {
   POSTGRES_FOREIGN_KEY_VIOLATION,
   POSTGRES_UNIQUE_VIOLATION,
@@ -92,7 +93,10 @@ export class DriversService {
     }
 
     const offset = getPaginationOffset(options);
-    const where = companyId ? eq(drivers.companyId, companyId) : undefined;
+    const where = and(
+      eq(drivers.status, ENTITY_STATUS.ACTIVE),
+      companyId ? eq(drivers.companyId, companyId) : undefined,
+    );
 
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
@@ -144,7 +148,13 @@ export class DriversService {
   ): Promise<Driver> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const [row] = await tx.insert(drivers).values(dto).returning();
+        const [row] = await tx
+          .insert(drivers)
+          .values({
+            ...dto,
+            status: ENTITY_STATUS.ACTIVE,
+          })
+          .returning();
 
         if (!row) {
           throw createApiException(
@@ -199,6 +209,15 @@ export class DriversService {
           );
         }
 
+        if (existing.status !== ENTITY_STATUS.ACTIVE) {
+          throw createApiException(
+            HttpStatus.BAD_REQUEST,
+            ApiErrorCode.VALIDATION_ERROR,
+            'Validation failed',
+            [{ field: 'id', message: 'Driver is inactive' }],
+          );
+        }
+
         if (
           dto.companyId !== undefined &&
           dto.companyId !== existing.companyId
@@ -248,6 +267,7 @@ export class DriversService {
     }
   }
 
+  /** Soft-delete: mark inactive, end custody, keep row. */
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
       const [existing] = await tx
@@ -264,19 +284,23 @@ export class DriversService {
         );
       }
 
+      if (existing.status === ENTITY_STATUS.INACTIVE) {
+        return null;
+      }
+
       await this.carDriverAssignmentsService.closeOpenAssignmentsForDriverInTx(
         tx,
         id,
       );
 
-      // Composite FK on cars(driver_id, company_id) is NO ACTION — clear first.
       await tx
         .update(cars)
         .set({ driverId: null })
         .where(eq(cars.driverId, id));
 
       const [row] = await tx
-        .delete(drivers)
+        .update(drivers)
+        .set({ status: ENTITY_STATUS.INACTIVE })
         .where(eq(drivers.id, id))
         .returning({ id: drivers.id });
 
@@ -309,10 +333,6 @@ export class DriversService {
     });
   }
 
-  /**
-   * Company moves must not leave cross-tenant custody. Reject; caller unassigns first.
-   * Composite FK on cars(driver_id, company_id) is the DB backstop.
-   */
   private async _assertDriverNotAssigned(
     tx: TenantTransaction,
     driverId: string,
@@ -351,6 +371,7 @@ function _mapDriver(row: typeof drivers.$inferSelect): Driver {
     lastName: row.lastName,
     nationalId: row.nationalId,
     companyId: row.companyId,
+    status: row.status,
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),
   };
@@ -367,6 +388,7 @@ function _mapDriverWithCar(row: DriverWithCar): Driver {
           companyId: row.car.companyId,
           driverId: row.car.driverId,
           note: row.car.note,
+          status: row.car.status,
           createdAt: toIsoTimestamp(row.car.createdAt),
           updatedAt: toIsoTimestamp(row.car.updatedAt),
         }
@@ -378,4 +400,6 @@ const DRIVER_AUDIT_FIELDS = [
   'firstName',
   'lastName',
   'nationalId',
+  'companyId',
+  'status',
 ] as const satisfies readonly (keyof Driver)[];

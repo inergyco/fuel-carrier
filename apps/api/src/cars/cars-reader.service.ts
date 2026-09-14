@@ -31,6 +31,7 @@ export class CarsReader {
       companyId: row.companyId,
       driverId: row.driverId,
       note: row.note,
+      status: row.status,
       createdAt: toIsoTimestamp(row.createdAt),
       updatedAt: toIsoTimestamp(row.updatedAt),
     };

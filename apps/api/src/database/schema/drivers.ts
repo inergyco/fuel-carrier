@@ -1,5 +1,6 @@
 import { pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
 import { companies } from './companies';
+import { entityStatusEnum } from './entity-status';
 
 /** Tenant-owned resource: every row carries company_id for RLS enforcement. */
 export const drivers = pgTable(
@@ -12,6 +13,7 @@ export const drivers = pgTable(
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),
+    status: entityStatusEnum('status').notNull().default('active'),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

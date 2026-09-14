@@ -1,7 +1,7 @@
 # Mobile Fueling — E2E Business Workflow Audit
 
 **Date:** 2026-09-09 (live audit) · **Remediation review:** 2026-09-14  
-**Assurance Degree:** **79 / 100** (estimated after code remediations; pending live re-probe)  
+**Assurance Degree:** **82 / 100** (estimated after code remediations; pending live re-probe)  
 **Original live score (2026-09-09):** **54 / 100**  
 **Targets:**
 - Company panel: https://mobile-fueling.inergy.ir/
@@ -12,7 +12,7 @@
 
 Disposable QA entities were cleaned up. Kimia seed assignment for plate `۲۳ب۴۵۶-۷۸` → driver حسین was restored after cross-company tests. A privilege-escalation test company (“Hacked Co”) was deleted immediately after creation.
 
-> **Remediation (2026-09-14):** Critical items (AUTHZ-COMPANIES, PATCH-DEFAULTS, ISO-05, ISO-06), VAL-500, PAGE-03, and AUTH-03 are implemented in code. Soft-delete/INACTIVE/CUST-09 remain open. Score revised to **79** on that basis — confirm with deploy + live re-probe. See [§ Status](#status). Findings in §§3–6 are the original audit evidence unless marked remediated in Status.
+> **Remediation (2026-09-14):** Critical items, VAL-500, PAGE-03, AUTH-03, and soft-delete (INACTIVE + CUST-09) are implemented in code. Score revised to **82** on that basis — confirm with migrate + deploy + live re-probe. See [§ Status](#status). Findings in §§3–6 are the original audit evidence unless marked remediated in Status.
 
 ---
 
@@ -20,9 +20,9 @@ Disposable QA entities were cleaned up. Kimia seed assignment for plate `۲۳ب�
 
 **At audit time (2026-09-09):** Company-tenant happy paths were largely solid (login, logout, Pars/Kimia isolation, viewer write denial, 1:1 custody). Four Critical admin/API issues undermined multi-tenant integrity, and unique violations returned HTTP 500.
 
-**After code remediations (2026-09-14):** Those Critical paths, unique→400 mapping, list pagination, and login body validation (empty `{}` → 400) are fixed in the repo. The remaining material gap from this audit is the lack of an inactive/soft-delete model (hard delete still drops reachable car-scoped history).
+**After code remediations (2026-09-14):** Those Critical paths, unique→400 mapping, list pagination, login body validation, and car/driver soft-deactivate (status `active`/`inactive`) are fixed in the repo. Hard delete of cars/drivers is no longer used for offboarding; assignment history remains reachable via car-scoped APIs.
 
-**Verdict:** Core custody and tenancy rules look production-credible in code once deployed. Do not treat the **79** as a re-tested live score until remediations are re-probed on the deployed API. Soft-delete/status is the main product gap left from this audit.
+**Verdict:** This audit’s remediation backlog is complete in code. Do not treat the **82** as a re-tested live score until migrate/deploy and Critical/High/soft-delete probes run on the deployed API.
 
 ---
 
@@ -31,8 +31,8 @@ Disposable QA entities were cleaned up. Kimia seed assignment for plate `۲۳ب�
 | Band | Meaning |
 |------|---------|
 | 90–100 | Highly reliable |
-| 80–89 | Good, minor issues |
-| **70–79** | **Acceptable but meaningful issues** ← **79 estimated (2026-09-14)** |
+| **80–89** | **Good, minor issues** ← **82 estimated (2026-09-14)** |
+| 70–79 | Acceptable but meaningful issues |
 | 60–69 | Risky |
 | 40–59 | Major reliability concerns ← **54 live (2026-09-09)** |
 | 0–39 | Unsafe / unreliable for production |
@@ -40,8 +40,9 @@ Disposable QA entities were cleaned up. Kimia seed assignment for plate `۲۳ب�
 | Score | When | Basis |
 |-------|------|--------|
 | **54** | 2026-09-09 | Live API evidence (4 Critical + VAL-500 + unpaginated lists). |
-| **78** | 2026-09-14 | Critical/High/PAGE-03 fixed in code; AUTH-03 + soft-delete still open. |
-| **79** | 2026-09-14 | +AUTH-03 (`LoginBodyGuard`). Held under ~80–85 by open INACTIVE/CUST-09 and no post-deploy re-probe. |
+| **78** | 2026-09-14 | Critical/High/PAGE-03 fixed; AUTH-03 + soft-delete still open. |
+| **79** | 2026-09-14 | +AUTH-03. Soft-delete still open. |
+| **82** | 2026-09-14 | +INACTIVE/CUST-09 soft-deactivate. Held under ~90 by no post-deploy re-probe and intentional HIST-EDIT immutability. |
 
 Original note still holds for the live day: company-panel isolation/custody alone would have scored ~80; the **54** was dragged down by admin authz and custody corruption paths.
 ---
@@ -186,7 +187,7 @@ Original note still holds for the live day: company-panel isolation/custody alon
 | 3 | **Enforce same-company** on assign; block custody-breaking company moves | **Done** |
 | 4 | **Fix Postgres unique mapping** → 400 (unwrap nested errors) | **Done** |
 | 5a | **Paginated lists** (`page`/`limit`) on core list endpoints + both panels | **Done** |
-| 5b | Soft-delete / status model (INACTIVE + CUST-09) | **Open** |
+| 5b | Soft-delete / status model (INACTIVE + CUST-09) | **Done** |
 | — | **AUTH-03** empty login → 400 before passport | **Done** |
 
 ---
@@ -203,15 +204,15 @@ Original note still holds for the live day: company-panel isolation/custody alon
 | Custody row locks (related) | `apps/api/src/cars/car-driver-assignments.service.ts` |
 | List pagination | `apps/api/src/common/pagination.utils.ts`, panel `usePagination` |
 | Login body validation (AUTH-03) | `apps/api/src/auth/login-body.guard.ts` |
-| Soft-delete / inactive | *(not implemented)* |
+| Soft-delete / inactive | `entity_status` on cars/drivers; `DELETE` → deactivate in cars/drivers services; migration `0018_entity_status` |
 
 ---
 
 ## Status
 
 **Audit date:** 2026-09-09 — live score **54/100**.  
-**Remediation review:** 2026-09-14 — estimated score **79/100** (Critical/High/PAGE-03/AUTH-03 fixed in code; open soft-delete; **not** re-probed live).  
-Production still needs redeploy + re-probe before treating remediations as closed in the wild.
+**Remediation review:** 2026-09-14 — estimated score **82/100** (all priority remediations from this canvas done in code; **not** re-probed live).  
+Production still needs migrate + redeploy + re-probe before treating remediations as closed in the wild.
 
 ### Implemented in code
 
@@ -224,6 +225,8 @@ Production still needs redeploy + re-probe before treating remediations as close
 | **VAL-500** | High | Postgres error cause-chain unwrap; unique violations (`23505`) map to 400 field errors for cars/drivers (and related custody uniques). |
 | **PAGE-03** | Medium | Server pagination (`page`/`limit`) on companies, cars, drivers, company-users lists (internal + external). Both panels use paginated queries; list UI syncs `?page=`/`?limit=` via `usePagination`. Dashboard/map walk pages via `fetchAllPaginated`. |
 | **AUTH-03** | Medium | `LoginBodyGuard` validates `loginDtoSchema` before passport-local on internal and external login; empty/`{}` bodies → **400** `VALIDATION_ERROR`. |
+| **INACTIVE** | Medium | Cars/drivers have `status` (`active` \| `inactive`). Lists default to active; assign/update blocked when inactive. |
+| **CUST-09** | Medium | `DELETE` car/driver soft-deactivates (ends custody, keeps row). Car-scoped assignment history still loads for inactive cars. |
 | *(related)* | — | Custody assign path takes row locks (`FOR UPDATE`) to reduce race windows. |
 | *(related)* | — | Malformed UUID path params → 400 (`assertUuidParam`). |
 | *(related)* | — | Internal car/driver lists accept optional `?companyId=` (admin company detail no longer client-filters a full dump). |
@@ -233,10 +236,8 @@ Production still needs redeploy + re-probe before treating remediations as close
 
 | ID | Severity | Notes |
 |----|----------|-------|
-| **INACTIVE** | Medium | No status / deactivate model; hard delete only. |
-| **CUST-09** | Medium | Hard-delete car still makes car-scoped assignment history unreachable (404). Soft-delete or company-scoped history search not done. |
 | **HIST-EDIT** | Low | Still no direct history edit API (intentional immutability; PATCH-DEFAULTS fixed). |
 
 ### Suggested next step
 
-Implement **soft-delete or inactive status** for cars/drivers (closes INACTIVE + largely CUST-09). After API/panel deploy, re-run the Critical/High live probes and lock the assurance score.
+Run migration `0018_entity_status`, deploy API/panels, re-probe Critical/High + soft-delete paths, then lock the assurance score. First canvas remediation backlog is otherwise complete — proceed to the next audit canvas when ready.

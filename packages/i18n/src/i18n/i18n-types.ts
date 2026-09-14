@@ -375,7 +375,7 @@ type RootTranslation = {
 			 */
 			driverUpdated: string
 			/**
-			 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d​.
+			 * D​r​i​v​e​r​ ​d​e​a​c​t​i​v​a​t​e​d​.
 			 */
 			driverDeleted: string
 			/**
@@ -387,7 +387,7 @@ type RootTranslation = {
 			 */
 			carUpdated: string
 			/**
-			 * C​a​r​ ​d​e​l​e​t​e​d​.
+			 * C​a​r​ ​d​e​a​c​t​i​v​a​t​e​d​.
 			 */
 			carDeleted: string
 			/**
@@ -833,20 +833,20 @@ type RootTranslation = {
 				 */
 				deleteUserDescription: RequiredParams<'name'>
 				/**
-				 * D​e​l​e​t​e​ ​d​r​i​v​e​r​?
+				 * D​e​a​c​t​i​v​a​t​e​ ​d​r​i​v​e​r​?
 				 */
 				deleteDriverTitle: string
 				/**
-				 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+				 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​T​h​e​y​ ​c​a​n​ ​n​o​ ​l​o​n​g​e​r​ ​b​e​ ​a​s​s​i​g​n​e​d​ ​t​o​ ​v​e​h​i​c​l​e​s​;​ ​a​s​s​i​g​n​m​e​n​t​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
 				 * @param {string} name
 				 */
 				deleteDriverDescription: RequiredParams<'name'>
 				/**
-				 * D​e​l​e​t​e​ ​c​a​r​?
+				 * D​e​a​c​t​i​v​a​t​e​ ​c​a​r​?
 				 */
 				deleteCarTitle: string
 				/**
-				 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+				 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​A​s​s​i​g​n​m​e​n​t​ ​h​i​s​t​o​r​y​ ​s​t​a​y​s​ ​a​v​a​i​l​a​b​l​e​;​ ​t​h​e​ ​v​e​h​i​c​l​e​ ​l​e​a​v​e​s​ ​a​c​t​i​v​e​ ​l​i​s​t​s​.
 				 * @param {string} licensePlate
 				 */
 				deleteCarDescription: RequiredParams<'licensePlate'>
@@ -1473,7 +1473,7 @@ type RootTranslation = {
 			 */
 			driverUpdated: string
 			/**
-			 * D​r​i​v​e​r​ ​d​e​l​e​t​e​d​.
+			 * D​r​i​v​e​r​ ​d​e​a​c​t​i​v​a​t​e​d​.
 			 */
 			driverDeleted: string
 			/**
@@ -1485,7 +1485,7 @@ type RootTranslation = {
 			 */
 			carUpdated: string
 			/**
-			 * V​e​h​i​c​l​e​ ​d​e​l​e​t​e​d​.
+			 * V​e​h​i​c​l​e​ ​d​e​a​c​t​i​v​a​t​e​d​.
 			 */
 			carDeleted: string
 			/**
@@ -1702,20 +1702,20 @@ type RootTranslation = {
 			 */
 			deleteFailed: string
 			/**
-			 * D​e​l​e​t​e​ ​d​r​i​v​e​r​?
+			 * D​e​a​c​t​i​v​a​t​e​ ​d​r​i​v​e​r​?
 			 */
 			deleteTitle: string
 			/**
-			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​A​n​y​ ​v​e​h​i​c​l​e​ ​a​s​s​i​g​n​m​e​n​t​ ​w​i​l​l​ ​b​e​ ​r​e​m​o​v​e​d​.
+			 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​A​n​y​ ​v​e​h​i​c​l​e​ ​a​s​s​i​g​n​m​e​n​t​ ​w​i​l​l​ ​b​e​ ​e​n​d​e​d​;​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
 			 * @param {string} name
 			 */
 			deleteDescription: RequiredParams<'name'>
 			/**
-			 * D​e​l​e​t​e
+			 * D​e​a​c​t​i​v​a​t​e
 			 */
 			deleteConfirm: string
 			/**
-			 * D​e​l​e​t​i​n​g​…
+			 * D​e​a​c​t​i​v​a​t​i​n​g​…
 			 */
 			deleting: string
 			/**
@@ -1809,20 +1809,20 @@ type RootTranslation = {
 			 */
 			deleteFailed: string
 			/**
-			 * D​e​l​e​t​e​ ​v​e​h​i​c​l​e​?
+			 * D​e​a​c​t​i​v​a​t​e​ ​v​e​h​i​c​l​e​?
 			 */
 			deleteTitle: string
 			/**
-			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+			 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.​ ​A​s​s​i​g​n​m​e​n​t​ ​h​i​s​t​o​r​y​ ​s​t​a​y​s​ ​a​v​a​i​l​a​b​l​e​;​ ​t​h​e​ ​v​e​h​i​c​l​e​ ​l​e​a​v​e​s​ ​a​c​t​i​v​e​ ​l​i​s​t​s​.
 			 * @param {string} licensePlate
 			 */
 			deleteDescription: RequiredParams<'licensePlate'>
 			/**
-			 * D​e​l​e​t​e
+			 * D​e​a​c​t​i​v​a​t​e
 			 */
 			deleteConfirm: string
 			/**
-			 * D​e​l​e​t​i​n​g​…
+			 * D​e​a​c​t​i​v​a​t​i​n​g​…
 			 */
 			deleting: string
 			/**
@@ -2651,7 +2651,7 @@ export type TranslationFunctions = {
 			 */
 			driverUpdated: () => LocalizedString
 			/**
-			 * Driver deleted.
+			 * Driver deactivated.
 			 */
 			driverDeleted: () => LocalizedString
 			/**
@@ -2663,7 +2663,7 @@ export type TranslationFunctions = {
 			 */
 			carUpdated: () => LocalizedString
 			/**
-			 * Car deleted.
+			 * Car deactivated.
 			 */
 			carDeleted: () => LocalizedString
 			/**
@@ -3098,19 +3098,19 @@ export type TranslationFunctions = {
 				 */
 				deleteUserDescription: (arg: { name: string }) => LocalizedString
 				/**
-				 * Delete driver?
+				 * Deactivate driver?
 				 */
 				deleteDriverTitle: () => LocalizedString
 				/**
-				 * This will permanently delete {name}. This action cannot be undone.
+				 * This will deactivate {name}. They can no longer be assigned to vehicles; assignment history is kept.
 				 */
 				deleteDriverDescription: (arg: { name: string }) => LocalizedString
 				/**
-				 * Delete car?
+				 * Deactivate car?
 				 */
 				deleteCarTitle: () => LocalizedString
 				/**
-				 * This will permanently delete {licensePlate}. This action cannot be undone.
+				 * This will deactivate {licensePlate}. Assignment history stays available; the vehicle leaves active lists.
 				 */
 				deleteCarDescription: (arg: { licensePlate: string }) => LocalizedString
 				/**
@@ -3727,7 +3727,7 @@ export type TranslationFunctions = {
 			 */
 			driverUpdated: () => LocalizedString
 			/**
-			 * Driver deleted.
+			 * Driver deactivated.
 			 */
 			driverDeleted: () => LocalizedString
 			/**
@@ -3739,7 +3739,7 @@ export type TranslationFunctions = {
 			 */
 			carUpdated: () => LocalizedString
 			/**
-			 * Vehicle deleted.
+			 * Vehicle deactivated.
 			 */
 			carDeleted: () => LocalizedString
 			/**
@@ -3955,19 +3955,19 @@ export type TranslationFunctions = {
 			 */
 			deleteFailed: () => LocalizedString
 			/**
-			 * Delete driver?
+			 * Deactivate driver?
 			 */
 			deleteTitle: () => LocalizedString
 			/**
-			 * This will permanently delete {name}. Any vehicle assignment will be removed.
+			 * This will deactivate {name}. Any vehicle assignment will be ended; history is kept.
 			 */
 			deleteDescription: (arg: { name: string }) => LocalizedString
 			/**
-			 * Delete
+			 * Deactivate
 			 */
 			deleteConfirm: () => LocalizedString
 			/**
-			 * Deleting…
+			 * Deactivating…
 			 */
 			deleting: () => LocalizedString
 			/**
@@ -4061,19 +4061,19 @@ export type TranslationFunctions = {
 			 */
 			deleteFailed: () => LocalizedString
 			/**
-			 * Delete vehicle?
+			 * Deactivate vehicle?
 			 */
 			deleteTitle: () => LocalizedString
 			/**
-			 * This will permanently delete {licensePlate}. This action cannot be undone.
+			 * This will deactivate {licensePlate}. Assignment history stays available; the vehicle leaves active lists.
 			 */
 			deleteDescription: (arg: { licensePlate: string }) => LocalizedString
 			/**
-			 * Delete
+			 * Deactivate
 			 */
 			deleteConfirm: () => LocalizedString
 			/**
-			 * Deleting…
+			 * Deactivating…
 			 */
 			deleting: () => LocalizedString
 			/**

@@ -8,6 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { companies } from './companies';
 import { drivers } from './drivers';
+import { entityStatusEnum } from './entity-status';
 
 /** Tenant-owned resource: every row carries company_id for RLS enforcement. */
 export const cars = pgTable(
@@ -22,6 +23,7 @@ export const cars = pgTable(
     /** One-to-one: each driver may be assigned to at most one car. */
     driverId: uuid('driver_id').unique(),
     note: text('note'),
+    status: entityStatusEnum('status').notNull().default('active'),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),

@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq } from 'drizzle-orm';
 import type {
   Car,
   PaginatedResult,
@@ -19,7 +19,6 @@ import {
   formatAuditCarLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
-import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import {
   toPaginatedResult,
   getPaginationOffset,
@@ -28,6 +27,7 @@ import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
+import { ENTITY_STATUS } from '../database/schema/entity-status';
 import { drivers } from '../database/schema/drivers';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
@@ -56,7 +56,6 @@ export class CarsService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
-    private readonly carTelemetryService: CarTelemetryService,
     private readonly carsReader: CarsReader,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
@@ -71,7 +70,10 @@ export class CarsService {
     }
 
     const offset = getPaginationOffset(options);
-    const where = companyId ? eq(cars.companyId, companyId) : undefined;
+    const where = and(
+      eq(cars.status, ENTITY_STATUS.ACTIVE),
+      companyId ? eq(cars.companyId, companyId) : undefined,
+    );
 
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
@@ -104,7 +106,7 @@ export class CarsService {
     try {
       return await this.tenantDb.run(context, async (tx) => {
         if (dto.driverId) {
-          await this._assertDriverBelongsToCompany(
+          await this._assertDriverAssignableToCompany(
             tx,
             dto.driverId,
             dto.companyId,
@@ -126,6 +128,7 @@ export class CarsService {
             companyId: dto.companyId,
             driverId: dto.driverId ?? null,
             note: dto.note ?? null,
+            status: ENTITY_STATUS.ACTIVE,
           })
           .returning();
 
@@ -189,6 +192,7 @@ export class CarsService {
         }
 
         const existing = await this.carsReader.getById(tx, id);
+        this._assertCarActive(existing);
 
         const nextCompanyId =
           dto.companyId !== undefined ? dto.companyId : existing.companyId;
@@ -196,7 +200,7 @@ export class CarsService {
           dto.driverId !== undefined ? dto.driverId : existing.driverId;
 
         if (nextDriverId) {
-          await this._assertDriverBelongsToCompany(
+          await this._assertDriverAssignableToCompany(
             tx,
             nextDriverId,
             nextCompanyId,
@@ -264,9 +268,14 @@ export class CarsService {
     }
   }
 
+  /** Soft-delete: mark inactive, end custody, keep row for assignment history. */
   async delete(context: ApiTenantContext, id: string): Promise<null> {
-    const deleted = await this.tenantDb.run(context, async (tx) => {
+    return this.tenantDb.run(context, async (tx) => {
       const existing = await this.carsReader.getById(tx, id);
+
+      if (existing.status === ENTITY_STATUS.INACTIVE) {
+        return null;
+      }
 
       await this.carDriverAssignmentsService.closeOpenAssignmentsForCarInTx(
         tx,
@@ -274,7 +283,11 @@ export class CarsService {
       );
 
       const [row] = await tx
-        .delete(cars)
+        .update(cars)
+        .set({
+          status: ENTITY_STATUS.INACTIVE,
+          driverId: null,
+        })
         .where(eq(cars.id, id))
         .returning({ id: cars.id });
 
@@ -302,29 +315,36 @@ export class CarsService {
         },
       });
 
-      return { companyId: existing.companyId, carId: id };
+      return null;
     });
+  }
 
-    await this.carTelemetryService.clearForCar(
-      deleted.companyId,
-      deleted.carId,
-    );
-
-    return null;
+  private _assertCarActive(car: Car): void {
+    if (car.status !== ENTITY_STATUS.ACTIVE) {
+      throw createApiException(
+        HttpStatus.BAD_REQUEST,
+        ApiErrorCode.VALIDATION_ERROR,
+        'Validation failed',
+        [{ field: 'id', message: 'Car is inactive' }],
+      );
+    }
   }
 
   /**
-   * Driver and car must share companyId. RLS hides other-company drivers for
-   * company users; internal admins see all drivers, so this check is required.
-   * A composite FK on cars(driver_id, company_id) is the DB backstop.
+   * Driver must share companyId and be active. RLS hides other-company drivers
+   * for company users; internal admins see all drivers, so this check is required.
    */
-  private async _assertDriverBelongsToCompany(
+  private async _assertDriverAssignableToCompany(
     tx: TenantTransaction,
     driverId: string,
     companyId: string,
   ): Promise<void> {
     const [driver] = await tx
-      .select({ id: drivers.id, companyId: drivers.companyId })
+      .select({
+        id: drivers.id,
+        companyId: drivers.companyId,
+        status: drivers.status,
+      })
       .from(drivers)
       .where(eq(drivers.id, driverId))
       .limit(1);
@@ -342,6 +362,15 @@ export class CarsService {
         ],
       );
     }
+
+    if (driver.status !== ENTITY_STATUS.ACTIVE) {
+      throw createApiException(
+        HttpStatus.BAD_REQUEST,
+        ApiErrorCode.VALIDATION_ERROR,
+        'Validation failed',
+        [{ field: 'driverId', message: 'Driver is inactive' }],
+      );
+    }
   }
 }
 
@@ -353,6 +382,7 @@ function _mapCar(row: typeof cars.$inferSelect): Car {
     companyId: row.companyId,
     driverId: row.driverId,
     note: row.note,
+    status: row.status,
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),
   };
@@ -363,4 +393,5 @@ const CAR_AUDIT_FIELDS = [
   'licensePlate',
   'driverId',
   'note',
+  'status',
 ] as const satisfies readonly (keyof Car)[];
