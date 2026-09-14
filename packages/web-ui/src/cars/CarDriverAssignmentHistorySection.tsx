@@ -1,12 +1,11 @@
-import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
-import { useState } from "react";
 import {
   carDriverAssignmentKeys,
   fetchCarDriverAssignments,
 } from "./car-driver-assignments";
 import { useQuery } from "../query";
 import { Pagination } from "../ui/Pagination";
+import { usePagination } from "../ui/usePagination";
 import { cn } from "../utils";
 
 export type CarDriverAssignmentHistoryLabelScope = "external" | "internal";
@@ -25,9 +24,7 @@ export function CarDriverAssignmentHistorySection({
     labelScope === "external"
       ? LL.externalPanel.cars
       : LL.internalPanel.companies.detail;
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(DEFAULT_LIMIT);
-  const pagination = { page, limit };
+  const { pagination, handlePageChange, handleLimitChange } = usePagination();
   const assignmentsQuery = useQuery({
     queryKey: carDriverAssignmentKeys.byCar(carId, pagination),
     queryFn: function loadAssignments() {
@@ -36,15 +33,6 @@ export function CarDriverAssignmentHistorySection({
     placeholderData: (previousData) => previousData,
   });
   const result = assignmentsQuery.data;
-
-  function handlePageChange(nextPage: number) {
-    setPage(nextPage);
-  }
-
-  function handleLimitChange(nextLimit: number) {
-    setLimit(nextLimit);
-    setPage(1);
-  }
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 backdrop-blur-sm md:p-6">

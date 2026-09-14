@@ -1,5 +1,9 @@
-import type { CompanyUser } from '@fuel-carrier/shared-types'
-import { CompanyUserLevels } from '@fuel-carrier/shared-types'
+import type {
+  CompanyUser,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types'
+import { CompanyUserLevels, DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
   CreateExternalCompanyUserDto,
   UpdateExternalCompanyUserDto,
@@ -8,6 +12,8 @@ import { api } from '@fuel-carrier/web-ui/api'
 
 export const companyUserKeys = {
   all: ['company-users'] as const,
+  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+    ['company-users', 'list', params] as const,
 }
 
 export type CompanyUserFormValues = {
@@ -34,8 +40,12 @@ export function companyUserToFormValues(
   }
 }
 
-export async function fetchCompanyUsers(): Promise<CompanyUser[]> {
-  return api.get('company-users').json<CompanyUser[]>()
+export async function fetchCompanyUsers(
+  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+): Promise<PaginatedResult<CompanyUser>> {
+  return api
+    .get('company-users', { searchParams: params })
+    .json<PaginatedResult<CompanyUser>>()
 }
 
 export async function createCompanyUser(

@@ -11,3 +11,4 @@ export {
   type ApiFieldError,
   type ApiSuccessResponse,
 } from './api-client-error'
+export { fetchAllPaginated } from './fetch-all-paginated'

@@ -1,28 +1,28 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useI18nContext } from "@fuel-carrier/i18n/react";
-import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
-import { api } from "@fuel-carrier/web-ui/api";
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import {
   mapPopupActionClassName,
   TrajectoryMapView,
   useCarTelemetryLive,
-} from "@fuel-carrier/web-ui/map";
-import { buttonClassName } from "@fuel-carrier/web-ui/ui";
-import { cn } from "@fuel-carrier/web-ui/utils";
-import { useQuery } from "@fuel-carrier/web-ui/query";
-import { carKeys, fetchCars } from "../../lib/api/cars";
+} from '@fuel-carrier/web-ui/map'
+import { buttonClassName } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
+import { useQuery } from '@fuel-carrier/web-ui/query'
+import { carKeys, fetchCars } from '../../lib/api/cars'
 
-export const Route = createFileRoute("/_authenticated/map")({
+export const Route = createFileRoute('/_authenticated/map')({
   component: MapPage,
-});
+})
 
 function MapPage() {
-  const { LL } = useI18nContext();
-  const telemetryQuery = useCarTelemetryLive(api);
+  const { LL } = useI18nContext()
+  const telemetryQuery = useCarTelemetryLive(api)
   const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: fetchCars,
-  });
+    queryKey: [...carKeys.all, 'all'] as const,
+    queryFn: () => fetchAllPaginated(fetchCars),
+  })
 
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
@@ -33,7 +33,7 @@ function MapPage() {
       >
         {LL.externalPanel.map.viewVehicle()}
       </Link>
-    );
+    )
   }
 
   return (
@@ -45,5 +45,5 @@ function MapPage() {
       labels={LL.externalPanel.map}
       renderVehicleLink={renderVehicleLink}
     />
-  );
+  )
 }

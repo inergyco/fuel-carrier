@@ -1,4 +1,10 @@
-import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types'
+import type {
+  Car,
+  CarMqttCredentials,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types'
+import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
   CreateExternalCarDto,
   UpdateExternalCarDto,
@@ -7,6 +13,8 @@ import { api } from '@fuel-carrier/web-ui/api'
 
 export const carKeys = {
   all: ['cars'] as const,
+  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+    ['cars', 'list', params] as const,
   detail: (id: string) => ['cars', id] as const,
 }
 
@@ -26,8 +34,12 @@ export function carToFormValues(car?: Car): CarFormValues {
   }
 }
 
-export async function fetchCars(): Promise<Car[]> {
-  return api.get('cars').json<Car[]>()
+export async function fetchCars(
+  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+): Promise<PaginatedResult<Car>> {
+  return api
+    .get('cars', { searchParams: params })
+    .json<PaginatedResult<Car>>()
 }
 
 export async function fetchCar(id: string): Promise<Car> {
@@ -54,4 +66,3 @@ export async function provisionCarMqttCredentials(
 ): Promise<CarMqttCredentials> {
   return api.post(`cars/${id}/mqtt-credentials`).json<CarMqttCredentials>()
 }
-

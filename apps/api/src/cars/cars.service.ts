@@ -1,6 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { desc, eq } from 'drizzle-orm';
-import type { Car } from '@fuel-carrier/shared-types';
+import { count, desc, eq } from 'drizzle-orm';
+import type {
+  Car,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
@@ -16,6 +20,10 @@ import {
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
+import {
+  toPaginatedResult,
+  getPaginationOffset,
+} from '../common/pagination.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
@@ -39,6 +47,10 @@ type CreateCarPayload = {
 
 type UpdateCarPayload = Partial<CreateCarPayload>;
 
+type ListCarsOptions = PaginationParams & {
+  companyId?: string;
+};
+
 @Injectable()
 export class CarsService {
   constructor(
@@ -49,19 +61,38 @@ export class CarsService {
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
-  async list(context: ApiTenantContext, companyId?: string): Promise<Car[]> {
+  async list(
+    context: ApiTenantContext,
+    options: ListCarsOptions,
+  ): Promise<PaginatedResult<Car>> {
+    const { page, limit, companyId } = options;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
 
+    const offset = getPaginationOffset(options);
+    const where = companyId ? eq(cars.companyId, companyId) : undefined;
+
     return this.tenantDb.run(context, async (tx) => {
+      const [countRow] = await tx
+        .select({ value: count() })
+        .from(cars)
+        .where(where);
+
       const rows = await tx
         .select()
         .from(cars)
-        .where(companyId ? eq(cars.companyId, companyId) : undefined)
-        .orderBy(desc(cars.createdAt));
+        .where(where)
+        .orderBy(desc(cars.createdAt))
+        .limit(limit)
+        .offset(offset);
 
-      return rows.map(_mapCar);
+      return toPaginatedResult({
+        items: rows.map(_mapCar),
+        page,
+        limit,
+        totalItems: countRow?.value ?? 0,
+      });
     });
   }
 

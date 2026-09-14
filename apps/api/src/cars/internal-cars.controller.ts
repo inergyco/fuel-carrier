@@ -37,6 +37,10 @@ import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import {
+  companyScopedListQuerySchema,
+  type CompanyScopedListQueryDto,
+} from '../common/dto/company-scoped-list-query.dto';
+import {
   paginationQuerySchema,
   type PaginationQueryDto,
 } from '../common/dto/pagination-query.dto';
@@ -46,7 +50,6 @@ import {
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
@@ -73,10 +76,15 @@ export class InternalCarsController {
     summary: 'List cars (optionally filtered by company)',
   })
   @ApiQuery({ name: 'companyId', format: 'uuid', required: false })
-  @ApiEnvelopeOkListResponse(Object)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@Query('companyId') companyId?: string): Promise<Car[]> {
-    return this.carsService.list(internalTenantContext(), companyId);
+  list(
+    @Query(new ZodValidationPipe(companyScopedListQuerySchema))
+    query: CompanyScopedListQueryDto,
+  ): Promise<PaginatedResult<Car>> {
+    return this.carsService.list(internalTenantContext(), query);
   }
 
   @Post(':id/mqtt-credentials')

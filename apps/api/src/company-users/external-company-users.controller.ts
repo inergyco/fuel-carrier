@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,9 +14,10 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { CompanyUser } from '@fuel-carrier/shared-types';
+import type { CompanyUser, PaginatedResult } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createExternalCompanyUserDtoSchema,
@@ -31,11 +33,15 @@ import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  paginationQuerySchema,
+  type PaginationQueryDto,
+} from '../common/dto/pagination-query.dto';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
@@ -54,13 +60,19 @@ export class ExternalCompanyUsersController {
   @ApiOperation({
     summary: 'List company users for the authenticated company',
   })
-  @ApiEnvelopeOkListResponse(Object)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@CurrentUser() user: AuthSession): Promise<CompanyUser[]> {
-    return this.companyUsersService.list(
-      tenantContextFromSession(user),
-      user.companyId!,
-    );
+  list(
+    @CurrentUser() user: AuthSession,
+    @Query(new ZodValidationPipe(paginationQuerySchema))
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<CompanyUser>> {
+    return this.companyUsersService.list(tenantContextFromSession(user), {
+      ...query,
+      companyId: user.companyId!,
+    });
   }
 
   @Get(':id')

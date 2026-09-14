@@ -10,7 +10,7 @@ import {
 import { buttonClassName } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
-import { carKeys, fetchCars } from '../../lib/api/cars'
+import { carKeys, fetchAllCars } from '../../lib/api/cars'
 
 export const Route = createFileRoute('/_authenticated/map')({
   component: MapPage,
@@ -21,7 +21,7 @@ function MapPage() {
   const telemetryQuery = useCarTelemetryLive(api)
   const carsQuery = useQuery({
     queryKey: carKeys.all,
-    queryFn: () => fetchCars(),
+    queryFn: () => fetchAllCars(),
   })
 
   function renderVehicleLink(marker: CarTelemetryMarker) {

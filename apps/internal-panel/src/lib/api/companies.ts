@@ -1,11 +1,18 @@
-import type { Company } from '@fuel-carrier/shared-types';
-import type { CreateCompanyDto } from '@fuel-carrier/shared-validation/company/create';
-import type { UpdateCompanyDto } from '@fuel-carrier/shared-validation/company/update';
-import { api } from '@fuel-carrier/web-ui/api';
+import type {
+  Company,
+  PaginatedResult,
+  PaginationParams,
+} from "@fuel-carrier/shared-types";
+import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
+import type { CreateCompanyDto } from "@fuel-carrier/shared-validation/company/create";
+import type { UpdateCompanyDto } from "@fuel-carrier/shared-validation/company/update";
+import { api } from "@fuel-carrier/web-ui/api";
 
 export const companyKeys = {
-  all: ['companies'] as const,
-  detail: (id: string) => ['companies', id] as const,
+  all: ["companies"] as const,
+  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+    ["companies", "list", params] as const,
+  detail: (id: string) => ["companies", id] as const,
 };
 
 export type CompanyFormValues = {
@@ -19,17 +26,21 @@ export type CompanyFormValues = {
 
 export function companyToFormValues(company?: Company): CompanyFormValues {
   return {
-    name: company?.name ?? '',
-    nationalId: company?.nationalId ?? '',
-    phoneNumber: company?.phoneNumber ?? '',
-    address: company?.address ?? '',
-    note: company?.note ?? '',
-    logoUrl: company?.logoUrl ?? '',
+    name: company?.name ?? "",
+    nationalId: company?.nationalId ?? "",
+    phoneNumber: company?.phoneNumber ?? "",
+    address: company?.address ?? "",
+    note: company?.note ?? "",
+    logoUrl: company?.logoUrl ?? "",
   };
 }
 
-export async function fetchCompanies(): Promise<Company[]> {
-  return api.get('companies').json<Company[]>();
+export async function fetchCompanies(
+  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+): Promise<PaginatedResult<Company>> {
+  return api
+    .get("companies", { searchParams: params })
+    .json<PaginatedResult<Company>>();
 }
 
 export async function fetchCompany(id: string): Promise<Company> {
@@ -37,7 +48,7 @@ export async function fetchCompany(id: string): Promise<Company> {
 }
 
 export async function createCompany(dto: CreateCompanyDto): Promise<Company> {
-  return api.post('companies', { json: dto }).json<Company>();
+  return api.post("companies", { json: dto }).json<Company>();
 }
 
 export async function updateCompany(

@@ -1,8 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, desc, eq, ne, sql } from 'drizzle-orm';
+import { and, count, desc, eq, ne, sql } from 'drizzle-orm';
 import type {
   CompanyUser,
   CompanyUserLevel,
+  PaginatedResult,
+  PaginationParams,
   TenantContext,
 } from '@fuel-carrier/shared-types';
 import {
@@ -22,6 +24,10 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { resolveCompanyUserLevel } from '../common/company-user-level';
+import {
+  toPaginatedResult,
+  getPaginationOffset,
+} from '../common/pagination.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
@@ -29,6 +35,10 @@ import { users } from '../database/schema/users';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+
+type ListCompanyUsersOptions = PaginationParams & {
+  companyId: string;
+};
 
 @Injectable()
 export class CompanyUsersService {
@@ -39,14 +49,40 @@ export class CompanyUsersService {
 
   async list(
     context: TenantContext,
-    companyId: string,
-  ): Promise<CompanyUser[]> {
+    options: ListCompanyUsersOptions,
+  ): Promise<PaginatedResult<CompanyUser>> {
+    const { companyId, page, limit } = options;
     this._assertCompanyAccess(context, companyId);
     await this._assertCompanyExists(companyId);
+    assertUuidParam(companyId, 'companyId');
+
+    const offset = getPaginationOffset(options);
+    const where = eq(companyUsers.companyId, companyId);
 
     return this.tenantDb.run(context, async (tx) => {
-      const rows = await _findCompanyUsersByCompanyId(tx, companyId);
-      return rows.map(_mapCompanyUser);
+      const [countRow] = await tx
+        .select({ value: count() })
+        .from(companyUsers)
+        .where(where);
+
+      const rows = await tx.query.companyUsers.findMany({
+        where,
+        with: { user: true },
+        orderBy: desc(companyUsers.createdAt),
+        limit,
+        offset,
+      });
+
+      const items = rows
+        .filter((row): row is CompanyUserWithUser => row.user != null)
+        .map(_mapCompanyUser);
+
+      return toPaginatedResult({
+        items,
+        page,
+        limit,
+        totalItems: countRow?.value ?? 0,
+      });
     });
   }
 
@@ -423,19 +459,6 @@ export class CompanyUsersService {
       );
     }
   }
-}
-
-async function _findCompanyUsersByCompanyId(
-  tx: TenantTransaction,
-  companyId: string,
-): Promise<CompanyUserWithUser[]> {
-  const rows = await tx.query.companyUsers.findMany({
-    where: eq(companyUsers.companyId, companyId),
-    with: { user: true },
-    orderBy: desc(companyUsers.createdAt),
-  });
-
-  return rows.filter((row): row is CompanyUserWithUser => row.user != null);
 }
 
 async function _findCompanyUserById(

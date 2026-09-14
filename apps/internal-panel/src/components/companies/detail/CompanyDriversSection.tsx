@@ -1,4 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { Pagination } from '@fuel-carrier/web-ui/ui'
 import { getDriverColumns } from './companyResourceColumns'
 import { DeleteCompanyDriverModal } from './DeleteCompanyDriverModal'
 import { DriverFormModal } from './DriverFormModal'
@@ -12,6 +13,7 @@ interface CompanyDriversSectionProps {
 export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps) {
   const { LL } = useI18nContext()
   const drivers = useCompanyDrivers(companyId)
+  const result = drivers.driversQuery.data
 
   return (
     <>
@@ -20,7 +22,7 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         subtitle={LL.internalPanel.companies.detail.driversSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addDriver()}
         emptyLabel={LL.internalPanel.companies.detail.driversEmpty()}
-        loading={drivers.driversQuery.isLoading}
+        loading={drivers.driversQuery.isLoading && !result}
         items={drivers.companyDrivers}
         columns={getDriverColumns({ LL })}
         onAdd={function openCreateDriver() {
@@ -30,6 +32,19 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
           drivers.setDriverModal({ mode: 'edit', item: driver })
         }}
         onDelete={drivers.setDeleteTarget}
+        footer={
+          result ? (
+            <Pagination
+              page={result.page}
+              totalPages={result.totalPages}
+              totalItems={result.totalItems}
+              limit={result.limit}
+              onPageChange={drivers.handlePageChange}
+              onLimitChange={drivers.handleLimitChange}
+              labels={LL.common.pagination}
+            />
+          ) : null
+        }
       />
 
       {drivers.driverModal && (

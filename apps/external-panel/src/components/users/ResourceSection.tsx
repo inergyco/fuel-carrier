@@ -28,6 +28,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onMqttCredentials?: (item: T) => void
   renderViewAction?: (item: T) => ReactNode
   readOnly?: boolean
+  footer?: ReactNode
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -45,6 +46,7 @@ export function ResourceSection<T extends { id: string }>({
   onMqttCredentials,
   renderViewAction,
   readOnly = false,
+  footer,
 }: ResourceSectionProps<T>) {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
 
@@ -70,17 +72,20 @@ export function ResourceSection<T extends { id: string }>({
       ) : items.length === 0 ? (
         <p className="text-sm text-base-content/50">{emptyLabel}</p>
       ) : (
-        <ResourceList
-          items={items}
-          columns={columns}
-          actionLabels={actionLabels}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onMqttCredentials={onMqttCredentials}
-          renderViewAction={renderViewAction}
-          readOnly={readOnly}
-          variant={isMdUp ? 'table' : 'cards'}
-        />
+        <>
+          <ResourceList
+            items={items}
+            columns={columns}
+            actionLabels={actionLabels}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onMqttCredentials={onMqttCredentials}
+            renderViewAction={renderViewAction}
+            readOnly={readOnly}
+            variant={isMdUp ? 'table' : 'cards'}
+          />
+          {footer}
+        </>
       )}
     </section>
   )

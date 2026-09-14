@@ -1,9 +1,22 @@
 ---
-description: Prefer arrow one-liners; named function declarations otherwise
+description: Function args and style conventions
 alwaysApply: true
 ---
 
-# Function style
+# Function style and arguments
 
-- **One-liners** (including Zod `.transform`, simple maps): use arrow functions, e.g. `(value) => value || null`.
-- **Functions used in a component body** (handlers, nested helpers with multiple statements): use `function` declarations, not arrows — matches the existing TypeScript preference.
+## Arguments
+
+- If a function takes **more than three parameters**, pass a **single options object** instead of a long positional list.
+- Keep `tx` / `context` as the first argument when that is the established pattern, then pass the rest as one object when needed.
+- Prefer named fields over boolean flag soup (`alreadyLocked: true`).
+
+## Naming
+
+- Prefer **imperative** verb phrases for functions (`getPaginationOffset`, `fetchCars`, `handlePageChange`).
+- Exception: **type/construction** helpers may use `to*` / `as*` / `from*` (`toPaginatedResult`, `toIsoTimestamp`).
+
+## Function declarations vs arrows
+
+- **One-liners** (Zod `.transform`, simple maps): arrow functions, e.g. `(value) => value || null`.
+- **Multi-statement helpers used in a component body**: `function` declarations, not arrows.

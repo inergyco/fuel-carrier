@@ -1,12 +1,12 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession, Car, Company, Driver } from '@fuel-carrier/shared-types'
-import { api } from '@fuel-carrier/web-ui/api'
+import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo } from 'react'
-import { carKeys, fetchCars } from '../../lib/api/cars'
+import { carKeys, fetchAllCars } from '../../lib/api/cars'
 import { companyKeys, fetchCompanies } from '../../lib/api/companies'
-import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
+import { driverKeys, fetchAllDrivers } from '../../lib/api/drivers'
 import { DashboardCompanyCard } from './DashboardCompanyCard'
 
 export type DashboardPageProps = {
@@ -18,17 +18,17 @@ export function DashboardPage({ user }: DashboardPageProps) {
 
   const companiesQuery = useQuery({
     queryKey: companyKeys.all,
-    queryFn: fetchCompanies,
+    queryFn: () => fetchAllPaginated(fetchCompanies),
   })
 
   const carsQuery = useQuery({
     queryKey: carKeys.all,
-    queryFn: () => fetchCars(),
+    queryFn: () => fetchAllCars(),
   })
 
   const driversQuery = useQuery({
     queryKey: driverKeys.all,
-    queryFn: () => fetchDrivers(),
+    queryFn: () => fetchAllDrivers(),
   })
 
   const telemetryQuery = useCarTelemetryLive(api)

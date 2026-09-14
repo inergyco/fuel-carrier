@@ -4,6 +4,7 @@ import {
   dataTableViewActionClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
+  Pagination,
 } from '@fuel-carrier/web-ui/ui'
 import { Eye } from '@fuel-carrier/web-ui/icons'
 import type { Car } from '@fuel-carrier/shared-types'
@@ -22,6 +23,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
   const { LL } = useI18nContext()
   const cars = useCompanyCars(companyId)
   const emptyCell = LL.internalPanel.companies.emptyCell()
+  const result = cars.carsQuery.data
 
   return (
     <>
@@ -30,7 +32,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         subtitle={LL.internalPanel.companies.detail.carsSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addCar()}
         emptyLabel={LL.internalPanel.companies.detail.carsEmpty()}
-        loading={cars.carsQuery.isLoading}
+        loading={cars.carsQuery.isLoading && !result}
         items={cars.companyCars}
         columns={getCarColumns({
           LL,
@@ -61,6 +63,19 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             </Link>
           )
         }}
+        footer={
+          result ? (
+            <Pagination
+              page={result.page}
+              totalPages={result.totalPages}
+              totalItems={result.totalItems}
+              limit={result.limit}
+              onPageChange={cars.handlePageChange}
+              onLimitChange={cars.handleLimitChange}
+              labels={LL.common.pagination}
+            />
+          ) : null
+        }
       />
 
       {cars.carModal && (

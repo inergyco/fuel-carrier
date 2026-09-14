@@ -47,7 +47,6 @@ import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
@@ -72,10 +71,16 @@ export class ExternalCarsController {
 
   @Get()
   @ApiOperation({ summary: 'List cars for the authenticated company' })
-  @ApiEnvelopeOkListResponse(Object)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@CurrentUser() user: AuthSession): Promise<Car[]> {
-    return this.carsService.list(tenantContextFromSession(user));
+  list(
+    @CurrentUser() user: AuthSession,
+    @Query(new ZodValidationPipe(paginationQuerySchema))
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<Car>> {
+    return this.carsService.list(tenantContextFromSession(user), query);
   }
 
   @Get(':id/driver-assignments')

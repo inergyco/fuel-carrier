@@ -1,4 +1,9 @@
-import type { Driver } from '@fuel-carrier/shared-types'
+import type {
+  Driver,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types'
+import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
   CreateExternalDriverDto,
   UpdateExternalDriverDto,
@@ -7,6 +12,8 @@ import { api } from '@fuel-carrier/web-ui/api'
 
 export const driverKeys = {
   all: ['drivers'] as const,
+  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+    ['drivers', 'list', params] as const,
 }
 
 export type DriverFormValues = {
@@ -23,8 +30,12 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
   }
 }
 
-export async function fetchDrivers(): Promise<Driver[]> {
-  return api.get('drivers').json<Driver[]>()
+export async function fetchDrivers(
+  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+): Promise<PaginatedResult<Driver>> {
+  return api
+    .get('drivers', { searchParams: params })
+    .json<PaginatedResult<Driver>>()
 }
 
 export async function createDriver(

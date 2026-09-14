@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,9 +14,14 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { AuthSession, Company } from '@fuel-carrier/shared-types';
+import type {
+  AuthSession,
+  Company,
+  PaginatedResult,
+} from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createCompanyDtoSchema,
@@ -30,11 +36,15 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  paginationQuerySchema,
+  type PaginationQueryDto,
+} from '../common/dto/pagination-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
@@ -56,10 +66,15 @@ export class InternalCompaniesController {
 
   @Get()
   @ApiOperation({ summary: 'List all companies' })
-  @ApiEnvelopeOkListResponse(CompanyDto)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(CompanyDto)
   @ApiEnvelopeUnauthorizedResponse()
-  list(): Promise<Company[]> {
-    return this.companiesService.list();
+  list(
+    @Query(new ZodValidationPipe(paginationQuerySchema))
+    query: PaginationQueryDto,
+  ): Promise<PaginatedResult<Company>> {
+    return this.companiesService.list(query);
   }
 
   @Get(':id')

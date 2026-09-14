@@ -1,6 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession, CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { api } from '@fuel-carrier/web-ui/api'
+import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import {
   FleetMapView,
   mapPopupActionClassName,
@@ -23,13 +23,13 @@ export function DashboardPage({ user }: DashboardPageProps) {
   const { LL } = useI18nContext()
 
   const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: fetchCars,
+    queryKey: [...carKeys.all, 'all'] as const,
+    queryFn: () => fetchAllPaginated(fetchCars),
   })
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: fetchDrivers,
+    queryKey: [...driverKeys.all, 'all'] as const,
+    queryFn: () => fetchAllPaginated(fetchDrivers),
   })
 
   const telemetryQuery = useCarTelemetryLive(api)

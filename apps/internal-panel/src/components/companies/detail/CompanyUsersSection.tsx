@@ -1,4 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { Pagination } from '@fuel-carrier/web-ui/ui'
 import { getUserColumns } from './companyResourceColumns'
 import { CompanyUserFormModal } from './CompanyUserFormModal'
 import { DeleteCompanyUserModal } from './DeleteCompanyUserModal'
@@ -13,6 +14,7 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
   const { LL } = useI18nContext()
   const users = useCompanyUsers(companyId)
   const emptyCell = LL.internalPanel.companies.emptyCell()
+  const result = users.usersQuery.data
 
   return (
     <>
@@ -21,8 +23,8 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
         subtitle={LL.internalPanel.companies.detail.usersSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addUser()}
         emptyLabel={LL.internalPanel.companies.detail.usersEmpty()}
-        loading={users.usersQuery.isLoading}
-        items={users.usersQuery.data ?? []}
+        loading={users.usersQuery.isLoading && !result}
+        items={users.companyUsers}
         columns={getUserColumns({ LL, emptyCell })}
         onAdd={function openCreateUser() {
           users.setUserModal({ mode: 'create' })
@@ -31,6 +33,19 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
           users.setUserModal({ mode: 'edit', item: user })
         }}
         onDelete={users.setDeleteTarget}
+        footer={
+          result ? (
+            <Pagination
+              page={result.page}
+              totalPages={result.totalPages}
+              totalItems={result.totalItems}
+              limit={result.limit}
+              onPageChange={users.handlePageChange}
+              onLimitChange={users.handleLimitChange}
+              labels={LL.common.pagination}
+            />
+          ) : null
+        }
       />
 
       {users.userModal && (

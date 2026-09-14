@@ -1,42 +1,27 @@
-import type { ChangeEvent } from 'react'
-import { ChevronDown, ChevronLeft, ChevronRight } from '../icons'
-import { Button } from './Button'
-import { cn } from '../utils'
-import { LIMIT_OPTIONS } from '@fuel-carrier/shared-types'
+import type { ChangeEvent } from "react";
+import { LIMIT_OPTIONS } from "@fuel-carrier/shared-types";
+import { ChevronDown, ChevronLeft, ChevronRight } from "../icons";
+import { Button } from "./Button";
+import { cn } from "../utils";
 
 export type PaginationLabels = {
-  previous: () => string
-  next: () => string
-  showing: (params: { from: number; to: number; total: number }) => string
-  pageOf: (params: { current: number; total: number }) => string
-  perPage: () => string
-}
+  previous: () => string;
+  next: () => string;
+  showing: (params: { from: number; to: number; total: number }) => string;
+  pageOf: (params: { current: number; total: number }) => string;
+  perPage: () => string;
+};
 
 interface PaginationProps {
-  page: number
-  totalPages: number
-  totalItems: number
-  limit: number
-  onPageChange: (page: number) => void
-  onLimitChange: (limit: number) => void
-  labels: PaginationLabels
-  limitOptions?: readonly number[]
-  className?: string
-}
-
-export function getPaginationRange(
-  page: number,
-  limit: number,
-  totalItems: number,
-): { from: number; to: number } {
-  if (totalItems === 0) {
-    return { from: 0, to: 0 }
-  }
-
-  const from = (page - 1) * limit + 1
-  const to = Math.min(page * limit, totalItems)
-
-  return { from, to }
+  page: number;
+  totalPages: number;
+  totalItems: number;
+  limit: number;
+  onPageChange: (page: number) => void;
+  onLimitChange: (limit: number) => void;
+  labels: PaginationLabels;
+  limitOptions?: readonly number[];
+  className?: string;
 }
 
 export function Pagination({
@@ -50,34 +35,34 @@ export function Pagination({
   limitOptions = LIMIT_OPTIONS,
   className,
 }: PaginationProps) {
-  const { from, to } = getPaginationRange(page, limit, totalItems)
-  const canGoPrevious = page > 1
-  const canGoNext = page < totalPages
+  const { from, to } = getPaginationRange(page, limit, totalItems);
+  const canGoPrevious = page > 1;
+  const canGoNext = page < totalPages;
 
   function handlePrevious() {
     if (canGoPrevious) {
-      onPageChange(page - 1)
+      onPageChange(page - 1);
     }
   }
 
   function handleNext() {
     if (canGoNext) {
-      onPageChange(page + 1)
+      onPageChange(page + 1);
     }
   }
 
   function handleLimitChange(event: ChangeEvent<HTMLSelectElement>) {
-    onLimitChange(Number(event.target.value))
+    onLimitChange(Number(event.target.value));
   }
 
   if (totalItems === 0) {
-    return null
+    return null;
   }
 
   return (
     <div
       className={cn(
-        'flex flex-col gap-3 border-t border-base-content/8 pt-4 sm:flex-row sm:items-center sm:justify-between',
+        "flex flex-col gap-3 border-t border-base-content/8 pt-4 sm:flex-row sm:items-center sm:justify-between",
         className,
       )}
     >
@@ -94,9 +79,9 @@ export function Pagination({
               onChange={handleLimitChange}
               aria-label={labels.perPage()}
               className={cn(
-                'h-8 min-h-8 w-16 appearance-none rounded-lg border pe-7 ps-2 text-center text-xs tracking-wide',
-                'border-base-content/10 bg-base-200/30 text-base-content backdrop-blur-sm',
-                'focus:outline-none focus:ring-1 focus:ring-primary/40',
+                "h-8 min-h-8 w-16 appearance-none rounded-lg border pe-7 ps-2 text-center text-xs tracking-wide",
+                "border-base-content/10 bg-base-200/30 text-base-content backdrop-blur-sm",
+                "focus:outline-none focus:ring-1 focus:ring-primary/40",
               )}
             >
               {limitOptions.map(function renderLimitOption(option) {
@@ -104,7 +89,7 @@ export function Pagination({
                   <option key={option} value={option}>
                     {option}
                   </option>
-                )
+                );
               })}
             </select>
             <ChevronDown
@@ -127,10 +112,7 @@ export function Pagination({
             onClick={handlePrevious}
             className="border border-base-content/8 bg-base-200/30 backdrop-blur-sm disabled:opacity-40"
           >
-            <ChevronLeft
-              className="size-4 rtl:rotate-180"
-              aria-hidden
-            />
+            <ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />
           </Button>
           <Button
             type="button"
@@ -140,13 +122,25 @@ export function Pagination({
             onClick={handleNext}
             className="border border-base-content/8 bg-base-200/30 backdrop-blur-sm disabled:opacity-40"
           >
-            <ChevronRight
-              className="size-4 rtl:rotate-180"
-              aria-hidden
-            />
+            <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
+}
+
+export function getPaginationRange(
+  page: number,
+  limit: number,
+  totalItems: number,
+): { from: number; to: number } {
+  if (totalItems === 0) {
+    return { from: 0, to: 0 };
+  }
+
+  const from = (page - 1) * limit + 1;
+  const to = Math.min(page * limit, totalItems);
+
+  return { from, to };
 }

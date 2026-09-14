@@ -1,40 +1,32 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { useI18nContext } from "@fuel-carrier/i18n/react";
-import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
-import { useQuery } from "@fuel-carrier/web-ui/query";
-import { AuditLogsTable } from "@fuel-carrier/web-ui/audit-logs";
-import { Pagination } from "@fuel-carrier/web-ui/ui";
-import { auditLogKeys, fetchAuditLogs } from "../../lib/api/audit-logs";
-import { getInternalAuditLogLabels } from "../../components/audit-logs/auditLogLabels";
+import { createFileRoute } from '@tanstack/react-router'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useQuery } from '@fuel-carrier/web-ui/query'
+import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
+import {
+  Pagination,
+  parsePaginationSearch,
+  usePagination,
+} from '@fuel-carrier/web-ui/ui'
+import { auditLogKeys, fetchAuditLogs } from '../../lib/api/audit-logs'
+import { getInternalAuditLogLabels } from '../../components/audit-logs/auditLogLabels'
 
-export const Route = createFileRoute("/_authenticated/audit-logs")({
+export const Route = createFileRoute('/_authenticated/audit-logs')({
+  validateSearch: parsePaginationSearch,
   component: AuditLogsPage,
-});
+})
 
 function AuditLogsPage() {
-  const { LL, locale } = useI18nContext();
-  const labels = getInternalAuditLogLabels(LL);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(DEFAULT_LIMIT);
-  const pagination = { page, limit };
+  const { LL, locale } = useI18nContext()
+  const labels = getInternalAuditLogLabels(LL)
+  const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const auditLogsQuery = useQuery({
     queryKey: auditLogKeys.all(pagination),
     queryFn: function loadAuditLogs() {
-      return fetchAuditLogs(pagination);
+      return fetchAuditLogs(pagination)
     },
     placeholderData: (previousData) => previousData,
-  });
-  const result = auditLogsQuery.data;
-
-  function handlePageChange(nextPage: number) {
-    setPage(nextPage);
-  }
-
-  function handleLimitChange(nextLimit: number) {
-    setLimit(nextLimit);
-    setPage(1);
-  }
+  })
+  const result = auditLogsQuery.data
 
   return (
     <div>
@@ -60,7 +52,7 @@ function AuditLogsPage() {
           <div
             className={
               auditLogsQuery.isFetching
-                ? "opacity-60 transition-opacity"
+                ? 'opacity-60 transition-opacity'
                 : undefined
             }
           >
@@ -84,5 +76,5 @@ function AuditLogsPage() {
         )}
       </section>
     </div>
-  );
+  )
 }

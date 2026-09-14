@@ -17,7 +17,11 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { AuthSession, Driver } from '@fuel-carrier/shared-types';
+import type {
+  AuthSession,
+  Driver,
+  PaginatedResult,
+} from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createInternalDriverDtoSchema,
@@ -30,11 +34,15 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  companyScopedListQuerySchema,
+  type CompanyScopedListQueryDto,
+} from '../common/dto/company-scoped-list-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
@@ -54,10 +62,15 @@ export class InternalDriversController {
     summary: 'List drivers (optionally filtered by company)',
   })
   @ApiQuery({ name: 'companyId', format: 'uuid', required: false })
-  @ApiEnvelopeOkListResponse(Object)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@Query('companyId') companyId?: string): Promise<Driver[]> {
-    return this.driversService.list(internalTenantContext(), companyId);
+  list(
+    @Query(new ZodValidationPipe(companyScopedListQuerySchema))
+    query: CompanyScopedListQueryDto,
+  ): Promise<PaginatedResult<Driver>> {
+    return this.driversService.list(internalTenantContext(), query);
   }
 
   @Get(':id')

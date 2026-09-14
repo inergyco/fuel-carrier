@@ -1,27 +1,32 @@
 import { useMemo, useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { useToast } from '@fuel-carrier/web-ui/ui'
+import { usePagination, useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, deleteCar, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import type { EntityModalState } from '../users/entity-modal-state'
+
+const EMPTY_CARS: Car[] = []
 
 export function useCars() {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
+  const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
 
   const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: fetchCars,
+    queryKey: carKeys.list(pagination),
+    queryFn: () => fetchCars(pagination),
+    placeholderData: (previous) => previous,
   })
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: fetchDrivers,
+    queryKey: [...driverKeys.all, 'all'] as const,
+    queryFn: () => fetchAllPaginated(fetchDrivers),
   })
 
   const driverNameById = useMemo(
@@ -60,6 +65,7 @@ export function useCars() {
   return {
     carsQuery,
     driversQuery,
+    items: carsQuery.data?.items ?? EMPTY_CARS,
     driverNameById,
     carModal,
     setCarModal,
@@ -67,5 +73,7 @@ export function useCars() {
     setDeleteTarget,
     deleteMutation,
     handleChanged,
+    handlePageChange,
+    handleLimitChange,
   }
 }

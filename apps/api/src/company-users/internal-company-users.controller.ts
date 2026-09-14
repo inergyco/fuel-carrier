@@ -17,7 +17,11 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import type { AuthSession, CompanyUser } from '@fuel-carrier/shared-types';
+import type {
+  AuthSession,
+  CompanyUser,
+  PaginatedResult,
+} from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
 import {
   createInternalCompanyUserDtoSchema,
@@ -30,11 +34,15 @@ import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
+import {
+  companyRequiredListQuerySchema,
+  type CompanyRequiredListQueryDto,
+} from '../common/dto/company-scoped-list-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
-  ApiEnvelopeOkListResponse,
+  ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
@@ -52,10 +60,15 @@ export class InternalCompanyUsersController {
   @Get()
   @ApiOperation({ summary: 'List company users for a company' })
   @ApiQuery({ name: 'companyId', format: 'uuid', required: true })
-  @ApiEnvelopeOkListResponse(Object)
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(@Query('companyId') companyId: string): Promise<CompanyUser[]> {
-    return this.companyUsersService.list(internalTenantContext(), companyId);
+  list(
+    @Query(new ZodValidationPipe(companyRequiredListQuerySchema))
+    query: CompanyRequiredListQueryDto,
+  ): Promise<PaginatedResult<CompanyUser>> {
+    return this.companyUsersService.list(internalTenantContext(), query);
   }
 
   @Get(':id')

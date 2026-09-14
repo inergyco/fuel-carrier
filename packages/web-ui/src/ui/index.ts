@@ -41,6 +41,11 @@ export {
   getPaginationRange,
   type PaginationLabels,
 } from './Pagination'
+export {
+  usePagination,
+  parsePaginationSearch,
+  type PaginationSearch,
+} from './usePagination'
 export { useMediaQuery } from './useMediaQuery'
 export { BREAKPOINTS, MEDIA_QUERIES } from './breakpoints'
 export { ToastProvider, useToast } from './toast'

@@ -2,14 +2,14 @@ import { useMemo, useState } from 'react'
 import type { Car, CarMqttCredentials, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { useToast } from '@fuel-carrier/web-ui/ui'
+import { usePagination, useToast } from '@fuel-carrier/web-ui/ui'
 import {
   carKeys,
   deleteCar,
   fetchCars,
   provisionCarMqttCredentials,
 } from '../../../lib/api/cars'
-import { driverKeys, fetchDrivers } from '../../../lib/api/drivers'
+import { driverKeys, fetchAllDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
 
 const EMPTY_CARS: Car[] = []
@@ -19,6 +19,7 @@ export function useCompanyCars(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
+  const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
   const [mqttTarget, setMqttTarget] = useState<Car | null>(null)
@@ -26,17 +27,18 @@ export function useCompanyCars(companyId: string) {
     useState<CarMqttCredentials | null>(null)
 
   const carsQuery = useQuery({
-    queryKey: carKeys.byCompany(companyId),
-    queryFn: () => fetchCars(companyId),
+    queryKey: carKeys.byCompany(companyId, pagination),
+    queryFn: () => fetchCars({ companyId, ...pagination }),
+    placeholderData: (previous) => previous,
   })
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.byCompany(companyId),
-    queryFn: () => fetchDrivers(companyId),
+    queryKey: [...driverKeys.byCompany(companyId), 'all'] as const,
+    queryFn: () => fetchAllDrivers(companyId),
   })
 
   const companyDrivers = driversQuery.data ?? EMPTY_DRIVERS
-  const companyCars = carsQuery.data ?? EMPTY_CARS
+  const companyCars = carsQuery.data?.items ?? EMPTY_CARS
 
   const driverNameById = useMemo(
     function mapDriverNames() {
@@ -80,6 +82,7 @@ export function useCompanyCars(companyId: string) {
 
   async function handleChanged() {
     await queryClient.invalidateQueries({ queryKey: carKeys.all })
+    await queryClient.invalidateQueries({ queryKey: driverKeys.all })
   }
 
   function openMqttCredentials(car: Car) {
@@ -117,5 +120,7 @@ export function useCompanyCars(companyId: string) {
     closeMqttCredentials,
     deleteMutation,
     handleChanged,
+    handlePageChange,
+    handleLimitChange,
   }
 }

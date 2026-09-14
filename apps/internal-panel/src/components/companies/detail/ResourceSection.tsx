@@ -19,6 +19,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onDelete: (item: T) => void
   onMqttCredentials?: (item: T) => void
   renderView?: (item: T) => ReactNode
+  footer?: ReactNode
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -34,6 +35,7 @@ export function ResourceSection<T extends { id: string }>({
   onDelete,
   onMqttCredentials,
   renderView,
+  footer,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
@@ -58,15 +60,18 @@ export function ResourceSection<T extends { id: string }>({
       ) : items.length === 0 ? (
         <p className="text-sm text-base-content/50">{emptyLabel}</p>
       ) : (
-        <ResourceList
-          items={items}
-          columns={columns}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onMqttCredentials={onMqttCredentials}
-          renderView={renderView}
-          variant={isMdUp ? 'table' : 'cards'}
-        />
+        <>
+          <ResourceList
+            items={items}
+            columns={columns}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onMqttCredentials={onMqttCredentials}
+            renderView={renderView}
+            variant={isMdUp ? 'table' : 'cards'}
+          />
+          {footer}
+        </>
       )}
     </section>
   )

@@ -1,12 +1,21 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, desc, eq, ne } from 'drizzle-orm';
-import type { Company, CompanyInput } from '@fuel-carrier/shared-types';
+import { and, count, desc, eq, ne } from 'drizzle-orm';
+import type {
+  Company,
+  CompanyInput,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import {
+  toPaginatedResult,
+  getPaginationOffset,
+} from '../common/pagination.utils';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { AuditLogService } from '../audit-logs/audit-log.service';
@@ -33,14 +42,26 @@ export class CompaniesService {
     private readonly auditLogService: AuditLogService,
   ) {}
 
-  async list(): Promise<Company[]> {
+  async list(pagination: PaginationParams): Promise<PaginatedResult<Company>> {
+    const { page, limit } = pagination;
+    const offset = getPaginationOffset(pagination);
+
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      const [countRow] = await tx.select({ value: count() }).from(companies);
+
       const rows = await tx
         .select()
         .from(companies)
-        .orderBy(desc(companies.createdAt));
+        .orderBy(desc(companies.createdAt))
+        .limit(limit)
+        .offset(offset);
 
-      return rows.map(_mapCompany);
+      return toPaginatedResult({
+        items: rows.map(_mapCompany),
+        page,
+        limit,
+        totalItems: countRow?.value ?? 0,
+      });
     });
   }
 

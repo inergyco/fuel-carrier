@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
+import { Pagination, parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
 import { CarFormModal } from '../../components/cars/CarFormModal'
 import { CarMqttCredentialsModals } from '../../components/cars/CarMqttCredentialsModals'
 import { CarViewAction } from '../../components/cars/CarViewAction'
@@ -12,6 +13,7 @@ import { useCars } from '../../components/cars/useCars'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
 export const Route = createFileRoute('/_authenticated/cars/')({
+  validateSearch: parsePaginationSearch,
   component: CarsPage,
 })
 
@@ -22,7 +24,9 @@ function CarsPage() {
   const cars = useCars()
   const mqtt = useCarMqttCredentials()
   const emptyCell = LL.externalPanel.cars.emptyCell()
-  const isLoading = cars.carsQuery.isLoading || cars.driversQuery.isLoading
+  const result = cars.carsQuery.data
+  const isLoading =
+    (cars.carsQuery.isLoading && !result) || cars.driversQuery.isLoading
 
   function renderViewAction(car: Car) {
     return <CarViewAction car={car} />
@@ -36,7 +40,7 @@ function CarsPage() {
         addLabel={LL.externalPanel.cars.addCar()}
         emptyLabel={LL.externalPanel.cars.empty()}
         loading={isLoading}
-        items={cars.carsQuery.data ?? []}
+        items={cars.items}
         columns={getCarColumns({
           LL,
           emptyCell,
@@ -59,6 +63,19 @@ function CarsPage() {
         onMqttCredentials={canManage ? mqtt.openMqttCredentials : undefined}
         renderViewAction={renderViewAction}
         readOnly={!canManage}
+        footer={
+          result ? (
+            <Pagination
+              page={result.page}
+              totalPages={result.totalPages}
+              totalItems={result.totalItems}
+              limit={result.limit}
+              onPageChange={cars.handlePageChange}
+              onLimitChange={cars.handleLimitChange}
+              labels={LL.common.pagination}
+            />
+          ) : null
+        }
       />
 
       {canManage && cars.carModal ? (

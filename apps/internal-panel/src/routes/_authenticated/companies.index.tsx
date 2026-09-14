@@ -2,7 +2,18 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, ConfirmModal, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery, useToast } from '@fuel-carrier/web-ui/ui'
+import {
+  Button,
+  ConfirmModal,
+  ICON_STROKE_WIDTH,
+  MEDIA_QUERIES,
+  Pagination,
+  iconMdClassName,
+  parsePaginationSearch,
+  useMediaQuery,
+  usePagination,
+  useToast,
+} from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
@@ -15,6 +26,7 @@ import {
 } from '../../lib/api/companies'
 
 export const Route = createFileRoute('/_authenticated/companies/')({
+  validateSearch: parsePaginationSearch,
   component: CompaniesPage,
 })
 
@@ -23,20 +35,24 @@ type FormModalState =
   | { mode: 'edit'; company: Company }
   | null
 
+const EMPTY_COMPANIES: Company[] = []
+
 function CompaniesPage() {
   const { LL } = useI18nContext()
   const toast = useToast()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const queryClient = useQueryClient()
+  const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const [formModal, setFormModal] = useState<FormModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null)
 
-  const companiesQuery = useQuery<Company[]>({
-    queryKey: companyKeys.all,
-    queryFn: fetchCompanies,
+  const companiesQuery = useQuery({
+    queryKey: companyKeys.list(pagination),
+    queryFn: () => fetchCompanies(pagination),
+    placeholderData: (previous) => previous,
   })
 
-  const deleteMutation = useMutation<void, Error, string>({
+  const deleteMutation = useMutation({
     mutationFn: deleteCompany,
     onSuccess: async function onDeleteSuccess() {
       await queryClient.invalidateQueries({ queryKey: companyKeys.all })
@@ -82,7 +98,8 @@ function CompaniesPage() {
     await queryClient.invalidateQueries({ queryKey: companyKeys.all })
   }
 
-  const companies = companiesQuery.data ?? []
+  const result = companiesQuery.data
+  const companies = result?.items ?? EMPTY_COMPANIES
 
   return (
     <div>
@@ -109,7 +126,7 @@ function CompaniesPage() {
       </div>
 
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
-        {companiesQuery.isLoading ? (
+        {companiesQuery.isLoading && !result ? (
           <p className="p-6 text-sm text-base-content/50">
             {LL.internalPanel.companies.loading()}
           </p>
@@ -118,19 +135,34 @@ function CompaniesPage() {
             {LL.internalPanel.companies.empty()}
           </p>
         ) : (
-          isMdUp ? (
-            <CompaniesTable
-              companies={companies}
-              onEdit={handleEditCompany}
-              onDelete={handleDeleteCompany}
-            />
-          ) : (
-            <CompaniesCardList
-              companies={companies}
-              onEdit={handleEditCompany}
-              onDelete={handleDeleteCompany}
-            />
-          )
+          <>
+            {isMdUp ? (
+              <CompaniesTable
+                companies={companies}
+                onEdit={handleEditCompany}
+                onDelete={handleDeleteCompany}
+              />
+            ) : (
+              <CompaniesCardList
+                companies={companies}
+                onEdit={handleEditCompany}
+                onDelete={handleDeleteCompany}
+              />
+            )}
+            {result ? (
+              <div className="px-4 pb-4 md:px-6 md:pb-6">
+                <Pagination
+                  page={result.page}
+                  totalPages={result.totalPages}
+                  totalItems={result.totalItems}
+                  limit={result.limit}
+                  onPageChange={handlePageChange}
+                  onLimitChange={handleLimitChange}
+                  labels={LL.common.pagination}
+                />
+              </div>
+            ) : null}
+          </>
         )}
       </section>
 

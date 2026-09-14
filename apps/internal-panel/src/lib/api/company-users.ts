@@ -1,13 +1,24 @@
-import type { CompanyUser } from '@fuel-carrier/shared-types'
-import { CompanyUserLevels } from '@fuel-carrier/shared-types'
+import type {
+  CompanyUser,
+  PaginatedResult,
+  PaginationParams,
+} from '@fuel-carrier/shared-types'
+import { CompanyUserLevels, DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
   CreateInternalCompanyUserDto,
   UpdateInternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create'
 import { api } from '@fuel-carrier/web-ui/api'
 
+export type FetchCompanyUsersParams = PaginationParams & {
+  companyId: string
+}
+
 export const companyUserKeys = {
-  byCompany: (companyId: string) => ['company-users', companyId] as const,
+  byCompany: (
+    companyId: string,
+    params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+  ) => ['company-users', companyId, params] as const,
 }
 
 export type CompanyUserFormValues = {
@@ -35,11 +46,11 @@ export function companyUserToFormValues(
 }
 
 export async function fetchCompanyUsers(
-  companyId: string,
-): Promise<CompanyUser[]> {
+  params: FetchCompanyUsersParams,
+): Promise<PaginatedResult<CompanyUser>> {
   return api
-    .get('company-users', { searchParams: { companyId } })
-    .json<CompanyUser[]>()
+    .get('company-users', { searchParams: params })
+    .json<PaginatedResult<CompanyUser>>()
 }
 
 export async function createCompanyUser(

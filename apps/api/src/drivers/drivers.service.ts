@@ -1,6 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { desc, eq } from 'drizzle-orm';
-import type { Driver, TenantContext } from '@fuel-carrier/shared-types';
+import { count, desc, eq } from 'drizzle-orm';
+import type {
+  Driver,
+  PaginatedResult,
+  PaginationParams,
+  TenantContext,
+} from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
@@ -15,6 +20,10 @@ import {
   formatAuditDriverLabel,
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
+import {
+  toPaginatedResult,
+  getPaginationOffset,
+} from '../common/pagination.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
@@ -38,6 +47,10 @@ type CreateDriverPayload = {
 };
 
 type UpdateDriverPayload = Partial<CreateDriverPayload>;
+
+type ListDriversOptions = PaginationParams & {
+  companyId?: string;
+};
 
 const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
   {
@@ -69,19 +82,38 @@ export class DriversService {
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
-  async list(context: TenantContext, companyId?: string): Promise<Driver[]> {
+  async list(
+    context: TenantContext,
+    options: ListDriversOptions,
+  ): Promise<PaginatedResult<Driver>> {
+    const { page, limit, companyId } = options;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
 
+    const offset = getPaginationOffset(options);
+    const where = companyId ? eq(drivers.companyId, companyId) : undefined;
+
     return this.tenantDb.run(context, async (tx) => {
+      const [countRow] = await tx
+        .select({ value: count() })
+        .from(drivers)
+        .where(where);
+
       const rows = await tx.query.drivers.findMany({
-        where: companyId ? eq(drivers.companyId, companyId) : undefined,
+        where,
         with: { car: true },
         orderBy: desc(drivers.createdAt),
+        limit,
+        offset,
       });
 
-      return rows.map(_mapDriverWithCar);
+      return toPaginatedResult({
+        items: rows.map(_mapDriverWithCar),
+        page,
+        limit,
+        totalItems: countRow?.value ?? 0,
+      });
     });
   }
 
