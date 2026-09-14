@@ -101,15 +101,19 @@ export class CarDriverAssignmentsService {
       return;
     }
 
+    /** One instant for close+open so abutting ranges do not overlap. */
+    const at = new Date();
+
     if (input.nextDriverId) {
       await this.releaseDriverFromOtherCarInTx(tx, {
         driverId: input.nextDriverId,
         exceptCarId: input.carId,
         alreadyLocked: true,
+        at,
       });
     }
 
-    await this.closeOpenAssignmentsForCarInTx(tx, input.carId);
+    await this.closeOpenAssignmentsForCarInTx(tx, input.carId, at);
 
     if (!input.nextDriverId) {
       return;
@@ -119,6 +123,7 @@ export class CarDriverAssignmentsService {
       carId: input.carId,
       driverId: input.nextDriverId,
       companyId: input.companyId,
+      assignedAt: at,
     });
   }
 
@@ -127,14 +132,20 @@ export class CarDriverAssignmentsService {
     context: ApiTenantContext,
     input: OpenAssignmentInput,
   ): Promise<void> {
+    const at = new Date();
+
     await this.lockCustodyRowsInTx(tx, input.carId, input.driverId);
     await this.releaseDriverFromOtherCarInTx(tx, {
       driverId: input.driverId,
       exceptCarId: input.carId,
       alreadyLocked: true,
+      at,
     });
-    await this.closeOpenAssignmentsForCarInTx(tx, input.carId);
-    await this.insertOpenAssignmentInTx(tx, context, input);
+    await this.closeOpenAssignmentsForCarInTx(tx, input.carId, at);
+    await this.insertOpenAssignmentInTx(tx, context, {
+      ...input,
+      assignedAt: at,
+    });
   }
 
   async closeOpenAssignmentsForDriverInTx(
@@ -164,6 +175,7 @@ export class CarDriverAssignmentsService {
       carId: input.carId,
       driverId: input.driverId,
       companyId: input.companyId,
+      assignedAt: input.assignedAt ?? new Date(),
       assignedByUserId: actor?.userId ?? null,
     });
   }
@@ -188,7 +200,8 @@ export class CarDriverAssignmentsService {
     tx: TenantTransaction,
     input: ReleaseDriverFromOtherCarInput,
   ): Promise<void> {
-    const { driverId, exceptCarId, alreadyLocked = false } = input;
+    const { driverId, exceptCarId, alreadyLocked = false, at = new Date() } =
+      input;
 
     if (!alreadyLocked) {
       await this.lockCustodyRowsInTx(tx, exceptCarId, driverId);
@@ -204,7 +217,7 @@ export class CarDriverAssignmentsService {
       return;
     }
 
-    await this.closeOpenAssignmentsForCarInTx(tx, otherCar.id);
+    await this.closeOpenAssignmentsForCarInTx(tx, otherCar.id, at);
     await tx
       .update(cars)
       .set({ driverId: null })
@@ -302,6 +315,8 @@ type OpenAssignmentInput = {
   carId: string;
   driverId: string;
   companyId: string;
+  /** When closing prior custody in the same transfer, pass the same instant. */
+  assignedAt?: Date;
 };
 
 type SyncDriverChangeInput = {
@@ -315,4 +330,6 @@ type ReleaseDriverFromOtherCarInput = {
   driverId: string;
   exceptCarId: string | null;
   alreadyLocked?: boolean;
+  /** Shared instant when a new open assignment follows this release. */
+  at?: Date;
 };

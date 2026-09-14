@@ -105,7 +105,9 @@ export class CarsService {
   async create(context: ApiTenantContext, dto: CreateCarPayload): Promise<Car> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        if (dto.driverId) {
+        const custodyAt = dto.driverId ? new Date() : null;
+
+        if (dto.driverId && custodyAt) {
           await this._assertDriverAssignableToCompany(
             tx,
             dto.driverId,
@@ -116,6 +118,7 @@ export class CarsService {
             {
               driverId: dto.driverId,
               exceptCarId: null,
+              at: custodyAt,
             },
           );
         }
@@ -140,7 +143,7 @@ export class CarsService {
           );
         }
 
-        if (dto.driverId) {
+        if (dto.driverId && custodyAt) {
           await this.carDriverAssignmentsService.insertOpenAssignmentInTx(
             tx,
             context,
@@ -148,6 +151,7 @@ export class CarsService {
               carId: row.id,
               driverId: dto.driverId,
               companyId: row.companyId,
+              assignedAt: custodyAt,
             },
           );
         }

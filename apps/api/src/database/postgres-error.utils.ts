@@ -4,16 +4,20 @@ import { createApiException } from '../common/exceptions/api.exception';
 
 export const POSTGRES_UNIQUE_VIOLATION = '23505';
 export const POSTGRES_FOREIGN_KEY_VIOLATION = '23503';
+export const POSTGRES_EXCLUSION_VIOLATION = '23P01';
 
 export type PostgresError = {
   code?: string;
   constraint?: string;
 };
 
+export type PostgresSqlStateCode =
+  | typeof POSTGRES_UNIQUE_VIOLATION
+  | typeof POSTGRES_FOREIGN_KEY_VIOLATION
+  | typeof POSTGRES_EXCLUSION_VIOLATION;
+
 export type PostgresConstraintMapping = {
-  code:
-    | typeof POSTGRES_UNIQUE_VIOLATION
-    | typeof POSTGRES_FOREIGN_KEY_VIOLATION;
+  code: PostgresSqlStateCode;
   constraint: string;
   field: string;
   message: string;

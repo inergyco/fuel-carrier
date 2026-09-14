@@ -1,4 +1,5 @@
 import {
+  POSTGRES_EXCLUSION_VIOLATION,
   POSTGRES_FOREIGN_KEY_VIOLATION,
   POSTGRES_UNIQUE_VIOLATION,
   type PostgresConstraintMapping,
@@ -28,6 +29,18 @@ export const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
     constraint: 'car_driver_assignments_driver_id_open_unique',
     field: 'driverId',
     message: 'This driver already has an active vehicle assignment',
+  },
+  {
+    code: POSTGRES_EXCLUSION_VIOLATION,
+    constraint: 'car_driver_assignments_car_no_overlap',
+    field: 'driverId',
+    message: 'This vehicle already has an overlapping custody period',
+  },
+  {
+    code: POSTGRES_EXCLUSION_VIOLATION,
+    constraint: 'car_driver_assignments_driver_no_overlap',
+    field: 'driverId',
+    message: 'This driver already has an overlapping custody period',
   },
   {
     code: POSTGRES_FOREIGN_KEY_VIOLATION,

@@ -66,5 +66,10 @@ export const carDriverAssignments = pgTable(
       'car_driver_assignments_interval_chk',
       sql`${table.unassignedAt} IS NULL OR ${table.unassignedAt} >= ${table.assignedAt}`,
     ),
+    /**
+     * Non-overlapping custody ranges (half-open [assigned_at, unassigned_at))
+     * are enforced in migration `0021_assignment_no_overlap` via GiST EXCLUDE
+     * on car_id and driver_id. Drizzle has no first-class EXCLUDE helper yet.
+     */
   ],
 );

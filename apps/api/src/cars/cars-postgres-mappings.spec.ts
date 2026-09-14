@@ -2,6 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { ApiException } from '../common/exceptions/api.exception';
 import {
+  POSTGRES_EXCLUSION_VIOLATION,
   POSTGRES_UNIQUE_VIOLATION,
   rethrowPostgresError,
 } from '../database/postgres-error.utils';
@@ -82,6 +83,32 @@ describe('CAR_POSTGRES_MAPPINGS', () => {
           {
             field: 'driverId',
             message: 'This driver already has an active vehicle assignment',
+          },
+        ],
+      });
+    }
+  });
+
+  it('maps custody overlap exclusion to a clear driverId error', () => {
+    try {
+      rethrowPostgresError(
+        {
+          cause: {
+            code: POSTGRES_EXCLUSION_VIOLATION,
+            constraint: 'car_driver_assignments_car_no_overlap',
+          },
+        },
+        CAR_POSTGRES_MAPPINGS,
+      );
+      throw new Error('expected rethrowPostgresError to throw');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiException);
+      expect((error as ApiException).getResponse()).toMatchObject({
+        code: ApiErrorCode.VALIDATION_ERROR,
+        fields: [
+          {
+            field: 'driverId',
+            message: 'This vehicle already has an overlapping custody period',
           },
         ],
       });
