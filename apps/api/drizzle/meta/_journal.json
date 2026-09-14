@@ -134,6 +134,13 @@
       "when": 1788500000000,
       "tag": "0018_entity_status",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1788600000000,
+      "tag": "0019_driver_open_assignment_unique",
+      "breakpoints": true
     }
   ]
 }

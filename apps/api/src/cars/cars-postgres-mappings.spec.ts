@@ -61,4 +61,30 @@ describe('CAR_POSTGRES_MAPPINGS', () => {
       });
     }
   });
+
+  it('maps open driver assignment unique to a clear driverId error', () => {
+    try {
+      rethrowPostgresError(
+        {
+          cause: {
+            code: POSTGRES_UNIQUE_VIOLATION,
+            constraint: 'car_driver_assignments_driver_id_open_unique',
+          },
+        },
+        CAR_POSTGRES_MAPPINGS,
+      );
+      throw new Error('expected rethrowPostgresError to throw');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiException);
+      expect((error as ApiException).getResponse()).toMatchObject({
+        code: ApiErrorCode.VALIDATION_ERROR,
+        fields: [
+          {
+            field: 'driverId',
+            message: 'This driver already has an active vehicle assignment',
+          },
+        ],
+      });
+    }
+  });
 });

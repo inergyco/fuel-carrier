@@ -24,6 +24,12 @@ export const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
     message: 'This vehicle already has an active driver assignment',
   },
   {
+    code: POSTGRES_UNIQUE_VIOLATION,
+    constraint: 'car_driver_assignments_driver_id_open_unique',
+    field: 'driverId',
+    message: 'This driver already has an active vehicle assignment',
+  },
+  {
     code: POSTGRES_FOREIGN_KEY_VIOLATION,
     constraint: 'cars_company_id_companies_id_fk',
     field: 'companyId',

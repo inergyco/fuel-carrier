@@ -55,5 +55,11 @@ export const carDriverAssignments = pgTable(
     uniqueIndex('car_driver_assignments_car_id_open_unique')
       .on(table.carId)
       .where(sql`${table.unassignedAt} IS NULL AND ${table.carId} IS NOT NULL`),
+    /** Mirror of car open unique: a driver may have at most one open custody. */
+    uniqueIndex('car_driver_assignments_driver_id_open_unique')
+      .on(table.driverId)
+      .where(
+        sql`${table.unassignedAt} IS NULL AND ${table.driverId} IS NOT NULL`,
+      ),
   ],
 );
