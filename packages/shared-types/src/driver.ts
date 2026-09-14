@@ -15,4 +15,8 @@ export type Driver = {
   car?: Car | null;
 };
 
-export type DriverInput = Omit<Driver, 'id' | 'createdAt' | 'updatedAt' | 'car'>;
+/** Create/update payload — status is server-managed (active on create, deactivate via DELETE). */
+export type DriverInput = Omit<
+  Driver,
+  'id' | 'createdAt' | 'updatedAt' | 'car' | 'status'
+>;

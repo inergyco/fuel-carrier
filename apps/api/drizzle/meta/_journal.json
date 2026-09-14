@@ -148,6 +148,13 @@
       "when": 1788700000000,
       "tag": "0020_assignment_interval_check",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1788800000000,
+      "tag": "0021_assignment_no_overlap",
+      "breakpoints": true
     }
   ]
 }

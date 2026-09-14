@@ -14,4 +14,5 @@ export type Car = {
   updatedAt: string;
 };
 
-export type CarInput = Omit<Car, 'id' | 'createdAt' | 'updatedAt'>;
+/** Create/update payload — status is server-managed (active on create, deactivate via DELETE). */
+export type CarInput = Omit<Car, 'id' | 'createdAt' | 'updatedAt' | 'status'>;
