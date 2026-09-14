@@ -142,39 +142,26 @@ export class CarTelemetryGateway
 
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token);
+      const session =
+        await this.authService.resolveSessionFromJwtPayload(payload);
 
-      if (await this.authService.isAccessTokenRevoked(payload.jti)) {
+      if (!session) {
         return null;
       }
 
-      if (payload.role === UserRole.INTERNAL_ADMIN) {
-        return {
-          userId: payload.sub,
-          role: payload.role,
-          username: payload.username,
-          firstName: payload.firstName,
-          lastName: payload.lastName,
-        };
+      if (session.role === UserRole.INTERNAL_ADMIN) {
+        return session;
       }
 
-      if (payload.role !== UserRole.COMPANY_USER || !payload.companyId) {
+      if (
+        session.role !== UserRole.COMPANY_USER ||
+        !session.companyId ||
+        session.mustChangePassword
+      ) {
         return null;
       }
 
-      if (payload.mustChangePassword) {
-        return null;
-      }
-
-      return {
-        userId: payload.sub,
-        role: payload.role,
-        companyId: payload.companyId,
-        companyUserLevel: payload.companyUserLevel,
-        username: payload.username,
-        firstName: payload.firstName,
-        lastName: payload.lastName,
-        mustChangePassword: payload.mustChangePassword,
-      };
+      return session;
     } catch {
       return null;
     }

@@ -35,22 +35,16 @@ export class JwtStrategy extends PassportStrategy(JwtStrategyBase, 'jwt') {
     request: RequestWithAccessToken,
     payload: JwtPayload,
   ): Promise<AuthSession> {
-    if (await this.authService.isAccessTokenRevoked(payload.jti)) {
+    const session =
+      await this.authService.resolveSessionFromJwtPayload(payload);
+
+    if (!session) {
       throw new UnauthorizedException();
     }
 
     request.accessToken = { jti: payload.jti, exp: payload.exp };
 
-    return {
-      userId: payload.sub,
-      role: payload.role,
-      companyId: payload.companyId,
-      companyUserLevel: payload.companyUserLevel,
-      username: payload.username,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      mustChangePassword: payload.mustChangePassword,
-    };
+    return session;
   }
 }
 

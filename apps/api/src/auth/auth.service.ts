@@ -96,6 +96,36 @@ export class AuthService {
     return mapCompanyUserSession(companyUser);
   }
 
+  /**
+   * Builds the request session from a verified JWT.
+   * Company-user authz claims (`companyUserLevel`, `mustChangePassword`,
+   * `companyId`, profile) are always reloaded from the DB so demotion /
+   * forced password change take effect before JWT expiry (SEC-01).
+   */
+  async resolveSessionFromJwtPayload(
+    payload: JwtPayload,
+  ): Promise<AuthSession | null> {
+    if (await this.isAccessTokenRevoked(payload.jti)) {
+      return null;
+    }
+
+    if (payload.role === UserRole.COMPANY_USER) {
+      return this.getCompanyUserSession(payload.sub);
+    }
+
+    if (payload.role === UserRole.INTERNAL_ADMIN) {
+      return {
+        userId: payload.sub,
+        role: payload.role,
+        username: payload.username,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+      };
+    }
+
+    return null;
+  }
+
   async changeCompanyUserPassword(
     session: AuthSession,
     currentPassword: string,

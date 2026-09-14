@@ -1,7 +1,10 @@
 import type { CompanyUserLevel } from "./company-user-level";
 import type { UserRole } from "./user-role";
 
-/** Authenticated session derived from the JWT after Passport validation. */
+/**
+ * Authenticated session after Passport JWT validation.
+ * For company users, authz fields are reloaded from the DB on each request.
+ */
 export type AuthSession = {
   userId: string;
   role: UserRole;
