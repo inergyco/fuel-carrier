@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -13,6 +14,7 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import type { AuthSession, Driver } from '@fuel-carrier/shared-types';
@@ -48,11 +50,14 @@ export class InternalDriversController {
   constructor(private readonly driversService: DriversService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List all drivers across every company' })
+  @ApiOperation({
+    summary: 'List drivers (optionally filtered by company)',
+  })
+  @ApiQuery({ name: 'companyId', format: 'uuid', required: false })
   @ApiEnvelopeOkListResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(): Promise<Driver[]> {
-    return this.driversService.list(internalTenantContext());
+  list(@Query('companyId') companyId?: string): Promise<Driver[]> {
+    return this.driversService.list(internalTenantContext(), companyId);
   }
 
   @Get(':id')

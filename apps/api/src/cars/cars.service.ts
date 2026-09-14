@@ -17,6 +17,7 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { createApiException } from '../common/exceptions/api.exception';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
@@ -47,9 +48,17 @@ export class CarsService {
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
-  async list(context: ApiTenantContext): Promise<Car[]> {
+  async list(context: ApiTenantContext, companyId?: string): Promise<Car[]> {
+    if (companyId) {
+      assertUuidParam(companyId, 'companyId');
+    }
+
     return this.tenantDb.run(context, async (tx) => {
-      const rows = await tx.select().from(cars).orderBy(desc(cars.createdAt));
+      const rows = await tx
+        .select()
+        .from(cars)
+        .where(companyId ? eq(cars.companyId, companyId) : undefined)
+        .orderBy(desc(cars.createdAt));
 
       return rows.map(_mapCar);
     });

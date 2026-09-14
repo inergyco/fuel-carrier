@@ -21,7 +21,7 @@ function MapPage() {
   const telemetryQuery = useCarTelemetryLive(api)
   const carsQuery = useQuery({
     queryKey: carKeys.all,
-    queryFn: fetchCars,
+    queryFn: () => fetchCars(),
   })
 
   function renderVehicleLink(marker: CarTelemetryMarker) {

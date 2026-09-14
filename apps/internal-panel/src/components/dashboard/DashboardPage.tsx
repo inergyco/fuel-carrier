@@ -23,12 +23,12 @@ export function DashboardPage({ user }: DashboardPageProps) {
 
   const carsQuery = useQuery({
     queryKey: carKeys.all,
-    queryFn: fetchCars,
+    queryFn: () => fetchCars(),
   })
 
   const driversQuery = useQuery({
     queryKey: driverKeys.all,
-    queryFn: fetchDrivers,
+    queryFn: () => fetchDrivers(),
   })
 
   const telemetryQuery = useCarTelemetryLive(api)

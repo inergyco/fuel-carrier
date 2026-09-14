@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import type { Car, CarMqttCredentials } from '@fuel-carrier/shared-types'
+import type { Car, CarMqttCredentials, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
@@ -12,6 +12,9 @@ import {
 import { driverKeys, fetchDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
 
+const EMPTY_CARS: Car[] = []
+const EMPTY_DRIVERS: Driver[] = []
+
 export function useCompanyCars(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
@@ -23,41 +26,29 @@ export function useCompanyCars(companyId: string) {
     useState<CarMqttCredentials | null>(null)
 
   const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: fetchCars,
+    queryKey: carKeys.byCompany(companyId),
+    queryFn: () => fetchCars(companyId),
   })
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: fetchDrivers,
+    queryKey: driverKeys.byCompany(companyId),
+    queryFn: () => fetchDrivers(companyId),
   })
 
-  const companyDrivers = useMemo(
-    function filterCompanyDrivers() {
-      return (driversQuery.data ?? []).filter(
-        (driver) => driver.companyId === companyId,
-      )
-    },
-    [driversQuery.data, companyId],
-  )
-
-  const companyCars = useMemo(
-    function filterCompanyCars() {
-      return (carsQuery.data ?? []).filter((car) => car.companyId === companyId)
-    },
-    [carsQuery.data, companyId],
-  )
+  const companyDrivers = driversQuery.data ?? EMPTY_DRIVERS
+  const companyCars = carsQuery.data ?? EMPTY_CARS
 
   const driverNameById = useMemo(
     function mapDriverNames() {
+      const drivers = driversQuery.data ?? EMPTY_DRIVERS
       return new Map(
-        companyDrivers.map((driver) => [
+        drivers.map((driver) => [
           driver.id,
           `${driver.firstName} ${driver.lastName}`,
         ]),
       )
     },
-    [companyDrivers],
+    [driversQuery.data],
   )
 
   const deleteMutation = useMutation({

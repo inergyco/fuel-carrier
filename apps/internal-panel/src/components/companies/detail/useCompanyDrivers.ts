@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
@@ -15,18 +15,11 @@ export function useCompanyDrivers(companyId: string) {
   const [deleteTarget, setDeleteTarget] = useState<Driver | null>(null)
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: fetchDrivers,
+    queryKey: driverKeys.byCompany(companyId),
+    queryFn: () => fetchDrivers(companyId),
   })
 
-  const companyDrivers = useMemo(
-    function filterCompanyDrivers() {
-      return (driversQuery.data ?? []).filter(
-        (driver) => driver.companyId === companyId,
-      )
-    },
-    [driversQuery.data, companyId],
-  )
+  const companyDrivers = driversQuery.data ?? []
 
   const deleteMutation = useMutation({
     mutationFn: deleteDriver,

@@ -7,6 +7,7 @@ import { api } from '@fuel-carrier/web-ui/api'
 
 export const carKeys = {
   all: ['cars'] as const,
+  byCompany: (companyId: string) => ['cars', companyId] as const,
   detail: (id: string) => ['cars', id] as const,
 }
 
@@ -26,8 +27,13 @@ export function carToFormValues(car?: Car): CarFormValues {
   }
 }
 
-export async function fetchCars(): Promise<Car[]> {
-  return api.get('cars').json<Car[]>()
+export async function fetchCars(companyId?: string): Promise<Car[]> {
+  return api
+    .get('cars', {
+      searchParams:
+        typeof companyId === 'string' ? { companyId } : undefined,
+    })
+    .json<Car[]>()
 }
 
 export async function fetchCar(id: string): Promise<Car> {

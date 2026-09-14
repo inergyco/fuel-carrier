@@ -7,6 +7,7 @@ import { api } from '@fuel-carrier/web-ui/api'
 
 export const driverKeys = {
   all: ['drivers'] as const,
+  byCompany: (companyId: string) => ['drivers', companyId] as const,
 }
 
 export type DriverFormValues = {
@@ -23,8 +24,13 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
   }
 }
 
-export async function fetchDrivers(): Promise<Driver[]> {
-  return api.get('drivers').json<Driver[]>()
+export async function fetchDrivers(companyId?: string): Promise<Driver[]> {
+  return api
+    .get('drivers', {
+      searchParams:
+        typeof companyId === 'string' ? { companyId } : undefined,
+    })
+    .json<Driver[]>()
 }
 
 export async function createDriver(

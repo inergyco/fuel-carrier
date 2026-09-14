@@ -68,9 +68,14 @@ export class DriversService {
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
   ) {}
 
-  async list(context: TenantContext): Promise<Driver[]> {
+  async list(context: TenantContext, companyId?: string): Promise<Driver[]> {
+    if (companyId) {
+      assertUuidParam(companyId, 'companyId');
+    }
+
     return this.tenantDb.run(context, async (tx) => {
       const rows = await tx.query.drivers.findMany({
+        where: companyId ? eq(drivers.companyId, companyId) : undefined,
         with: { car: true },
         orderBy: desc(drivers.createdAt),
       });

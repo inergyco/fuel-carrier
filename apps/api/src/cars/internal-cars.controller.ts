@@ -69,11 +69,14 @@ export class InternalCarsController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'List all cars across every company' })
+  @ApiOperation({
+    summary: 'List cars (optionally filtered by company)',
+  })
+  @ApiQuery({ name: 'companyId', format: 'uuid', required: false })
   @ApiEnvelopeOkListResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(): Promise<Car[]> {
-    return this.carsService.list(internalTenantContext());
+  list(@Query('companyId') companyId?: string): Promise<Car[]> {
+    return this.carsService.list(internalTenantContext(), companyId);
   }
 
   @Post(':id/mqtt-credentials')
