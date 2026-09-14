@@ -200,8 +200,12 @@ export class CarDriverAssignmentsService {
     tx: TenantTransaction,
     input: ReleaseDriverFromOtherCarInput,
   ): Promise<void> {
-    const { driverId, exceptCarId, alreadyLocked = false, at = new Date() } =
-      input;
+    const {
+      driverId,
+      exceptCarId,
+      alreadyLocked = false,
+      at = new Date(),
+    } = input;
 
     if (!alreadyLocked) {
       await this.lockCustodyRowsInTx(tx, exceptCarId, driverId);
