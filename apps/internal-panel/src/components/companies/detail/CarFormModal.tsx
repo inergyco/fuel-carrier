@@ -3,7 +3,6 @@ import type { Car, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   createInternalCarDtoSchema,
-  type CreateExternalCarDto,
   type CreateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
@@ -22,8 +21,14 @@ import {
   updateCar,
 } from '../../../lib/api/cars'
 
-const carFormSchema = createInternalCarDtoSchema.omit({ companyId: true })
+const carFormSchema = createInternalCarDtoSchema.omit({ companyId: true }).extend({
+  driverId: z
+    .union([z.literal(''), z.uuid()])
+    .transform((value) => value || null),
+})
+
 type CarFormInput = z.input<typeof carFormSchema>
+type CarFormOutput = z.output<typeof carFormSchema>
 
 type CarFormModalMode = 'create' | 'edit'
 
@@ -48,7 +53,7 @@ export function CarFormModal({
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
-  const form = useForm<CarFormInput, unknown, CreateExternalCarDto>({
+  const form = useForm<CarFormInput, unknown, CarFormOutput>({
     resolver: zodResolver(carFormSchema),
     defaultValues: carToFormValues(car),
   })
@@ -59,7 +64,7 @@ export function CarFormModal({
   } = form
 
   const saveMutation = useMutation({
-    mutationFn: async function saveCar(data: CreateExternalCarDto) {
+    mutationFn: async function saveCar(data: CarFormOutput) {
       const payload: CreateInternalCarDto = {
         ...data,
         companyId,
@@ -82,7 +87,7 @@ export function CarFormModal({
     },
   })
 
-  const onSubmit: SubmitHandler<CreateExternalCarDto> = async function onSubmit(
+  const onSubmit: SubmitHandler<CarFormOutput> = async function onSubmit(
     data,
   ) {
     setServerError(null)

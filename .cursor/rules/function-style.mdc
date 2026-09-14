@@ -1,0 +1,9 @@
+---
+description: Prefer arrow one-liners; named function declarations otherwise
+alwaysApply: true
+---
+
+# Function style
+
+- **One-liners** (including Zod `.transform`, simple maps): use arrow functions, e.g. `(value) => value || null`.
+- **Functions used in a component body** (handlers, nested helpers with multiple statements): use `function` declarations, not arrows — matches the existing TypeScript preference.

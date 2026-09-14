@@ -4,9 +4,7 @@ import { z } from 'zod'
 export const carFormSchema = createExternalCarDtoSchema.extend({
   driverId: z
     .union([z.literal(''), z.uuid()])
-    .transform(function normalizeDriverId(value) {
-      return value || null
-    }),
+    .transform((value) => value || null),
 })
 
 export type CarFormInput = z.input<typeof carFormSchema>
