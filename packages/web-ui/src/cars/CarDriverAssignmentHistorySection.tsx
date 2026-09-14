@@ -170,16 +170,11 @@ export function CarDriverAssignmentHistorySection({
   );
 }
 
-function formatAssignmentTimestamp(
-  value: Date | string,
-  locale: string,
-): string {
-  const date = value instanceof Date ? value : new Date(value);
-
+function formatAssignmentTimestamp(value: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, {
     dateStyle: "medium",
     timeStyle: "short",
-  }).format(date);
+  }).format(new Date(value));
 }
 
 function formatPersonName(

@@ -84,7 +84,5 @@ export function formatAuditFieldLabel(
 }
 
 export function formatAuditTimestamp(log: AuditLog, locale: string): string {
-  const date =
-    log.createdAt instanceof Date ? log.createdAt : new Date(log.createdAt)
-  return date.toLocaleString(locale)
+  return new Date(log.createdAt).toLocaleString(locale)
 }

@@ -17,6 +17,7 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { createApiException } from '../common/exceptions/api.exception';
+import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -314,7 +315,16 @@ export class CarsService {
 }
 
 function _mapCar(row: typeof cars.$inferSelect): Car {
-  return row;
+  return {
+    id: row.id,
+    name: row.name,
+    licensePlate: row.licensePlate,
+    companyId: row.companyId,
+    driverId: row.driverId,
+    note: row.note,
+    createdAt: toIsoTimestamp(row.createdAt),
+    updatedAt: toIsoTimestamp(row.updatedAt),
+  };
 }
 
 const CAR_AUDIT_FIELDS = [

@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import type { Car } from '@fuel-carrier/shared-types';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import type { TenantTransaction } from '../database/tenant-db.types';
@@ -23,6 +24,15 @@ export class CarsReader {
       );
     }
 
-    return row;
+    return {
+      id: row.id,
+      name: row.name,
+      licensePlate: row.licensePlate,
+      companyId: row.companyId,
+      driverId: row.driverId,
+      note: row.note,
+      createdAt: toIsoTimestamp(row.createdAt),
+      updatedAt: toIsoTimestamp(row.updatedAt),
+    };
   }
 }

@@ -16,6 +16,7 @@ import {
   toAuditSnapshot,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
+import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -312,13 +313,32 @@ type DriverWithCar = typeof drivers.$inferSelect & {
 };
 
 function _mapDriver(row: typeof drivers.$inferSelect): Driver {
-  return row;
+  return {
+    id: row.id,
+    firstName: row.firstName,
+    lastName: row.lastName,
+    nationalId: row.nationalId,
+    companyId: row.companyId,
+    createdAt: toIsoTimestamp(row.createdAt),
+    updatedAt: toIsoTimestamp(row.updatedAt),
+  };
 }
 
 function _mapDriverWithCar(row: DriverWithCar): Driver {
   return {
     ..._mapDriver(row),
-    car: row.car,
+    car: row.car
+      ? {
+          id: row.car.id,
+          name: row.car.name,
+          licensePlate: row.car.licensePlate,
+          companyId: row.car.companyId,
+          driverId: row.car.driverId,
+          note: row.car.note,
+          createdAt: toIsoTimestamp(row.car.createdAt),
+          updatedAt: toIsoTimestamp(row.car.updatedAt),
+        }
+      : row.car,
   };
 }
 

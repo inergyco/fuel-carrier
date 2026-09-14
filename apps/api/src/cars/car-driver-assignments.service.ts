@@ -14,6 +14,10 @@ import { drivers } from '../database/schema/drivers';
 import { users } from '../database/schema/users';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import {
+  toIsoTimestamp,
+  toIsoTimestampOrNull,
+} from '../common/iso-timestamp.utils';
 import { CarsReader } from './cars-reader.service';
 
 @Injectable()
@@ -274,8 +278,8 @@ function _mapAssignment(row: {
     carId: row.carId,
     driverId: row.driverId,
     companyId: row.companyId,
-    assignedAt: row.assignedAt,
-    unassignedAt: row.unassignedAt,
+    assignedAt: toIsoTimestamp(row.assignedAt),
+    unassignedAt: toIsoTimestampOrNull(row.unassignedAt),
     assignedByUserId: row.assignedByUserId,
     driver:
       row.driverFirstName && row.driverLastName

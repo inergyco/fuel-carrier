@@ -6,6 +6,10 @@ export type Company = {
   address: string | null;
   note: string | null;
   logoUrl: string | null;
+  /** ISO-8601 timestamptz from the API. */
+  createdAt: string;
+  /** ISO-8601 timestamptz from the API. */
+  updatedAt: string;
 };
 
-export type CompanyInput = Omit<Company, "id">;
+export type CompanyInput = Omit<Company, 'id' | 'createdAt' | 'updatedAt'>;

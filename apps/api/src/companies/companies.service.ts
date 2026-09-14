@@ -7,6 +7,7 @@ import {
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
@@ -188,7 +189,17 @@ async function _findCompanyById(
 }
 
 function _mapCompany(row: typeof companies.$inferSelect): Company {
-  return row;
+  return {
+    id: row.id,
+    name: row.name,
+    nationalId: row.nationalId,
+    phoneNumber: row.phoneNumber,
+    address: row.address,
+    note: row.note,
+    logoUrl: row.logoUrl,
+    createdAt: toIsoTimestamp(row.createdAt),
+    updatedAt: toIsoTimestamp(row.updatedAt),
+  };
 }
 
 const COMPANY_AUDIT_FIELDS = [

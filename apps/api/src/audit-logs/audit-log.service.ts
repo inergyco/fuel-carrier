@@ -11,6 +11,7 @@ import type {
 } from '@fuel-carrier/shared-types';
 import { ApiErrorCode, UserRole } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
+import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import type {
   PaginatedResult,
   PaginationParams,
@@ -228,5 +229,8 @@ export class AuditLogService {
 }
 
 function _mapAuditLog(row: typeof auditLogs.$inferSelect): AuditLog {
-  return row;
+  return {
+    ...row,
+    createdAt: toIsoTimestamp(row.createdAt),
+  };
 }

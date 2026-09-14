@@ -60,7 +60,8 @@ export type AuditLog = {
   metadata: AuditLogMetadata;
   ipAddress: string | null;
   userAgent: string | null;
-  createdAt: Date;
+  /** ISO-8601 timestamptz from the API. */
+  createdAt: string;
 };
 
 export type AuditActor = {
