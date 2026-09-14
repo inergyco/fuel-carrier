@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  check,
   index,
   pgTable,
   timestamp,
@@ -61,5 +62,9 @@ export const carDriverAssignments = pgTable(
       .where(
         sql`${table.unassignedAt} IS NULL AND ${table.driverId} IS NOT NULL`,
       ),
+    check(
+      'car_driver_assignments_interval_chk',
+      sql`${table.unassignedAt} IS NULL OR ${table.unassignedAt} >= ${table.assignedAt}`,
+    ),
   ],
 );
