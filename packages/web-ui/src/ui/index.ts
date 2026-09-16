@@ -62,3 +62,5 @@ export {
   ConnectivityBanner,
   type ConnectivityBannerLabels,
 } from './ConnectivityBanner'
+export { Skeleton } from './Skeleton'
+export { ResourceListSkeleton } from './ResourceListSkeleton'

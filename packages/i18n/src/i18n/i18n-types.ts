@@ -1548,6 +1548,10 @@ type RootTranslation = {
 			 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s​ ​r​o​t​a​t​e​d​.
 			 */
 			carMqttCredentialsRotated: string
+			/**
+			 * P​a​s​s​w​o​r​d​ ​u​p​d​a​t​e​d​.
+			 */
+			passwordChanged: string
 		}
 		users: {
 			/**
@@ -3951,6 +3955,10 @@ export type TranslationFunctions = {
 			 * MQTT credentials rotated.
 			 */
 			carMqttCredentialsRotated: () => LocalizedString
+			/**
+			 * Password updated.
+			 */
+			passwordChanged: () => LocalizedString
 		}
 		users: {
 			/**

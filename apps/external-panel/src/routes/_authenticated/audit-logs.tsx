@@ -4,8 +4,11 @@ import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
+  MEDIA_QUERIES,
   Pagination,
+  ResourceListSkeleton,
   parsePaginationSearch,
+  useMediaQuery,
   usePagination,
 } from '@fuel-carrier/web-ui/ui'
 import { auditLogKeys, fetchAuditLogs } from '../../lib/api/audit-logs'
@@ -24,6 +27,7 @@ export const Route = createFileRoute('/_authenticated/audit-logs')({
 function AuditLogsPage() {
   const { LL, locale } = useI18nContext()
   const labels = getExternalAuditLogLabels(LL)
+  const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const auditLogsQuery = useQuery({
     queryKey: auditLogKeys.all(pagination),
@@ -47,9 +51,11 @@ function AuditLogsPage() {
         </div>
 
         {auditLogsQuery.isLoading && !result ? (
-          <p className="text-sm text-base-content/50">
-            {LL.externalPanel.auditLogs.loading()}
-          </p>
+          <ResourceListSkeleton
+            variant={isMdUp ? 'table' : 'cards'}
+            columns={4}
+            label={LL.externalPanel.auditLogs.loading()}
+          />
         ) : (result?.items.length ?? 0) === 0 ? (
           <p className="text-sm text-base-content/50">
             {LL.externalPanel.auditLogs.empty()}

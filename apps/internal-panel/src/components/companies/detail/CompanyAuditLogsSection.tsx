@@ -1,7 +1,13 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
-import { Pagination, usePagination } from '@fuel-carrier/web-ui/ui'
+import {
+  MEDIA_QUERIES,
+  Pagination,
+  ResourceListSkeleton,
+  useMediaQuery,
+  usePagination,
+} from '@fuel-carrier/web-ui/ui'
 import { auditLogKeys, fetchCompanyAuditLogs } from '../../../lib/api/audit-logs'
 import { getInternalAuditLogLabels } from './auditLogLabels'
 
@@ -14,6 +20,7 @@ export function CompanyAuditLogsSection({
 }: CompanyAuditLogsSectionProps) {
   const { LL, locale } = useI18nContext()
   const labels = getInternalAuditLogLabels(LL)
+  const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const { pagination, handlePageChange, handleLimitChange } = usePagination()
   const auditLogsQuery = useQuery({
     queryKey: auditLogKeys.company(companyId, pagination),
@@ -36,9 +43,11 @@ export function CompanyAuditLogsSection({
       </div>
 
       {auditLogsQuery.isLoading && !result ? (
-        <p className="text-sm text-base-content/50">
-          {LL.internalPanel.companies.detail.auditLogsLoading()}
-        </p>
+        <ResourceListSkeleton
+          variant={isMdUp ? 'table' : 'cards'}
+          columns={4}
+          label={LL.internalPanel.companies.detail.auditLogsLoading()}
+        />
       ) : (result?.items.length ?? 0) === 0 ? (
         <p className="text-sm text-base-content/50">
           {LL.internalPanel.companies.detail.auditLogsEmpty()}

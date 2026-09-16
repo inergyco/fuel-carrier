@@ -9,7 +9,7 @@ import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
 import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
-import { Button, FormInput } from '@fuel-carrier/web-ui/ui'
+import { Button, FormInput, useToast } from '@fuel-carrier/web-ui/ui'
 import { useMemo, useState } from 'react'
 import { AuthPageShell } from '../components/AuthPageShell'
 import { authKeys, changePassword, fetchMe } from '../lib/api/auth'
@@ -43,6 +43,7 @@ function ChangePasswordPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { LL } = useI18nContext()
+  const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
 
   const changePasswordSchema = useMemo(
@@ -81,6 +82,7 @@ function ChangePasswordPage() {
     try {
       const user = await changePassword(data)
       queryClient.setQueryData(authKeys.me, user)
+      toast.success(LL.externalPanel.toast.passwordChanged())
       await navigate({ to: '/' })
     } catch (error) {
       if (
@@ -146,11 +148,11 @@ function ChangePasswordPage() {
           type="submit"
           loading={isSubmitting}
           loadingText={LL.externalPanel.changePassword.submitting()}
-          className="mt-1 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70"
+          className="mt-1 bg-linear-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70"
         >
           {LL.externalPanel.changePassword.submit()}
         </Button>
       </Form>
     </AuthPageShell>
-  )
+  );
 }

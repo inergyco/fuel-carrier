@@ -429,6 +429,7 @@ const fa: Translation = {
       carCustodyEnded: "حضانت پایان یافت.",
       carMqttCredentialsProvisioned: "اعتبارنامه MQTT صادر شد.",
       carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
+      passwordChanged: "رمز عبور به‌روزرسانی شد.",
     },
     users: {
       title: "کاربران شرکت",

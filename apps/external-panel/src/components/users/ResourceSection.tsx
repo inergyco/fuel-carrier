@@ -2,6 +2,7 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
+  ResourceListSkeleton,
   iconMdClassName,
   useMediaQuery,
 } from '@fuel-carrier/web-ui/ui'
@@ -59,6 +60,7 @@ export function ResourceSection<T extends { id: string }>({
   footer,
 }: ResourceSectionProps<T>) {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
+  const listVariant = isMdUp ? 'table' : 'cards'
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
@@ -88,7 +90,11 @@ export function ResourceSection<T extends { id: string }>({
       {toolbar}
 
       {loading ? (
-        <p className="text-sm text-base-content/50">{actionLabels.loading}</p>
+        <ResourceListSkeleton
+          variant={listVariant}
+          columns={columns.length + 1}
+          label={actionLabels.loading}
+        />
       ) : items.length === 0 ? (
         <p className="text-sm text-base-content/50">{emptyLabel}</p>
       ) : (
@@ -103,7 +109,7 @@ export function ResourceSection<T extends { id: string }>({
             renderViewAction={renderViewAction}
             renderExtraActions={renderExtraActions}
             readOnly={readOnly}
-            variant={isMdUp ? 'table' : 'cards'}
+            variant={listVariant}
           />
           {footer}
         </>

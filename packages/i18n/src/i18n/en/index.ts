@@ -428,6 +428,7 @@ const en: BaseTranslation = {
       carCustodyEnded: 'Custody ended.',
       carMqttCredentialsProvisioned: 'MQTT credentials provisioned.',
       carMqttCredentialsRotated: 'MQTT credentials rotated.',
+      passwordChanged: 'Password updated.',
     },
     users: {
       title: 'Company users',

@@ -8,6 +8,7 @@ import {
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
   Pagination,
+  ResourceListSkeleton,
   iconMdClassName,
   parsePaginationSearch,
   useMediaQuery,
@@ -127,9 +128,13 @@ function CompaniesPage() {
 
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
         {companiesQuery.isLoading && !result ? (
-          <p className="p-6 text-sm text-base-content/50">
-            {LL.internalPanel.companies.loading()}
-          </p>
+          <div className="p-4 md:p-6">
+            <ResourceListSkeleton
+              variant={isMdUp ? 'table' : 'cards'}
+              columns={5}
+              label={LL.internalPanel.companies.loading()}
+            />
+          </div>
         ) : companies.length === 0 ? (
           <p className="p-6 text-sm text-base-content/50">
             {LL.internalPanel.companies.empty()}
