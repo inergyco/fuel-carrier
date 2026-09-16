@@ -97,6 +97,7 @@ interface ModalActionsProps {
   loadingLabel?: ReactNode
   confirmVariant?: ButtonVariant
   cancelDisabled?: boolean
+  confirmDisabled?: boolean
 }
 
 export function ModalActions({
@@ -110,6 +111,7 @@ export function ModalActions({
   loadingLabel,
   confirmVariant = 'primary',
   cancelDisabled,
+  confirmDisabled,
 }: ModalActionsProps) {
   return (
     <>
@@ -129,6 +131,7 @@ export function ModalActions({
         form={confirmForm}
         loading={loading}
         loadingText={loadingLabel}
+        disabled={confirmDisabled}
         onClick={onConfirm}
       >
         {confirmLabel}

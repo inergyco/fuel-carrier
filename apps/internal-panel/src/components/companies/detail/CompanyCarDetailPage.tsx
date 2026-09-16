@@ -9,6 +9,7 @@ import {
 } from '@fuel-carrier/web-ui/cars'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchCar } from '../../../lib/api/cars'
+import { driverKeys, fetchAllDrivers } from '../../../lib/api/drivers'
 import { CompanyCarDetailHeader } from './CompanyCarDetailHeader'
 import { CompanyCarDetailNotFound } from './CompanyCarDetailNotFound'
 
@@ -26,6 +27,12 @@ export function CompanyCarDetailPage({
     queryKey: carKeys.detail(carId),
     queryFn: function loadCar() {
       return fetchCar(carId)
+    },
+  })
+  const driversQuery = useQuery({
+    queryKey: [...driverKeys.byCompany(companyId), 'all'] as const,
+    queryFn: function loadDrivers() {
+      return fetchAllDrivers(companyId)
     },
   })
   const isNotFound =
@@ -49,6 +56,12 @@ export function CompanyCarDetailPage({
 
   const car = carQuery.data
   const detailLabels = LL.internalPanel.companies.detail
+  const currentDriver = (driversQuery.data ?? []).find(
+    (driver) => driver.id === car.driverId,
+  )
+  const currentDriverName = currentDriver
+    ? `${currentDriver.firstName} ${currentDriver.lastName}`
+    : null
 
   return (
     <div>
@@ -60,12 +73,15 @@ export function CompanyCarDetailPage({
         />
         <CarOverviewSection
           car={car}
+          currentDriverName={currentDriverName}
           labels={{
             detailTitle: detailLabels.carDetailTitle,
             detailSubtitle: detailLabels.carDetailSubtitle,
             licensePlate: detailLabels.licensePlate,
             name: LL.internalPanel.companies.name,
             note: LL.internalPanel.companies.note,
+            driver: detailLabels.driver,
+            noDriver: detailLabels.noDriver,
             emptyCell: LL.internalPanel.companies.emptyCell,
           }}
         />

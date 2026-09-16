@@ -6,16 +6,26 @@ export type CarOverviewSectionLabels = {
   licensePlate: () => string
   name: () => string
   note: () => string
+  driver: () => string
+  noDriver: () => string
   emptyCell: () => string
 }
 
 export type CarOverviewSectionProps = {
   car: Car
   labels: CarOverviewSectionLabels
+  currentDriverName?: string | null
 }
 
-export function CarOverviewSection({ car, labels }: CarOverviewSectionProps) {
+export function CarOverviewSection({
+  car,
+  labels,
+  currentDriverName,
+}: CarOverviewSectionProps) {
   const emptyCell = labels.emptyCell()
+  const driverDisplay =
+    currentDriverName?.trim() ||
+    (car.driverId ? emptyCell : labels.noDriver())
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 backdrop-blur-sm md:p-6">
@@ -39,6 +49,12 @@ export function CarOverviewSection({ car, labels }: CarOverviewSectionProps) {
             {labels.name()}
           </dt>
           <dd className="mt-1.5 text-sm">{car.name ?? emptyCell}</dd>
+        </div>
+        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
+          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
+            {labels.driver()}
+          </dt>
+          <dd className="mt-1.5 text-sm">{driverDisplay}</dd>
         </div>
         <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:col-span-2 sm:px-5 sm:py-4">
           <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">

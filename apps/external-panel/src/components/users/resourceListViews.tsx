@@ -1,253 +1,33 @@
-import {
-  Button,
-  DataTable,
-  DataTableBody,
-  DataTableCell,
-  DataTableHead,
-  DataTableHeaderCell,
-  DataTableHeaderRow,
-  DataTableRow,
-  dataTableDeleteActionClassName,
-  dataTableEditActionClassName,
-  dataTableViewActionClassName,
-  ICON_STROKE_WIDTH,
-  iconSmClassName,
-} from "@fuel-carrier/web-ui/ui";
-import { KeyRound, Pencil, Trash2 } from "@fuel-carrier/web-ui/icons";
-import { cn } from "@fuel-carrier/web-ui/utils";
-import type { ReactNode } from "react";
-import type { ResourceActionLabels } from "./ResourceSection";
+import { ResourceListCards } from './ResourceListCards'
+import { ResourceListTable } from './ResourceListTable'
+import type { ResourceColumn, ResourceListItemProps } from './resourceListTypes'
 
-export interface ResourceColumn<T> {
-  key: string;
-  header: string;
-  cell: (item: T) => ReactNode;
-  className?: string;
-}
+export type { ResourceColumn } from './resourceListTypes'
 
-interface ResourceListProps<T extends { id: string }> {
-  items: T[];
-  columns: ResourceColumn<T>[];
-  actionLabels: ResourceActionLabels;
-  onEdit: (item: T) => void;
-  onDelete: (item: T) => void;
-  onMqttCredentials?: (item: T) => void;
-  renderViewAction?: (item: T) => ReactNode;
-  readOnly?: boolean;
-  variant: "table" | "cards";
+type ResourceListProps<T extends { id: string }> = Omit<
+  ResourceListItemProps<T>,
+  'showOperations'
+> & {
+  variant: 'table' | 'cards'
 }
 
 export function ResourceList<T extends { id: string }>({
-  items,
-  columns,
-  actionLabels,
-  onEdit,
-  onDelete,
-  onMqttCredentials,
-  renderViewAction,
-  readOnly = false,
   variant,
-}: ResourceListProps<T>) {
-  const showOperations = Boolean(renderViewAction) || !readOnly;
-
-  if (variant === "table") {
-    return (
-      <DataTable>
-        <DataTableHead>
-          <DataTableHeaderRow>
-            {columns.map(function renderHeader(column) {
-              return (
-                <DataTableHeaderCell key={column.key}>
-                  {column.header}
-                </DataTableHeaderCell>
-              );
-            })}
-            {showOperations ? (
-              <DataTableHeaderCell>
-                {actionLabels.operations}
-              </DataTableHeaderCell>
-            ) : null}
-          </DataTableHeaderRow>
-        </DataTableHead>
-        <DataTableBody>
-          {items.map(function renderRow(item) {
-            return (
-              <DataTableRow key={item.id}>
-                {columns.map(function renderCell(column) {
-                  return (
-                    <DataTableCell
-                      key={column.key}
-                      className={column.className}
-                    >
-                      {column.cell(item)}
-                    </DataTableCell>
-                  );
-                })}
-                {showOperations ? (
-                  <DataTableCell className="text-end">
-                    <ResourceOperations
-                      item={item}
-                      actionLabels={actionLabels}
-                      onEdit={onEdit}
-                      onDelete={onDelete}
-                      onMqttCredentials={onMqttCredentials}
-                      renderViewAction={renderViewAction}
-                      readOnly={readOnly}
-                    />
-                  </DataTableCell>
-                ) : null}
-              </DataTableRow>
-            );
-          })}
-        </DataTableBody>
-      </DataTable>
-    );
-  }
-
-  const [titleColumn, ...detailColumns] = columns;
-
-  return (
-    <ul className="flex flex-col gap-3">
-      {items.map(function renderCard(item) {
-        return (
-          <li
-            key={item.id}
-            className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
-          >
-            {titleColumn ? (
-              <p className="mb-3 text-base font-medium tracking-tight">
-                {titleColumn.cell(item)}
-              </p>
-            ) : null}
-            {detailColumns.length > 0 ? (
-              <dl className="grid gap-2 text-sm text-base-content/70">
-                {detailColumns.map(function renderField(column) {
-                  return (
-                    <div key={column.key}>
-                      <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-                        {column.header}
-                      </dt>
-                      <dd
-                        className={cn(
-                          "mt-1 wrap-break-word whitespace-pre-wrap",
-                          column.className,
-                        )}
-                      >
-                        {column.cell(item)}
-                      </dd>
-                    </div>
-                  );
-                })}
-              </dl>
-            ) : null}
-            {showOperations ? (
-              <div className="mt-4 border-t border-base-content/8 pt-4">
-                <ResourceOperations
-                  item={item}
-                  actionLabels={actionLabels}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  onMqttCredentials={onMqttCredentials}
-                  renderViewAction={renderViewAction}
-                  readOnly={readOnly}
-                  stacked
-                />
-              </div>
-            ) : null}
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
-type ResourceOperationsProps<T> = {
-  item: T;
-  actionLabels: ResourceActionLabels;
-  onEdit: (item: T) => void;
-  onDelete: (item: T) => void;
-  onMqttCredentials?: (item: T) => void;
-  renderViewAction?: (item: T) => ReactNode;
-  readOnly?: boolean;
-  stacked?: boolean;
-};
-function ResourceOperations<T>({
-  item,
-  actionLabels,
-  onEdit,
-  onDelete,
-  onMqttCredentials,
   renderViewAction,
   readOnly = false,
-  stacked = false,
-}: ResourceOperationsProps<T>) {
-  function handleEdit() {
-    onEdit(item);
+  ...props
+}: ResourceListProps<T>) {
+  const showOperations = Boolean(renderViewAction) || !readOnly
+  const shared = {
+    ...props,
+    renderViewAction,
+    readOnly,
+    showOperations,
   }
 
-  function handleDelete() {
-    onDelete(item);
+  if (variant === 'table') {
+    return <ResourceListTable {...shared} />
   }
 
-  function handleMqttCredentials() {
-    onMqttCredentials?.(item);
-  }
-
-  return (
-    <div
-      className={cn(
-        "flex flex-nowrap items-center gap-2",
-        stacked && "justify-center",
-      )}
-    >
-      {renderViewAction?.(item)}
-      {!readOnly ? (
-        <>
-          {onMqttCredentials ? (
-            <Button
-              type="button"
-              variant="ghost"
-              className={dataTableViewActionClassName()}
-              onClick={handleMqttCredentials}
-              aria-label={
-                actionLabels.mqttCredentials ?? actionLabels.operations
-              }
-            >
-              <KeyRound
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-            </Button>
-          ) : null}
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableEditActionClassName()}
-            onClick={handleEdit}
-            aria-label={actionLabels.edit}
-          >
-            <Pencil
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableDeleteActionClassName()}
-            onClick={handleDelete}
-            aria-label={actionLabels.delete}
-          >
-            <Trash2
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-          </Button>
-        </>
-      ) : null}
-    </div>
-  );
+  return <ResourceListCards {...shared} />
 }

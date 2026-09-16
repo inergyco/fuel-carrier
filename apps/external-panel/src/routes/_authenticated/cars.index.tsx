@@ -4,10 +4,13 @@ import type { Car } from '@fuel-carrier/shared-types'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { Pagination, parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
 import { CarFormModal } from '../../components/cars/CarFormModal'
+import { CarCustodyActions } from '../../components/cars/CarCustodyActions'
+import { CarCustodyModals } from '../../components/cars/CarCustodyModals'
 import { CarMqttCredentialsModals } from '../../components/cars/CarMqttCredentialsModals'
 import { CarViewAction } from '../../components/cars/CarViewAction'
 import { getCarColumns } from '../../components/cars/carColumns'
 import { DeleteCarModal } from '../../components/cars/DeleteCarModal'
+import { useCarCustody } from '../../components/cars/useCarCustody'
 import { useCarMqttCredentials } from '../../components/cars/useCarMqttCredentials'
 import { useCars } from '../../components/cars/useCars'
 import { ResourceSection } from '../../components/users/ResourceSection'
@@ -23,6 +26,7 @@ function CarsPage() {
   const canManage = isCompanyUserAdmin(user)
   const cars = useCars()
   const mqtt = useCarMqttCredentials()
+  const custody = useCarCustody()
   const emptyCell = LL.externalPanel.cars.emptyCell()
   const result = cars.carsQuery.data
   const isLoading =
@@ -30,6 +34,10 @@ function CarsPage() {
 
   function renderViewAction(car: Car) {
     return <CarViewAction car={car} />
+  }
+
+  function renderCustodyAction(car: Car) {
+    return <CarCustodyActions car={car} custody={custody} layout="compact" />
   }
 
   return (
@@ -62,6 +70,7 @@ function CarsPage() {
         onDelete={cars.setDeleteTarget}
         onMqttCredentials={canManage ? mqtt.openMqttCredentials : undefined}
         renderViewAction={renderViewAction}
+        renderExtraActions={canManage ? renderCustodyAction : undefined}
         readOnly={!canManage}
         footer={
           result ? (
@@ -114,6 +123,8 @@ function CarsPage() {
           onCloseCredentials={mqtt.closeMqttCredentials}
         />
       ) : null}
+
+      {canManage ? <CarCustodyModals custody={custody} /> : null}
     </div>
   )
 }
