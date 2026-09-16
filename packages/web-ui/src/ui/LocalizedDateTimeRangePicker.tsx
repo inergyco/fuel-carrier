@@ -11,13 +11,17 @@ import './localized-date-time-picker.css'
 const DatePicker = cjsExport(datePickerModule)
 const TimePicker = cjsExport(timePickerModule)
 
-type LocalizedDateTimePickerProps = {
+export type DateTimeRangeValue = {
+  start: Date | null
+  end: Date | null
+}
+
+type LocalizedDateTimeRangePickerProps = {
   label?: string
   error?: string
-  value: Date | null
-  onChange: (value: Date | null) => void
+  value: DateTimeRangeValue
+  onChange: (value: DateTimeRangeValue) => void
   placeholder?: string
-  minDate?: Date
   maxDate?: Date
   disabled?: boolean
   compact?: boolean
@@ -25,24 +29,23 @@ type LocalizedDateTimePickerProps = {
   id?: string
 }
 
-export function LocalizedDateTimePicker({
+export function LocalizedDateTimeRangePicker({
   label,
   error,
   value,
   onChange,
   placeholder,
-  minDate,
   maxDate,
   disabled = false,
   compact = false,
   className,
   id,
-}: LocalizedDateTimePickerProps) {
+}: LocalizedDateTimeRangePickerProps) {
   const { locale } = useI18nContext()
   const datePickerLocale = getDatePickerLocale(locale)
 
-  function handleChange(nextValue: DateObject | null) {
-    onChange(nextValue ? nextValue.toDate() : null)
+  function handleChange(nextValue: DateObject | DateObject[] | null) {
+    onChange(toDateTimeRangeValue(nextValue))
   }
 
   return (
@@ -54,13 +57,15 @@ export function LocalizedDateTimePicker({
     >
       <DatePicker
         id={id}
-        value={value}
+        range
+        rangeHover
+        value={toPickerRangeValue(value)}
         onChange={handleChange}
         calendar={datePickerLocale.calendar}
         locale={datePickerLocale.locale}
         format="YYYY-MM-DD HH:mm"
+        dateSeparator=" – "
         monthYearSeparator=" / "
-        minDate={minDate}
         maxDate={capMaxDate(maxDate)}
         placeholder={placeholder}
         disabled={disabled}
@@ -115,6 +120,35 @@ function DateTimePickerChrome({
       {children}
     </Field>
   )
+}
+
+function toPickerRangeValue(value: DateTimeRangeValue): Date[] | undefined {
+  if (value.start && value.end) {
+    return [value.start, value.end]
+  }
+
+  if (value.start) {
+    return [value.start]
+  }
+
+  return undefined
+}
+
+function toDateTimeRangeValue(
+  nextValue: DateObject | DateObject[] | null,
+): DateTimeRangeValue {
+  if (nextValue == null) {
+    return { start: null, end: null }
+  }
+
+  if (Array.isArray(nextValue)) {
+    return {
+      start: nextValue[0]?.toDate() ?? null,
+      end: nextValue[1]?.toDate() ?? null,
+    }
+  }
+
+  return { start: nextValue.toDate(), end: null }
 }
 
 function capMaxDate(maxDate?: Date): Date {
