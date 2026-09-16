@@ -53,9 +53,16 @@
   box-shadow: none;
 }
 
-.localized-date-time-picker-container .rmdp-header-values {
+.localized-date-time-picker-container .rmdp-header-values,
+.localized-date-time-picker-container .rmdp-header-values span {
+  color: var(--color-base-content);
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.localized-date-time-picker-container .rmdp-month-picker,
+.localized-date-time-picker-container .rmdp-year-picker {
+  color: var(--color-base-content);
 }
 
 .localized-date-time-picker-container .rmdp-arrow-container {
