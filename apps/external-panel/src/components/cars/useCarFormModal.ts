@@ -58,7 +58,10 @@ export function useCarFormModal({
   const saveMutation = useMutation({
     mutationFn: async function saveCar(data: CarFormOutput) {
       if (mode === 'edit' && car) {
-        return updateCar(car.id, data)
+        return updateCar(car.id, {
+          ...data,
+          expectedDriverId: car.driverId,
+        })
       }
 
       return createCar(data)

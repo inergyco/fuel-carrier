@@ -519,6 +519,8 @@ const en: BaseTranslation = {
       createFailed: 'Could not save. Please try again.',
       deleteFailed: 'Could not delete. Please try again.',
       custodyFailed: 'Could not update custody. Please try again.',
+      custodyConflict:
+        'Custody changed since you started. Refresh and try again.',
       deleteTitle: 'Deactivate vehicle?',
       deleteDescription:
         'This will deactivate {licensePlate:string}. Assignment history stays available; the vehicle leaves active lists.',

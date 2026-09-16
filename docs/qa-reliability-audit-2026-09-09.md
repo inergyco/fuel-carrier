@@ -1,13 +1,17 @@
 # Mobile Fueling — Reliability & Failure-Mode Audit
 
-**Date:** 2026-09-09  
+**Date:** 2026-09-09 (live audit) · **Remediation review:** 2026-09-16  
 **Targets:** https://mobile-fueling.inergy.ir/ · https://mobile-fueling-admin.inergy.ir/  
 **Scope:** Behavior when things go wrong — network, user actions, API errors, concurrency (especially custody).  
 **Method:** Shared client/query code review + live API probes (status codes, concurrent custody assigns). Interactive browser throttling / multi-tab UI not instrumented in a device lab; UI failure mapping inferred from React Query + form/mutation code (same stack on both panels).
 
-**Reliability Assurance Degree:** **61 / 100**
+**Reliability Assurance Degree:** **78 / 100** (estimated after REL-01–03 remediations in code; REL-04/05 still open; pending deploy + live re-probe)  
+**Original live score (2026-09-09):** **61 / 100**  
+**Band:** Acceptable with gaps (70–89) ← **estimated**
 
-Happy path forms and DB uniqueness prevent the worst dual-open custody corruption, but concurrent custody writes can return **success to both clients** with a **last-write-wins** final state, error surfaces often look like empty/not-found, mid-session 401 is unhandled, and partial PATCH defaults wipe fields during “simple” assigns.
+Happy path forms and DB uniqueness prevent the worst dual-open custody corruption. Prior gaps (PATCH defaults, duplicate→500, concurrent false success) are addressed in code; list/detail error conflation and mid-session 401 remain.
+
+> **Remediation (2026-09-16):** **REL-02** / **REL-03** were already fixed with integrity remediations. **REL-01** / **REL-06** use `expectedDriverId` precondition and return **409 CONFLICT** when the car's driver changed underfoot. Score revised to **78** — confirm with deploy + concurrent probes. Findings in §§3–6 are the original audit evidence unless marked remediated in [§ Status](#status).
 
 ---
 

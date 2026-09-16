@@ -25,13 +25,27 @@ const carBaseSchema = z.object({
 /**
  * Update body: omitted keys stay undefined (leave unchanged).
  * Do not reuse create defaults via `.partial()` — Zod would still apply them.
+ *
+ * When `driverId` is present, `expectedDriverId` is required so concurrent
+ * custody writes can return 409 instead of last-write-wins false success.
  */
-const carUpdateBaseSchema = z.object({
-  name: carNameField.optional(),
-  licensePlate: carLicensePlateField.optional(),
-  driverId: carDriverIdField.optional(),
-  note: carNoteField.optional(),
-});
+const carUpdateBaseSchema = z
+  .object({
+    name: carNameField.optional(),
+    licensePlate: carLicensePlateField.optional(),
+    driverId: carDriverIdField.optional(),
+    note: carNoteField.optional(),
+    expectedDriverId: carDriverIdField.optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.driverId !== undefined && data.expectedDriverId === undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'expectedDriverId is required when driverId is set',
+        path: ['expectedDriverId'],
+      });
+    }
+  });
 
 /** Internal admin: companyId is required in the request body. */
 export const createInternalCarDtoSchema = carBaseSchema.extend({
@@ -48,5 +62,5 @@ export const updateExternalCarDtoSchema = carUpdateBaseSchema;
 
 export type CreateInternalCarDto = CarInput;
 export type CreateExternalCarDto = Omit<CarInput, "companyId">;
-export type UpdateInternalCarDto = Partial<CreateInternalCarDto>;
-export type UpdateExternalCarDto = Partial<CreateExternalCarDto>;
+export type UpdateInternalCarDto = z.infer<typeof updateInternalCarDtoSchema>;
+export type UpdateExternalCarDto = z.infer<typeof updateExternalCarDtoSchema>;

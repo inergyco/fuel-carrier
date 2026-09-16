@@ -71,7 +71,14 @@ export function CarFormModal({
       }
 
       if (mode === 'edit' && car) {
-        return updateCar(car.id, payload)
+        return updateCar(car.id, {
+          name: data.name,
+          licensePlate: data.licensePlate,
+          note: data.note,
+          driverId: data.driverId,
+          companyId,
+          expectedDriverId: car.driverId,
+        })
       }
 
       return createCar(payload)

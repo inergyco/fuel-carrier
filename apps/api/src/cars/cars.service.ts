@@ -36,6 +36,7 @@ import {
 } from './cars-list-filters';
 import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
 import { CarsReader } from './cars-reader.service';
+import { assertCustodyPrecondition } from './custody-conflict';
 
 type CreateCarPayload = {
   name?: string | null;
@@ -45,7 +46,9 @@ type CreateCarPayload = {
   note?: string | null;
 };
 
-type UpdateCarPayload = Partial<CreateCarPayload>;
+type UpdateCarPayload = Partial<CreateCarPayload> & {
+  expectedDriverId?: string | null;
+};
 
 type ListCarsOptions = {
   page: number;
@@ -209,6 +212,13 @@ export class CarsService {
 
         const existing = await this.carsReader.getById(tx, id);
         this._assertCarActive(existing);
+
+        if (dto.driverId !== undefined) {
+          assertCustodyPrecondition({
+            currentDriverId: existing.driverId,
+            expectedDriverId: dto.expectedDriverId,
+          });
+        }
 
         const nextCompanyId =
           dto.companyId !== undefined ? dto.companyId : existing.companyId;

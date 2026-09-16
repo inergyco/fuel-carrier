@@ -36,23 +36,35 @@ describe('car update DTO schemas', () => {
     expect('note' in parsed).toBe(false);
   });
 
-  it('still allows explicit unassign via driverId null', () => {
+  it('still allows explicit unassign via driverId null with expectedDriverId', () => {
     const parsed = updateInternalCarDtoSchema.parse({
       driverId: null,
+      expectedDriverId: DRIVER_ID,
     });
 
     expect(parsed).toEqual({
       driverId: null,
+      expectedDriverId: DRIVER_ID,
     });
   });
 
-  it('still allows assigning a driver on update', () => {
+  it('still allows assigning a driver on update with expectedDriverId', () => {
     const parsed = updateInternalCarDtoSchema.parse({
       driverId: DRIVER_ID,
+      expectedDriverId: null,
     });
 
     expect(parsed).toEqual({
       driverId: DRIVER_ID,
+      expectedDriverId: null,
     });
+  });
+
+  it('rejects driverId without expectedDriverId', () => {
+    const result = updateInternalCarDtoSchema.safeParse({
+      driverId: DRIVER_ID,
+    });
+
+    expect(result.success).toBe(false);
   });
 });

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import type { Car, Driver } from '@fuel-carrier/shared-types'
+import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { fetchAllPaginated } from '@fuel-carrier/web-ui/api'
+import { fetchAllPaginated, isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, updateCar } from '../../lib/api/cars'
@@ -40,8 +41,13 @@ export function useCarCustody() {
     mutationFn: (input: {
       carId: string
       driverId: string | null
+      expectedDriverId: string | null
       mode: CarCustodyMode
-    }) => updateCar(input.carId, { driverId: input.driverId }),
+    }) =>
+      updateCar(input.carId, {
+        driverId: input.driverId,
+        expectedDriverId: input.expectedDriverId,
+      }),
     onSuccess: async function onCustodyUpdated(_car, variables) {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: carKeys.all }),
@@ -61,7 +67,17 @@ export function useCarCustody() {
 
       toast.success(LL.externalPanel.toast.carCustodyEnded())
     },
-    onError: () => toast.error(LL.externalPanel.cars.custodyFailed()),
+    onError: (error) => {
+      if (
+        isApiClientError(error) &&
+        error.apiError.code === ApiErrorCode.CONFLICT
+      ) {
+        toast.error(LL.externalPanel.cars.custodyConflict())
+        return
+      }
+
+      toast.error(LL.externalPanel.cars.custodyFailed())
+    },
   })
 
   function openAssign(car: Car) {

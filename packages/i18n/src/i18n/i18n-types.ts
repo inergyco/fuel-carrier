@@ -1889,6 +1889,10 @@ type RootTranslation = {
 			 */
 			custodyFailed: string
 			/**
+			 * C​u​s​t​o​d​y​ ​c​h​a​n​g​e​d​ ​s​i​n​c​e​ ​y​o​u​ ​s​t​a​r​t​e​d​.​ ​R​e​f​r​e​s​h​ ​a​n​d​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			custodyConflict: string
+			/**
 			 * D​e​a​c​t​i​v​a​t​e​ ​v​e​h​i​c​l​e​?
 			 */
 			deleteTitle: string
@@ -4297,6 +4301,10 @@ export type TranslationFunctions = {
 			 * Could not update custody. Please try again.
 			 */
 			custodyFailed: () => LocalizedString
+			/**
+			 * Custody changed since you started. Refresh and try again.
+			 */
+			custodyConflict: () => LocalizedString
 			/**
 			 * Deactivate vehicle?
 			 */

@@ -40,6 +40,7 @@ export function CarCustodyPickerSession({
     await custody.mutation.mutateAsync({
       carId: options.car.id,
       driverId: options.driverId,
+      expectedDriverId: options.car.driverId,
       mode: options.mode,
     })
   }

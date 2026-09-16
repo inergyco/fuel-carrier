@@ -25,6 +25,7 @@ const STATUS_TO_CODE = new Map<number, ApiErrorCode>([
   [HttpStatus.UNAUTHORIZED, ApiErrorCode.UNAUTHORIZED],
   [HttpStatus.FORBIDDEN, ApiErrorCode.FORBIDDEN],
   [HttpStatus.NOT_FOUND, ApiErrorCode.NOT_FOUND],
+  [HttpStatus.CONFLICT, ApiErrorCode.CONFLICT],
   [HttpStatus.TOO_MANY_REQUESTS, ApiErrorCode.TOO_MANY_REQUESTS],
 ]);
 

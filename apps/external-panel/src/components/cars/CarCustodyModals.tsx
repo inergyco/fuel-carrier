@@ -54,6 +54,7 @@ export function CarCustodyModals({ custody }: CarCustodyModalsProps) {
           await custody.mutation.mutateAsync({
             carId: target.car.id,
             driverId: null,
+            expectedDriverId: target.car.driverId,
             mode: 'end',
           })
         }}
