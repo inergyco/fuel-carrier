@@ -113,7 +113,6 @@ export function resolveTrajectoryStatusText({
   isLiveLoading,
   selectedCompanyName,
   hasSelectedCar,
-  isPlanningRoute,
 }: {
   labels: TrajectoryMapViewLabels
   isHistoryMode: boolean
@@ -124,7 +123,6 @@ export function resolveTrajectoryStatusText({
   isLiveLoading: boolean
   selectedCompanyName: string | null
   hasSelectedCar: boolean
-  isPlanningRoute: boolean
 }): string {
   if (isHistoryMode) {
     if (isHistoryLoading) {
@@ -140,10 +138,6 @@ export function resolveTrajectoryStatusText({
 
   if (hasSelectedCar) {
     return labels.selectedVehiclePrompt({ vehicle: vehicleLabel })
-  }
-
-  if (isPlanningRoute) {
-    return labels.clickVehicleHint()
   }
 
   return fleetMapStatusLabel(

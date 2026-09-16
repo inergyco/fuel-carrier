@@ -504,17 +504,13 @@ type RootTranslation = {
 			 */
 			selectedVehicle: string
 			/**
-			 * T​a​p​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​,​ ​t​h​e​n​ ​o​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
 			 */
 			clickVehicleHint: string
 			/**
-			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
+			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
 			 */
 			chooseTimeRange: string
-			/**
-			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
-			 */
-			historyRoute: string
 			/**
 			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
 			 * @param {unknown} vehicle
@@ -549,7 +545,7 @@ type RootTranslation = {
 			 */
 			showTrajectoryLoading: string
 			/**
-			 * U​s​e​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​ ​t​o​ ​p​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
 			 */
 			trajectoryHint: string
 			/**
@@ -2209,17 +2205,13 @@ type RootTranslation = {
 			 */
 			selectedVehicle: string
 			/**
-			 * T​a​p​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​,​ ​t​h​e​n​ ​o​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
 			 */
 			clickVehicleHint: string
 			/**
-			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
+			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
 			 */
 			chooseTimeRange: string
-			/**
-			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
-			 */
-			historyRoute: string
 			/**
 			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
 			 * @param {unknown} vehicle
@@ -2254,7 +2246,7 @@ type RootTranslation = {
 			 */
 			showTrajectoryLoading: string
 			/**
-			 * U​s​e​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​ ​t​o​ ​p​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
 			 */
 			trajectoryHint: string
 			/**
@@ -2922,17 +2914,13 @@ export type TranslationFunctions = {
 			 */
 			selectedVehicle: () => LocalizedString
 			/**
-			 * Tap History route, then open a vehicle and choose a time range.
+			 * Open a vehicle popup and choose a time range to replay its route.
 			 */
 			clickVehicleHint: () => LocalizedString
 			/**
-			 * History route
+			 * Display trajectory
 			 */
 			chooseTimeRange: () => LocalizedString
-			/**
-			 * History route
-			 */
-			historyRoute: () => LocalizedString
 			/**
 			 * {vehicle} selected. Choose start and end times.
 			 */
@@ -2966,7 +2954,7 @@ export type TranslationFunctions = {
 			 */
 			showTrajectoryLoading: () => LocalizedString
 			/**
-			 * Use History route to pick a vehicle and time range, then return to the live fleet map.
+			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
 			 */
 			trajectoryHint: () => LocalizedString
 			/**
@@ -4596,17 +4584,13 @@ export type TranslationFunctions = {
 			 */
 			selectedVehicle: () => LocalizedString
 			/**
-			 * Tap History route, then open a vehicle and choose a time range.
+			 * Open a vehicle popup and choose a time range to replay its route.
 			 */
 			clickVehicleHint: () => LocalizedString
 			/**
-			 * History route
+			 * Display trajectory
 			 */
 			chooseTimeRange: () => LocalizedString
-			/**
-			 * History route
-			 */
-			historyRoute: () => LocalizedString
 			/**
 			 * {vehicle} selected. Choose start and end times.
 			 */
@@ -4640,7 +4624,7 @@ export type TranslationFunctions = {
 			 */
 			showTrajectoryLoading: () => LocalizedString
 			/**
-			 * Use History route to pick a vehicle and time range, then return to the live fleet map.
+			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
 			 */
 			trajectoryHint: () => LocalizedString
 			/**

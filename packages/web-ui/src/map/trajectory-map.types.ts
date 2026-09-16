@@ -13,7 +13,6 @@ export type TrajectoryMapViewLabels = CarsMapLabels & {
   selectedVehicle: () => string;
   clickVehicleHint: () => string;
   chooseTimeRange: () => string;
-  historyRoute: () => string;
   selectedVehiclePrompt: (params: { vehicle: string }) => string;
   changeVehicle: () => string;
   startDateTime: () => string;

@@ -7,7 +7,6 @@ import {
 } from './trajectory-utils'
 
 export function useTrajectorySelection() {
-  const [isPlanningRoute, setIsPlanningRoute] = useState(false)
   const [selectedCarId, setSelectedCarId] = useState('')
   const [startAt, setStartAt] = useState<Date | null>(null)
   const [endAt, setEndAt] = useState<Date | null>(null)
@@ -23,19 +22,6 @@ export function useTrajectorySelection() {
   })
 
   function resetForm() {
-    setIsPlanningRoute(false)
-    setSelectedCarId('')
-    setStartAt(null)
-    setEndAt(null)
-    setHistoryRequest(null)
-  }
-
-  function handleStartPlanning() {
-    if (isHistoryMode) {
-      return
-    }
-
-    setIsPlanningRoute(true)
     setSelectedCarId('')
     setStartAt(null)
     setEndAt(null)
@@ -47,7 +33,6 @@ export function useTrajectorySelection() {
       return
     }
 
-    setIsPlanningRoute(true)
     setSelectedCarId(marker.carId)
     setStartAt(null)
     setEndAt(null)
@@ -72,27 +57,18 @@ export function useTrajectorySelection() {
     resetForm()
   }
 
-  function handleClearSelection() {
-    setSelectedCarId('')
-    setStartAt(null)
-    setEndAt(null)
-    setHistoryRequest(null)
-  }
-
   return {
     selectedCarId,
     startAt,
     endAt,
     historyRequest,
     isHistoryMode,
-    isPlanningRoute,
     hasSelectedCar,
     canSubmit,
     setStartAt,
     setEndAt,
-    handleStartPlanning,
     handleSelectMarker,
-    handleClearSelection,
+    handleClearSelection: resetForm,
     handleShowTrajectory,
     handleBackToLiveMap,
   }

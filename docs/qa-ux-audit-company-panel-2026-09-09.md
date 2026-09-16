@@ -5,10 +5,10 @@
 **Primary personas:** company fleet operators, dispatchers, and field personnel on phones outdoors (hurried, glare, gloves/thumbs, intermittent connectivity)  
 **Method:** Deep review of `apps/external-panel` + `packages/web-ui` / i18n; live HTML shell check (`lang`/`dir` bootstrap). **No interactive device lab or browser click-through** — findings are code- and structure-evidenced; treat visual/performance numbers as inferred.
 
-**UX Assurance Degree:** **86 / 100** (estimated after custody, search/filter, connectivity, touch targets, audit cards, map progressive disclosure; pending field validation)  
+**UX Assurance Degree:** **84 / 100** (estimated after custody, search/filter, connectivity, touch targets, audit cards; pending field validation)  
 **Original score (2026-09-09):** **64 / 100**
 
-> **Remediation (2026-09-16):** Custody, search/filter, connectivity clarity, ≥44px controls, audit mobile cards, and map History-route progressive disclosure. Score revised to **86** — remaining gap is mostly a11y / skeletons / field validation.
+> **Remediation (2026-09-16):** Custody, search/filter, connectivity clarity, ≥44px controls, and audit mobile cards. Score revised to **84** — remaining gap is map trajectory polish, a11y / skeletons / field validation.
 
 ---
 
@@ -139,7 +139,7 @@
 ## Status
 
 **Audit date:** 2026-09-09 — live score **64/100**.  
-**Remediation review:** 2026-09-16 — estimated **86/100**.
+**Remediation review:** 2026-09-16 — estimated **84/100**.
 
 ### Implemented
 
@@ -152,12 +152,13 @@
 | **Telemetry vs network offline** | Dashboard “No live location” (not Offline). Connectivity banner for browser offline / telemetry load failure + Retry on dashboard & map. |
 | **Touch targets ≥44px** | Shared Button ghost/icon + DataTable actions + hamburger/nav/map popup controls sized to `h-11` / `size-11`; more spacing between destructive icons. |
 | **Audit mobile cards** | Shared `AuditLogsTable` switches to card list under `md`. |
-| **Map progressive disclosure** | Live fleet default + **History route** CTA; drawer closes on navigate. |
+| **Drawer closes on navigate** | Mobile nav drawer unchecks on Link click. |
 
 ### Still open (next)
 
-1. A11y pass (label association, focus trap, i18n toast dismiss)  
-2. List skeletons + password-change success toast  
-3. Ensure duplicate validation always shows field messages  
+1. Map trajectory progressive disclosure (live fleet default / History route)  
+2. A11y pass (label association, focus trap, i18n toast dismiss)  
+3. List skeletons + password-change success toast  
+4. Ensure duplicate validation always shows field messages  
 
 Interactive phone/field validation recommended before locking the score. Admin panel (`mobile-fueling-admin`) not in original scope (overview driver display updated for consistency).

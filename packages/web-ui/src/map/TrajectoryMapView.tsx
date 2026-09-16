@@ -85,10 +85,8 @@ export function TrajectoryMapView({
           isLiveLoading: isLoading,
           selectedCompanyName: companyFilter.selectedCompanyName,
           hasSelectedCar: selection.hasSelectedCar,
-          isPlanningRoute: selection.isPlanningRoute,
         })}
         isHistoryMode={selection.isHistoryMode}
-        isPlanningRoute={selection.isPlanningRoute}
         hasSelectedCar={selection.hasSelectedCar}
         vehicleLabel={vehicleLabel}
         startAt={selection.startAt}
@@ -97,7 +95,6 @@ export function TrajectoryMapView({
         isSubmitting={history.isLoading}
         onStartChange={selection.setStartAt}
         onEndChange={selection.setEndAt}
-        onStartPlanning={selection.handleStartPlanning}
         onShowTrajectory={selection.handleShowTrajectory}
         onBackToLiveMap={selection.handleBackToLiveMap}
         onClearSelection={selection.handleClearSelection}
