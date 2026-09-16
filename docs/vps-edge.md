@@ -52,10 +52,14 @@ Templates:
 - [`infra/nginx/fuel-carrier-external.conf`](../infra/nginx/fuel-carrier-external.conf)
 - [`infra/nginx/fuel-carrier-internal.conf`](../infra/nginx/fuel-carrier-internal.conf)
 - [`infra/nginx/fuel-carrier-default-deny.conf`](../infra/nginx/fuel-carrier-default-deny.conf)
+- [`infra/nginx/snippets/spa-security-headers.conf`](../infra/nginx/snippets/spa-security-headers.conf) — HSTS / CSP / frame denial / nosniff for SPA `location /`
 
 ```bash
 REPO=/path/to/fuel-carrier   # or scp the conf files up
 
+sudo mkdir -p /etc/nginx/snippets
+sudo cp "$REPO"/infra/nginx/snippets/spa-security-headers.conf \
+  /etc/nginx/snippets/fuel-carrier-spa-security-headers.conf
 sudo cp "$REPO"/infra/nginx/fuel-carrier-*.conf /etc/nginx/sites-available/
 sudo ln -sf /etc/nginx/sites-available/fuel-carrier-external \
   /etc/nginx/sites-enabled/fuel-carrier-external
@@ -65,6 +69,13 @@ sudo ln -sf /etc/nginx/sites-available/fuel-carrier-default-deny \
   /etc/nginx/sites-enabled/fuel-carrier-default-deny
 
 sudo nginx -t && sudo systemctl reload nginx
+```
+
+After reload, confirm SPA headers (not `/api/`):
+
+```bash
+curl -sSI https://mobile-fueling.inergy.ir/ | tr -d '\r' | grep -Ei 'strict-transport|x-frame|x-content-type|content-security|referrer-policy'
+curl -sSI https://mobile-fueling-admin.inergy.ir/ | tr -d '\r' | grep -Ei 'strict-transport|x-frame|x-content-type|content-security|referrer-policy'
 ```
 
 First-time TLS (both names, one lineage):
@@ -103,6 +114,8 @@ diff -u infra/nginx/fuel-carrier-external.conf \
   /etc/nginx/sites-enabled/fuel-carrier-external
 diff -u infra/nginx/fuel-carrier-internal.conf \
   /etc/nginx/sites-enabled/fuel-carrier-internal
+diff -u infra/nginx/snippets/spa-security-headers.conf \
+  /etc/nginx/snippets/fuel-carrier-spa-security-headers.conf
 ```
 
 If live and repo disagree, decide which is correct and update the other.
