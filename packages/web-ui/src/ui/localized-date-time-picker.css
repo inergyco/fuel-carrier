@@ -107,11 +107,18 @@
 }
 
 .localized-date-time-picker-container .rmdp-day.rmdp-selected span,
-.localized-date-time-picker-container .rmdp-range-hover,
-.localized-date-time-picker-container .rmdp-range {
+.localized-date-time-picker-container .rmdp-range-start span,
+.localized-date-time-picker-container .rmdp-range-end span {
   background: color-mix(in oklab, var(--color-primary) 75%, black 5%);
   color: var(--color-primary-content, white);
   box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-primary) 18%, transparent);
+}
+
+.localized-date-time-picker-container .rmdp-range:not(.rmdp-range-start):not(.rmdp-range-end) span,
+.localized-date-time-picker-container .rmdp-range-hover:not(.rmdp-range-start):not(.rmdp-range-end) span {
+  background: color-mix(in oklab, var(--color-primary) 22%, transparent);
+  color: var(--color-base-content);
+  box-shadow: none;
 }
 
 .localized-date-time-picker-container .rmdp-today span {

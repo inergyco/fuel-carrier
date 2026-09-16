@@ -16,8 +16,7 @@ type TrajectoryControlsProps = {
   endAt: Date | null
   canSubmit: boolean
   isSubmitting: boolean
-  onStartChange: (value: Date | null) => void
-  onEndChange: (value: Date | null) => void
+  onRangeChange: (value: { start: Date | null; end: Date | null }) => void
   onShowTrajectory: () => void
   onBackToLiveMap: () => void
   onClearSelection: () => void
@@ -34,8 +33,7 @@ export function TrajectoryControls({
   endAt,
   canSubmit,
   isSubmitting,
-  onStartChange,
-  onEndChange,
+  onRangeChange,
   onShowTrajectory,
   onBackToLiveMap,
   onClearSelection,
@@ -53,8 +51,7 @@ export function TrajectoryControls({
           endAt={endAt}
           canSubmit={canSubmit}
           isSubmitting={isSubmitting}
-          onStartChange={onStartChange}
-          onEndChange={onEndChange}
+          onRangeChange={onRangeChange}
           onShowTrajectory={onShowTrajectory}
           onBackToLiveMap={onBackToLiveMap}
           onClearSelection={onClearSelection}

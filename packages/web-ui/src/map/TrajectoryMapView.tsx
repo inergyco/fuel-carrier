@@ -93,8 +93,7 @@ export function TrajectoryMapView({
         endAt={selection.endAt}
         canSubmit={selection.canSubmit}
         isSubmitting={history.isLoading}
-        onStartChange={selection.setStartAt}
-        onEndChange={selection.setEndAt}
+        onRangeChange={selection.handleRangeChange}
         onShowTrajectory={selection.handleShowTrajectory}
         onBackToLiveMap={selection.handleBackToLiveMap}
         onClearSelection={selection.handleClearSelection}

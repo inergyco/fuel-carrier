@@ -39,6 +39,11 @@ export function useTrajectorySelection() {
     setHistoryRequest(null)
   }
 
+  function handleRangeChange(value: { start: Date | null; end: Date | null }) {
+    setStartAt(value.start)
+    setEndAt(value.end)
+  }
+
   function handleShowTrajectory() {
     if (!canSubmit || startAt == null || endAt == null) {
       return
@@ -69,6 +74,7 @@ export function useTrajectorySelection() {
     setEndAt,
     handleSelectMarker,
     handleClearSelection: resetForm,
+    handleRangeChange,
     handleShowTrajectory,
     handleBackToLiveMap,
   }

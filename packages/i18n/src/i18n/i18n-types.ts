@@ -529,7 +529,7 @@ type RootTranslation = {
 			 */
 			endDateTime: string
 			/**
-			 * P​i​c​k​ ​d​a​t​e​ ​a​n​d​ ​t​i​m​e
+			 * P​i​c​k​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d
 			 */
 			dateTimePlaceholder: string
 			/**
@@ -2230,7 +2230,7 @@ type RootTranslation = {
 			 */
 			endDateTime: string
 			/**
-			 * P​i​c​k​ ​d​a​t​e​ ​a​n​d​ ​t​i​m​e
+			 * P​i​c​k​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d
 			 */
 			dateTimePlaceholder: string
 			/**
@@ -2938,7 +2938,7 @@ export type TranslationFunctions = {
 			 */
 			endDateTime: () => LocalizedString
 			/**
-			 * Pick date and time
+			 * Pick start and end
 			 */
 			dateTimePlaceholder: () => LocalizedString
 			/**
@@ -4608,7 +4608,7 @@ export type TranslationFunctions = {
 			 */
 			endDateTime: () => LocalizedString
 			/**
-			 * Pick date and time
+			 * Pick start and end
 			 */
 			dateTimePlaceholder: () => LocalizedString
 			/**

@@ -1,4 +1,4 @@
-import { Button, LocalizedDateTimePicker } from '../ui'
+import { Button, LocalizedDateTimeRangePicker } from '../ui'
 import type { TrajectoryMapViewLabels } from './trajectory-map.types'
 
 const overlayCardClassName =
@@ -12,8 +12,7 @@ type TrajectoryFormCardProps = {
   endAt: Date | null
   canSubmit: boolean
   isSubmitting: boolean
-  onStartChange: (value: Date | null) => void
-  onEndChange: (value: Date | null) => void
+  onRangeChange: (value: { start: Date | null; end: Date | null }) => void
   onShowTrajectory: () => void
   onBackToLiveMap: () => void
   onClearSelection: () => void
@@ -27,8 +26,7 @@ export function TrajectoryFormCard({
   endAt,
   canSubmit,
   isSubmitting,
-  onStartChange,
-  onEndChange,
+  onRangeChange,
   onShowTrajectory,
   onBackToLiveMap,
   onClearSelection,
@@ -54,26 +52,14 @@ export function TrajectoryFormCard({
           ) : null}
         </div>
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:items-center">
-          <LocalizedDateTimePicker
+        <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
+          <LocalizedDateTimeRangePicker
             compact
-            className="w-full min-w-0 xl:w-[13.25rem]"
-            label={labels.startDateTime()}
-            value={startAt}
-            onChange={onStartChange}
+            className="w-full min-w-0 sm:min-w-[18rem] xl:w-[22rem]"
+            label={`${labels.startDateTime()} – ${labels.endDateTime()}`}
+            value={{ start: startAt, end: endAt }}
+            onChange={onRangeChange}
             placeholder={labels.dateTimePlaceholder()}
-            maxDate={endAt ?? undefined}
-            disabled={isHistoryMode}
-          />
-
-          <LocalizedDateTimePicker
-            compact
-            className="w-full min-w-0 xl:w-[13.25rem]"
-            label={labels.endDateTime()}
-            value={endAt}
-            onChange={onEndChange}
-            placeholder={labels.dateTimePlaceholder()}
-            minDate={startAt ?? undefined}
             disabled={isHistoryMode}
           />
 
@@ -82,7 +68,7 @@ export function TrajectoryFormCard({
               type="button"
               variant="ghost"
               onClick={onBackToLiveMap}
-              className="h-11 min-h-11 w-full rounded-lg border border-base-content/10 bg-base-100/40 px-3 sm:col-span-2 xl:w-auto"
+              className="h-11 min-h-11 w-full shrink-0 rounded-lg border border-base-content/10 bg-base-100/40 px-3 sm:w-auto"
             >
               {labels.backToLiveMap()}
             </Button>
@@ -93,7 +79,7 @@ export function TrajectoryFormCard({
               disabled={!canSubmit}
               loading={isSubmitting}
               loadingText={labels.showTrajectoryLoading()}
-              className="h-11 min-h-11 w-full sm:col-span-2 xl:w-auto xl:min-w-28"
+              className="h-11 min-h-11 w-full shrink-0 sm:w-auto sm:min-w-28"
             >
               {labels.showTrajectory()}
             </Button>

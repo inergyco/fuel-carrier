@@ -1,5 +1,6 @@
 export { Input } from './Input'
-export { LocalizedDateTimePicker } from './LocalizedDateTimePicker'
+export { LocalizedDateTimePicker, LocalizedDateTimeRangePicker } from './LocalizedDateTimePicker'
+export type { DateTimeRangeValue } from './LocalizedDateTimePicker'
 export { FormInput } from './FormInput'
 export { Select } from './Select'
 export { FormSelect } from './FormSelect'
