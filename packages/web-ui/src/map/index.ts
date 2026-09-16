@@ -1,6 +1,6 @@
 export { CarsMap } from './CarsMap'
 export type { CarsMapLabels, CarsMapProps } from './CarsMap'
-export { mapPopupActionClassName } from './map-popup-actions'
+export { mapPopupActionClassName } from './CarMarkerPopup'
 export { FleetMapView } from './FleetMapView'
 export type { FleetMapViewLabels, FleetMapViewProps } from './FleetMapView'
 export { TrajectoryMapView } from './TrajectoryMapView'

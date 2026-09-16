@@ -1,47 +1,62 @@
-import { useState } from 'react';
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
+import { useState } from 'react'
+import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import {
   canRequestTrajectory,
   toHistoryRequest,
   type TrajectoryHistoryRequest,
-} from './trajectory-utils';
+} from './trajectory-utils'
 
 export function useTrajectorySelection() {
-  const [selectedCarId, setSelectedCarId] = useState('');
-  const [startAt, setStartAt] = useState<Date | null>(null);
-  const [endAt, setEndAt] = useState<Date | null>(null);
+  const [isPlanningRoute, setIsPlanningRoute] = useState(false)
+  const [selectedCarId, setSelectedCarId] = useState('')
+  const [startAt, setStartAt] = useState<Date | null>(null)
+  const [endAt, setEndAt] = useState<Date | null>(null)
   const [historyRequest, setHistoryRequest] =
-    useState<TrajectoryHistoryRequest | null>(null);
+    useState<TrajectoryHistoryRequest | null>(null)
 
-  const isHistoryMode = historyRequest != null;
-  const hasSelectedCar = selectedCarId.length > 0;
+  const isHistoryMode = historyRequest != null
+  const hasSelectedCar = selectedCarId.length > 0
   const canSubmit = canRequestTrajectory({
     carId: selectedCarId,
     start: startAt,
     end: endAt,
-  });
+  })
 
   function resetForm() {
-    setSelectedCarId('');
-    setStartAt(null);
-    setEndAt(null);
-    setHistoryRequest(null);
+    setIsPlanningRoute(false)
+    setSelectedCarId('')
+    setStartAt(null)
+    setEndAt(null)
+    setHistoryRequest(null)
+  }
+
+  function handleStartPlanning() {
+    if (isHistoryMode) {
+      return
+    }
+
+    setIsPlanningRoute(true)
+    setSelectedCarId('')
+    setStartAt(null)
+    setEndAt(null)
+    setHistoryRequest(null)
   }
 
   function handleSelectMarker(marker: CarTelemetryMarker) {
     if (isHistoryMode) {
-      return;
+      return
     }
 
-    setSelectedCarId(marker.carId);
-    setStartAt(null);
-    setEndAt(null);
-    setHistoryRequest(null);
+    setIsPlanningRoute(true)
+    setSelectedCarId(marker.carId)
+    setStartAt(null)
+    setEndAt(null)
+    setHistoryRequest(null)
   }
 
   function handleShowTrajectory() {
     if (!canSubmit || startAt == null || endAt == null) {
-      return;
+      return
     }
 
     setHistoryRequest(
@@ -50,11 +65,18 @@ export function useTrajectorySelection() {
         start: startAt,
         end: endAt,
       }),
-    );
+    )
   }
 
   function handleBackToLiveMap() {
-    resetForm();
+    resetForm()
+  }
+
+  function handleClearSelection() {
+    setSelectedCarId('')
+    setStartAt(null)
+    setEndAt(null)
+    setHistoryRequest(null)
   }
 
   return {
@@ -63,13 +85,15 @@ export function useTrajectorySelection() {
     endAt,
     historyRequest,
     isHistoryMode,
+    isPlanningRoute,
     hasSelectedCar,
     canSubmit,
     setStartAt,
     setEndAt,
+    handleStartPlanning,
     handleSelectMarker,
-    handleClearSelection: resetForm,
+    handleClearSelection,
     handleShowTrajectory,
     handleBackToLiveMap,
-  };
+  }
 }

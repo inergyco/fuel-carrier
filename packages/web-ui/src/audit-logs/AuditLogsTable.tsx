@@ -1,4 +1,5 @@
-import type { AuditLog } from "@fuel-carrier/shared-types";
+import type { AuditLog } from '@fuel-carrier/shared-types'
+import { MEDIA_QUERIES, useMediaQuery } from '../ui'
 import {
   DataTable,
   DataTableBody,
@@ -7,21 +8,28 @@ import {
   DataTableHeaderCell,
   DataTableHeaderRow,
   DataTableRow,
-} from "../ui/DataTable";
-import { AuditLogDetails } from "./AuditLogDetails";
+} from '../ui/DataTable'
+import { AuditLogDetails } from './AuditLogDetails'
+import { AuditLogsCards } from './AuditLogsCards'
 import {
   formatAuditAction,
   formatAuditTimestamp,
   type AuditLogLabels,
-} from "./audit-log-formatters";
+} from './audit-log-formatters'
 
-interface AuditLogsTableProps {
-  logs: AuditLog[];
-  locale: string;
-  labels: AuditLogLabels;
+type AuditLogsTableProps = {
+  logs: AuditLog[]
+  locale: string
+  labels: AuditLogLabels
 }
 
 export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
+  const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
+
+  if (!isMdUp) {
+    return <AuditLogsCards logs={logs} locale={locale} labels={labels} />
+  }
+
   return (
     <DataTable>
       <DataTableHead>
@@ -49,9 +57,9 @@ export function AuditLogsTable({ logs, locale, labels }: AuditLogsTableProps) {
                 <AuditLogDetails metadata={log.metadata} labels={labels} />
               </DataTableCell>
             </DataTableRow>
-          );
+          )
         })}
       </DataTableBody>
     </DataTable>
-  );
+  )
 }

@@ -6,7 +6,7 @@ import {
   mapPopupActionClassName,
   useCarTelemetryLive,
 } from '@fuel-carrier/web-ui/map'
-import { buttonClassName } from '@fuel-carrier/web-ui/ui'
+import { buttonClassName, ConnectivityBanner, useNavigatorOnline } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
@@ -33,6 +33,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
   })
 
   const telemetryQuery = useCarTelemetryLive(api)
+  const isOnline = useNavigatorOnline()
 
   const driverNameById = useMemo(
     function mapDriverNames() {
@@ -81,6 +82,19 @@ export function DashboardPage({ user }: DashboardPageProps) {
           {LL.externalPanel.home.welcome({ firstName: user.firstName })}
         </p>
       </header>
+
+      <ConnectivityBanner
+        isOnline={isOnline}
+        isQueryError={telemetryQuery.isError}
+        onRetry={() => {
+          void telemetryQuery.refetch()
+        }}
+        labels={{
+          offline: LL.common.connectivity.offline(),
+          loadFailed: LL.common.connectivity.loadFailed(),
+          retry: LL.common.connectivity.retry(),
+        }}
+      />
 
       <FleetMapView
         className="h-[40svh] min-h-56 shrink-0 overflow-hidden rounded-2xl border border-base-content/8"

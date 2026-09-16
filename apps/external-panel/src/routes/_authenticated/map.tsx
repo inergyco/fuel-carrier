@@ -7,7 +7,11 @@ import {
   TrajectoryMapView,
   useCarTelemetryLive,
 } from '@fuel-carrier/web-ui/map'
-import { buttonClassName } from '@fuel-carrier/web-ui/ui'
+import {
+  buttonClassName,
+  ConnectivityBanner,
+  useNavigatorOnline,
+} from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchCars } from '../../lib/api/cars'
@@ -18,6 +22,7 @@ export const Route = createFileRoute('/_authenticated/map')({
 
 function MapPage() {
   const { LL } = useI18nContext()
+  const isOnline = useNavigatorOnline()
   const telemetryQuery = useCarTelemetryLive(api)
   const carsQuery = useQuery({
     queryKey: [...carKeys.all, 'all'] as const,
@@ -36,14 +41,31 @@ function MapPage() {
     )
   }
 
+  function handleRetry() {
+    void telemetryQuery.refetch()
+    void carsQuery.refetch()
+  }
+
   return (
-    <TrajectoryMapView
-      api={api}
-      cars={carsQuery.data ?? []}
-      markers={telemetryQuery.data ?? []}
-      isLoading={telemetryQuery.isLoading}
-      labels={LL.externalPanel.map}
-      renderVehicleLink={renderVehicleLink}
-    />
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
+      <ConnectivityBanner
+        isOnline={isOnline}
+        isQueryError={telemetryQuery.isError || carsQuery.isError}
+        onRetry={handleRetry}
+        labels={{
+          offline: LL.common.connectivity.offline(),
+          loadFailed: LL.common.connectivity.loadFailed(),
+          retry: LL.common.connectivity.retry(),
+        }}
+      />
+      <TrajectoryMapView
+        api={api}
+        cars={carsQuery.data ?? []}
+        markers={telemetryQuery.data ?? []}
+        isLoading={telemetryQuery.isLoading}
+        labels={LL.externalPanel.map}
+        renderVehicleLink={renderVehicleLink}
+      />
+    </div>
   )
 }

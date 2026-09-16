@@ -67,7 +67,7 @@ export function PanelShell({
           <label
             htmlFor={drawerId}
             aria-label={openMenuLabel}
-            className="btn btn-ghost btn-sm btn-square h-10 min-h-10 w-10 cursor-pointer lg:hidden"
+            className="btn btn-ghost btn-sm btn-square size-11 min-h-11 min-w-11 cursor-pointer lg:hidden"
           >
             <Menu className="size-6" strokeWidth={2.25} aria-hidden />
           </label>
@@ -128,13 +128,23 @@ export function PanelShell({
 
           <nav className="relative flex-1 space-y-1 overflow-y-auto px-3 py-4">
             {navItems.map(function renderNavItem(item) {
+              function handleNavClick() {
+                const toggle = document.getElementById(
+                  drawerId,
+                ) as HTMLInputElement | null
+                if (toggle?.checked) {
+                  toggle.checked = false
+                }
+              }
+
               return (
                 <Link
                   key={item.to}
                   to={item.to}
                   activeOptions={{ exact: item.exact ?? false }}
+                  onClick={handleNavClick}
                   className={cn(
-                    'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all',
+                    'group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all',
                     'text-base-content/75 hover:bg-base-content/5 hover:text-base-content',
                   )}
                   activeProps={{

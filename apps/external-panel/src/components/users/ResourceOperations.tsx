@@ -49,7 +49,7 @@ export function ResourceOperations<T>({
   return (
     <div
       className={cn(
-        'flex flex-nowrap items-center gap-2',
+        'flex flex-nowrap items-center gap-3',
         stacked && 'flex-wrap justify-center',
       )}
     >

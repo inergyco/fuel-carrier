@@ -4,7 +4,9 @@ import { useMap } from 'react-leaflet';
 import { ResistanceValue } from '../cars/ResistanceValue';
 import { Button } from '../ui';
 import type { CarsMapLabels } from './CarsMap';
-import { mapPopupActionClassName } from './map-popup-actions';
+
+export const mapPopupActionClassName =
+  'h-11 min-h-11 min-w-0 flex-1 whitespace-nowrap px-2 text-center text-xs font-semibold leading-none normal-case tracking-normal no-underline shadow-none';
 
 type CarMarkerPopupProps = {
   marker: CarTelemetryMarker;

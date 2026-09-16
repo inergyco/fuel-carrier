@@ -5,10 +5,10 @@
 **Primary personas:** company fleet operators, dispatchers, and field personnel on phones outdoors (hurried, glare, gloves/thumbs, intermittent connectivity)  
 **Method:** Deep review of `apps/external-panel` + `packages/web-ui` / i18n; live HTML shell check (`lang`/`dir` bootstrap). **No interactive device lab or browser click-through** — findings are code- and structure-evidenced; treat visual/performance numbers as inferred.
 
-**UX Assurance Degree:** **76 / 100** (estimated after custody + list search/filter; pending field validation)  
+**UX Assurance Degree:** **86 / 100** (estimated after custody, search/filter, connectivity, touch targets, audit cards, map progressive disclosure; pending field validation)  
 **Original score (2026-09-09):** **64 / 100**
 
-> **Remediation (2026-09-16):** First-class Assign / Change / End custody on vehicle detail + list, transfer confirm when moving a driver from another vehicle, current driver on detail header/overview, and server-backed search + assignment filter on vehicles/drivers. Score revised to **76** — still held by offline clarity and touch-target gaps.
+> **Remediation (2026-09-16):** Custody, search/filter, connectivity clarity, ≥44px controls, audit mobile cards, and map History-route progressive disclosure. Score revised to **86** — remaining gap is mostly a11y / skeletons / field validation.
 
 ---
 
@@ -139,7 +139,7 @@
 ## Status
 
 **Audit date:** 2026-09-09 — live score **64/100**.  
-**Remediation review:** 2026-09-16 — estimated **76/100**.
+**Remediation review:** 2026-09-16 — estimated **86/100**.
 
 ### Implemented
 
@@ -149,10 +149,15 @@
 | **Current driver on detail** | Header chip + overview field (also admin panel overview). |
 | **Viewer nav** | Users / Audit hidden for viewers (from security SEC-04). |
 | **Search + assignment filter** | Vehicles/drivers: sticky `search` + All/Assigned/Unassigned, URL-synced, server-side with pagination. |
+| **Telemetry vs network offline** | Dashboard “No live location” (not Offline). Connectivity banner for browser offline / telemetry load failure + Retry on dashboard & map. |
+| **Touch targets ≥44px** | Shared Button ghost/icon + DataTable actions + hamburger/nav/map popup controls sized to `h-11` / `size-11`; more spacing between destructive icons. |
+| **Audit mobile cards** | Shared `AuditLogsTable` switches to card list under `md`. |
+| **Map progressive disclosure** | Live fleet default + **History route** CTA; drawer closes on navigate. |
 
 ### Still open (next)
 
-1. Telemetry vs network offline clarity + retry banner  
-2. ≥44px touch targets more broadly; map/audit mobile polish  
+1. A11y pass (label association, focus trap, i18n toast dismiss)  
+2. List skeletons + password-change success toast  
+3. Ensure duplicate validation always shows field messages  
 
 Interactive phone/field validation recommended before locking the score. Admin panel (`mobile-fueling-admin`) not in original scope (overview driver display updated for consistency).

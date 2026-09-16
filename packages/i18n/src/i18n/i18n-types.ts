@@ -84,6 +84,20 @@ type RootTranslation = {
 			 */
 			assignmentFilterLabel: string
 		}
+		connectivity: {
+			/**
+			 * Y​o​u​’​r​e​ ​o​f​f​l​i​n​e​.​ ​C​h​e​c​k​ ​y​o​u​r​ ​c​o​n​n​e​c​t​i​o​n​.
+			 */
+			offline: string
+			/**
+			 * C​o​u​l​d​n​’​t​ ​l​o​a​d​ ​l​i​v​e​ ​d​a​t​a​.​ ​T​r​y​ ​a​g​a​i​n​.
+			 */
+			loadFailed: string
+			/**
+			 * R​e​t​r​y
+			 */
+			retry: string
+		}
 		companyUserLevel: {
 			/**
 			 * A​c​c​e​s​s​ ​l​e​v​e​l
@@ -295,7 +309,7 @@ type RootTranslation = {
 			 */
 			vehicleLive: string
 			/**
-			 * O​f​f​l​i​n​e
+			 * N​o​ ​l​i​v​e​ ​l​o​c​a​t​i​o​n
 			 */
 			vehicleOffline: string
 			/**
@@ -490,13 +504,17 @@ type RootTranslation = {
 			 */
 			selectedVehicle: string
 			/**
-			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
+			 * T​a​p​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​,​ ​t​h​e​n​ ​o​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​.
 			 */
 			clickVehicleHint: string
 			/**
-			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
+			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
 			 */
 			chooseTimeRange: string
+			/**
+			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
+			 */
+			historyRoute: string
 			/**
 			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
 			 * @param {unknown} vehicle
@@ -531,7 +549,7 @@ type RootTranslation = {
 			 */
 			showTrajectoryLoading: string
 			/**
-			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 * U​s​e​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​ ​t​o​ ​p​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
 			 */
 			trajectoryHint: string
 			/**
@@ -1394,7 +1412,7 @@ type RootTranslation = {
 			 */
 			locationLive: string
 			/**
-			 * O​f​f​l​i​n​e
+			 * N​o​ ​l​i​v​e​ ​l​o​c​a​t​i​o​n
 			 */
 			locationUnknown: string
 		}
@@ -2191,13 +2209,17 @@ type RootTranslation = {
 			 */
 			selectedVehicle: string
 			/**
-			 * O​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​p​o​p​u​p​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​ ​t​o​ ​r​e​p​l​a​y​ ​i​t​s​ ​r​o​u​t​e​.
+			 * T​a​p​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​,​ ​t​h​e​n​ ​o​p​e​n​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​c​h​o​o​s​e​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​.
 			 */
 			clickVehicleHint: string
 			/**
-			 * D​i​s​p​l​a​y​ ​t​r​a​j​e​c​t​o​r​y
+			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
 			 */
 			chooseTimeRange: string
+			/**
+			 * H​i​s​t​o​r​y​ ​r​o​u​t​e
+			 */
+			historyRoute: string
 			/**
 			 * {​v​e​h​i​c​l​e​}​ ​s​e​l​e​c​t​e​d​.​ ​C​h​o​o​s​e​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​s​.
 			 * @param {unknown} vehicle
@@ -2232,7 +2254,7 @@ type RootTranslation = {
 			 */
 			showTrajectoryLoading: string
 			/**
-			 * C​l​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​o​n​ ​t​h​e​ ​m​a​p​,​ ​p​i​c​k​ ​a​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​p​l​a​y​ ​i​t​s​ ​p​a​t​h​ ​a​n​d​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
+			 * U​s​e​ ​H​i​s​t​o​r​y​ ​r​o​u​t​e​ ​t​o​ ​p​i​c​k​ ​a​ ​v​e​h​i​c​l​e​ ​a​n​d​ ​t​i​m​e​ ​r​a​n​g​e​,​ ​t​h​e​n​ ​r​e​t​u​r​n​ ​t​o​ ​t​h​e​ ​l​i​v​e​ ​f​l​e​e​t​ ​m​a​p​.
 			 */
 			trajectoryHint: string
 			/**
@@ -2504,6 +2526,20 @@ export type TranslationFunctions = {
 			 */
 			assignmentFilterLabel: () => LocalizedString
 		}
+		connectivity: {
+			/**
+			 * You’re offline. Check your connection.
+			 */
+			offline: () => LocalizedString
+			/**
+			 * Couldn’t load live data. Try again.
+			 */
+			loadFailed: () => LocalizedString
+			/**
+			 * Retry
+			 */
+			retry: () => LocalizedString
+		}
 		companyUserLevel: {
 			/**
 			 * Access level
@@ -2698,7 +2734,7 @@ export type TranslationFunctions = {
 			 */
 			vehicleLive: () => LocalizedString
 			/**
-			 * Offline
+			 * No live location
 			 */
 			vehicleOffline: () => LocalizedString
 			/**
@@ -2886,13 +2922,17 @@ export type TranslationFunctions = {
 			 */
 			selectedVehicle: () => LocalizedString
 			/**
-			 * Open a vehicle popup and choose a time range to replay its route.
+			 * Tap History route, then open a vehicle and choose a time range.
 			 */
 			clickVehicleHint: () => LocalizedString
 			/**
-			 * Display trajectory
+			 * History route
 			 */
 			chooseTimeRange: () => LocalizedString
+			/**
+			 * History route
+			 */
+			historyRoute: () => LocalizedString
 			/**
 			 * {vehicle} selected. Choose start and end times.
 			 */
@@ -2926,7 +2966,7 @@ export type TranslationFunctions = {
 			 */
 			showTrajectoryLoading: () => LocalizedString
 			/**
-			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
+			 * Use History route to pick a vehicle and time range, then return to the live fleet map.
 			 */
 			trajectoryHint: () => LocalizedString
 			/**
@@ -3776,7 +3816,7 @@ export type TranslationFunctions = {
 			 */
 			locationLive: () => LocalizedString
 			/**
-			 * Offline
+			 * No live location
 			 */
 			locationUnknown: () => LocalizedString
 		}
@@ -4556,13 +4596,17 @@ export type TranslationFunctions = {
 			 */
 			selectedVehicle: () => LocalizedString
 			/**
-			 * Open a vehicle popup and choose a time range to replay its route.
+			 * Tap History route, then open a vehicle and choose a time range.
 			 */
 			clickVehicleHint: () => LocalizedString
 			/**
-			 * Display trajectory
+			 * History route
 			 */
 			chooseTimeRange: () => LocalizedString
+			/**
+			 * History route
+			 */
+			historyRoute: () => LocalizedString
 			/**
 			 * {vehicle} selected. Choose start and end times.
 			 */
@@ -4596,7 +4640,7 @@ export type TranslationFunctions = {
 			 */
 			showTrajectoryLoading: () => LocalizedString
 			/**
-			 * Click a vehicle on the map, pick a time range, then replay its path and return to the live fleet map.
+			 * Use History route to pick a vehicle and time range, then return to the live fleet map.
 			 */
 			trajectoryHint: () => LocalizedString
 			/**

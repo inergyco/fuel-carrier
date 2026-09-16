@@ -113,31 +113,37 @@ export function resolveTrajectoryStatusText({
   isLiveLoading,
   selectedCompanyName,
   hasSelectedCar,
+  isPlanningRoute,
 }: {
-  labels: TrajectoryMapViewLabels;
-  isHistoryMode: boolean;
-  isHistoryLoading: boolean;
-  hasHistoryData: boolean;
-  vehicleLabel: string;
-  liveMarkerCount: number;
-  isLiveLoading: boolean;
-  selectedCompanyName: string | null;
-  hasSelectedCar: boolean;
+  labels: TrajectoryMapViewLabels
+  isHistoryMode: boolean
+  isHistoryLoading: boolean
+  hasHistoryData: boolean
+  vehicleLabel: string
+  liveMarkerCount: number
+  isLiveLoading: boolean
+  selectedCompanyName: string | null
+  hasSelectedCar: boolean
+  isPlanningRoute: boolean
 }): string {
   if (isHistoryMode) {
     if (isHistoryLoading) {
-      return labels.showTrajectoryLoading();
+      return labels.showTrajectoryLoading()
     }
 
     if (!hasHistoryData) {
-      return labels.noTrajectoryData();
+      return labels.noTrajectoryData()
     }
 
-    return labels.selectedTimeRange({ vehicle: vehicleLabel });
+    return labels.selectedTimeRange({ vehicle: vehicleLabel })
   }
 
   if (hasSelectedCar) {
-    return labels.selectedVehiclePrompt({ vehicle: vehicleLabel });
+    return labels.selectedVehiclePrompt({ vehicle: vehicleLabel })
+  }
+
+  if (isPlanningRoute) {
+    return labels.clickVehicleHint()
   }
 
   return fleetMapStatusLabel(
@@ -145,5 +151,5 @@ export function resolveTrajectoryStatusText({
     liveMarkerCount,
     selectedCompanyName,
     labels,
-  );
+  )
 }

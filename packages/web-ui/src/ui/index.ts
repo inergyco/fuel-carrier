@@ -54,3 +54,8 @@ export {
 export { useMediaQuery } from './useMediaQuery'
 export { BREAKPOINTS, MEDIA_QUERIES } from './breakpoints'
 export { ToastProvider, useToast } from './toast'
+export { useNavigatorOnline } from './useNavigatorOnline'
+export {
+  ConnectivityBanner,
+  type ConnectivityBannerLabels,
+} from './ConnectivityBanner'

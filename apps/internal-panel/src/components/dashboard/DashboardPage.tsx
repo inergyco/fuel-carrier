@@ -2,6 +2,10 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession, Car, Company, Driver } from '@fuel-carrier/shared-types'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
+import {
+  ConnectivityBanner,
+  useNavigatorOnline,
+} from '@fuel-carrier/web-ui/ui'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo } from 'react'
 import { carKeys, fetchAllCars } from '../../lib/api/cars'
@@ -32,6 +36,7 @@ export function DashboardPage({ user }: DashboardPageProps) {
   })
 
   const telemetryQuery = useCarTelemetryLive(api)
+  const isOnline = useNavigatorOnline()
 
   const telemetryByCarId = useMemo(
     function mapTelemetry() {
@@ -100,6 +105,19 @@ export function DashboardPage({ user }: DashboardPageProps) {
           {LL.internalPanel.home.welcome({ firstName: user.firstName })}
         </p>
       </header>
+
+      <ConnectivityBanner
+        isOnline={isOnline}
+        isQueryError={telemetryQuery.isError}
+        onRetry={() => {
+          void telemetryQuery.refetch()
+        }}
+        labels={{
+          offline: LL.common.connectivity.offline(),
+          loadFailed: LL.common.connectivity.loadFailed(),
+          retry: LL.common.connectivity.retry(),
+        }}
+      />
 
       {isLoading ? (
         <p className="text-sm text-base-content/50">

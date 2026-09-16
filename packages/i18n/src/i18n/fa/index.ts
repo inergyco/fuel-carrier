@@ -21,6 +21,11 @@ const fa: Translation = {
       assignmentUnassigned: "بدون تخصیص",
       assignmentFilterLabel: "تخصیص",
     },
+    connectivity: {
+      offline: "آفلاین هستید. اتصال اینترنت را بررسی کنید.",
+      loadFailed: "بارگذاری داده‌های زنده ممکن نشد. دوباره تلاش کنید.",
+      retry: "تلاش مجدد",
+    },
     companyUserLevel: {
       label: "سطح دسترسی",
       admin: "مدیر",
@@ -78,7 +83,7 @@ const fa: Translation = {
       noVehicles: "خودرویی ثبت نشده است",
       viewCompany: "مشاهده شرکت",
       vehicleLive: "آنلاین",
-      vehicleOffline: "آفلاین",
+      vehicleOffline: "بدون موقعیت زنده",
       unassignedDriver: "بدون راننده",
     },
     nav: {
@@ -133,8 +138,9 @@ const fa: Translation = {
       vehiclesOnMapForCompany: "{count} خودرو · {company}",
       selectVehicle: "انتخاب خودرو",
       selectedVehicle: "خودرو",
-      clickVehicleHint: "روی خودرو کلیک کنید و از داخل پنجره، بازه زمانی مسیر را انتخاب کنید.",
-      chooseTimeRange: "نمایش مسیر",
+      clickVehicleHint: "«تاریخچه مسیر» را بزنید، سپس خودرو را باز کنید و بازه زمانی را انتخاب کنید.",
+      chooseTimeRange: "تاریخچه مسیر",
+      historyRoute: "تاریخچه مسیر",
       selectedVehiclePrompt: "{vehicle} انتخاب شد. زمان شروع و پایان را مشخص کنید.",
       changeVehicle: "تغییر خودرو",
       startDateTime: "شروع",
@@ -144,7 +150,7 @@ const fa: Translation = {
       showingTrajectory: "در حال پخش مسیر…",
       showTrajectoryLoading: "در حال بارگذاری مسیر…",
       trajectoryHint:
-        "روی خودرو روی نقشه کلیک کنید، بازه زمانی را انتخاب کنید، مسیر را پخش کنید و به نقشه زنده برگردید.",
+        "با «تاریخچه مسیر» خودرو و بازه زمانی را انتخاب کنید، سپس به نقشه زنده برگردید.",
       noTrajectoryData:
         "برای این خودرو در بازه زمانی انتخاب‌شده داده مسیر ثبت نشده است.",
       backToLiveMap: "بازگشت به نقشه زنده",
@@ -381,7 +387,7 @@ const fa: Translation = {
       fleetSummary: "{count} خودرو در ناوگان شما",
       location: "موقعیت",
       locationLive: "زنده",
-      locationUnknown: "آفلاین",
+      locationUnknown: "بدون موقعیت زنده",
     },
     nav: {
       dashboard: "داشبورد",
@@ -600,8 +606,9 @@ const fa: Translation = {
         "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
       selectVehicle: "انتخاب خودرو",
       selectedVehicle: "خودرو",
-      clickVehicleHint: "روی خودرو کلیک کنید و از داخل پنجره، بازه زمانی مسیر را انتخاب کنید.",
-      chooseTimeRange: "نمایش مسیر",
+      clickVehicleHint: "«تاریخچه مسیر» را بزنید، سپس خودرو را باز کنید و بازه زمانی را انتخاب کنید.",
+      chooseTimeRange: "تاریخچه مسیر",
+      historyRoute: "تاریخچه مسیر",
       selectedVehiclePrompt: "{vehicle} انتخاب شد. زمان شروع و پایان را مشخص کنید.",
       changeVehicle: "تغییر خودرو",
       startDateTime: "شروع",
@@ -611,7 +618,7 @@ const fa: Translation = {
       showingTrajectory: "در حال پخش مسیر…",
       showTrajectoryLoading: "در حال بارگذاری مسیر…",
       trajectoryHint:
-        "روی خودرو روی نقشه کلیک کنید، بازه زمانی را انتخاب کنید، مسیر را پخش کنید و به نقشه زنده برگردید.",
+        "با «تاریخچه مسیر» خودرو و بازه زمانی را انتخاب کنید، سپس به نقشه زنده برگردید.",
       noTrajectoryData:
         "برای این خودرو در بازه زمانی انتخاب‌شده داده مسیر ثبت نشده است.",
       backToLiveMap: "بازگشت به نقشه زنده",
