@@ -34,9 +34,9 @@ import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import {
-  paginationQuerySchema,
-  type PaginationQueryDto,
-} from '../common/dto/pagination-query.dto';
+  resourceListQuerySchema,
+  type ResourceListQueryDto,
+} from '../common/dto/resource-list-query.dto';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -60,12 +60,18 @@ export class ExternalDriversController {
   @ApiOperation({ summary: 'List drivers for the authenticated company' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'assignment',
+    required: false,
+    enum: ['all', 'assigned', 'unassigned'],
+  })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(
     @CurrentUser() user: AuthSession,
-    @Query(new ZodValidationPipe(paginationQuerySchema))
-    query: PaginationQueryDto,
+    @Query(new ZodValidationPipe(resourceListQuerySchema))
+    query: ResourceListQueryDto,
   ): Promise<PaginatedResult<Driver>> {
     return this.driversService.list(tenantContextFromSession(user), query);
   }

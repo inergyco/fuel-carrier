@@ -66,6 +66,24 @@ type RootTranslation = {
 			 */
 			perPage: string
 		}
+		listFilters: {
+			/**
+			 * A​l​l
+			 */
+			assignmentAll: string
+			/**
+			 * A​s​s​i​g​n​e​d
+			 */
+			assignmentAssigned: string
+			/**
+			 * U​n​a​s​s​i​g​n​e​d
+			 */
+			assignmentUnassigned: string
+			/**
+			 * A​s​s​i​g​n​m​e​n​t
+			 */
+			assignmentFilterLabel: string
+		}
 		companyUserLevel: {
 			/**
 			 * A​c​c​e​s​s​ ​l​e​v​e​l
@@ -1678,6 +1696,14 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
+			 * N​o​ ​d​r​i​v​e​r​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​f​i​l​t​e​r​.
+			 */
+			emptyFiltered: string
+			/**
+			 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
+			 */
+			searchPlaceholder: string
+			/**
 			 * L​o​a​d​i​n​g​…
 			 */
 			loading: string
@@ -1780,6 +1806,14 @@ type RootTranslation = {
 			 * N​o​ ​v​e​h​i​c​l​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​v​e​h​i​c​l​e​.
 			 */
 			empty: string
+			/**
+			 * N​o​ ​v​e​h​i​c​l​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​f​i​l​t​e​r​.
+			 */
+			emptyFiltered: string
+			/**
+			 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​ ​o​r​ ​n​a​m​e
+			 */
+			searchPlaceholder: string
 			/**
 			 * L​o​a​d​i​n​g​…
 			 */
@@ -2451,6 +2485,24 @@ export type TranslationFunctions = {
 			 * Per page
 			 */
 			perPage: () => LocalizedString
+		}
+		listFilters: {
+			/**
+			 * All
+			 */
+			assignmentAll: () => LocalizedString
+			/**
+			 * Assigned
+			 */
+			assignmentAssigned: () => LocalizedString
+			/**
+			 * Unassigned
+			 */
+			assignmentUnassigned: () => LocalizedString
+			/**
+			 * Assignment
+			 */
+			assignmentFilterLabel: () => LocalizedString
 		}
 		companyUserLevel: {
 			/**
@@ -4024,6 +4076,14 @@ export type TranslationFunctions = {
 			 */
 			empty: () => LocalizedString
 			/**
+			 * No drivers match your search or filter.
+			 */
+			emptyFiltered: () => LocalizedString
+			/**
+			 * Search by name or national ID
+			 */
+			searchPlaceholder: () => LocalizedString
+			/**
 			 * Loading…
 			 */
 			loading: () => LocalizedString
@@ -4125,6 +4185,14 @@ export type TranslationFunctions = {
 			 * No vehicles yet. Add your first vehicle.
 			 */
 			empty: () => LocalizedString
+			/**
+			 * No vehicles match your search or filter.
+			 */
+			emptyFiltered: () => LocalizedString
+			/**
+			 * Search by plate or name
+			 */
+			searchPlaceholder: () => LocalizedString
 			/**
 			 * Loading…
 			 */

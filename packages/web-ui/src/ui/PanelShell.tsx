@@ -67,7 +67,7 @@ export function PanelShell({
           <label
             htmlFor={drawerId}
             aria-label={openMenuLabel}
-            className="btn btn-ghost btn-sm btn-square h-10 min-h-10 w-10 lg:hidden"
+            className="btn btn-ghost btn-sm btn-square h-10 min-h-10 w-10 cursor-pointer lg:hidden"
           >
             <Menu className="size-6" strokeWidth={2.25} aria-hidden />
           </label>

@@ -119,7 +119,7 @@ function Toast({
       <span className="text-sm">{toast.message}</span>
       <button
         type="button"
-        className="btn btn-ghost btn-xs btn-circle shrink-0"
+        className="btn btn-ghost btn-xs btn-circle shrink-0 cursor-pointer"
         aria-label="Dismiss"
         onClick={function handleDismiss() {
           onDismiss(toast.id)

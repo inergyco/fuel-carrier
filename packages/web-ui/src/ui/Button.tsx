@@ -36,7 +36,7 @@ export function Button({
       disabled={disabled ?? loading}
       className={cn(
         buttonClassName[variant],
-        'transition-all',
+        'cursor-pointer transition-all disabled:cursor-not-allowed',
         loading && 'opacity-60',
         className,
       )}

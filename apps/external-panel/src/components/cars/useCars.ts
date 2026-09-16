@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { usePagination, useToast } from '@fuel-carrier/web-ui/ui'
+import { useResourceListSearch, useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, deleteCar, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import type { EntityModalState } from '../users/entity-modal-state'
@@ -14,13 +14,21 @@ export function useCars() {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
-  const { pagination, handlePageChange, handleLimitChange } = usePagination()
+  const {
+    listParams,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    handlePageChange,
+    handleLimitChange,
+    hasActiveFilters,
+  } = useResourceListSearch()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
 
   const carsQuery = useQuery({
-    queryKey: carKeys.list(pagination),
-    queryFn: () => fetchCars(pagination),
+    queryKey: carKeys.list(listParams),
+    queryFn: () => fetchCars(listParams),
     placeholderData: (previous) => previous,
   })
 
@@ -29,15 +37,11 @@ export function useCars() {
     queryFn: () => fetchAllPaginated(fetchDrivers),
   })
 
-  const driverNameById = useMemo(
-    function mapDriverNames() {
-      return new Map(
-        (driversQuery.data ?? []).map(function toDriverEntry(driver) {
-          return [driver.id, `${driver.firstName} ${driver.lastName}`]
-        }),
-      )
-    },
-    [driversQuery.data],
+  const driverNameById = new Map(
+    (driversQuery.data ?? []).map((driver) => [
+      driver.id,
+      `${driver.firstName} ${driver.lastName}`,
+    ]),
   )
 
   const deleteMutation = useMutation({
@@ -50,9 +54,7 @@ export function useCars() {
       setDeleteTarget(null)
       toast.success(LL.externalPanel.toast.carDeleted())
     },
-    onError: function onCarDeleteError() {
-      toast.error(LL.externalPanel.cars.deleteFailed())
-    },
+    onError: () => toast.error(LL.externalPanel.cars.deleteFailed()),
   })
 
   async function handleChanged() {
@@ -75,5 +77,10 @@ export function useCars() {
     handleChanged,
     handlePageChange,
     handleLimitChange,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    assignment: listParams.assignment ?? 'all',
+    hasActiveFilters,
   }
 }

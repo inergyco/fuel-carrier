@@ -3,7 +3,6 @@ import { and, count, desc, eq } from 'drizzle-orm';
 import type {
   Driver,
   PaginatedResult,
-  PaginationParams,
   TenantContext,
 } from '@fuel-carrier/shared-types';
 import {
@@ -26,6 +25,7 @@ import {
 } from '../common/pagination.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
+import type { CompanyScopedListParams } from '../common/types/company-scoped-list-params';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
@@ -39,6 +39,10 @@ import {
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
+import {
+  buildDriverAssignmentFilter,
+  buildDriverSearchFilter,
+} from './drivers-list-filters';
 
 type CreateDriverPayload = {
   firstName: string;
@@ -48,10 +52,6 @@ type CreateDriverPayload = {
 };
 
 type UpdateDriverPayload = Partial<CreateDriverPayload>;
-
-type ListDriversOptions = PaginationParams & {
-  companyId?: string;
-};
 
 const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
   {
@@ -85,35 +85,51 @@ export class DriversService {
 
   async list(
     context: TenantContext,
-    options: ListDriversOptions,
+    options: CompanyScopedListParams,
   ): Promise<PaginatedResult<Driver>> {
-    const { page, limit, companyId } = options;
+    const { page, limit, companyId, search: searchText, assignment } = options;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
 
     const offset = getPaginationOffset(options);
+    const activeCarJoin = and(
+      eq(cars.driverId, drivers.id),
+      eq(cars.status, ENTITY_STATUS.ACTIVE),
+    );
     const where = and(
       eq(drivers.status, ENTITY_STATUS.ACTIVE),
       companyId ? eq(drivers.companyId, companyId) : undefined,
+      buildDriverSearchFilter(searchText),
+      buildDriverAssignmentFilter(assignment),
     );
 
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
         .select({ value: count() })
         .from(drivers)
+        .leftJoin(cars, activeCarJoin)
         .where(where);
 
-      const rows = await tx.query.drivers.findMany({
-        where,
-        with: { car: true },
-        orderBy: desc(drivers.createdAt),
-        limit,
-        offset,
-      });
+      const rows = await tx
+        .select({
+          driver: drivers,
+          car: cars,
+        })
+        .from(drivers)
+        .leftJoin(cars, activeCarJoin)
+        .where(where)
+        .orderBy(desc(drivers.createdAt))
+        .limit(limit)
+        .offset(offset);
 
       return toPaginatedResult({
-        items: rows.map(_mapDriverWithCar),
+        items: rows.map((row) =>
+          _mapDriverWithCar({
+            ...row.driver,
+            car: row.car,
+          }),
+        ),
         page,
         limit,
         totalItems: countRow?.value ?? 0,

@@ -27,4 +27,30 @@
   select option {
     @apply bg-base-200 text-base-content;
   }
+
+  /* DaisyUI 5 dropped default pointer cursors; restore for interactive chrome. */
+  :where(
+    button,
+    [type='button'],
+    [type='submit'],
+    [type='reset'],
+    .btn,
+    summary,
+    [role='button'],
+    label.btn,
+    label[for],
+    select,
+    a[href]
+  ):not(:disabled):not([aria-disabled='true']) {
+    @apply cursor-pointer;
+  }
+
+  :where(button, [type='button'], [type='submit'], [type='reset'], .btn):disabled,
+  :where(button, .btn)[aria-disabled='true'] {
+    @apply cursor-not-allowed;
+  }
+
+  input[type='search']::-webkit-search-cancel-button {
+    cursor: pointer;
+  }
 }

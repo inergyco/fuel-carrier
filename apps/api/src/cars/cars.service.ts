@@ -1,10 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, count, desc, eq } from 'drizzle-orm';
-import type {
-  Car,
-  PaginatedResult,
-  PaginationParams,
-} from '@fuel-carrier/shared-types';
+import type { Car, PaginatedResult } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
@@ -34,6 +30,10 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
+import {
+  buildCarAssignmentFilter,
+  buildCarSearchFilter,
+} from './cars-list-filters';
 import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
 import { CarsReader } from './cars-reader.service';
 
@@ -47,7 +47,11 @@ type CreateCarPayload = {
 
 type UpdateCarPayload = Partial<CreateCarPayload>;
 
-type ListCarsOptions = PaginationParams & {
+type ListCarsOptions = {
+  page: number;
+  limit: number;
+  search?: string;
+  assignment?: 'all' | 'assigned' | 'unassigned';
   companyId?: string;
 };
 
@@ -62,17 +66,25 @@ export class CarsService {
 
   async list(
     context: ApiTenantContext,
-    options: ListCarsOptions,
+    listOptions: ListCarsOptions,
   ): Promise<PaginatedResult<Car>> {
-    const { page, limit, companyId } = options;
+    const {
+      page,
+      limit,
+      companyId,
+      search: searchText,
+      assignment,
+    } = listOptions;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
 
-    const offset = getPaginationOffset(options);
+    const offset = getPaginationOffset(listOptions);
     const where = and(
       eq(cars.status, ENTITY_STATUS.ACTIVE),
       companyId ? eq(cars.companyId, companyId) : undefined,
+      buildCarSearchFilter(searchText),
+      buildCarAssignmentFilter(assignment),
     );
 
     return this.tenantDb.run(context, async (tx) => {

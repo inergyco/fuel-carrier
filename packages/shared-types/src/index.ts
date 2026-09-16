@@ -12,5 +12,6 @@ export * from "./company-user-level";
 export * from "./entity-status";
 export * from "./mqtt-credentials";
 export * from "./pagination";
+export * from "./resource-list";
 export * from "./tenant-context";
 export * from "./user-role";

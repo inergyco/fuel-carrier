@@ -2,7 +2,7 @@ import type {
   Car,
   CarMqttCredentials,
   PaginatedResult,
-  PaginationParams,
+  ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
@@ -10,10 +10,17 @@ import type {
   UpdateExternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create'
 import { api } from '@fuel-carrier/web-ui/api'
+import { toResourceListFilterSearchParams } from './resource-list-filter-search-params'
+
+const DEFAULT_LIST_PARAMS: ResourceListParams = {
+  page: 1,
+  limit: DEFAULT_LIMIT,
+  assignment: 'all',
+}
 
 export const carKeys = {
   all: ['cars'] as const,
-  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+  list: (params: ResourceListParams = DEFAULT_LIST_PARAMS) =>
     ['cars', 'list', params] as const,
   detail: (id: string) => ['cars', id] as const,
 }
@@ -35,10 +42,16 @@ export function carToFormValues(car?: Car): CarFormValues {
 }
 
 export async function fetchCars(
-  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+  params: ResourceListParams = DEFAULT_LIST_PARAMS,
 ): Promise<PaginatedResult<Car>> {
   return api
-    .get('cars', { searchParams: params })
+    .get('cars', {
+      searchParams: {
+        page: params.page,
+        limit: params.limit,
+        ...toResourceListFilterSearchParams(params),
+      },
+    })
     .json<PaginatedResult<Car>>()
 }
 

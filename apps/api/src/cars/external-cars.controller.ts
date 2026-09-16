@@ -42,6 +42,10 @@ import {
   paginationQuerySchema,
   type PaginationQueryDto,
 } from '../common/dto/pagination-query.dto';
+import {
+  resourceListQuerySchema,
+  type ResourceListQueryDto,
+} from '../common/dto/resource-list-query.dto';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
@@ -73,12 +77,18 @@ export class ExternalCarsController {
   @ApiOperation({ summary: 'List cars for the authenticated company' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'assignment',
+    required: false,
+    enum: ['all', 'assigned', 'unassigned'],
+  })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(
     @CurrentUser() user: AuthSession,
-    @Query(new ZodValidationPipe(paginationQuerySchema))
-    query: PaginationQueryDto,
+    @Query(new ZodValidationPipe(resourceListQuerySchema))
+    query: ResourceListQueryDto,
   ): Promise<PaginatedResult<Car>> {
     return this.carsService.list(tenantContextFromSession(user), query);
   }

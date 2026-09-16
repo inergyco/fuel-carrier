@@ -46,6 +46,11 @@ export {
   parsePaginationSearch,
   type PaginationSearch,
 } from './usePagination'
+export {
+  useResourceListSearch,
+  parseResourceListSearch,
+  type ResourceListSearch,
+} from './useResourceListSearch'
 export { useMediaQuery } from './useMediaQuery'
 export { BREAKPOINTS, MEDIA_QUERIES } from './breakpoints'
 export { ToastProvider, useToast } from './toast'

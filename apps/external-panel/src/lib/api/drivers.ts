@@ -1,7 +1,7 @@
 import type {
   Driver,
   PaginatedResult,
-  PaginationParams,
+  ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
@@ -9,10 +9,17 @@ import type {
   UpdateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { api } from '@fuel-carrier/web-ui/api'
+import { toResourceListFilterSearchParams } from './resource-list-filter-search-params'
+
+const DEFAULT_LIST_PARAMS: ResourceListParams = {
+  page: 1,
+  limit: DEFAULT_LIMIT,
+  assignment: 'all',
+}
 
 export const driverKeys = {
   all: ['drivers'] as const,
-  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+  list: (params: ResourceListParams = DEFAULT_LIST_PARAMS) =>
     ['drivers', 'list', params] as const,
 }
 
@@ -31,10 +38,16 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
 }
 
 export async function fetchDrivers(
-  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+  params: ResourceListParams = DEFAULT_LIST_PARAMS,
 ): Promise<PaginatedResult<Driver>> {
   return api
-    .get('drivers', { searchParams: params })
+    .get('drivers', {
+      searchParams: {
+        page: params.page,
+        limit: params.limit,
+        ...toResourceListFilterSearchParams(params),
+      },
+    })
     .json<PaginatedResult<Driver>>()
 }
 

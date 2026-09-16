@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
-import { Pagination, parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
+import { Pagination, parseResourceListSearch } from '@fuel-carrier/web-ui/ui'
 import { CarFormModal } from '../../components/cars/CarFormModal'
 import { CarCustodyActions } from '../../components/cars/CarCustodyActions'
 import { CarCustodyModals } from '../../components/cars/CarCustodyModals'
@@ -13,10 +13,11 @@ import { DeleteCarModal } from '../../components/cars/DeleteCarModal'
 import { useCarCustody } from '../../components/cars/useCarCustody'
 import { useCarMqttCredentials } from '../../components/cars/useCarMqttCredentials'
 import { useCars } from '../../components/cars/useCars'
+import { ResourceListToolbar } from '../../components/users/ResourceListToolbar'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
 export const Route = createFileRoute('/_authenticated/cars/')({
-  validateSearch: parsePaginationSearch,
+  validateSearch: parseResourceListSearch,
   component: CarsPage,
 })
 
@@ -46,7 +47,11 @@ function CarsPage() {
         title={LL.externalPanel.cars.title()}
         subtitle={LL.externalPanel.cars.subtitle()}
         addLabel={LL.externalPanel.cars.addCar()}
-        emptyLabel={LL.externalPanel.cars.empty()}
+        emptyLabel={
+          cars.hasActiveFilters
+            ? LL.externalPanel.cars.emptyFiltered()
+            : LL.externalPanel.cars.empty()
+        }
         loading={isLoading}
         items={cars.items}
         columns={getCarColumns({
@@ -72,6 +77,15 @@ function CarsPage() {
         renderViewAction={renderViewAction}
         renderExtraActions={canManage ? renderCustodyAction : undefined}
         readOnly={!canManage}
+        toolbar={
+          <ResourceListToolbar
+            searchPlaceholder={LL.externalPanel.cars.searchPlaceholder()}
+            searchText={cars.draftSearchText}
+            onSearchTextChange={cars.setDraftSearchText}
+            assignment={cars.assignment}
+            onAssignmentChange={cars.setAssignment}
+          />
+        }
         footer={
           result ? (
             <Pagination

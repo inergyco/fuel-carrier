@@ -5,10 +5,10 @@
 **Primary personas:** company fleet operators, dispatchers, and field personnel on phones outdoors (hurried, glare, gloves/thumbs, intermittent connectivity)  
 **Method:** Deep review of `apps/external-panel` + `packages/web-ui` / i18n; live HTML shell check (`lang`/`dir` bootstrap). **No interactive device lab or browser click-through** — findings are code- and structure-evidenced; treat visual/performance numbers as inferred.
 
-**UX Assurance Degree:** **72 / 100** (estimated after custody UX remediations; pending field validation)  
+**UX Assurance Degree:** **76 / 100** (estimated after custody + list search/filter; pending field validation)  
 **Original score (2026-09-09):** **64 / 100**
 
-> **Remediation (2026-09-16):** First-class Assign / Change / End custody on vehicle detail + list, transfer confirm when moving a driver from another vehicle, and current driver shown on detail header/overview. Score revised to **72** — still held by search, offline clarity, and touch-target gaps.
+> **Remediation (2026-09-16):** First-class Assign / Change / End custody on vehicle detail + list, transfer confirm when moving a driver from another vehicle, current driver on detail header/overview, and server-backed search + assignment filter on vehicles/drivers. Score revised to **76** — still held by offline clarity and touch-target gaps.
 
 ---
 
@@ -139,7 +139,7 @@
 ## Status
 
 **Audit date:** 2026-09-09 — live score **64/100**.  
-**Remediation review:** 2026-09-16 — estimated **72/100**.
+**Remediation review:** 2026-09-16 — estimated **76/100**.
 
 ### Implemented
 
@@ -148,11 +148,11 @@
 | **Custody as first-class action** | Vehicle detail: Assign / Change / End (admins). List: icon actions. Dedicated modal (not Edit vehicle). Transfer confirm when driver is on another plate. |
 | **Current driver on detail** | Header chip + overview field (also admin panel overview). |
 | **Viewer nav** | Users / Audit hidden for viewers (from security SEC-04). |
+| **Search + assignment filter** | Vehicles/drivers: sticky `search` + All/Assigned/Unassigned, URL-synced, server-side with pagination. |
 
 ### Still open (next)
 
-1. Search + assigned filter on vehicles/drivers  
-2. Telemetry vs network offline clarity + retry banner  
-3. ≥44px touch targets more broadly; map/audit mobile polish  
+1. Telemetry vs network offline clarity + retry banner  
+2. ≥44px touch targets more broadly; map/audit mobile polish  
 
 Interactive phone/field validation recommended before locking the score. Admin panel (`mobile-fueling-admin`) not in original scope (overview driver display updated for consistency).

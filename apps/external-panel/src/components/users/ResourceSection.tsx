@@ -1,4 +1,10 @@
-import { Button, ICON_STROKE_WIDTH, MEDIA_QUERIES, iconMdClassName, useMediaQuery } from '@fuel-carrier/web-ui/ui'
+import {
+  Button,
+  ICON_STROKE_WIDTH,
+  MEDIA_QUERIES,
+  iconMdClassName,
+  useMediaQuery,
+} from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import { ResourceList, type ResourceColumn } from './resourceListViews'
@@ -29,6 +35,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   renderViewAction?: (item: T) => ReactNode
   renderExtraActions?: (item: T) => ReactNode
   readOnly?: boolean
+  toolbar?: ReactNode
   footer?: ReactNode
 }
 
@@ -48,6 +55,7 @@ export function ResourceSection<T extends { id: string }>({
   renderViewAction,
   renderExtraActions,
   readOnly = false,
+  toolbar,
   footer,
 }: ResourceSectionProps<T>) {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
@@ -60,14 +68,24 @@ export function ResourceSection<T extends { id: string }>({
           <p className="mt-1 text-sm text-base-content/50">{subtitle}</p>
         </div>
         {!readOnly ? (
-          <Button type="button" className="h-10 w-full sm:w-auto sm:px-5" onClick={onAdd}>
+          <Button
+            type="button"
+            className="h-11 w-full sm:w-auto sm:px-5"
+            onClick={onAdd}
+          >
             <span className="flex items-center justify-center gap-2">
-              <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+              <Plus
+                className={iconMdClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
               {addLabel}
             </span>
           </Button>
         ) : null}
       </div>
+
+      {toolbar}
 
       {loading ? (
         <p className="text-sm text-base-content/50">{actionLabels.loading}</p>

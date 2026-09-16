@@ -72,7 +72,7 @@ export function Input({
           tabIndex={-1}
           aria-label={toggleLabel}
           onClick={handleTogglePasswordVisibility}
-          className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-md text-base-content/45 transition-colors hover:bg-base-content/5 hover:text-base-content/70"
+          className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-base-content/45 transition-colors hover:bg-base-content/5 hover:text-base-content/70"
         >
           {passwordVisible ? (
             <EyeOff className="size-4" aria-hidden />
