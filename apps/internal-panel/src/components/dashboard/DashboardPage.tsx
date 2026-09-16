@@ -4,6 +4,7 @@ import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import {
   ConnectivityBanner,
+  DashboardCardsSkeleton,
   useNavigatorOnline,
 } from '@fuel-carrier/web-ui/ui'
 import { useQuery } from '@fuel-carrier/web-ui/query'
@@ -120,9 +121,11 @@ export function DashboardPage({ user }: DashboardPageProps) {
       />
 
       {isLoading ? (
-        <p className="text-sm text-base-content/50">
-          {LL.internalPanel.home.loading()}
-        </p>
+        <DashboardCardsSkeleton
+          label={LL.internalPanel.home.loading()}
+          count={4}
+          columnsClassName="grid-cols-1 gap-4 lg:grid-cols-2"
+        />
       ) : companies.length === 0 ? (
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
           {LL.internalPanel.home.empty()}

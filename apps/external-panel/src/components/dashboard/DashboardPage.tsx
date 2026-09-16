@@ -6,7 +6,7 @@ import {
   mapPopupActionClassName,
   useCarTelemetryLive,
 } from '@fuel-carrier/web-ui/map'
-import { buttonClassName, ConnectivityBanner, useNavigatorOnline } from '@fuel-carrier/web-ui/ui'
+import { buttonClassName, ConnectivityBanner, DashboardCardsSkeleton, useNavigatorOnline } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
@@ -106,38 +106,35 @@ export function DashboardPage({ user }: DashboardPageProps) {
       />
 
       <section className="flex-1">
-        <p className="mb-5 text-xs text-base-content/40">
-          {isCarsLoading
-            ? LL.externalPanel.cars.loading()
-            : LL.externalPanel.home.fleetSummary({ count: cars.length })}
-        </p>
-
         {isCarsLoading ? (
-          <p className="text-sm text-base-content/50">
-            {LL.externalPanel.cars.loading()}
-          </p>
+          <DashboardCardsSkeleton label={LL.externalPanel.cars.loading()} />
         ) : cars.length === 0 ? (
           <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
             {LL.externalPanel.cars.empty()}
           </div>
         ) : (
-          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {cars.map(function renderCarCard(car) {
-              const driverName = car.driverId
-                ? (driverNameById.get(car.driverId) ?? null)
-                : null
+          <>
+            <p className="mb-5 text-xs text-base-content/40">
+              {LL.externalPanel.home.fleetSummary({ count: cars.length })}
+            </p>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {cars.map(function renderCarCard(car) {
+                const driverName = car.driverId
+                  ? (driverNameById.get(car.driverId) ?? null)
+                  : null
 
-              return (
-                <li key={car.id}>
-                  <DashboardCarCard
-                    car={car}
-                    driverName={driverName}
-                    telemetry={telemetryByCarId.get(car.id) ?? null}
-                  />
-                </li>
-              )
-            })}
-          </ul>
+                return (
+                  <li key={car.id}>
+                    <DashboardCarCard
+                      car={car}
+                      driverName={driverName}
+                      telemetry={telemetryByCarId.get(car.id) ?? null}
+                    />
+                  </li>
+                )
+              })}
+            </ul>
+          </>
         )}
       </section>
     </div>

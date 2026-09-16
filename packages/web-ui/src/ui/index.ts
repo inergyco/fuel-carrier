@@ -64,3 +64,4 @@ export {
 } from './ConnectivityBanner'
 export { Skeleton } from './Skeleton'
 export { ResourceListSkeleton } from './ResourceListSkeleton'
+export { DashboardCardsSkeleton } from './DashboardCardsSkeleton'

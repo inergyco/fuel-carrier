@@ -154,7 +154,7 @@
 | **Audit mobile cards** | Shared `AuditLogsTable` switches to card list under `md`. |
 | **Drawer closes on navigate** | Mobile nav drawer unchecks on Link click. |
 | **A11y pass** | Field `htmlFor`/`id`; modal focus trap + Escape; i18n toast dismiss / modal close; password eye keyboard-accessible. |
-| **List skeletons + password toast** | Shared `ResourceListSkeleton` on resource/company/audit lists; password-change success toast before home redirect. |
+| **List skeletons + password toast** | Shared `ResourceListSkeleton` on resource/company/audit lists; `DashboardCardsSkeleton` on home; password-change success toast before home redirect. |
 | **Duplicate field validation** | Companies/users Postgres unique races → `VALIDATION_ERROR` + `fields`; shared `applyApiFieldErrors` maps localized messages onto RHF fields (cars/drivers/users/companies). |
 
 ### Still open (next)
