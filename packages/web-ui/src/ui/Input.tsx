@@ -1,8 +1,13 @@
-import { useState, type InputHTMLAttributes, type Ref } from 'react'
+import {
+  useState,
+  type InputHTMLAttributes,
+  type Ref,
+} from 'react'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Eye, EyeOff } from '../icons'
 import { cn } from '../utils'
 import { Field } from './Field'
+import { useFieldIds } from './useFieldIds'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -26,9 +31,11 @@ export function Input({
   type,
   name,
   autoComplete,
+  id: idProp,
   ...props
 }: InputProps) {
   const { LL } = useI18nContext()
+  const { id, errorId } = useFieldIds({ id: idProp, error })
   const [passwordVisible, setPasswordVisible] = useState(false)
   const isPassword = type === 'password'
   const isLtr = isPassword || isUsernameField(name, autoComplete)
@@ -46,10 +53,13 @@ export function Input({
   const input = (
     <input
       ref={ref}
+      id={id}
       name={name}
       autoComplete={autoComplete}
       type={inputType}
       dir={isLtr ? 'ltr' : undefined}
+      aria-invalid={error ? true : undefined}
+      aria-describedby={errorId}
       className={cn(
         'input input-sm h-10 w-full rounded-lg border bg-base-100/60 text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
         error
@@ -69,10 +79,10 @@ export function Input({
       {isPassword ? (
         <button
           type="button"
-          tabIndex={-1}
           aria-label={toggleLabel}
+          aria-pressed={passwordVisible}
           onClick={handleTogglePasswordVisibility}
-          className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-base-content/45 transition-colors hover:bg-base-content/5 hover:text-base-content/70"
+          className="absolute right-2 top-1/2 flex size-11 min-h-11 min-w-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-base-content/45 transition-colors hover:bg-base-content/5 hover:text-base-content/70"
         >
           {passwordVisible ? (
             <EyeOff className="size-4" aria-hidden />
@@ -86,5 +96,9 @@ export function Input({
     input
   )
 
-  return <Field label={label} error={error}>{fieldContent}</Field>
+  return (
+    <Field label={label} error={error} htmlFor={id} errorId={errorId}>
+      {fieldContent}
+    </Field>
+  )
 }

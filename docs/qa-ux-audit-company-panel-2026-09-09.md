@@ -5,10 +5,10 @@
 **Primary personas:** company fleet operators, dispatchers, and field personnel on phones outdoors (hurried, glare, gloves/thumbs, intermittent connectivity)  
 **Method:** Deep review of `apps/external-panel` + `packages/web-ui` / i18n; live HTML shell check (`lang`/`dir` bootstrap). **No interactive device lab or browser click-through** — findings are code- and structure-evidenced; treat visual/performance numbers as inferred.
 
-**UX Assurance Degree:** **84 / 100** (estimated after custody, search/filter, connectivity, touch targets, audit cards; pending field validation)  
+**UX Assurance Degree:** **88 / 100** (estimated after custody, search/filter, connectivity, touch, audit cards, a11y pass; pending field validation)  
 **Original score (2026-09-09):** **64 / 100**
 
-> **Remediation (2026-09-16):** Custody, search/filter, connectivity clarity, ≥44px controls, and audit mobile cards. Score revised to **84** — remaining gap is map trajectory polish, a11y / skeletons / field validation.
+> **Remediation (2026-09-16):** Custody, search/filter, connectivity, ≥44px controls, audit mobile cards, and a11y (labels, modal focus/Escape, i18n dismiss, password toggle). Score revised to **88** — remaining gap is skeletons/toasts and duplicate field errors.
 
 ---
 
@@ -139,7 +139,7 @@
 ## Status
 
 **Audit date:** 2026-09-09 — live score **64/100**.  
-**Remediation review:** 2026-09-16 — estimated **84/100**.
+**Remediation review:** 2026-09-16 — estimated **88/100**.
 
 ### Implemented
 
@@ -153,12 +153,13 @@
 | **Touch targets ≥44px** | Shared Button ghost/icon + DataTable actions + hamburger/nav/map popup controls sized to `h-11` / `size-11`; more spacing between destructive icons. |
 | **Audit mobile cards** | Shared `AuditLogsTable` switches to card list under `md`. |
 | **Drawer closes on navigate** | Mobile nav drawer unchecks on Link click. |
+| **A11y pass** | Field `htmlFor`/`id`; modal focus trap + Escape; i18n toast dismiss / modal close; password eye keyboard-accessible. |
 
 ### Still open (next)
 
-1. Map trajectory progressive disclosure (live fleet default / History route)  
-2. A11y pass (label association, focus trap, i18n toast dismiss)  
-3. List skeletons + password-change success toast  
-4. Ensure duplicate validation always shows field messages  
+1. List skeletons + password-change success toast  
+2. Ensure duplicate validation always shows field messages  
 
 Interactive phone/field validation recommended before locking the score. Admin panel (`mobile-fueling-admin`) not in original scope (overview driver display updated for consistency).
+
+> Map trajectory “History route” progressive disclosure was tried and reverted — keep popup → range flow.

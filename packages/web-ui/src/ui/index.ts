@@ -54,6 +54,7 @@ export {
   type ResourceListSearch,
 } from './useResourceListSearch'
 export { useMediaQuery } from './useMediaQuery'
+export { useFieldIds } from './useFieldIds'
 export { BREAKPOINTS, MEDIA_QUERIES } from './breakpoints'
 export { ToastProvider, useToast } from './toast'
 export { useNavigatorOnline } from './useNavigatorOnline'

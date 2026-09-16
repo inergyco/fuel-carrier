@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { CheckCircle2, X } from '../icons'
 import { iconMdClassName, iconSmClassName, ICON_STROKE_WIDTH } from './iconClassName'
 import { cn } from '../utils'
@@ -96,7 +97,9 @@ function Toast({
   toast: ToastItem
   onDismiss: (id: string) => void
 }) {
+  const { LL } = useI18nContext()
   const Icon = toast.variant === 'success' ? CheckCircle2 : X
+  const dismissLabel = LL.common.dismiss()
 
   return (
     <div
@@ -119,8 +122,8 @@ function Toast({
       <span className="text-sm">{toast.message}</span>
       <button
         type="button"
-        className="btn btn-ghost btn-xs btn-circle shrink-0 cursor-pointer"
-        aria-label="Dismiss"
+        className="btn btn-ghost btn-xs btn-circle size-11 min-h-11 min-w-11 shrink-0 cursor-pointer"
+        aria-label={dismissLabel}
         onClick={function handleDismiss() {
           onDismiss(toast.id)
         }}

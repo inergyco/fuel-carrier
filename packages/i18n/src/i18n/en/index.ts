@@ -33,6 +33,8 @@ const en: BaseTranslation = {
     },
     showPassword: 'Show password',
     hidePassword: 'Hide password',
+    dismiss: 'Dismiss',
+    close: 'Close',
   },
   validation: {
     usernameRequired: 'Username is required',

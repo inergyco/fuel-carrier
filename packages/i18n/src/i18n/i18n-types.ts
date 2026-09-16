@@ -120,6 +120,14 @@ type RootTranslation = {
 		 * H​i​d​e​ ​p​a​s​s​w​o​r​d
 		 */
 		hidePassword: string
+		/**
+		 * D​i​s​m​i​s​s
+		 */
+		dismiss: string
+		/**
+		 * C​l​o​s​e
+		 */
+		close: string
 	}
 	validation: {
 		/**
@@ -2554,6 +2562,14 @@ export type TranslationFunctions = {
 		 * Hide password
 		 */
 		hidePassword: () => LocalizedString
+		/**
+		 * Dismiss
+		 */
+		dismiss: () => LocalizedString
+		/**
+		 * Close
+		 */
+		close: () => LocalizedString
 	}
 	validation: {
 		/**

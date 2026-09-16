@@ -6,6 +6,7 @@ import timePickerModule from 'react-multi-date-picker/plugins/time_picker'
 import { cn } from '../utils'
 import { getDatePickerLocale } from './date-picker-locale'
 import { Field } from './Field'
+import { useFieldIds } from './useFieldIds'
 import './localized-date-time-picker.css'
 
 const DatePicker = cjsExport(datePickerModule)
@@ -36,10 +37,11 @@ export function LocalizedDateTimePicker({
   disabled = false,
   compact = false,
   className,
-  id,
+  id: idProp,
 }: LocalizedDateTimePickerProps) {
   const { locale } = useI18nContext()
   const datePickerLocale = getDatePickerLocale(locale)
+  const { id, errorId } = useFieldIds({ id: idProp, error })
 
   function handleChange(nextValue: DateObject | null) {
     onChange(nextValue ? nextValue.toDate() : null)
@@ -49,6 +51,8 @@ export function LocalizedDateTimePicker({
     <DateTimePickerChrome
       label={label}
       error={error}
+      htmlFor={id}
+      errorId={errorId}
       compact={compact}
       className={className}
     >
@@ -79,6 +83,8 @@ export function LocalizedDateTimePicker({
 type DateTimePickerChromeProps = {
   label?: string
   error?: string
+  htmlFor?: string
+  errorId?: string
   compact: boolean
   className?: string
   children: ReactNode
@@ -87,6 +93,8 @@ type DateTimePickerChromeProps = {
 function DateTimePickerChrome({
   label,
   error,
+  htmlFor,
+  errorId,
   compact,
   className,
   children,
@@ -100,18 +108,25 @@ function DateTimePickerChrome({
         )}
       >
         {label ? (
-          <span className="shrink-0 text-[11px] font-medium text-base-content/45">
+          <label
+            htmlFor={htmlFor}
+            className="shrink-0 text-[11px] font-medium text-base-content/45"
+          >
             {label}
-          </span>
+          </label>
         ) : null}
         <div className="min-w-0 flex-1">{children}</div>
-        {error ? <p className="text-xs text-error/80">{error}</p> : null}
+        {error ? (
+          <p id={errorId} className="text-xs text-error/80" role="alert">
+            {error}
+          </p>
+        ) : null}
       </div>
     )
   }
 
   return (
-    <Field label={label} error={error}>
+    <Field label={label} error={error} htmlFor={htmlFor} errorId={errorId}>
       {children}
     </Field>
   )
