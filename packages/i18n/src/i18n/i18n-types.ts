@@ -1098,6 +1098,10 @@ type RootTranslation = {
 				 */
 				duplicateDriverNationalId: string
 				/**
+				 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+				 */
+				duplicateLicensePlate: string
+				/**
 				 * A​u​d​i​t​ ​l​o​g
 				 */
 				auditLogsTitle: string
@@ -3510,6 +3514,10 @@ export type TranslationFunctions = {
 				 * A driver with this national ID already exists.
 				 */
 				duplicateDriverNationalId: () => LocalizedString
+				/**
+				 * A vehicle with this license plate already exists.
+				 */
+				duplicateLicensePlate: () => LocalizedString
 				/**
 				 * Audit log
 				 */

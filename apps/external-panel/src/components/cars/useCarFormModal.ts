@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
   useForm,
@@ -85,32 +85,17 @@ export function useCarFormModal({
   }
 
   function handleFormError(error: unknown) {
-    if (isApiClientError(error)) {
-      if (error.apiError.fields?.length) {
-        for (const fieldError of error.apiError.fields) {
-          if (
-            fieldError.field === 'name' ||
-            fieldError.field === 'licensePlate' ||
-            fieldError.field === 'note' ||
-            fieldError.field === 'driverId'
-          ) {
-            setError(fieldError.field, { message: fieldError.message })
-          }
-        }
-      }
-
-      if (
-        error.apiError.fields?.some((field) => field.field === 'licensePlate')
-      ) {
-        setServerError(LL.externalPanel.cars.duplicateLicensePlate())
-        return
-      }
-
-      setServerError(error.apiError.message)
-      return
-    }
-
-    setServerError(LL.externalPanel.cars.createFailed())
+    setServerError(
+      applyApiFieldErrors({
+        error,
+        setError,
+        fields: ['name', 'licensePlate', 'note', 'driverId'],
+        messages: {
+          licensePlate: () => LL.externalPanel.cars.duplicateLicensePlate(),
+        },
+        fallbackMessage: LL.externalPanel.cars.createFailed(),
+      }),
+    )
   }
 
   function handleClose() {

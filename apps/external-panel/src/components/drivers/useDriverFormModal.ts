@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
   useForm,
@@ -91,29 +91,17 @@ export function useDriverFormModal({
   }
 
   function handleFormError(error: unknown) {
-    if (isApiClientError(error)) {
-      if (error.apiError.fields?.length) {
-        for (const fieldError of error.apiError.fields) {
-          if (
-            fieldError.field === 'firstName' ||
-            fieldError.field === 'lastName' ||
-            fieldError.field === 'nationalId'
-          ) {
-            setError(fieldError.field, { message: fieldError.message })
-          }
-        }
-      }
-
-      if (error.apiError.fields?.some((field) => field.field === 'nationalId')) {
-        setServerError(LL.externalPanel.drivers.duplicateNationalId())
-        return
-      }
-
-      setServerError(error.apiError.message)
-      return
-    }
-
-    setServerError(LL.externalPanel.drivers.createFailed())
+    setServerError(
+      applyApiFieldErrors({
+        error,
+        setError,
+        fields: ['firstName', 'lastName', 'nationalId'],
+        messages: {
+          nationalId: () => LL.externalPanel.drivers.duplicateNationalId(),
+        },
+        fallbackMessage: LL.externalPanel.drivers.createFailed(),
+      }),
+    )
   }
 
   function handleClose() {

@@ -35,6 +35,8 @@ import { users } from '../database/schema/users';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { rethrowPostgresError } from '../database/postgres-error.utils';
+import { COMPANY_USER_POSTGRES_MAPPINGS } from './company-users-postgres-mappings';
 
 type ListCompanyUsersOptions = PaginationParams & {
   companyId: string;
@@ -113,67 +115,71 @@ export class CompanyUsersService {
 
     const passwordHash = await hashPassword(dto.password);
 
-    return this.tenantDb.run(context, async (tx) => {
-      await this._assertUsernameAvailable(tx, dto.username);
-      await this._assertNationalIdAvailable(tx, dto.nationalId);
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        await this._assertUsernameAvailable(tx, dto.username);
+        await this._assertNationalIdAvailable(tx, dto.nationalId);
 
-      const [user] = await tx
-        .insert(users)
-        .values({
-          firstName: dto.firstName,
-          lastName: dto.lastName,
-        })
-        .returning({ id: users.id });
+        const [user] = await tx
+          .insert(users)
+          .values({
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+          })
+          .returning({ id: users.id });
 
-      const [row] = await tx
-        .insert(companyUsers)
-        .values({
-          userId: user.id,
-          companyId: dto.companyId,
-          username: dto.username,
-          nationalId: dto.nationalId ?? null,
-          email: dto.email ?? null,
-          passwordHash,
-          level: dto.level,
-        })
-        .returning();
+        const [row] = await tx
+          .insert(companyUsers)
+          .values({
+            userId: user.id,
+            companyId: dto.companyId,
+            username: dto.username,
+            nationalId: dto.nationalId ?? null,
+            email: dto.email ?? null,
+            passwordHash,
+            level: dto.level,
+          })
+          .returning();
 
-      const created = await _findCompanyUserById(tx, row.id);
+        const created = await _findCompanyUserById(tx, row.id);
 
-      if (!created) {
-        throw createApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          ApiErrorCode.INTERNAL_ERROR,
-          'Failed to create company user',
-        );
-      }
+        if (!created) {
+          throw createApiException(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ApiErrorCode.INTERNAL_ERROR,
+            'Failed to create company user',
+          );
+        }
 
-      const companyUser = _mapCompanyUser(created);
-      const companyName = await fetchCompanyName(tx, companyUser.companyId);
+        const companyUser = _mapCompanyUser(created);
+        const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
-      await this.auditLogService.record(context, {
-        action: AuditActions.COMPANY_USER_CREATED,
-        companyId: companyUser.companyId,
-        entityType: AuditEntityType.COMPANY_USER,
-        entityId: companyUser.id,
-        metadata: {
-          ...buildAuditContext({
-            companyName,
-            entityLabel: formatAuditPersonLabel(
-              companyUser.firstName,
-              companyUser.lastName,
-              companyUser.username,
+        await this.auditLogService.record(context, {
+          action: AuditActions.COMPANY_USER_CREATED,
+          companyId: companyUser.companyId,
+          entityType: AuditEntityType.COMPANY_USER,
+          entityId: companyUser.id,
+          metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditPersonLabel(
+                companyUser.firstName,
+                companyUser.lastName,
+                companyUser.username,
+              ),
+            }),
+            changes: createAuditChanges(
+              _companyUserAuditRecord(companyUser, true),
+              COMPANY_USER_AUDIT_FIELDS,
             ),
-          }),
-          changes: createAuditChanges(
-            _companyUserAuditRecord(companyUser, true),
-            COMPANY_USER_AUDIT_FIELDS,
-          ),
-        },
-      });
+          },
+        });
 
-      return companyUser;
-    });
+        return companyUser;
+      });
+    } catch (error) {
+      rethrowPostgresError(error, COMPANY_USER_POSTGRES_MAPPINGS);
+    }
   }
 
   async update(
@@ -181,107 +187,111 @@ export class CompanyUsersService {
     id: string,
     dto: UpdateCompanyUserPayload,
   ): Promise<CompanyUser> {
-    return this.tenantDb.run(context, async (tx) => {
-      const existing = await _findCompanyUserForContext(tx, context, id);
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const existing = await _findCompanyUserForContext(tx, context, id);
 
-      if (!existing) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company user not found',
+        if (!existing) {
+          throw createApiException(
+            HttpStatus.NOT_FOUND,
+            ApiErrorCode.NOT_FOUND,
+            'Company user not found',
+          );
+        }
+
+        if (dto.username && dto.username !== existing.username) {
+          await this._assertUsernameAvailable(tx, dto.username, id);
+        }
+
+        if (
+          dto.nationalId !== undefined &&
+          dto.nationalId !== existing.nationalId
+        ) {
+          await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+        }
+
+        const existingLevel = resolveCompanyUserLevel(existing.level, 'admin');
+        const nextLevel =
+          dto.level !== undefined
+            ? resolveCompanyUserLevel(dto.level, existingLevel)
+            : existingLevel;
+        await this._assertNotRemovingLastAdmin(
+          tx,
+          existing.companyId,
+          existing.id,
+          existingLevel,
+          nextLevel,
         );
-      }
 
-      if (dto.username && dto.username !== existing.username) {
-        await this._assertUsernameAvailable(tx, dto.username, id);
-      }
+        if (dto.firstName !== undefined || dto.lastName !== undefined) {
+          await tx
+            .update(users)
+            .set({
+              ...(dto.firstName !== undefined
+                ? { firstName: dto.firstName }
+                : {}),
+              ...(dto.lastName !== undefined ? { lastName: dto.lastName } : {}),
+            })
+            .where(eq(users.id, existing.userId));
+        }
 
-      if (
-        dto.nationalId !== undefined &&
-        dto.nationalId !== existing.nationalId
-      ) {
-        await this._assertNationalIdAvailable(tx, dto.nationalId, id);
-      }
+        const passwordHash = dto.password
+          ? await hashPassword(dto.password)
+          : undefined;
 
-      const existingLevel = resolveCompanyUserLevel(existing.level, 'admin');
-      const nextLevel =
-        dto.level !== undefined
-          ? resolveCompanyUserLevel(dto.level, existingLevel)
-          : existingLevel;
-      await this._assertNotRemovingLastAdmin(
-        tx,
-        existing.companyId,
-        existing.id,
-        existingLevel,
-        nextLevel,
-      );
-
-      if (dto.firstName !== undefined || dto.lastName !== undefined) {
         await tx
-          .update(users)
+          .update(companyUsers)
           .set({
-            ...(dto.firstName !== undefined
-              ? { firstName: dto.firstName }
+            ...(dto.username !== undefined ? { username: dto.username } : {}),
+            ...(dto.nationalId !== undefined
+              ? { nationalId: dto.nationalId }
               : {}),
-            ...(dto.lastName !== undefined ? { lastName: dto.lastName } : {}),
+            ...(dto.email !== undefined ? { email: dto.email } : {}),
+            ...(dto.level !== undefined ? { level: dto.level } : {}),
+            ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
           })
-          .where(eq(users.id, existing.userId));
-      }
+          .where(eq(companyUsers.id, id));
 
-      const passwordHash = dto.password
-        ? await hashPassword(dto.password)
-        : undefined;
+        const updated = await _findCompanyUserById(tx, id);
 
-      await tx
-        .update(companyUsers)
-        .set({
-          ...(dto.username !== undefined ? { username: dto.username } : {}),
-          ...(dto.nationalId !== undefined
-            ? { nationalId: dto.nationalId }
-            : {}),
-          ...(dto.email !== undefined ? { email: dto.email } : {}),
-          ...(dto.level !== undefined ? { level: dto.level } : {}),
-          ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
-        })
-        .where(eq(companyUsers.id, id));
+        if (!updated) {
+          throw createApiException(
+            HttpStatus.NOT_FOUND,
+            ApiErrorCode.NOT_FOUND,
+            'Company user not found',
+          );
+        }
 
-      const updated = await _findCompanyUserById(tx, id);
+        const companyUser = _mapCompanyUser(updated);
+        const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
-      if (!updated) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company user not found',
-        );
-      }
-
-      const companyUser = _mapCompanyUser(updated);
-      const companyName = await fetchCompanyName(tx, companyUser.companyId);
-
-      await this.auditLogService.record(context, {
-        action: AuditActions.COMPANY_USER_UPDATED,
-        companyId: companyUser.companyId,
-        entityType: AuditEntityType.COMPANY_USER,
-        entityId: companyUser.id,
-        metadata: {
-          ...buildAuditContext({
-            companyName,
-            entityLabel: formatAuditPersonLabel(
-              companyUser.firstName,
-              companyUser.lastName,
-              companyUser.username,
+        await this.auditLogService.record(context, {
+          action: AuditActions.COMPANY_USER_UPDATED,
+          companyId: companyUser.companyId,
+          entityType: AuditEntityType.COMPANY_USER,
+          entityId: companyUser.id,
+          metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditPersonLabel(
+                companyUser.firstName,
+                companyUser.lastName,
+                companyUser.username,
+              ),
+            }),
+            changes: diffAuditChanges(
+              _companyUserAuditRecord(_mapCompanyUser(existing), false),
+              _companyUserAuditRecord(companyUser, Boolean(dto.password)),
+              COMPANY_USER_AUDIT_FIELDS,
             ),
-          }),
-          changes: diffAuditChanges(
-            _companyUserAuditRecord(_mapCompanyUser(existing), false),
-            _companyUserAuditRecord(companyUser, Boolean(dto.password)),
-            COMPANY_USER_AUDIT_FIELDS,
-          ),
-        },
-      });
+          },
+        });
 
-      return companyUser;
-    });
+        return companyUser;
+      });
+    } catch (error) {
+      rethrowPostgresError(error, COMPANY_USER_POSTGRES_MAPPINGS);
+    }
   }
 
   async delete(context: TenantContext, id: string): Promise<null> {

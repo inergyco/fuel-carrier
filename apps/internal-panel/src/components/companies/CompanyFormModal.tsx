@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import type { Company } from '@fuel-carrier/shared-types'
-import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
@@ -15,7 +14,7 @@ import {
   type CreateCompanyDto,
 } from '@fuel-carrier/shared-validation/company/create'
 import type { z } from 'zod'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import { FormInput, FormTextarea, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
@@ -116,38 +115,26 @@ export function CompanyFormModal({
   }
 
   function handleFormError(error: unknown) {
-    if (isApiClientError(error)) {
-      if (error.apiError.fields?.length) {
-        for (const fieldError of error.apiError.fields) {
-          if (
-            fieldError.field === 'name' ||
-            fieldError.field === 'nationalId' ||
-            fieldError.field === 'phoneNumber' ||
-            fieldError.field === 'address' ||
-            fieldError.field === 'note' ||
-            fieldError.field === 'logoUrl'
-          ) {
-            setError(fieldError.field, { message: fieldError.message })
-          }
-        }
-      }
-
-      if (
-        error.apiError.code === ApiErrorCode.VALIDATION_ERROR &&
-        error.apiError.fields?.some((field) => field.field === 'nationalId')
-      ) {
-        setServerError(LL.internalPanel.companies.duplicateNationalId())
-        return
-      }
-
-      setServerError(error.apiError.message)
-      return
-    }
-
     setServerError(
-      mode === 'edit'
-        ? LL.internalPanel.companies.updateFailed()
-        : LL.internalPanel.companies.createFailed(),
+      applyApiFieldErrors({
+        error,
+        setError,
+        fields: [
+          'name',
+          'nationalId',
+          'phoneNumber',
+          'address',
+          'note',
+          'logoUrl',
+        ],
+        messages: {
+          nationalId: () => LL.internalPanel.companies.duplicateNationalId(),
+        },
+        fallbackMessage:
+          mode === 'edit'
+            ? LL.internalPanel.companies.updateFailed()
+            : LL.internalPanel.companies.createFailed(),
+      }),
     )
   }
 

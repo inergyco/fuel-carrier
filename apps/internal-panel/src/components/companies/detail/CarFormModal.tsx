@@ -5,7 +5,7 @@ import {
   createInternalCarDtoSchema,
   type CreateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
   Form,
@@ -95,23 +95,18 @@ export function CarFormModal({
     try {
       await saveMutation.mutateAsync(data)
     } catch (error) {
-      if (isApiClientError(error) && error.apiError.fields?.length) {
-        for (const fieldError of error.apiError.fields) {
-          if (
-            fieldError.field === 'name' ||
-            fieldError.field === 'licensePlate' ||
-            fieldError.field === 'note' ||
-            fieldError.field === 'driverId'
-          ) {
-            setError(fieldError.field, { message: fieldError.message })
-          }
-        }
-
-        setServerError(error.apiError.message)
-        return
-      }
-
-      setServerError(LL.internalPanel.companies.detail.createFailed())
+      setServerError(
+        applyApiFieldErrors({
+          error,
+          setError,
+          fields: ['name', 'licensePlate', 'note', 'driverId'],
+          messages: {
+            licensePlate: () =>
+              LL.internalPanel.companies.detail.duplicateLicensePlate(),
+          },
+          fallbackMessage: LL.internalPanel.companies.detail.createFailed(),
+        }),
+      )
     }
   }
 

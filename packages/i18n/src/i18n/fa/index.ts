@@ -299,6 +299,7 @@ const fa: Translation = {
         duplicateNationalId: "کاربری با این شناسه ملی از قبل وجود دارد.",
         duplicateDriverNationalId:
           "راننده‌ای با این شناسه ملی از قبل وجود دارد.",
+        duplicateLicensePlate: "خودرویی با این پلاک از قبل وجود دارد.",
         auditLogsTitle: "گزارش ممیزی",
         auditLogsSubtitle: "اقدامات مهم انجام‌شده برای این شرکت",
         auditLogsEmpty: "هنوز گزارشی برای این شرکت ثبت نشده است.",

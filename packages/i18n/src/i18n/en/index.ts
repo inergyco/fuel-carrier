@@ -297,6 +297,7 @@ const en: BaseTranslation = {
         duplicateUsername: 'This username is already taken.',
         duplicateNationalId: 'A user with this national ID already exists.',
         duplicateDriverNationalId: 'A driver with this national ID already exists.',
+        duplicateLicensePlate: 'A vehicle with this license plate already exists.',
         auditLogsTitle: 'Audit log',
         auditLogsSubtitle: 'Critical actions performed for this company',
         auditLogsEmpty: 'No audit entries yet for this company.',

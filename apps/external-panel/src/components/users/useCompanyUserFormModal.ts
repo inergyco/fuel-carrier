@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { CompanyUser } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import { zodResolver, useForm, type SubmitHandler, type UseFormReturn } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
@@ -109,38 +109,26 @@ export function useCompanyUserFormModal({
   }
 
   function handleFormError(error: unknown) {
-    if (isApiClientError(error)) {
-      if (error.apiError.fields?.length) {
-        for (const fieldError of error.apiError.fields) {
-          if (
-            fieldError.field === 'firstName' ||
-            fieldError.field === 'lastName' ||
-            fieldError.field === 'username' ||
-            fieldError.field === 'password' ||
-            fieldError.field === 'nationalId' ||
-            fieldError.field === 'email' ||
-            fieldError.field === 'level'
-          ) {
-            setError(fieldError.field, { message: fieldError.message })
-          }
-        }
-      }
-
-      if (error.apiError.fields?.some((field) => field.field === 'username')) {
-        setServerError(LL.externalPanel.users.duplicateUsername())
-        return
-      }
-
-      if (error.apiError.fields?.some((field) => field.field === 'nationalId')) {
-        setServerError(LL.externalPanel.users.duplicateNationalId())
-        return
-      }
-
-      setServerError(error.apiError.message)
-      return
-    }
-
-    setServerError(LL.externalPanel.users.createFailed())
+    setServerError(
+      applyApiFieldErrors({
+        error,
+        setError,
+        fields: [
+          'firstName',
+          'lastName',
+          'username',
+          'password',
+          'nationalId',
+          'email',
+          'level',
+        ],
+        messages: {
+          username: () => LL.externalPanel.users.duplicateUsername(),
+          nationalId: () => LL.externalPanel.users.duplicateNationalId(),
+        },
+        fallbackMessage: LL.externalPanel.users.createFailed(),
+      }),
+    )
   }
 
   function handleClose() {

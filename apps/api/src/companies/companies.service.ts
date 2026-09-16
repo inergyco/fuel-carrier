@@ -30,6 +30,8 @@ import type { ApiTenantContext } from '../database/tenant-context.types';
 import { companies } from '../database/schema/companies';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { rethrowPostgresError } from '../database/postgres-error.utils';
+import { COMPANY_POSTGRES_MAPPINGS } from './companies-postgres-mappings';
 
 /**
  * Companies are not tenant-owned rows, but all database access still flows
@@ -75,25 +77,29 @@ export class CompaniesService {
   }
 
   async create(context: ApiTenantContext, dto: CompanyInput): Promise<Company> {
-    return this.tenantDb.run(context, async (tx) => {
-      await this._assertNationalIdAvailable(tx, dto.nationalId);
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        await this._assertNationalIdAvailable(tx, dto.nationalId);
 
-      const [row] = await tx.insert(companies).values(dto).returning();
-      const company = _mapCompany(row);
+        const [row] = await tx.insert(companies).values(dto).returning();
+        const company = _mapCompany(row);
 
-      await this.auditLogService.record(context, {
-        action: AuditActions.COMPANY_CREATED,
-        companyId: company.id,
-        entityType: AuditEntityType.COMPANY,
-        entityId: company.id,
-        metadata: {
-          ...buildAuditContext({ companyName: company.name }),
-          changes: createAuditChanges(company, COMPANY_AUDIT_FIELDS),
-        },
+        await this.auditLogService.record(context, {
+          action: AuditActions.COMPANY_CREATED,
+          companyId: company.id,
+          entityType: AuditEntityType.COMPANY,
+          entityId: company.id,
+          metadata: {
+            ...buildAuditContext({ companyName: company.name }),
+            changes: createAuditChanges(company, COMPANY_AUDIT_FIELDS),
+          },
+        });
+
+        return company;
       });
-
-      return company;
-    });
+    } catch (error) {
+      rethrowPostgresError(error, COMPANY_POSTGRES_MAPPINGS);
+    }
   }
 
   async update(
@@ -101,36 +107,40 @@ export class CompaniesService {
     id: string,
     dto: CompanyInput,
   ): Promise<Company> {
-    return this.tenantDb.run(context, async (tx) => {
-      const existing = await _findCompanyById(tx, id);
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const existing = await _findCompanyById(tx, id);
 
-      await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+        await this._assertNationalIdAvailable(tx, dto.nationalId, id);
 
-      const [row] = await tx
-        .update(companies)
-        .set(dto)
-        .where(eq(companies.id, id))
-        .returning();
+        const [row] = await tx
+          .update(companies)
+          .set(dto)
+          .where(eq(companies.id, id))
+          .returning();
 
-      const company = _mapCompany(row);
+        const company = _mapCompany(row);
 
-      await this.auditLogService.record(context, {
-        action: AuditActions.COMPANY_UPDATED,
-        companyId: company.id,
-        entityType: AuditEntityType.COMPANY,
-        entityId: company.id,
-        metadata: {
-          ...buildAuditContext({ companyName: company.name }),
-          changes: diffAuditChanges(
-            _mapCompany(existing),
-            company,
-            COMPANY_AUDIT_FIELDS,
-          ),
-        },
+        await this.auditLogService.record(context, {
+          action: AuditActions.COMPANY_UPDATED,
+          companyId: company.id,
+          entityType: AuditEntityType.COMPANY,
+          entityId: company.id,
+          metadata: {
+            ...buildAuditContext({ companyName: company.name }),
+            changes: diffAuditChanges(
+              _mapCompany(existing),
+              company,
+              COMPANY_AUDIT_FIELDS,
+            ),
+          },
+        });
+
+        return company;
       });
-
-      return company;
-    });
+    } catch (error) {
+      rethrowPostgresError(error, COMPANY_POSTGRES_MAPPINGS);
+    }
   }
 
   async delete(context: ApiTenantContext, id: string): Promise<null> {

@@ -5,7 +5,7 @@ import {
   createInternalDriverDtoSchema,
   type CreateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
+import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import { FormInput, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
@@ -77,29 +77,18 @@ export function DriverFormModal({
     try {
       await saveMutation.mutateAsync(data)
     } catch (error) {
-      if (isApiClientError(error)) {
-        if (error.apiError.fields?.length) {
-          for (const fieldError of error.apiError.fields) {
-            if (
-              fieldError.field === 'firstName' ||
-              fieldError.field === 'lastName' ||
-              fieldError.field === 'nationalId'
-            ) {
-              setError(fieldError.field, { message: fieldError.message })
-            }
-          }
-
-          if (error.apiError.fields.some((field) => field.field === 'nationalId')) {
-            setServerError(LL.internalPanel.companies.detail.duplicateDriverNationalId())
-            return
-          }
-        }
-
-        setServerError(error.apiError.message)
-        return
-      }
-
-      setServerError(LL.internalPanel.companies.detail.createFailed())
+      setServerError(
+        applyApiFieldErrors({
+          error,
+          setError,
+          fields: ['firstName', 'lastName', 'nationalId'],
+          messages: {
+            nationalId: () =>
+              LL.internalPanel.companies.detail.duplicateDriverNationalId(),
+          },
+          fallbackMessage: LL.internalPanel.companies.detail.createFailed(),
+        }),
+      )
     }
   }
 

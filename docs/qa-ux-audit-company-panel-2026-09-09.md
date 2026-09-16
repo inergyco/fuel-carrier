@@ -5,10 +5,10 @@
 **Primary personas:** company fleet operators, dispatchers, and field personnel on phones outdoors (hurried, glare, gloves/thumbs, intermittent connectivity)  
 **Method:** Deep review of `apps/external-panel` + `packages/web-ui` / i18n; live HTML shell check (`lang`/`dir` bootstrap). **No interactive device lab or browser click-through** — findings are code- and structure-evidenced; treat visual/performance numbers as inferred.
 
-**UX Assurance Degree:** **92 / 100** (estimated after custody, search/filter, connectivity, touch, audit cards, a11y, skeletons + password toast; pending duplicate-field validation)  
+**UX Assurance Degree:** **95 / 100** (estimated after full remediation pass; pending interactive phone/field validation)  
 **Original score (2026-09-09):** **64 / 100**
 
-> **Remediation (2026-09-16):** Custody through a11y, plus list skeletons and password-change success toast. Score revised to **92** — remaining gap is duplicate plate/national-ID field errors.
+> **Remediation (2026-09-16):** Custody through skeletons/toast, plus duplicate plate/national-ID/username always mapped to localized field errors (API race-safe + shared RHF helper). Score revised to **95**.
 
 ---
 
@@ -139,7 +139,7 @@
 ## Status
 
 **Audit date:** 2026-09-09 — live score **64/100**.  
-**Remediation review:** 2026-09-16 — estimated **92/100**.
+**Remediation review:** 2026-09-16 — estimated **95/100**.
 
 ### Implemented
 
@@ -155,10 +155,9 @@
 | **Drawer closes on navigate** | Mobile nav drawer unchecks on Link click. |
 | **A11y pass** | Field `htmlFor`/`id`; modal focus trap + Escape; i18n toast dismiss / modal close; password eye keyboard-accessible. |
 | **List skeletons + password toast** | Shared `ResourceListSkeleton` on resource/company/audit lists; password-change success toast before home redirect. |
+| **Duplicate field validation** | Companies/users Postgres unique races → `VALIDATION_ERROR` + `fields`; shared `applyApiFieldErrors` maps localized messages onto RHF fields (cars/drivers/users/companies). |
 
 ### Still open (next)
-
-1. Ensure duplicate validation always shows field messages  
 
 Interactive phone/field validation recommended before locking the score. Admin panel (`mobile-fueling-admin`) not in original scope (overview driver display updated for consistency).
 
