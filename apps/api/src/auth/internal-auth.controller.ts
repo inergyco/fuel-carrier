@@ -107,7 +107,8 @@ export class InternalAuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.INTERNAL_ADMIN)
   @ApiOperation({ summary: 'Get the current internal admin session' })
   @ApiEnvelopeOkResponse(AuthPayloadDto)
   @ApiEnvelopeUnauthorizedResponse()
