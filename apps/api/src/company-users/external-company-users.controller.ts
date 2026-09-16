@@ -57,6 +57,7 @@ export class ExternalCompanyUsersController {
   constructor(private readonly companyUsersService: CompanyUsersService) {}
 
   @Get()
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'List company users for the authenticated company',
   })
@@ -76,6 +77,7 @@ export class ExternalCompanyUsersController {
   }
 
   @Get(':id')
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
     summary: 'Get a company user belonging to the authenticated company',
   })

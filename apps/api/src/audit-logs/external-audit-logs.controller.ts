@@ -10,6 +10,7 @@ import { UserRole } from '@fuel-carrier/shared-types';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
+import { CompanyUserAdminGuard } from '../auth/company-user-admin.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import type { AuthSession } from '../auth/auth.types';
@@ -36,6 +37,7 @@ export class ExternalAuditLogsController {
   constructor(private readonly auditLogService: AuditLogService) {}
 
   @Get()
+  @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({ summary: 'List audit logs for the authenticated company' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })

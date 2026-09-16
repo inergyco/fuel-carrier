@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { Pagination, parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
@@ -10,13 +10,16 @@ import { useCompanyUsers } from '../../components/users/useCompanyUsers'
 
 export const Route = createFileRoute('/_authenticated/users')({
   validateSearch: parsePaginationSearch,
+  beforeLoad: function requireCompanyAdmin({ context }) {
+    if (!isCompanyUserAdmin(context.user)) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: CompanyUsersPage,
 })
 
 function CompanyUsersPage() {
   const { LL } = useI18nContext()
-  const { user } = Route.useRouteContext()
-  const canManage = isCompanyUserAdmin(user)
   const users = useCompanyUsers()
   const emptyCell = LL.externalPanel.users.emptyCell()
   const result = users.usersQuery.data
@@ -44,7 +47,6 @@ function CompanyUsersPage() {
           users.setUserModal({ mode: 'edit', item: user })
         }}
         onDelete={users.setDeleteTarget}
-        readOnly={!canManage}
         footer={
           result ? (
             <Pagination
@@ -60,7 +62,7 @@ function CompanyUsersPage() {
         }
       />
 
-      {canManage && users.userModal ? (
+      {users.userModal ? (
         <CompanyUserFormModal
           key={
             users.userModal.mode === 'edit'
@@ -78,15 +80,13 @@ function CompanyUsersPage() {
         />
       ) : null}
 
-      {canManage ? (
-        <DeleteCompanyUserModal
-          target={users.deleteTarget}
-          mutation={users.deleteMutation}
-          onClose={function closeDeleteModal() {
-            users.setDeleteTarget(null)
-          }}
-        />
-      ) : null}
+      <DeleteCompanyUserModal
+        target={users.deleteTarget}
+        mutation={users.deleteMutation}
+        onClose={function closeDeleteModal() {
+          users.setDeleteTarget(null)
+        }}
+      />
     </div>
   )
 }

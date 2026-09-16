@@ -49,18 +49,24 @@ export function AuthenticatedShell({
 
   const navItems = useMemo(
     function createNavItems(): PanelNavItem[] {
-      return [
+      const items: PanelNavItem[] = [
         {
           to: "/",
           label: LL.externalPanel.nav.dashboard(),
           icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
           exact: true,
         },
-        {
+      ];
+
+      if (isCompanyUserAdmin(user)) {
+        items.push({
           to: "/users",
           label: LL.externalPanel.nav.users(),
           icon: <Users strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        },
+        });
+      }
+
+      items.push(
         {
           to: "/drivers",
           label: LL.externalPanel.nav.drivers(),
@@ -76,14 +82,19 @@ export function AuthenticatedShell({
           label: LL.externalPanel.nav.map(),
           icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
-        {
+      );
+
+      if (isCompanyUserAdmin(user)) {
+        items.push({
           to: "/audit-logs",
           label: LL.externalPanel.nav.auditLogs(),
           icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        },
-      ];
+        });
+      }
+
+      return items;
     },
-    [LL],
+    [LL, user],
   );
 
   function handleOpenLogoutModal() {

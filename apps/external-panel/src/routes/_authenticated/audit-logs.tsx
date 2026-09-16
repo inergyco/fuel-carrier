@@ -1,5 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
@@ -12,6 +13,11 @@ import { getExternalAuditLogLabels } from '../../components/audit-logs/auditLogL
 
 export const Route = createFileRoute('/_authenticated/audit-logs')({
   validateSearch: parsePaginationSearch,
+  beforeLoad: function requireCompanyAdmin({ context }) {
+    if (!isCompanyUserAdmin(context.user)) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: AuditLogsPage,
 })
 
