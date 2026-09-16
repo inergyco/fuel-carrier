@@ -1,6 +1,6 @@
 import { ResourceListCards } from './ResourceListCards'
 import { ResourceListTable } from './ResourceListTable'
-import type { ResourceColumn, ResourceListItemProps } from './resourceListTypes'
+import type { ResourceListItemProps } from './resourceListTypes'
 
 export type { ResourceColumn } from './resourceListTypes'
 
