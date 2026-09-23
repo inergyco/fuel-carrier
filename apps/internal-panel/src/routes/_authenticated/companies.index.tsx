@@ -9,10 +9,11 @@ import {
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
+  ResourceListToolbar,
   iconMdClassName,
-  parsePaginationSearch,
+  parseResourceListSearch,
   useMediaQuery,
-  usePagination,
+  useResourceListSearch,
   useToast,
 } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
@@ -28,7 +29,7 @@ import {
 } from '../../lib/api/companies'
 
 export const Route = createFileRoute('/_authenticated/companies/')({
-  validateSearch: parsePaginationSearch,
+  validateSearch: parseResourceListSearch,
   component: CompaniesPage,
 })
 
@@ -44,13 +45,26 @@ function CompaniesPage() {
   const toast = useToast()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const queryClient = useQueryClient()
-  const { pagination, handlePageChange, handleLimitChange } = usePagination()
+  const {
+    listParams,
+    draftSearchText,
+    setDraftSearchText,
+    handlePageChange,
+    handleLimitChange,
+  } = useResourceListSearch()
   const [formModal, setFormModal] = useState<FormModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null)
 
+  const companyListParams = {
+    page: listParams.page,
+    limit: listParams.limit,
+    search: listParams.search,
+  }
+  const hasActiveSearch = Boolean(listParams.search)
+
   const companiesQuery = useQuery({
-    queryKey: companyKeys.list(pagination),
-    queryFn: () => fetchCompanies(pagination),
+    queryKey: companyKeys.list(companyListParams),
+    queryFn: () => fetchCompanies(companyListParams),
     placeholderData: (previous) => previous,
   })
 
@@ -103,6 +117,77 @@ function CompaniesPage() {
   const result = companiesQuery.data
   const companies = result?.items ?? EMPTY_COMPANIES
 
+  function renderBody() {
+    if (companiesQuery.isLoading && !result) {
+      return (
+        <div className="p-4 md:p-6">
+          <ResourceListSkeleton
+            variant={isMdUp ? 'table' : 'cards'}
+            columns={5}
+            label={LL.internalPanel.companies.loading()}
+          />
+        </div>
+      )
+    }
+
+    if (companiesQuery.isError) {
+      return (
+        <div className="p-4 md:p-6">
+          <QueryErrorState
+            onRetry={() => {
+              void companiesQuery.refetch()
+            }}
+            labels={{
+              loadFailed: LL.common.queryError.loadFailed(),
+              retry: LL.common.queryError.retry(),
+            }}
+          />
+        </div>
+      )
+    }
+
+    if (companies.length === 0) {
+      return (
+        <p className="p-6 text-sm text-base-content/50">
+          {hasActiveSearch
+            ? LL.internalPanel.companies.emptyFiltered()
+            : LL.internalPanel.companies.empty()}
+        </p>
+      )
+    }
+
+    return (
+      <>
+        {isMdUp ? (
+          <CompaniesTable
+            companies={companies}
+            onEdit={handleEditCompany}
+            onDelete={handleDeleteCompany}
+          />
+        ) : (
+          <CompaniesCardList
+            companies={companies}
+            onEdit={handleEditCompany}
+            onDelete={handleDeleteCompany}
+          />
+        )}
+        {result ? (
+          <div className="px-4 pb-4 md:px-6 md:pb-6">
+            <Pagination
+              page={result.page}
+              totalPages={result.totalPages}
+              totalItems={result.totalItems}
+              limit={result.limit}
+              onPageChange={handlePageChange}
+              onLimitChange={handleLimitChange}
+              labels={LL.common.pagination}
+            />
+          </div>
+        ) : null}
+      </>
+    )
+  }
+
   return (
     <div>
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
@@ -128,60 +213,15 @@ function CompaniesPage() {
       </div>
 
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
-        {companiesQuery.isLoading && !result ? (
-          <div className="p-4 md:p-6">
-            <ResourceListSkeleton
-              variant={isMdUp ? 'table' : 'cards'}
-              columns={5}
-              label={LL.internalPanel.companies.loading()}
-            />
-          </div>
-        ) : companiesQuery.isError ? (
-          <div className="p-4 md:p-6">
-            <QueryErrorState
-              onRetry={() => {
-                void companiesQuery.refetch()
-              }}
-              labels={{
-                loadFailed: LL.common.queryError.loadFailed(),
-                retry: LL.common.queryError.retry(),
-              }}
-            />
-          </div>
-        ) : companies.length === 0 ? (
-          <p className="p-6 text-sm text-base-content/50">
-            {LL.internalPanel.companies.empty()}
-          </p>
-        ) : (
-          <>
-            {isMdUp ? (
-              <CompaniesTable
-                companies={companies}
-                onEdit={handleEditCompany}
-                onDelete={handleDeleteCompany}
-              />
-            ) : (
-              <CompaniesCardList
-                companies={companies}
-                onEdit={handleEditCompany}
-                onDelete={handleDeleteCompany}
-              />
-            )}
-            {result ? (
-              <div className="px-4 pb-4 md:px-6 md:pb-6">
-                <Pagination
-                  page={result.page}
-                  totalPages={result.totalPages}
-                  totalItems={result.totalItems}
-                  limit={result.limit}
-                  onPageChange={handlePageChange}
-                  onLimitChange={handleLimitChange}
-                  labels={LL.common.pagination}
-                />
-              </div>
-            ) : null}
-          </>
-        )}
+        <div className="p-4 pb-0 md:p-6 md:pb-0">
+          <ResourceListToolbar
+            searchPlaceholder={LL.internalPanel.companies.searchPlaceholder()}
+            searchText={draftSearchText}
+            onSearchTextChange={setDraftSearchText}
+            showAssignmentFilter={false}
+          />
+        </div>
+        {renderBody()}
       </section>
 
       {formModal && (

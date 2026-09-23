@@ -5,6 +5,7 @@ import {
   ICON_STROKE_WIDTH,
   iconSmClassName,
   Pagination,
+  ResourceListToolbar,
 } from '@fuel-carrier/web-ui/ui'
 import { Eye } from '@fuel-carrier/web-ui/icons'
 import type { Car } from '@fuel-carrier/shared-types'
@@ -39,7 +40,11 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         title={LL.internalPanel.companies.detail.carsTitle()}
         subtitle={LL.internalPanel.companies.detail.carsSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addCar()}
-        emptyLabel={LL.internalPanel.companies.detail.carsEmpty()}
+        emptyLabel={
+          cars.hasActiveFilters
+            ? LL.internalPanel.companies.detail.carsEmptyFiltered()
+            : LL.internalPanel.companies.detail.carsEmpty()
+        }
         loading={cars.carsQuery.isLoading && !result}
         isError={cars.carsQuery.isError}
         onRetry={() => {
@@ -80,6 +85,15 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
           )
         }}
         renderExtraActions={renderCustodyAction}
+        toolbar={
+          <ResourceListToolbar
+            searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
+            searchText={cars.draftSearchText}
+            onSearchTextChange={cars.setDraftSearchText}
+            assignment={cars.assignment}
+            onAssignmentChange={cars.setAssignment}
+          />
+        }
         footer={
           result ? (
             <Pagination

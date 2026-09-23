@@ -9,7 +9,7 @@ import type {
   UpdateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { api } from '@fuel-carrier/web-ui/api'
-import { toResourceListFilterSearchParams } from './resource-list-filter-search-params'
+import { toResourceListFilterSearchParams } from '@fuel-carrier/web-ui/ui'
 
 const DEFAULT_LIST_PARAMS: ResourceListParams = {
   page: 1,

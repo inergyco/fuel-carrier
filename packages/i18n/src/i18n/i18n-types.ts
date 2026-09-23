@@ -769,6 +769,14 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
+			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​.
+			 */
+			emptyFiltered: string
+			/**
+			 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
+			 */
+			searchPlaceholder: string
+			/**
 			 * A​ ​c​o​m​p​a​n​y​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
 			duplicateNationalId: string
@@ -906,9 +914,25 @@ type RootTranslation = {
 				 */
 				driversEmpty: string
 				/**
+				 * N​o​ ​d​r​i​v​e​r​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​f​i​l​t​e​r​.
+				 */
+				driversEmptyFiltered: string
+				/**
+				 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
+				 */
+				driversSearchPlaceholder: string
+				/**
 				 * N​o​ ​c​a​r​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
 				 */
 				carsEmpty: string
+				/**
+				 * N​o​ ​v​e​h​i​c​l​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​f​i​l​t​e​r​.
+				 */
+				carsEmptyFiltered: string
+				/**
+				 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​ ​o​r​ ​n​a​m​e
+				 */
+				carsSearchPlaceholder: string
 				/**
 				 * D​e​l​e​t​e​ ​u​s​e​r​?
 				 */
@@ -3347,6 +3371,14 @@ export type TranslationFunctions = {
 			 */
 			empty: () => LocalizedString
 			/**
+			 * No companies match your search.
+			 */
+			emptyFiltered: () => LocalizedString
+			/**
+			 * Search by name or national ID
+			 */
+			searchPlaceholder: () => LocalizedString
+			/**
 			 * A company with this national ID already exists.
 			 */
 			duplicateNationalId: () => LocalizedString
@@ -3484,9 +3516,25 @@ export type TranslationFunctions = {
 				 */
 				driversEmpty: () => LocalizedString
 				/**
+				 * No drivers match your search or filter.
+				 */
+				driversEmptyFiltered: () => LocalizedString
+				/**
+				 * Search by name or national ID
+				 */
+				driversSearchPlaceholder: () => LocalizedString
+				/**
 				 * No cars yet for this company.
 				 */
 				carsEmpty: () => LocalizedString
+				/**
+				 * No vehicles match your search or filter.
+				 */
+				carsEmptyFiltered: () => LocalizedString
+				/**
+				 * Search by plate or name
+				 */
+				carsSearchPlaceholder: () => LocalizedString
 				/**
 				 * Delete user?
 				 */

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { Car, CarMqttCredentials, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { usePagination, useToast } from '@fuel-carrier/web-ui/ui'
+import { useResourceListSearch, useToast } from '@fuel-carrier/web-ui/ui'
 import {
   carKeys,
   deleteCar,
@@ -19,7 +19,15 @@ export function useCompanyCars(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
-  const { pagination, handlePageChange, handleLimitChange } = usePagination()
+  const {
+    listParams,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    handlePageChange,
+    handleLimitChange,
+    hasActiveFilters,
+  } = useResourceListSearch()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
   const [mqttTarget, setMqttTarget] = useState<Car | null>(null)
@@ -27,8 +35,8 @@ export function useCompanyCars(companyId: string) {
     useState<CarMqttCredentials | null>(null)
 
   const carsQuery = useQuery({
-    queryKey: carKeys.byCompany(companyId, pagination),
-    queryFn: () => fetchCars({ companyId, ...pagination }),
+    queryKey: carKeys.byCompany(companyId, listParams),
+    queryFn: () => fetchCars({ companyId, ...listParams }),
     placeholderData: (previous) => previous,
   })
 
@@ -122,5 +130,10 @@ export function useCompanyCars(companyId: string) {
     handleChanged,
     handlePageChange,
     handleLimitChange,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    assignment: listParams.assignment ?? 'all',
+    hasActiveFilters,
   }
 }

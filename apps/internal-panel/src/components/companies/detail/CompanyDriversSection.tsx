@@ -1,5 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Pagination } from '@fuel-carrier/web-ui/ui'
+import { Pagination, ResourceListToolbar } from '@fuel-carrier/web-ui/ui'
 import { getDriverColumns } from './companyResourceColumns'
 import { DeleteCompanyDriverModal } from './DeleteCompanyDriverModal'
 import { DriverFormModal } from './DriverFormModal'
@@ -21,7 +21,11 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         title={LL.internalPanel.companies.detail.driversTitle()}
         subtitle={LL.internalPanel.companies.detail.driversSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addDriver()}
-        emptyLabel={LL.internalPanel.companies.detail.driversEmpty()}
+        emptyLabel={
+          drivers.hasActiveFilters
+            ? LL.internalPanel.companies.detail.driversEmptyFiltered()
+            : LL.internalPanel.companies.detail.driversEmpty()
+        }
         loading={drivers.driversQuery.isLoading && !result}
         isError={drivers.driversQuery.isError}
         onRetry={() => {
@@ -40,6 +44,15 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
           drivers.setDriverModal({ mode: 'edit', item: driver })
         }}
         onDelete={drivers.setDeleteTarget}
+        toolbar={
+          <ResourceListToolbar
+            searchPlaceholder={LL.internalPanel.companies.detail.driversSearchPlaceholder()}
+            searchText={drivers.draftSearchText}
+            onSearchTextChange={drivers.setDraftSearchText}
+            assignment={drivers.assignment}
+            onAssignmentChange={drivers.setAssignment}
+          />
+        }
         footer={
           result ? (
             <Pagination

@@ -2,7 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
-import { Pagination, parseResourceListSearch } from '@fuel-carrier/web-ui/ui'
+import {
+  Pagination,
+  parseResourceListSearch,
+  ResourceListToolbar,
+} from '@fuel-carrier/web-ui/ui'
 import { CarFormModal } from '../../components/cars/CarFormModal'
 import { CarCustodyActions } from '../../components/cars/CarCustodyActions'
 import { CarCustodyModals } from '../../components/cars/CarCustodyModals'
@@ -13,7 +17,6 @@ import { DeleteCarModal } from '../../components/cars/DeleteCarModal'
 import { useCarCustody } from '../../components/cars/useCarCustody'
 import { useCarMqttCredentials } from '../../components/cars/useCarMqttCredentials'
 import { useCars } from '../../components/cars/useCars'
-import { ResourceListToolbar } from '../../components/users/ResourceListToolbar'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
 export const Route = createFileRoute('/_authenticated/cars/')({

@@ -1,7 +1,7 @@
 import type {
   Driver,
   PaginatedResult,
-  PaginationParams,
+  ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
@@ -9,12 +9,19 @@ import type {
   UpdateInternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
+import { toResourceListFilterSearchParams } from '@fuel-carrier/web-ui/ui'
+
+const DEFAULT_LIST_PARAMS: ResourceListParams = {
+  page: 1,
+  limit: DEFAULT_LIMIT,
+  assignment: 'all',
+}
 
 export const driverKeys = {
   all: ['drivers'] as const,
   byCompany: (
     companyId: string,
-    params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+    params: ResourceListParams = DEFAULT_LIST_PARAMS,
   ) => ['drivers', companyId, params] as const,
 }
 
@@ -24,7 +31,7 @@ export type DriverFormValues = {
   nationalId: string
 }
 
-export type FetchDriversParams = PaginationParams & {
+export type FetchDriversParams = ResourceListParams & {
   companyId?: string
 }
 
@@ -37,7 +44,7 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
 }
 
 export async function fetchDrivers(
-  params: FetchDriversParams = { page: 1, limit: DEFAULT_LIMIT },
+  params: FetchDriversParams = DEFAULT_LIST_PARAMS,
 ): Promise<PaginatedResult<Driver>> {
   const { companyId, page, limit } = params
   return api
@@ -46,6 +53,7 @@ export async function fetchDrivers(
         page,
         limit,
         ...(typeof companyId === 'string' ? { companyId } : {}),
+        ...toResourceListFilterSearchParams(params),
       },
     })
     .json<PaginatedResult<Driver>>()
@@ -55,6 +63,7 @@ export async function fetchAllDrivers(companyId?: string): Promise<Driver[]> {
   return fetchAllPaginated((pagination) =>
     fetchDrivers({
       ...pagination,
+      assignment: 'all',
       ...(typeof companyId === 'string' ? { companyId } : {}),
     }),
   )

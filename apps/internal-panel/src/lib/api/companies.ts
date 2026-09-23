@@ -8,10 +8,20 @@ import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
 import type { CreateCompanyDto } from "@fuel-carrier/shared-validation/company/create";
 import type { UpdateCompanyDto } from "@fuel-carrier/shared-validation/company/update";
 import { api } from "@fuel-carrier/web-ui/api";
+import { toResourceListFilterSearchParams } from "@fuel-carrier/web-ui/ui";
+
+export type CompanyListParams = PaginationParams & {
+  search?: string;
+};
+
+const DEFAULT_LIST_PARAMS: CompanyListParams = {
+  page: 1,
+  limit: DEFAULT_LIMIT,
+};
 
 export const companyKeys = {
   all: ["companies"] as const,
-  list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
+  list: (params: CompanyListParams = DEFAULT_LIST_PARAMS) =>
     ["companies", "list", params] as const,
   detail: (id: string) => ["companies", id] as const,
   deletionImpact: (id: string) =>
@@ -39,10 +49,16 @@ export function companyToFormValues(company?: Company): CompanyFormValues {
 }
 
 export async function fetchCompanies(
-  params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT },
+  params: CompanyListParams = DEFAULT_LIST_PARAMS,
 ): Promise<PaginatedResult<Company>> {
   return api
-    .get("companies", { searchParams: params })
+    .get("companies", {
+      searchParams: {
+        page: params.page,
+        limit: params.limit,
+        ...toResourceListFilterSearchParams({ search: params.search }),
+      },
+    })
     .json<PaginatedResult<Company>>();
 }
 

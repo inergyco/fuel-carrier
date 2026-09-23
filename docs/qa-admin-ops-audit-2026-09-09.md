@@ -38,10 +38,10 @@ Scoring emphasizes: Can an admin avoid destroying the wrong tenant? Understand c
 
 | Entity | Create | Read | Update | Delete | Search | Filter | Pagination | Sorting | Detail |
 |--------|:------:|:----:|:------:|:------:|:------:|:------:|:----------:|:-------:|:------:|
-| Companies | Y | Y | Y (list) | Y | **N** | **N** | **N** | **N** (API createdAt) | Overview read-only |
-| Company users | Y | Y | Y | Y | **N** | **N** | **N** | **N** | Modal only |
-| Drivers | Y | Y | Y | Y | **N** | **N** | **N** | **N** | No driver detail route |
-| Vehicles | Y | Y | Y | Y | **N** | **N** | **N** | **N** | Detail + tanks + history |
+| Companies | Y | Y | Y (list) | Y | **Y** | **N** | **Y** | **N** (API createdAt) | Overview read-only |
+| Company users | Y | Y | Y | Y | **N** | **N** | **Y** | **N** | Modal only |
+| Drivers | Y | Y | Y | Y | **Y** | **Y** (assignment) | **Y** | **N** | No driver detail route |
+| Vehicles | Y | Y | Y | Y | **Y** | **Y** (assignment) | **Y** | **N** | Detail + tanks + history |
 | Custody | via car edit | History Y | via car edit | N/A | **N** | Active-only **N** | History Y | History by time | Current badge in history |
 | Audit logs | N/A | Y | N/A | N/A | **N** | **N** | **Y** | **N** | Inline details |
 
@@ -125,7 +125,7 @@ Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/d
 
 ## 9. Operational gaps (summary)
 
-1. No search/filter/sort/pagination on companies and nested resources.  
+1. Search/filter/pagination covered for companies + nested cars/drivers (users still no search).  
 2. Company delete cascade under-communicated.  
 3. Custody treated as a form field, not a controlled state transition.  
 4. Current driver missing from vehicle detail chrome.  
@@ -142,7 +142,7 @@ Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/d
 
 1. **Company delete:** show cascade counts + typed confirm (`DELETE {name}`). ← **Done (2026-09-23):** `GET …/deletion-impact` + typed company-name confirm in admin UI.  
 2. **Custody control:** Assign / End actions with explicit confirm when moving drivers; show **current driver** on vehicle detail. ← **Done (2026-09-23):** admin list + detail Assign/Change/End with transfer confirm; header driver chip; edit form no longer changes custody.  
-3. **Search + filters** on companies, cars (assigned/unassigned), drivers; paginate lists.  
+3. **Search + filters** on companies, cars (assigned/unassigned), drivers; paginate lists. ← **Done (2026-09-23):** shared `ResourceListToolbar` + URL search/assignment on admin companies/cars/drivers; API `search`/`assignment` on internal list endpoints.  
 4. **Ops dashboard widgets:** unassigned vehicles, unassigned drivers, offline/stale telemetry, MQTT not provisioned.  
 5. **Soft deactivate** (or archive) instead of hard delete for cars/drivers/companies where history must remain.  
 6. **Audit workbench:** filters, show role/username; clarify global vs company scopes in UI copy.  

@@ -32,6 +32,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onMqttCredentials?: (item: T) => void
   renderView?: (item: T) => ReactNode
   renderExtraActions?: (item: T) => ReactNode
+  toolbar?: ReactNode
   footer?: ReactNode
 }
 
@@ -52,6 +53,7 @@ export function ResourceSection<T extends { id: string }>({
   onMqttCredentials,
   renderView,
   renderExtraActions,
+  toolbar,
   footer,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
@@ -117,6 +119,8 @@ export function ResourceSection<T extends { id: string }>({
           </span>
         </Button>
       </div>
+
+      {toolbar}
 
       {renderBody()}
     </section>

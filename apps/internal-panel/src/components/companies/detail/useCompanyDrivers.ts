@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import { usePagination, useToast } from '@fuel-carrier/web-ui/ui'
+import { useResourceListSearch, useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys } from '../../../lib/api/cars'
 import { deleteDriver, driverKeys, fetchDrivers } from '../../../lib/api/drivers'
 import type { EntityModalState } from './entity-modal-state'
@@ -13,13 +13,21 @@ export function useCompanyDrivers(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
-  const { pagination, handlePageChange, handleLimitChange } = usePagination()
+  const {
+    listParams,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    handlePageChange,
+    handleLimitChange,
+    hasActiveFilters,
+  } = useResourceListSearch()
   const [driverModal, setDriverModal] = useState<EntityModalState<Driver>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Driver | null>(null)
 
   const driversQuery = useQuery({
-    queryKey: driverKeys.byCompany(companyId, pagination),
-    queryFn: () => fetchDrivers({ companyId, ...pagination }),
+    queryKey: driverKeys.byCompany(companyId, listParams),
+    queryFn: () => fetchDrivers({ companyId, ...listParams }),
     placeholderData: (previous) => previous,
   })
 
@@ -53,5 +61,10 @@ export function useCompanyDrivers(companyId: string) {
     handleChanged,
     handlePageChange,
     handleLimitChange,
+    draftSearchText,
+    setDraftSearchText,
+    setAssignment,
+    assignment: listParams.assignment ?? 'all',
+    hasActiveFilters,
   }
 }

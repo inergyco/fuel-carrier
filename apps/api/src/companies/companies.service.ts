@@ -1,11 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, ne } from 'drizzle-orm';
+import { and, count, desc, eq, ilike, ne, or } from 'drizzle-orm';
 import type {
   Company,
   CompanyDeletionImpact,
   CompanyInput,
   PaginatedResult,
-  PaginationParams,
 } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
@@ -18,6 +17,7 @@ import {
   getPaginationOffset,
 } from '../common/pagination.utils';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
+import { toIlikeContainsPattern } from '../common/sql/ilike-pattern.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
@@ -48,16 +48,25 @@ export class CompaniesService {
     private readonly auditLogService: AuditLogService,
   ) {}
 
-  async list(pagination: PaginationParams): Promise<PaginatedResult<Company>> {
-    const { page, limit } = pagination;
-    const offset = getPaginationOffset(pagination);
+  async list(options: {
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<PaginatedResult<Company>> {
+    const { page, limit, search: searchText } = options;
+    const offset = getPaginationOffset(options);
+    const where = buildCompanySearchFilter(searchText);
 
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const [countRow] = await tx.select({ value: count() }).from(companies);
+      const [countRow] = await tx
+        .select({ value: count() })
+        .from(companies)
+        .where(where);
 
       const rows = await tx
         .select()
         .from(companies)
+        .where(where)
         .orderBy(desc(companies.createdAt))
         .limit(limit)
         .offset(offset);
@@ -267,6 +276,19 @@ function _mapCompany(row: typeof companies.$inferSelect): Company {
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),
   };
+}
+
+function buildCompanySearchFilter(searchText: string | undefined) {
+  if (!searchText) {
+    return undefined;
+  }
+
+  const pattern = toIlikeContainsPattern(searchText);
+
+  return or(
+    ilike(companies.name, pattern),
+    ilike(companies.nationalId, pattern),
+  );
 }
 
 const COMPANY_AUDIT_FIELDS = [

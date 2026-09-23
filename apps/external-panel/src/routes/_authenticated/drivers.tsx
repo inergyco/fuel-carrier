@@ -1,12 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
-import { Pagination, parseResourceListSearch } from '@fuel-carrier/web-ui/ui'
+import {
+  Pagination,
+  parseResourceListSearch,
+  ResourceListToolbar,
+} from '@fuel-carrier/web-ui/ui'
 import { DeleteDriverModal } from '../../components/drivers/DeleteDriverModal'
 import { DriverFormModal } from '../../components/drivers/DriverFormModal'
 import { getDriverColumns } from '../../components/drivers/driverColumns'
 import { useDrivers } from '../../components/drivers/useDrivers'
-import { ResourceListToolbar } from '../../components/users/ResourceListToolbar'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
 export const Route = createFileRoute('/_authenticated/drivers')({

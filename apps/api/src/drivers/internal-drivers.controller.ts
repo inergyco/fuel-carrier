@@ -64,6 +64,12 @@ export class InternalDriversController {
   @ApiQuery({ name: 'companyId', format: 'uuid', required: false })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({
+    name: 'assignment',
+    required: false,
+    enum: ['all', 'assigned', 'unassigned'],
+  })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(

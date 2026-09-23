@@ -38,9 +38,9 @@ import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
 import {
-  paginationQuerySchema,
-  type PaginationQueryDto,
-} from '../common/dto/pagination-query.dto';
+  companyListQuerySchema,
+  type CompanyListQueryDto,
+} from '../common/dto/company-list-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -70,11 +70,12 @@ export class InternalCompaniesController {
   @ApiOperation({ summary: 'List all companies' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
   @ApiEnvelopeOkPaginatedResponse(CompanyDto)
   @ApiEnvelopeUnauthorizedResponse()
   list(
-    @Query(new ZodValidationPipe(paginationQuerySchema))
-    query: PaginationQueryDto,
+    @Query(new ZodValidationPipe(companyListQuerySchema))
+    query: CompanyListQueryDto,
   ): Promise<PaginatedResult<Company>> {
     return this.companiesService.list(query);
   }
