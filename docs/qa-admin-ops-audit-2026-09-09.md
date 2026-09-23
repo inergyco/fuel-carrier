@@ -140,7 +140,7 @@ Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/d
 
 ## 10. Recommended admin improvements (impact order)
 
-1. **Company delete:** show cascade counts + typed confirm (`DELETE {name}`).  
+1. **Company delete:** show cascade counts + typed confirm (`DELETE {name}`). ← **Done (2026-09-23):** `GET …/deletion-impact` + typed company-name confirm in admin UI.  
 2. **Custody control:** Assign / End actions with explicit confirm when moving drivers; show **current driver** on vehicle detail.  
 3. **Search + filters** on companies, cars (assigned/unassigned), drivers; paginate lists.  
 4. **Ops dashboard widgets:** unassigned vehicles, unassigned drivers, offline/stale telemetry, MQTT not provisioned.  

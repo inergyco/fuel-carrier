@@ -4,7 +4,6 @@ import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   Button,
-  ConfirmModal,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
   Pagination,
@@ -21,6 +20,7 @@ import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
 import { CompaniesTable } from '../../components/companies/CompaniesTable'
 import { CompanyFormModal } from '../../components/companies/CompanyFormModal'
+import { DeleteCompanyModal } from '../../components/companies/DeleteCompanyModal'
 import {
   companyKeys,
   deleteCompany,
@@ -198,24 +198,15 @@ function CompaniesPage() {
         />
       )}
 
-      <ConfirmModal
-        open={deleteTarget !== null}
-        title={LL.internalPanel.companies.deleteConfirmTitle()}
-        description={
-          deleteTarget
-            ? LL.internalPanel.companies.deleteConfirmDescription({
-                name: deleteTarget.name,
-              })
-            : ''
-        }
-        confirmLabel={LL.internalPanel.companies.deleteConfirm()}
-        cancelLabel={LL.internalPanel.nav.cancel()}
-        confirmVariant="danger"
-        loading={deleteMutation.isPending}
-        loadingLabel={LL.internalPanel.companies.deleting()}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCloseDeleteModal}
-      />
+      {deleteTarget ? (
+        <DeleteCompanyModal
+          key={deleteTarget.id}
+          company={deleteTarget}
+          loading={deleteMutation.isPending}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCloseDeleteModal}
+        />
+      ) : null}
     </div>
   )
 }

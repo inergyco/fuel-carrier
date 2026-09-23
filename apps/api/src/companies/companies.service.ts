@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, ne } from 'drizzle-orm';
 import type {
   Company,
+  CompanyDeletionImpact,
   CompanyInput,
   PaginatedResult,
   PaginationParams,
@@ -27,7 +28,10 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import type { ApiTenantContext } from '../database/tenant-context.types';
+import { cars } from '../database/schema/cars';
 import { companies } from '../database/schema/companies';
+import { companyUsers } from '../database/schema/company-users';
+import { drivers } from '../database/schema/drivers';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
@@ -73,6 +77,32 @@ export class CompaniesService {
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
       const row = await _findCompanyById(tx, id);
       return _mapCompany(row);
+    });
+  }
+
+  async getDeletionImpact(id: string): Promise<CompanyDeletionImpact> {
+    assertUuidParam(id);
+
+    return this.tenantDb.run(internalTenantContext(), async (tx) => {
+      await _findCompanyById(tx, id);
+
+      const [[carsRow], [driversRow], [usersRow]] = await Promise.all([
+        tx.select({ value: count() }).from(cars).where(eq(cars.companyId, id)),
+        tx
+          .select({ value: count() })
+          .from(drivers)
+          .where(eq(drivers.companyId, id)),
+        tx
+          .select({ value: count() })
+          .from(companyUsers)
+          .where(eq(companyUsers.companyId, id)),
+      ]);
+
+      return {
+        cars: carsRow?.value ?? 0,
+        drivers: driversRow?.value ?? 0,
+        users: usersRow?.value ?? 0,
+      };
     });
   }
 

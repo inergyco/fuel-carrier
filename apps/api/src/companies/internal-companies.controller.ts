@@ -20,6 +20,7 @@ import {
 import type {
   AuthSession,
   Company,
+  CompanyDeletionImpact,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
@@ -49,6 +50,7 @@ import {
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
 import {
+  CompanyDeletionImpactDto,
   CompanyDto,
   CreateCompanyRequestDto,
   UpdateCompanyRequestDto,
@@ -75,6 +77,18 @@ export class InternalCompaniesController {
     query: PaginationQueryDto,
   ): Promise<PaginatedResult<Company>> {
     return this.companiesService.list(query);
+  }
+
+  @Get(':id/deletion-impact')
+  @ApiOperation({
+    summary: 'Counts that will cascade-delete with the company',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(CompanyDeletionImpactDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  getDeletionImpact(@Param('id') id: string): Promise<CompanyDeletionImpact> {
+    return this.companiesService.getDeletionImpact(id);
   }
 
   @Get(':id')

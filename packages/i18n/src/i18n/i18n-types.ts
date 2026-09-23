@@ -708,12 +708,36 @@ type RootTranslation = {
 			 */
 			deleteConfirmTitle: string
 			/**
-			 * T​h​i​s​ ​w​i​l​l​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​ ​{​n​a​m​e​}​.​ ​T​h​i​s​ ​a​c​t​i​o​n​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
+			 * T​h​i​s​ ​p​e​r​m​a​n​e​n​t​l​y​ ​d​e​l​e​t​e​s​ ​{​n​a​m​e​}​ ​a​n​d​ ​e​v​e​r​y​t​h​i​n​g​ ​b​e​l​o​w​.​ ​T​h​i​s​ ​c​a​n​n​o​t​ ​b​e​ ​u​n​d​o​n​e​.
 			 * @param {string} name
 			 */
 			deleteConfirmDescription: RequiredParams<'name'>
 			/**
-			 * D​e​l​e​t​e
+			 * C​o​u​n​t​i​n​g​ ​r​e​l​a​t​e​d​ ​r​e​c​o​r​d​s​…
+			 */
+			deleteCascadeLoading: string
+			/**
+			 * {​c​o​u​n​t​}​ ​v​e​h​i​c​l​e​s
+			 * @param {number} count
+			 */
+			deleteCascadeCars: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​d​r​i​v​e​r​s
+			 * @param {number} count
+			 */
+			deleteCascadeDrivers: RequiredParams<'count'>
+			/**
+			 * {​c​o​u​n​t​}​ ​c​o​m​p​a​n​y​ ​u​s​e​r​s
+			 * @param {number} count
+			 */
+			deleteCascadeUsers: RequiredParams<'count'>
+			/**
+			 * T​y​p​e​ ​{​n​a​m​e​}​ ​t​o​ ​c​o​n​f​i​r​m
+			 * @param {string} name
+			 */
+			deleteTypeToConfirm: RequiredParams<'name'>
+			/**
+			 * D​e​l​e​t​e​ ​c​o​m​p​a​n​y
 			 */
 			deleteConfirm: string
 			/**
@@ -3146,11 +3170,31 @@ export type TranslationFunctions = {
 			 */
 			deleteConfirmTitle: () => LocalizedString
 			/**
-			 * This will permanently delete {name}. This action cannot be undone.
+			 * This permanently deletes {name} and everything below. This cannot be undone.
 			 */
 			deleteConfirmDescription: (arg: { name: string }) => LocalizedString
 			/**
-			 * Delete
+			 * Counting related records…
+			 */
+			deleteCascadeLoading: () => LocalizedString
+			/**
+			 * {count} vehicles
+			 */
+			deleteCascadeCars: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} drivers
+			 */
+			deleteCascadeDrivers: (arg: { count: number }) => LocalizedString
+			/**
+			 * {count} company users
+			 */
+			deleteCascadeUsers: (arg: { count: number }) => LocalizedString
+			/**
+			 * Type {name} to confirm
+			 */
+			deleteTypeToConfirm: (arg: { name: string }) => LocalizedString
+			/**
+			 * Delete company
 			 */
 			deleteConfirm: () => LocalizedString
 			/**

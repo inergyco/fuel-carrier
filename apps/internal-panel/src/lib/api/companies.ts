@@ -1,5 +1,6 @@
 import type {
   Company,
+  CompanyDeletionImpact,
   PaginatedResult,
   PaginationParams,
 } from "@fuel-carrier/shared-types";
@@ -13,6 +14,8 @@ export const companyKeys = {
   list: (params: PaginationParams = { page: 1, limit: DEFAULT_LIMIT }) =>
     ["companies", "list", params] as const,
   detail: (id: string) => ["companies", id] as const,
+  deletionImpact: (id: string) =>
+    ["companies", id, "deletion-impact"] as const,
 };
 
 export type CompanyFormValues = {
@@ -45,6 +48,14 @@ export async function fetchCompanies(
 
 export async function fetchCompany(id: string): Promise<Company> {
   return api.get(`companies/${id}`).json<Company>();
+}
+
+export async function fetchCompanyDeletionImpact(
+  id: string,
+): Promise<CompanyDeletionImpact> {
+  return api
+    .get(`companies/${id}/deletion-impact`)
+    .json<CompanyDeletionImpact>();
 }
 
 export async function createCompany(dto: CreateCompanyDto): Promise<Company> {

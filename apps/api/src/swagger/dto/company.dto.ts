@@ -48,3 +48,17 @@ export class CreateCompanyRequestDto {
 }
 
 export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {}
+
+export class CompanyDeletionImpactDto {
+  @ApiProperty({ example: 12, description: 'Cars that cascade-delete' })
+  cars!: number;
+
+  @ApiProperty({ example: 8, description: 'Drivers that cascade-delete' })
+  drivers!: number;
+
+  @ApiProperty({
+    example: 3,
+    description: 'Company users that cascade-delete',
+  })
+  users!: number;
+}
