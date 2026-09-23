@@ -15,7 +15,8 @@
     "./cars": "./src/cars/index.ts",
     "./map": "./src/map/index.ts",
     "./socket": "./src/socket/index.ts",
-    "./utils": "./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./auth": "./src/auth/index.ts"
   },
   "dependencies": {
     "@fuel-carrier/i18n": "workspace:*",

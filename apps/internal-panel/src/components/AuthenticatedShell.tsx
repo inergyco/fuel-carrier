@@ -8,11 +8,12 @@ import {
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
 import { Home, Building2, Map, ScrollText } from '@fuel-carrier/web-ui/icons'
-import { getRouteApi, useNavigate, useRouterState } from '@tanstack/react-router'
+import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
+import { redirectToLoginPage } from '@fuel-carrier/web-ui/utils'
+import { getRouteApi, useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
-import { sanitizeRedirectPath } from '@fuel-carrier/web-ui/utils'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
 
@@ -23,7 +24,6 @@ interface AuthenticatedShellProps {
 export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
   const { user } = authenticatedRoute.useRouteContext()
   const { LL } = useI18nContext()
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -76,11 +76,9 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
     try {
       await logout()
       queryClient.removeQueries({ queryKey: authKeys.me })
+      broadcastAuthLogout('internal')
       setIsLogoutModalOpen(false)
-      await navigate({
-        to: '/login',
-        search: { redirect: sanitizeRedirectPath(location.href) },
-      })
+      redirectToLoginPage(location.href)
     } finally {
       setIsLoggingOut(false)
     }

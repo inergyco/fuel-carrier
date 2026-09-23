@@ -24,6 +24,7 @@ import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
+import { broadcastAuthLogout } from "@fuel-carrier/web-ui/auth";
 import { redirectToLoginPage } from "@fuel-carrier/web-ui/utils";
 import { InergyFooter } from "./InergyFooter";
 
@@ -113,8 +114,9 @@ export function AuthenticatedShell({
     try {
       await logout();
       queryClient.removeQueries({ queryKey: authKeys.me });
+      broadcastAuthLogout("external");
       setIsLogoutModalOpen(false);
-      await redirectToLoginPage(location.href);
+      redirectToLoginPage(location.href);
     } finally {
       setIsLoggingOut(false);
     }

@@ -5,13 +5,13 @@
 **Scope:** Behavior when things go wrong — network, user actions, API errors, concurrency (especially custody).  
 **Method:** Shared client/query code review + live API probes (status codes, concurrent custody assigns). Interactive browser throttling / multi-tab UI not instrumented in a device lab; UI failure mapping inferred from React Query + form/mutation code (same stack on both panels).
 
-**Reliability Assurance Degree:** **86 / 100** (estimated after REL-01–04 remediations in code; REL-05 still open; pending deploy + live re-probe)  
+**Reliability Assurance Degree:** **92 / 100** (estimated after REL-01–05 remediations in code; pending deploy + live re-probe)  
 **Original live score (2026-09-09):** **61 / 100**  
-**Band:** Acceptable with gaps (70–89) ← **estimated**
+**Band:** Highly reliable (90–100) ← **estimated**; confirm mid-session 401 + multi-tab logout live
 
-Happy path forms and DB uniqueness prevent the worst dual-open custody corruption. Prior gaps (PATCH defaults, duplicate→500, concurrent false success, list/detail error-as-empty) are addressed in code; mid-session 401 remains.
+Happy path forms and DB uniqueness prevent the worst dual-open custody corruption. Prior gaps (PATCH defaults, duplicate→500, concurrent false success, list/detail error-as-empty, mid-session 401 / multi-tab stale `me`) are addressed in code.
 
-> **Remediation (through 2026-09-23):** **REL-02** / **REL-03** were fixed with integrity remediations. **REL-01** / **REL-06** use `expectedDriverId` → **409 CONFLICT**. **REL-04** uses shared `QueryErrorState` on resource lists, companies, audit logs, and car/company detail shells. Score revised to **86** — confirm with deploy + probes. Findings in §§3–6 are the original audit evidence unless marked remediated in [§ Status](#status).
+> **Remediation (through 2026-09-23):** **REL-02** / **REL-03** were fixed with integrity remediations. **REL-01** / **REL-06** use `expectedDriverId` → **409 CONFLICT**. **REL-04** uses shared `QueryErrorState`. **REL-05** uses global ky 401 → login (with return URL), `BroadcastChannel` logout sync per panel, and focus refetch of `me`. Score revised to **92** — confirm with deploy + probes. Findings in §§3–6 are the original audit evidence unless marked remediated in [§ Status](#status).
 
 ---
 
@@ -117,6 +117,7 @@ Happy path forms and DB uniqueness prevent the worst dual-open custody corruptio
 | **Data corruption risk** | Low–medium (failed writes); confusion high. |
 | **User impact** | Stuck UI; repeated submits; lost confidence. |
 | **Solution** | Global 401 handler; `BroadcastChannel`/focus refetch of `me`; clear cache on logout. |
+| **Status (code)** | **Done** — ky `afterResponse` 401 → `redirectToLoginPage` (skip login POST); `AuthSessionSync` BroadcastChannel logout per panel + focus invalidate of `me`; logout + 401 both broadcast. |
 
 ### REL-06 — End custody vs assign race: last write wins, both 200
 
@@ -209,7 +210,7 @@ Happy path forms and DB uniqueness prevent the worst dual-open custody corruptio
 ## Status
 
 **Audit date:** 2026-09-09 — live score **61/100**.  
-**Remediation review:** through 2026-09-23 — estimated score **86/100** (**REL-05** still open; **not** fully re-probed live).
+**Remediation review:** through 2026-09-23 — estimated score **92/100** (reliability canvas backlog complete in code; **not** fully re-probed live).
 
 ### Implemented in code
 
@@ -219,16 +220,15 @@ Happy path forms and DB uniqueness prevent the worst dual-open custody corruptio
 | **REL-02** | High | Car update DTOs no longer inherit create defaults (shared integrity remediation). |
 | **REL-03** | Medium | Postgres unique violations map to 400 + fields (shared remediation). |
 | **REL-04** | Medium | Shared `QueryErrorState`; lists and detail shells branch `isError` + Retry instead of empty/not-found. |
+| **REL-05** | Medium | Global ky 401 → login with return URL; panel-scoped `BroadcastChannel` logout sync; focus refetch of `me`. |
 
 ### Still open
 
-| ID | Severity | Notes |
-|----|----------|-------|
-| **REL-05** | Medium | Mid-session 401 / multi-tab logout — global ky 401 → login; tab sync / `me` refetch. |
+None for this canvas’s prioritized remediation list. Optional: offline submit guards on all forms (partial via ConnectivityBanner on dashboard/map).
 
 ### Suggested next step
 
-Implement **REL-05** (session recovery), then deploy + probe list/detail Retry and concurrent custody 409s.
+Deploy API + both panels; probe mid-session 401 redirect, multi-tab logout sync, and list/detail Retry. Then proceed to the next audit canvas (admin ops → API/UI contract).
 
 ---
 
