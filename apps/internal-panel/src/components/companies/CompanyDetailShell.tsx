@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Button, ICON_STROKE_WIDTH, iconMdClassName } from '@fuel-carrier/web-ui/ui'
+import {
+  Button,
+  ICON_STROKE_WIDTH,
+  QueryErrorState,
+  iconMdClassName,
+} from '@fuel-carrier/web-ui/ui'
 import { ArrowLeft } from '@fuel-carrier/web-ui/icons'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { CompanyResourceNav } from './detail/CompanyResourceNav'
@@ -21,6 +26,62 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
     void navigate({ to: '/companies' })
   }
 
+  function renderHeader() {
+    if (companyQuery.isLoading) {
+      return (
+        <p className="text-sm text-base-content/50">
+          {LL.internalPanel.companies.loading()}
+        </p>
+      )
+    }
+
+    if (isNotFound) {
+      return (
+        <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
+          <h1 className="text-xl font-semibold tracking-tight">
+            {LL.internalPanel.companies.notFound()}
+          </h1>
+          <p className="mt-2 text-sm text-base-content/50">
+            {LL.internalPanel.companies.notFoundDescription()}
+          </p>
+          <Button
+            type="button"
+            variant="ghost"
+            className="mt-4 h-10 border border-base-content/8 bg-base-100/40 px-4"
+            onClick={handleBackToList}
+          >
+            {LL.internalPanel.companies.backToList()}
+          </Button>
+        </div>
+      )
+    }
+
+    if (companyQuery.isError || !companyQuery.data) {
+      return (
+        <QueryErrorState
+          onRetry={() => {
+            void companyQuery.refetch()
+          }}
+          labels={{
+            loadFailed: LL.common.queryError.loadFailed(),
+            retry: LL.common.queryError.retry(),
+          }}
+        />
+      )
+    }
+
+    return (
+      <>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+          {companyQuery.data.name}
+        </h1>
+        <p className="mt-1 text-sm text-base-content/50">
+          {LL.internalPanel.companies.subtitle()}
+        </p>
+      </>
+    )
+  }
+
   return (
     <div>
       <div className="mb-6">
@@ -36,45 +97,15 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
           {LL.internalPanel.companies.backToList()}
         </Link>
 
-        {companyQuery.isLoading ? (
-          <p className="text-sm text-base-content/50">
-            {LL.internalPanel.companies.loading()}
-          </p>
-        ) : isNotFound || !companyQuery.data ? (
-          <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
-            <h1 className="text-xl font-semibold tracking-tight">
-              {LL.internalPanel.companies.notFound()}
-            </h1>
-            <p className="mt-2 text-sm text-base-content/50">
-              {LL.internalPanel.companies.notFoundDescription()}
-            </p>
-            <Button
-              type="button"
-              variant="ghost"
-              className="mt-4 h-10 border border-base-content/8 bg-base-100/40 px-4"
-              onClick={handleBackToList}
-            >
-              {LL.internalPanel.companies.backToList()}
-            </Button>
-          </div>
-        ) : (
-          <>
-            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-              {companyQuery.data.name}
-            </h1>
-            <p className="mt-1 text-sm text-base-content/50">
-              {LL.internalPanel.companies.subtitle()}
-            </p>
-          </>
-        )}
+        {renderHeader()}
       </div>
 
-      {companyQuery.data && (
+      {companyQuery.data ? (
         <>
           <CompanyResourceNav companyId={companyId} />
           <div className="mt-6">{children}</div>
         </>
-      )}
+      ) : null}
     </div>
   )
 }

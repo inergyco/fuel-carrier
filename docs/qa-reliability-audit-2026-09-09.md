@@ -1,17 +1,17 @@
 # Mobile Fueling — Reliability & Failure-Mode Audit
 
-**Date:** 2026-09-09 (live audit) · **Remediation review:** 2026-09-16  
+**Date:** 2026-09-09 (live audit) · **Remediation review:** 2026-09-23  
 **Targets:** https://mobile-fueling.inergy.ir/ · https://mobile-fueling-admin.inergy.ir/  
 **Scope:** Behavior when things go wrong — network, user actions, API errors, concurrency (especially custody).  
 **Method:** Shared client/query code review + live API probes (status codes, concurrent custody assigns). Interactive browser throttling / multi-tab UI not instrumented in a device lab; UI failure mapping inferred from React Query + form/mutation code (same stack on both panels).
 
-**Reliability Assurance Degree:** **78 / 100** (estimated after REL-01–03 remediations in code; REL-04/05 still open; pending deploy + live re-probe)  
+**Reliability Assurance Degree:** **86 / 100** (estimated after REL-01–04 remediations in code; REL-05 still open; pending deploy + live re-probe)  
 **Original live score (2026-09-09):** **61 / 100**  
 **Band:** Acceptable with gaps (70–89) ← **estimated**
 
-Happy path forms and DB uniqueness prevent the worst dual-open custody corruption. Prior gaps (PATCH defaults, duplicate→500, concurrent false success) are addressed in code; list/detail error conflation and mid-session 401 remain.
+Happy path forms and DB uniqueness prevent the worst dual-open custody corruption. Prior gaps (PATCH defaults, duplicate→500, concurrent false success, list/detail error-as-empty) are addressed in code; mid-session 401 remains.
 
-> **Remediation (2026-09-16):** **REL-02** / **REL-03** were already fixed with integrity remediations. **REL-01** / **REL-06** use `expectedDriverId` precondition and return **409 CONFLICT** when the car's driver changed underfoot. Score revised to **78** — confirm with deploy + concurrent probes. Findings in §§3–6 are the original audit evidence unless marked remediated in [§ Status](#status).
+> **Remediation (through 2026-09-23):** **REL-02** / **REL-03** were fixed with integrity remediations. **REL-01** / **REL-06** use `expectedDriverId` → **409 CONFLICT**. **REL-04** uses shared `QueryErrorState` on resource lists, companies, audit logs, and car/company detail shells. Score revised to **86** — confirm with deploy + probes. Findings in §§3–6 are the original audit evidence unless marked remediated in [§ Status](#status).
 
 ---
 
@@ -104,6 +104,7 @@ Happy path forms and DB uniqueness prevent the worst dual-open custody corruptio
 | **Data corruption risk** | None directly. |
 | **User impact** | User believes fleet is empty or entity deleted; may recreate duplicates. |
 | **Solution** | Branch `isError`; retry button; don’t equate error with empty/404. |
+| **Status (code)** | **Done** — shared `QueryErrorState`; wired on ResourceSection lists, companies index, audit logs (global + company), and car/company detail shells. True 404 still shows not-found. |
 
 ### REL-05 — No mid-session 401 / multi-tab session handling
 
@@ -202,6 +203,32 @@ Happy path forms and DB uniqueness prevent the worst dual-open custody corruptio
 - Login distinguishes 401 / 429 (when rate-limited)  
 - 30s HTTP timeout configured  
 - Cookie logout invalidates token (single tab)
+
+---
+
+## Status
+
+**Audit date:** 2026-09-09 — live score **61/100**.  
+**Remediation review:** through 2026-09-23 — estimated score **86/100** (**REL-05** still open; **not** fully re-probed live).
+
+### Implemented in code
+
+| ID | Severity | What changed |
+|----|----------|--------------|
+| **REL-01** / **REL-06** | Medium | `expectedDriverId` custody precondition → **409 CONFLICT** when car driver changed underfoot. |
+| **REL-02** | High | Car update DTOs no longer inherit create defaults (shared integrity remediation). |
+| **REL-03** | Medium | Postgres unique violations map to 400 + fields (shared remediation). |
+| **REL-04** | Medium | Shared `QueryErrorState`; lists and detail shells branch `isError` + Retry instead of empty/not-found. |
+
+### Still open
+
+| ID | Severity | Notes |
+|----|----------|-------|
+| **REL-05** | Medium | Mid-session 401 / multi-tab logout — global ky 401 → login; tab sync / `me` refetch. |
+
+### Suggested next step
+
+Implement **REL-05** (session recovery), then deploy + probe list/detail Retry and concurrent custody 409s.
 
 ---
 

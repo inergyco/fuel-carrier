@@ -8,6 +8,7 @@ import {
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
   Pagination,
+  QueryErrorState,
   ResourceListSkeleton,
   iconMdClassName,
   parsePaginationSearch,
@@ -133,6 +134,18 @@ function CompaniesPage() {
               variant={isMdUp ? 'table' : 'cards'}
               columns={5}
               label={LL.internalPanel.companies.loading()}
+            />
+          </div>
+        ) : companiesQuery.isError ? (
+          <div className="p-4 md:p-6">
+            <QueryErrorState
+              onRetry={() => {
+                void companiesQuery.refetch()
+              }}
+              labels={{
+                loadFailed: LL.common.queryError.loadFailed(),
+                retry: LL.common.queryError.retry(),
+              }}
             />
           </div>
         ) : companies.length === 0 ? (

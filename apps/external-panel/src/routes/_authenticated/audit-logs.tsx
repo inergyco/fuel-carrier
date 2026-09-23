@@ -6,6 +6,7 @@ import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
   MEDIA_QUERIES,
   Pagination,
+  QueryErrorState,
   ResourceListSkeleton,
   parsePaginationSearch,
   useMediaQuery,
@@ -38,6 +39,67 @@ function AuditLogsPage() {
   })
   const result = auditLogsQuery.data
 
+  function renderBody() {
+    if (auditLogsQuery.isLoading && !result) {
+      return (
+        <ResourceListSkeleton
+          variant={isMdUp ? 'table' : 'cards'}
+          columns={4}
+          label={LL.externalPanel.auditLogs.loading()}
+        />
+      )
+    }
+
+    if (auditLogsQuery.isError) {
+      return (
+        <QueryErrorState
+          onRetry={() => {
+            void auditLogsQuery.refetch()
+          }}
+          labels={{
+            loadFailed: LL.common.queryError.loadFailed(),
+            retry: LL.common.queryError.retry(),
+          }}
+        />
+      )
+    }
+
+    if ((result?.items.length ?? 0) === 0) {
+      return (
+        <p className="text-sm text-base-content/50">
+          {LL.externalPanel.auditLogs.empty()}
+        </p>
+      )
+    }
+
+    return (
+      <div
+        className={
+          auditLogsQuery.isFetching
+            ? 'opacity-60 transition-opacity'
+            : undefined
+        }
+      >
+        <AuditLogsTable
+          logs={result?.items ?? []}
+          locale={locale}
+          labels={labels}
+        />
+        {result ? (
+          <Pagination
+            page={result.page}
+            totalPages={result.totalPages}
+            totalItems={result.totalItems}
+            limit={result.limit}
+            onPageChange={handlePageChange}
+            onLimitChange={handleLimitChange}
+            labels={LL.common.pagination}
+          />
+        ) : null}
+      </div>
+    )
+  }
+
   return (
     <div>
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
@@ -50,42 +112,7 @@ function AuditLogsPage() {
           </p>
         </div>
 
-        {auditLogsQuery.isLoading && !result ? (
-          <ResourceListSkeleton
-            variant={isMdUp ? 'table' : 'cards'}
-            columns={4}
-            label={LL.externalPanel.auditLogs.loading()}
-          />
-        ) : (result?.items.length ?? 0) === 0 ? (
-          <p className="text-sm text-base-content/50">
-            {LL.externalPanel.auditLogs.empty()}
-          </p>
-        ) : (
-          <div
-            className={
-              auditLogsQuery.isFetching
-                ? 'opacity-60 transition-opacity'
-                : undefined
-            }
-          >
-            <AuditLogsTable
-              logs={result?.items ?? []}
-              locale={locale}
-              labels={labels}
-            />
-            {result ? (
-              <Pagination
-                page={result.page}
-                totalPages={result.totalPages}
-                totalItems={result.totalItems}
-                limit={result.limit}
-                onPageChange={handlePageChange}
-                onLimitChange={handleLimitChange}
-                labels={LL.common.pagination}
-              />
-            ) : null}
-          </div>
-        )}
+        {renderBody()}
       </section>
     </div>
   )

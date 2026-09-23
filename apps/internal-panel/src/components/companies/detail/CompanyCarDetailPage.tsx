@@ -8,8 +8,10 @@ import {
   CarDriverAssignmentHistorySection,
 } from '@fuel-carrier/web-ui/cars'
 import { useQuery } from '@fuel-carrier/web-ui/query'
+import { QueryErrorState } from '@fuel-carrier/web-ui/ui'
 import { carKeys, fetchCar } from '../../../lib/api/cars'
 import { driverKeys, fetchAllDrivers } from '../../../lib/api/drivers'
+import { CompanyCarDetailBackLink } from './CompanyCarDetailBackLink'
 import { CompanyCarDetailHeader } from './CompanyCarDetailHeader'
 import { CompanyCarDetailNotFound } from './CompanyCarDetailNotFound'
 
@@ -50,8 +52,27 @@ export function CompanyCarDetailPage({
     )
   }
 
-  if (isNotFound || !carQuery.data) {
+  if (isNotFound) {
     return <CompanyCarDetailNotFound companyId={companyId} />
+  }
+
+  if (carQuery.isError || !carQuery.data) {
+    return (
+      <div>
+        <div className="mb-6">
+          <CompanyCarDetailBackLink companyId={companyId} />
+          <QueryErrorState
+            onRetry={() => {
+              void carQuery.refetch()
+            }}
+            labels={{
+              loadFailed: LL.common.queryError.loadFailed(),
+              retry: LL.common.queryError.retry(),
+            }}
+          />
+        </div>
+      </div>
+    )
   }
 
   const car = carQuery.data

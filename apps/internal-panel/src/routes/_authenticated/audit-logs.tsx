@@ -5,6 +5,7 @@ import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
   MEDIA_QUERIES,
   Pagination,
+  QueryErrorState,
   ResourceListSkeleton,
   parsePaginationSearch,
   useMediaQuery,
@@ -49,6 +50,16 @@ function AuditLogsPage() {
             variant={isMdUp ? 'table' : 'cards'}
             columns={4}
             label={LL.internalPanel.auditLogs.loading()}
+          />
+        ) : auditLogsQuery.isError ? (
+          <QueryErrorState
+            onRetry={() => {
+              void auditLogsQuery.refetch()
+            }}
+            labels={{
+              loadFailed: LL.common.queryError.loadFailed(),
+              retry: LL.common.queryError.retry(),
+            }}
           />
         ) : (result?.items.length ?? 0) === 0 ? (
           <p className="text-sm text-base-content/50">
