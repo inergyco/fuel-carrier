@@ -12,4 +12,11 @@ export type Company = {
   updatedAt: string;
 };
 
+/** Counts that cascade-delete with the company. */
+export type CompanyDeletionImpact = {
+  cars: number;
+  drivers: number;
+  users: number;
+};
+
 export type CompanyInput = Omit<Company, 'id' | 'createdAt' | 'updatedAt'>;
