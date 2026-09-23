@@ -144,7 +144,7 @@ Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/d
 2. **Custody control:** Assign / End actions with explicit confirm when moving drivers; show **current driver** on vehicle detail. ← **Done (2026-09-23):** admin list + detail Assign/Change/End with transfer confirm; header driver chip; edit form no longer changes custody.  
 3. **Search + filters** on companies, cars (assigned/unassigned), drivers; paginate lists. ← **Done (2026-09-23):** shared `ResourceListToolbar` + URL search/assignment on admin companies/cars/drivers; API `search`/`assignment` on internal list endpoints.  
 4. **Ops dashboard widgets:** unassigned vehicles, unassigned drivers, offline/stale telemetry, MQTT not provisioned. ← **Skipped (2026-09-23):** counts-only widgets not useful without drill-down; removed.  
-5. **Soft deactivate** (or archive) instead of hard delete for cars/drivers/companies where history must remain.  
+5. **Soft deactivate** (or archive) instead of hard delete for cars/drivers/companies where history must remain. ← **Parked (2026-09-23).**  
 6. **Audit workbench:** filters, show role/username; clarify global vs company scopes in UI copy.  
 7. **Server-scoped** company cars/drivers queries (stop fetch-all-then-filter).  
 8. Block or heavily guard API-level company reassignment until UI + rules exist.
