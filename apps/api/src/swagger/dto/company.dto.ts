@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class CompanyDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -47,7 +47,10 @@ export class CreateCompanyRequestDto {
   logoUrl?: string;
 }
 
-export class UpdateCompanyRequestDto extends CreateCompanyRequestDto {}
+/** True partial PATCH — omitted fields stay unchanged. */
+export class UpdateCompanyRequestDto extends PartialType(
+  CreateCompanyRequestDto,
+) {}
 
 export class CompanyDeletionImpactDto {
   @ApiProperty({ example: 12, description: 'Cars that cascade-delete' })

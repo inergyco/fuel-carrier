@@ -5,7 +5,7 @@
 **Scope:** Mismatches between what frontends assume and what the API/DB actually guarantee.  
 **Method:** Shared client + DTO/service review; live probes on both portals (login, lists, validation errors, duplicate create, note-only PATCH, auth, pagination envelopes). Destructive cross-company assign not re-run (seed safety); confirmed in prior integrity audit + code path.
 
-**API/UI Assurance Degree:** **54 / 100**
+**API/UI Assurance Degree:** **78 / 100** (was 54; remediations 2026-09-23)
 
 The success envelope and shared Zod DTOs look aligned, but several **write contracts are unsafe**: omitted PATCH fields are rewritten by Zod defaults, uniqueness races become opaque 500s, custody concurrency returns contradictory 200s, and several operational rules exist only in the UI (or only in the DB) rather than as an explicit API contract.
 
@@ -206,16 +206,21 @@ Login success uses **201** with `{ data: { user } }` — unusual vs common `200`
 
 ## 11. Recommended API improvements (priority)
 
-1. **Fix car update DTOs** — remove create `.default()` from partial updates (highest integrity impact).  
-2. **Enforce `driver.companyId === car.companyId`** on internal assign + block driver company move while assigned.  
-3. **Map unique violations** on create **and** update → 409/400 with `fields`; add `CONFLICT` if useful.  
-4. **Serialize custody writes** (row/advisory lock) and return conflict on lost races; optional `If-Match: updatedAt`.  
-5. **Align shared-types with wire** (`createdAt`/`updatedAt` as ISO strings; assignment timestamps as `string`).  
-6. **UUID path params** → 400 on malformed ids.  
-7. **Internal list filters** `?companyId=` for cars/drivers (parity with company-users).  
-8. **Idempotency-Key** on create car/driver/user and MQTT provision.  
-9. **First-class custody API** (`POST …/assign`, `POST …/unassign`) so FE cannot treat custody as a side effect of “edit note.”  
-10. Harmonize internal car form `driverId` empty-string transform with external.
+1. **Fix car update DTOs** — remove create `.default()` from partial updates. ← **Done** (explicit `carUpdateBaseSchema`; regression in `car-update-dto.spec.ts`).  
+2. **Enforce `driver.companyId === car.companyId`** on internal assign + block driver company move while assigned. ← **Done** (service assert + composite FK).  
+3. **Map unique violations** on create **and** update → 409/400 with `fields`. ← **Done** (`rethrowPostgresError` + field mappings; `CONFLICT` for custody races).  
+4. **Serialize custody writes** (row lock) and return conflict on lost races. ← **Done** (`FOR UPDATE` + `expectedDriverId` → 409). Optional `If-Match` still open.  
+5. **Align shared-types with wire** (`createdAt`/`updatedAt` / assignment timestamps as ISO `string`). ← **Done**.  
+6. **UUID path params** → 400 on malformed ids. ← **Done** (`assertUuidParam`; company update/delete included 2026-09-23).  
+7. **Internal list filters** `?companyId=` for cars/drivers. ← **Done**.  
+8. **Idempotency-Key** on create car/driver/user and MQTT provision. ← **Parked** (lower priority; custody races already 409).  
+9. **First-class custody API** (`POST …/assign`, `POST …/unassign`). ← **Parked** — custody writes still go through car PATCH with `expectedDriverId` (locks + 409); dedicated routes optional.  
+10. Harmonize internal car form `driverId` empty-string transform with external. ← **Done**.  
+11. **Company update partial schema (CV-06)** — ← **Done (2026-09-23):** explicit `updateCompanyDtoSchema` without inventing nulls; service merges partial; OpenAPI `PartialType`.
+
+**Remediation review (2026-09-23):** Critical write-contract items (CV-01…CV-06 + same-company + custody 409) closed. Remaining: Idempotency-Key, dedicated assign/unassign routes (parked).
+
+**Updated assurance:** **78 / 100** (was 54).
 
 ---
 
@@ -223,13 +228,13 @@ Login success uses **201** with `{ data: { user } }` — unusual vs common `200`
 
 | # | Item | Result |
 |---|------|--------|
-| 1 | Assurance Degree | **54 / 100** |
-| 2 | Contract violations | CV-01…CV-06 (PATCH defaults critical) |
-| 3 | Frontend-only validations | Busy-driver, company-route filter, viewer chrome, double-submit |
-| 4 | Data exposure | No hashes; undeclared timestamps; MQTT once |
-| 5 | Date/time | `Date` vs ISO string; undocumented order |
-| 6 | Concurrency/idempotency | Dual 200 custody; 500 on dup; no keys |
-| 7 | Recommended improvements | §11 |
+| 1 | Assurance Degree | **78 / 100** (was 54) |
+| 2 | Contract violations | CV-01…CV-06 **remediated** |
+| 3 | Frontend-only validations | Busy-driver UX still soft; companyId filter now server-side |
+| 4 | Data exposure | No hashes; timestamps declared; MQTT once |
+| 5 | Date/time | Shared-types use ISO `string` |
+| 6 | Concurrency/idempotency | Custody 409; dup → fields; no Idempotency-Key (parked) |
+| 7 | Recommended improvements | §11 — critical done; 8–9 parked |
 
 ---
 

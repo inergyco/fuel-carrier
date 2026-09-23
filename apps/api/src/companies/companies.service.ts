@@ -145,13 +145,17 @@ export class CompaniesService {
   async update(
     context: ApiTenantContext,
     id: string,
-    dto: CompanyInput,
+    dto: Partial<CompanyInput>,
   ): Promise<Company> {
+    assertUuidParam(id);
+
     try {
       return await this.tenantDb.run(context, async (tx) => {
         const existing = await _findCompanyById(tx, id);
 
-        await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+        if (dto.nationalId !== undefined) {
+          await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+        }
 
         const [row] = await tx
           .update(companies)
@@ -185,6 +189,8 @@ export class CompaniesService {
   }
 
   async delete(context: ApiTenantContext, id: string): Promise<null> {
+    assertUuidParam(id);
+
     return this.tenantDb.run(context, async (tx) => {
       const existing = await _findCompanyById(tx, id);
 
