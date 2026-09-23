@@ -10,6 +10,10 @@ import {
   isApiSuccessResponse,
 } from "@fuel-carrier/shared-types";
 import { ApiClientError } from "./api-client-error";
+import {
+  isLoginAuthRequest,
+  notifyApiUnauthorized,
+} from "./unauthorized-handler";
 
 export function createApiClient({
   prefixUrl = import.meta.env.VITE_API_URL,
@@ -37,9 +41,25 @@ export type CreateApiClientOptions = {
 function createEnvelopeHooks(userHooks?: Hooks): Hooks {
   return {
     ...userHooks,
-    afterResponse: [unwrapSuccessResponse, ...(userHooks?.afterResponse ?? [])],
+    afterResponse: [
+      redirectOnUnauthorized,
+      unwrapSuccessResponse,
+      ...(userHooks?.afterResponse ?? []),
+    ],
     beforeError: [...(userHooks?.beforeError ?? []), transformApiError],
   };
+}
+
+async function redirectOnUnauthorized(
+  request: Request,
+  _options: unknown,
+  response: KyResponse,
+): Promise<KyResponse> {
+  if (response.status === 401 && !isLoginAuthRequest(request)) {
+    notifyApiUnauthorized();
+  }
+
+  return response;
 }
 
 async function unwrapSuccessResponse(

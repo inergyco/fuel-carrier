@@ -15,7 +15,7 @@ import { Button, FormInput } from "@fuel-carrier/web-ui/ui";
 import { useMemo, useState } from "react";
 import { AuthPageShell } from "../components/AuthPageShell";
 import { login } from "../lib/api/auth";
-import { sanitizeRedirectPath } from "../lib/redirect";
+import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({

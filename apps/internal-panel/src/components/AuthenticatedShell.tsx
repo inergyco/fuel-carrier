@@ -12,7 +12,7 @@ import { getRouteApi, useNavigate, useRouterState } from '@tanstack/react-router
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
-import { sanitizeRedirectPath } from '../lib/redirect'
+import { sanitizeRedirectPath } from '@fuel-carrier/web-ui/utils'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
 

@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { AuthenticatedShell } from "../components/AuthenticatedShell";
 import { authKeys, fetchMe } from "../lib/api/auth";
-import { sanitizeRedirectPath } from "../lib/redirect";
+import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ context, location }) => {

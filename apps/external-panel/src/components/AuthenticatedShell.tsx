@@ -24,7 +24,7 @@ import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { authKeys, logout } from "../lib/api/auth";
-import { redirectToLoginPage } from "../lib/redirect";
+import { redirectToLoginPage } from "@fuel-carrier/web-ui/utils";
 import { InergyFooter } from "./InergyFooter";
 
 interface AuthenticatedShellProps {

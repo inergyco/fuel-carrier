@@ -6,7 +6,7 @@ import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { Button, FormInput, LocaleControls } from '@fuel-carrier/web-ui/ui'
 import { useMemo, useState } from 'react'
 import { login } from '../lib/api/auth'
-import { sanitizeRedirectPath } from '../lib/redirect'
+import { sanitizeRedirectPath } from '@fuel-carrier/web-ui/utils'
 import {
   createLoginDtoSchema,
   type LoginDto,
