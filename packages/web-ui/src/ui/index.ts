@@ -62,6 +62,10 @@ export {
   ConnectivityBanner,
   type ConnectivityBannerLabels,
 } from './ConnectivityBanner'
+export {
+  QueryErrorState,
+  type QueryErrorStateLabels,
+} from './QueryErrorState'
 export { Skeleton } from './Skeleton'
 export { ResourceListSkeleton } from './ResourceListSkeleton'
 export { DashboardCardsSkeleton } from './DashboardCardsSkeleton'

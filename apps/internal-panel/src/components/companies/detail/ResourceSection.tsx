@@ -3,9 +3,11 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
+  QueryErrorState,
   ResourceListSkeleton,
   iconMdClassName,
   useMediaQuery,
+  type QueryErrorStateLabels,
 } from '@fuel-carrier/web-ui/ui'
 import { Plus } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
@@ -19,6 +21,9 @@ interface ResourceSectionProps<T extends { id: string }> {
   addLabel: string
   emptyLabel: string
   loading: boolean
+  isError?: boolean
+  onRetry?: () => void
+  errorLabels?: QueryErrorStateLabels
   items: T[]
   columns: ResourceColumn<T>[]
   onAdd: () => void
@@ -35,6 +40,9 @@ export function ResourceSection<T extends { id: string }>({
   addLabel,
   emptyLabel,
   loading,
+  isError = false,
+  onRetry,
+  errorLabels,
   items,
   columns,
   onAdd,
@@ -48,6 +56,41 @@ export function ResourceSection<T extends { id: string }>({
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const listVariant = isMdUp ? 'table' : 'cards'
   const loadingLabel = LL.internalPanel.companies.loading()
+
+  function renderBody() {
+    if (loading) {
+      return (
+        <ResourceListSkeleton
+          variant={listVariant}
+          columns={columns.length + 1}
+          label={loadingLabel}
+        />
+      )
+    }
+
+    if (isError && onRetry && errorLabels) {
+      return <QueryErrorState onRetry={onRetry} labels={errorLabels} />
+    }
+
+    if (items.length === 0) {
+      return <p className="text-sm text-base-content/50">{emptyLabel}</p>
+    }
+
+    return (
+      <>
+        <ResourceList
+          items={items}
+          columns={columns}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onMqttCredentials={onMqttCredentials}
+          renderView={renderView}
+          variant={listVariant}
+        />
+        {footer}
+      </>
+    )
+  }
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
@@ -72,28 +115,7 @@ export function ResourceSection<T extends { id: string }>({
         </Button>
       </div>
 
-      {loading ? (
-        <ResourceListSkeleton
-          variant={listVariant}
-          columns={columns.length + 1}
-          label={loadingLabel}
-        />
-      ) : items.length === 0 ? (
-        <p className="text-sm text-base-content/50">{emptyLabel}</p>
-      ) : (
-        <>
-          <ResourceList
-            items={items}
-            columns={columns}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onMqttCredentials={onMqttCredentials}
-            renderView={renderView}
-            variant={listVariant}
-          />
-          {footer}
-        </>
-      )}
+      {renderBody()}
     </section>
   )
 }

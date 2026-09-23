@@ -53,6 +53,14 @@ function CarsPage() {
             : LL.externalPanel.cars.empty()
         }
         loading={isLoading}
+        isError={cars.carsQuery.isError}
+        onRetry={() => {
+          void cars.carsQuery.refetch()
+        }}
+        errorLabels={{
+          loadFailed: LL.common.queryError.loadFailed(),
+          retry: LL.common.queryError.retry(),
+        }}
         items={cars.items}
         columns={getCarColumns({
           LL,

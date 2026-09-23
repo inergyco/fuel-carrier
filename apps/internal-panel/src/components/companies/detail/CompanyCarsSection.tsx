@@ -33,6 +33,14 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         addLabel={LL.internalPanel.companies.detail.addCar()}
         emptyLabel={LL.internalPanel.companies.detail.carsEmpty()}
         loading={cars.carsQuery.isLoading && !result}
+        isError={cars.carsQuery.isError}
+        onRetry={() => {
+          void cars.carsQuery.refetch()
+        }}
+        errorLabels={{
+          loadFailed: LL.common.queryError.loadFailed(),
+          retry: LL.common.queryError.retry(),
+        }}
         items={cars.companyCars}
         columns={getCarColumns({
           LL,

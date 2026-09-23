@@ -98,6 +98,16 @@ type RootTranslation = {
 			 */
 			retry: string
 		}
+		queryError: {
+			/**
+			 * C​o​u​l​d​n​’​t​ ​l​o​a​d​ ​t​h​i​s​ ​d​a​t​a​.​ ​T​r​y​ ​a​g​a​i​n​.
+			 */
+			loadFailed: string
+			/**
+			 * R​e​t​r​y
+			 */
+			retry: string
+		}
 		companyUserLevel: {
 			/**
 			 * A​c​c​e​s​s​ ​l​e​v​e​l
@@ -2545,6 +2555,16 @@ export type TranslationFunctions = {
 			offline: () => LocalizedString
 			/**
 			 * Couldn’t load live data. Try again.
+			 */
+			loadFailed: () => LocalizedString
+			/**
+			 * Retry
+			 */
+			retry: () => LocalizedString
+		}
+		queryError: {
+			/**
+			 * Couldn’t load this data. Try again.
 			 */
 			loadFailed: () => LocalizedString
 			/**

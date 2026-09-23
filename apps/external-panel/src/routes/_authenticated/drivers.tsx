@@ -34,6 +34,14 @@ function DriversPage() {
             : LL.externalPanel.drivers.empty()
         }
         loading={drivers.driversQuery.isLoading && !result}
+        isError={drivers.driversQuery.isError}
+        onRetry={() => {
+          void drivers.driversQuery.refetch()
+        }}
+        errorLabels={{
+          loadFailed: LL.common.queryError.loadFailed(),
+          retry: LL.common.queryError.retry(),
+        }}
         items={drivers.items}
         columns={getDriverColumns({ LL, emptyCell })}
         actionLabels={{

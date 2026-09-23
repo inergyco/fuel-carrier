@@ -26,6 +26,10 @@ const en: BaseTranslation = {
       loadFailed: 'Couldn’t load live data. Try again.',
       retry: 'Retry',
     },
+    queryError: {
+      loadFailed: 'Couldn’t load this data. Try again.',
+      retry: 'Retry',
+    },
     companyUserLevel: {
       label: 'Access level',
       admin: 'Admin',

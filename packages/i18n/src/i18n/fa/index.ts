@@ -26,6 +26,10 @@ const fa: Translation = {
       loadFailed: "بارگذاری داده‌های زنده ممکن نشد. دوباره تلاش کنید.",
       retry: "تلاش مجدد",
     },
+    queryError: {
+      loadFailed: "بارگذاری این داده‌ها ممکن نشد. دوباره تلاش کنید.",
+      retry: "تلاش مجدد",
+    },
     companyUserLevel: {
       label: "سطح دسترسی",
       admin: "مدیر",

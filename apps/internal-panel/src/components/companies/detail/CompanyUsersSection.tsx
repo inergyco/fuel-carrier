@@ -24,6 +24,14 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
         addLabel={LL.internalPanel.companies.detail.addUser()}
         emptyLabel={LL.internalPanel.companies.detail.usersEmpty()}
         loading={users.usersQuery.isLoading && !result}
+        isError={users.usersQuery.isError}
+        onRetry={() => {
+          void users.usersQuery.refetch()
+        }}
+        errorLabels={{
+          loadFailed: LL.common.queryError.loadFailed(),
+          retry: LL.common.queryError.retry(),
+        }}
         items={users.companyUsers}
         columns={getUserColumns({ LL, emptyCell })}
         onAdd={function openCreateUser() {

@@ -23,6 +23,14 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         addLabel={LL.internalPanel.companies.detail.addDriver()}
         emptyLabel={LL.internalPanel.companies.detail.driversEmpty()}
         loading={drivers.driversQuery.isLoading && !result}
+        isError={drivers.driversQuery.isError}
+        onRetry={() => {
+          void drivers.driversQuery.refetch()
+        }}
+        errorLabels={{
+          loadFailed: LL.common.queryError.loadFailed(),
+          retry: LL.common.queryError.retry(),
+        }}
         items={drivers.companyDrivers}
         columns={getDriverColumns({ LL })}
         onAdd={function openCreateDriver() {
