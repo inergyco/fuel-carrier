@@ -98,10 +98,10 @@ Scoring emphasizes: Can an admin avoid destroying the wrong tenant? Understand c
 | How many vehicles / drivers? | **Yes** — summary + per-company chips (all vehicles, not “active” status) |
 | How many **active** vehicles/drivers? | **No** — no status model; all records are “active” until deleted |
 | Which vehicles currently assigned? | **Partial** — per-company car list / dashboard rows; no fleet-wide filter |
-| Which vehicles have no driver? | **Partial** — visible per row (“Unassigned”); no aggregate / filter |
-| Which drivers have no vehicle? | **Partial** — driver list column; no aggregate |
+| Which vehicles have no driver? | **Partial** — per-company assignment filter; no fleet-wide queue |
+| Which drivers have no vehicle? | **Partial** — per-company assignment filter; no fleet-wide queue |
 | Which custody assignments are currently active? | **Weak** — only by opening each vehicle history or scanning lists |
-| Which records require attention? | **No** — no queue (stale GPS, MQTT missing, offline long-term, orphans) |
+| Which records require attention? | **No** — ops aggregate widgets skipped; no attention queue |
 
 Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/driver/live chips + per-vehicle live/offline and driver name. That is a **monitor**, not an **operations workbench**.
 
@@ -143,7 +143,7 @@ Dashboard gives: `# companies · # vehicles · # live` and per-company vehicle/d
 1. **Company delete:** show cascade counts + typed confirm (`DELETE {name}`). ← **Done (2026-09-23):** `GET …/deletion-impact` + typed company-name confirm in admin UI.  
 2. **Custody control:** Assign / End actions with explicit confirm when moving drivers; show **current driver** on vehicle detail. ← **Done (2026-09-23):** admin list + detail Assign/Change/End with transfer confirm; header driver chip; edit form no longer changes custody.  
 3. **Search + filters** on companies, cars (assigned/unassigned), drivers; paginate lists. ← **Done (2026-09-23):** shared `ResourceListToolbar` + URL search/assignment on admin companies/cars/drivers; API `search`/`assignment` on internal list endpoints.  
-4. **Ops dashboard widgets:** unassigned vehicles, unassigned drivers, offline/stale telemetry, MQTT not provisioned.  
+4. **Ops dashboard widgets:** unassigned vehicles, unassigned drivers, offline/stale telemetry, MQTT not provisioned. ← **Skipped (2026-09-23):** counts-only widgets not useful without drill-down; removed.  
 5. **Soft deactivate** (or archive) instead of hard delete for cars/drivers/companies where history must remain.  
 6. **Audit workbench:** filters, show role/username; clarify global vs company scopes in UI copy.  
 7. **Server-scoped** company cars/drivers queries (stop fetch-all-then-filter).  
