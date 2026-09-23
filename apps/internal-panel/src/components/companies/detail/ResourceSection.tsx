@@ -31,6 +31,7 @@ interface ResourceSectionProps<T extends { id: string }> {
   onDelete: (item: T) => void
   onMqttCredentials?: (item: T) => void
   renderView?: (item: T) => ReactNode
+  renderExtraActions?: (item: T) => ReactNode
   footer?: ReactNode
 }
 
@@ -50,6 +51,7 @@ export function ResourceSection<T extends { id: string }>({
   onDelete,
   onMqttCredentials,
   renderView,
+  renderExtraActions,
   footer,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
@@ -85,6 +87,7 @@ export function ResourceSection<T extends { id: string }>({
           onDelete={onDelete}
           onMqttCredentials={onMqttCredentials}
           renderView={renderView}
+          renderExtraActions={renderExtraActions}
           variant={listVariant}
         />
         {footer}

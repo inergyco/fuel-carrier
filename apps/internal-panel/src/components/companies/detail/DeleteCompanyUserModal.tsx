@@ -27,11 +27,11 @@ export function DeleteCompanyUserModal({
             })
           : ''
       }
-      confirmLabel={LL.internalPanel.companies.deleteConfirm()}
+      confirmLabel={LL.internalPanel.companies.detail.deleteUserConfirm()}
       cancelLabel={LL.internalPanel.nav.cancel()}
       confirmVariant="danger"
       loading={mutation.isPending}
-      loadingLabel={LL.internalPanel.companies.deleting()}
+      loadingLabel={LL.internalPanel.companies.detail.deleteUserDeleting()}
       onConfirm={async function confirmDelete() {
         if (target) {
           await mutation.mutateAsync(target.id)

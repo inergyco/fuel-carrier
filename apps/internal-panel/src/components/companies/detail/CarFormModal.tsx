@@ -75,9 +75,7 @@ export function CarFormModal({
           name: data.name,
           licensePlate: data.licensePlate,
           note: data.note,
-          driverId: data.driverId,
           companyId,
-          expectedDriverId: car.driverId,
         })
       }
 
@@ -168,21 +166,23 @@ export function CarFormModal({
 
         <FormInput name="name" label={LL.internalPanel.companies.name()} type="text" />
 
-        <FormSelect
-          name="driverId"
-          label={LL.internalPanel.companies.detail.driver()}
-        >
-          <option value="">
-            {LL.internalPanel.companies.detail.noDriver()}
-          </option>
-          {drivers.map(function renderDriverOption(driver) {
-            return (
-              <option key={driver.id} value={driver.id}>
-                {driver.firstName} {driver.lastName}
-              </option>
-            )
-          })}
-        </FormSelect>
+        {mode === 'create' ? (
+          <FormSelect
+            name="driverId"
+            label={LL.internalPanel.companies.detail.driver()}
+          >
+            <option value="">
+              {LL.internalPanel.companies.detail.noDriver()}
+            </option>
+            {drivers.map(function renderDriverOption(driver) {
+              return (
+                <option key={driver.id} value={driver.id}>
+                  {driver.firstName} {driver.lastName}
+                </option>
+              )
+            })}
+          </FormSelect>
+        ) : null}
 
         <FormTextarea
           name="note"

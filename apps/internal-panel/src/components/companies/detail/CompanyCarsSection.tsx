@@ -11,6 +11,9 @@ import type { Car } from '@fuel-carrier/shared-types'
 import { getCarColumns } from './companyResourceColumns'
 import { CarFormModal } from './CarFormModal'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
+import { CarCustodyActions } from './custody/CarCustodyActions'
+import { CarCustodyModals } from './custody/CarCustodyModals'
+import { useCompanyCarCustody } from './custody/useCompanyCarCustody'
 import { DeleteCompanyCarModal } from './DeleteCompanyCarModal'
 import { ResourceSection } from './ResourceSection'
 import { useCompanyCars } from './useCompanyCars'
@@ -22,8 +25,13 @@ interface CompanyCarsSectionProps {
 export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
   const { LL } = useI18nContext()
   const cars = useCompanyCars(companyId)
+  const custody = useCompanyCarCustody(companyId)
   const emptyCell = LL.internalPanel.companies.emptyCell()
   const result = cars.carsQuery.data
+
+  function renderCustodyAction(car: Car) {
+    return <CarCustodyActions car={car} custody={custody} layout="compact" />
+  }
 
   return (
     <>
@@ -71,6 +79,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             </Link>
           )
         }}
+        renderExtraActions={renderCustodyAction}
         footer={
           result ? (
             <Pagination
@@ -119,6 +128,8 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         onCloseConfirm={cars.closeMqttConfirm}
         onCloseCredentials={cars.closeMqttCredentials}
       />
+
+      <CarCustodyModals custody={custody} />
     </>
   )
 }

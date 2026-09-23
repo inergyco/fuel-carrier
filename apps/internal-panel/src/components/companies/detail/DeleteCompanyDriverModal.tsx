@@ -27,11 +27,11 @@ export function DeleteCompanyDriverModal({
             })
           : ''
       }
-      confirmLabel={LL.internalPanel.companies.deleteConfirm()}
+      confirmLabel={LL.internalPanel.companies.detail.deleteDriverConfirm()}
       cancelLabel={LL.internalPanel.nav.cancel()}
       confirmVariant="danger"
       loading={mutation.isPending}
-      loadingLabel={LL.internalPanel.companies.deleting()}
+      loadingLabel={LL.internalPanel.companies.detail.deleteDriverDeleting()}
       onConfirm={async function confirmDelete() {
         if (target) {
           await mutation.mutateAsync(target.id)

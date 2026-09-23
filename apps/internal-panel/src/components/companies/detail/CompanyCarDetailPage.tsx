@@ -10,10 +10,11 @@ import {
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { QueryErrorState } from '@fuel-carrier/web-ui/ui'
 import { carKeys, fetchCar } from '../../../lib/api/cars'
-import { driverKeys, fetchAllDrivers } from '../../../lib/api/drivers'
 import { CompanyCarDetailBackLink } from './CompanyCarDetailBackLink'
 import { CompanyCarDetailHeader } from './CompanyCarDetailHeader'
 import { CompanyCarDetailNotFound } from './CompanyCarDetailNotFound'
+import { CarCustodyModals } from './custody/CarCustodyModals'
+import { useCompanyCarCustody } from './custody/useCompanyCarCustody'
 
 type CompanyCarDetailPageProps = {
   companyId: string
@@ -25,16 +26,11 @@ export function CompanyCarDetailPage({
   carId,
 }: CompanyCarDetailPageProps) {
   const { LL } = useI18nContext()
+  const custody = useCompanyCarCustody(companyId)
   const carQuery = useQuery<Car>({
     queryKey: carKeys.detail(carId),
     queryFn: function loadCar() {
       return fetchCar(carId)
-    },
-  })
-  const driversQuery = useQuery({
-    queryKey: [...driverKeys.byCompany(companyId), 'all'] as const,
-    queryFn: function loadDrivers() {
-      return fetchAllDrivers(companyId)
     },
   })
   const isNotFound =
@@ -77,16 +73,17 @@ export function CompanyCarDetailPage({
 
   const car = carQuery.data
   const detailLabels = LL.internalPanel.companies.detail
-  const currentDriver = (driversQuery.data ?? []).find(
-    (driver) => driver.id === car.driverId,
-  )
-  const currentDriverName = currentDriver
-    ? `${currentDriver.firstName} ${currentDriver.lastName}`
-    : null
+  const currentDriverName = custody.currentDriverName(car)
+  const overviewDriverName =
+    currentDriverName === detailLabels.noDriver() ? null : currentDriverName
 
   return (
     <div>
-      <CompanyCarDetailHeader companyId={companyId} car={car} />
+      <CompanyCarDetailHeader
+        companyId={companyId}
+        car={car}
+        custody={custody}
+      />
       <div className="flex flex-col gap-6">
         <CarTanksSection
           carId={car.id}
@@ -94,7 +91,7 @@ export function CompanyCarDetailPage({
         />
         <CarOverviewSection
           car={car}
-          currentDriverName={currentDriverName}
+          currentDriverName={overviewDriverName}
           labels={{
             detailTitle: detailLabels.carDetailTitle,
             detailSubtitle: detailLabels.carDetailSubtitle,
@@ -111,6 +108,7 @@ export function CompanyCarDetailPage({
           labelScope="internal"
         />
       </div>
+      <CarCustodyModals custody={custody} />
     </div>
   )
 }

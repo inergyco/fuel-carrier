@@ -449,6 +449,18 @@ type RootTranslation = {
 			 */
 			carMqttCredentialsRotated: string
 			/**
+			 * D​r​i​v​e​r​ ​a​s​s​i​g​n​e​d​.
+			 */
+			carDriverAssigned: string
+			/**
+			 * D​r​i​v​e​r​ ​c​h​a​n​g​e​d​.
+			 */
+			carDriverChanged: string
+			/**
+			 * C​u​s​t​o​d​y​ ​e​n​d​e​d​.
+			 */
+			carCustodyEnded: string
+			/**
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
@@ -907,6 +919,14 @@ type RootTranslation = {
 				 */
 				deleteUserDescription: RequiredParams<'name'>
 				/**
+				 * D​e​l​e​t​e
+				 */
+				deleteUserConfirm: string
+				/**
+				 * D​e​l​e​t​i​n​g​…
+				 */
+				deleteUserDeleting: string
+				/**
 				 * D​e​a​c​t​i​v​a​t​e​ ​d​r​i​v​e​r​?
 				 */
 				deleteDriverTitle: string
@@ -916,6 +936,14 @@ type RootTranslation = {
 				 */
 				deleteDriverDescription: RequiredParams<'name'>
 				/**
+				 * D​e​a​c​t​i​v​a​t​e
+				 */
+				deleteDriverConfirm: string
+				/**
+				 * D​e​a​c​t​i​v​a​t​i​n​g​…
+				 */
+				deleteDriverDeleting: string
+				/**
 				 * D​e​a​c​t​i​v​a​t​e​ ​c​a​r​?
 				 */
 				deleteCarTitle: string
@@ -924,6 +952,14 @@ type RootTranslation = {
 				 * @param {string} licensePlate
 				 */
 				deleteCarDescription: RequiredParams<'licensePlate'>
+				/**
+				 * D​e​a​c​t​i​v​a​t​e
+				 */
+				deleteCarConfirm: string
+				/**
+				 * D​e​a​c​t​i​v​a​t​i​n​g​…
+				 */
+				deleteCarDeleting: string
 				/**
 				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s
 				 */
@@ -1017,6 +1053,91 @@ type RootTranslation = {
 				 * O​v​e​r​v​i​e​w​ ​o​f​ ​t​h​i​s​ ​v​e​h​i​c​l​e
 				 */
 				carDetailSubtitle: string
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​c​u​s​t​o​d​y​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				custodyFailed: string
+				/**
+				 * C​u​s​t​o​d​y​ ​c​h​a​n​g​e​d​ ​s​i​n​c​e​ ​y​o​u​ ​s​t​a​r​t​e​d​.​ ​R​e​f​r​e​s​h​ ​a​n​d​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				custodyConflict: string
+				/**
+				 * A​s​s​i​g​n​ ​d​r​i​v​e​r
+				 */
+				assignDriver: string
+				/**
+				 * C​h​a​n​g​e​ ​d​r​i​v​e​r
+				 */
+				changeDriver: string
+				/**
+				 * E​n​d​ ​c​u​s​t​o​d​y
+				 */
+				endCustody: string
+				/**
+				 * A​s​s​i​g​n​ ​d​r​i​v​e​r
+				 */
+				assignDriverTitle: string
+				/**
+				 * C​h​a​n​g​e​ ​d​r​i​v​e​r
+				 */
+				changeDriverTitle: string
+				/**
+				 * C​h​o​o​s​e​ ​w​h​o​ ​s​h​o​u​l​d​ ​h​a​v​e​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​n​o​w​.
+				 */
+				assignDriverDescription: string
+				/**
+				 * C​h​o​o​s​e​ ​t​h​e​ ​n​e​w​ ​d​r​i​v​e​r​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​.
+				 */
+				changeDriverDescription: string
+				/**
+				 * A​s​s​i​g​n
+				 */
+				assignConfirm: string
+				/**
+				 * C​h​a​n​g​e
+				 */
+				changeConfirm: string
+				/**
+				 * A​s​s​i​g​n​i​n​g​…
+				 */
+				assigning: string
+				/**
+				 * E​n​d​ ​c​u​s​t​o​d​y​?
+				 */
+				endCustodyTitle: string
+				/**
+				 * {​d​r​i​v​e​r​N​a​m​e​}​ ​w​i​l​l​ ​n​o​ ​l​o​n​g​e​r​ ​h​a​v​e​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​.
+				 * @param {string} driverName
+				 * @param {string} licensePlate
+				 */
+				endCustodyDescription: RequiredParams<'driverName' | 'licensePlate'>
+				/**
+				 * E​n​d​ ​c​u​s​t​o​d​y
+				 */
+				endCustodyConfirm: string
+				/**
+				 * E​n​d​i​n​g​…
+				 */
+				endingCustody: string
+				/**
+				 * M​o​v​e​ ​t​h​i​s​ ​d​r​i​v​e​r​?
+				 */
+				transferConfirmTitle: string
+				/**
+				 * {​d​r​i​v​e​r​N​a​m​e​}​ ​i​s​ ​o​n​ ​{​o​t​h​e​r​P​l​a​t​e​}​.​ ​A​s​s​i​g​n​i​n​g​ ​t​h​e​m​ ​h​e​r​e​ ​w​i​l​l​ ​e​n​d​ ​t​h​a​t​ ​c​u​s​t​o​d​y​.
+				 * @param {string} driverName
+				 * @param {string} otherPlate
+				 */
+				transferConfirmDescription: RequiredParams<'driverName' | 'otherPlate'>
+				/**
+				 * M​o​v​e​ ​h​e​r​e
+				 */
+				transferConfirm: string
+				/**
+				 * O​n​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}
+				 * @param {string} licensePlate
+				 */
+				driverOnOtherVehicle: RequiredParams<'licensePlate'>
 				/**
 				 * D​r​i​v​e​r​ ​c​u​s​t​o​d​y​ ​h​i​s​t​o​r​y
 				 */
@@ -2920,6 +3041,18 @@ export type TranslationFunctions = {
 			 */
 			carMqttCredentialsRotated: () => LocalizedString
 			/**
+			 * Driver assigned.
+			 */
+			carDriverAssigned: () => LocalizedString
+			/**
+			 * Driver changed.
+			 */
+			carDriverChanged: () => LocalizedString
+			/**
+			 * Custody ended.
+			 */
+			carCustodyEnded: () => LocalizedString
+			/**
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
@@ -3363,6 +3496,14 @@ export type TranslationFunctions = {
 				 */
 				deleteUserDescription: (arg: { name: string }) => LocalizedString
 				/**
+				 * Delete
+				 */
+				deleteUserConfirm: () => LocalizedString
+				/**
+				 * Deleting…
+				 */
+				deleteUserDeleting: () => LocalizedString
+				/**
 				 * Deactivate driver?
 				 */
 				deleteDriverTitle: () => LocalizedString
@@ -3371,6 +3512,14 @@ export type TranslationFunctions = {
 				 */
 				deleteDriverDescription: (arg: { name: string }) => LocalizedString
 				/**
+				 * Deactivate
+				 */
+				deleteDriverConfirm: () => LocalizedString
+				/**
+				 * Deactivating…
+				 */
+				deleteDriverDeleting: () => LocalizedString
+				/**
 				 * Deactivate car?
 				 */
 				deleteCarTitle: () => LocalizedString
@@ -3378,6 +3527,14 @@ export type TranslationFunctions = {
 				 * This will deactivate {licensePlate}. Assignment history stays available; the vehicle leaves active lists.
 				 */
 				deleteCarDescription: (arg: { licensePlate: string }) => LocalizedString
+				/**
+				 * Deactivate
+				 */
+				deleteCarConfirm: () => LocalizedString
+				/**
+				 * Deactivating…
+				 */
+				deleteCarDeleting: () => LocalizedString
 				/**
 				 * MQTT credentials
 				 */
@@ -3470,6 +3627,86 @@ export type TranslationFunctions = {
 				 * Overview of this vehicle
 				 */
 				carDetailSubtitle: () => LocalizedString
+				/**
+				 * Could not update custody. Please try again.
+				 */
+				custodyFailed: () => LocalizedString
+				/**
+				 * Custody changed since you started. Refresh and try again.
+				 */
+				custodyConflict: () => LocalizedString
+				/**
+				 * Assign driver
+				 */
+				assignDriver: () => LocalizedString
+				/**
+				 * Change driver
+				 */
+				changeDriver: () => LocalizedString
+				/**
+				 * End custody
+				 */
+				endCustody: () => LocalizedString
+				/**
+				 * Assign driver
+				 */
+				assignDriverTitle: () => LocalizedString
+				/**
+				 * Change driver
+				 */
+				changeDriverTitle: () => LocalizedString
+				/**
+				 * Choose who should have this vehicle now.
+				 */
+				assignDriverDescription: () => LocalizedString
+				/**
+				 * Choose the new driver for this vehicle.
+				 */
+				changeDriverDescription: () => LocalizedString
+				/**
+				 * Assign
+				 */
+				assignConfirm: () => LocalizedString
+				/**
+				 * Change
+				 */
+				changeConfirm: () => LocalizedString
+				/**
+				 * Assigning…
+				 */
+				assigning: () => LocalizedString
+				/**
+				 * End custody?
+				 */
+				endCustodyTitle: () => LocalizedString
+				/**
+				 * {driverName} will no longer have {licensePlate}.
+				 */
+				endCustodyDescription: (arg: { driverName: string, licensePlate: string }) => LocalizedString
+				/**
+				 * End custody
+				 */
+				endCustodyConfirm: () => LocalizedString
+				/**
+				 * Ending…
+				 */
+				endingCustody: () => LocalizedString
+				/**
+				 * Move this driver?
+				 */
+				transferConfirmTitle: () => LocalizedString
+				/**
+				 * {driverName} is on {otherPlate}. Assigning them here will end that custody.
+				 */
+				transferConfirmDescription: (arg: { driverName: string, otherPlate: string }) => LocalizedString
+				/**
+				 * Move here
+				 */
+				transferConfirm: () => LocalizedString
+				/**
+				 * On {licensePlate}
+				 */
+				driverOnOtherVehicle: (arg: { licensePlate: string }) => LocalizedString
 				/**
 				 * Driver custody history
 				 */

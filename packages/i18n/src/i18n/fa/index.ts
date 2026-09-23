@@ -125,6 +125,9 @@ const fa: Translation = {
       carDeleted: "خودرو غیرفعال شد.",
       carMqttCredentialsProvisioned: "اعتبارنامه MQTT صادر شد.",
       carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
+      carDriverAssigned: "راننده تخصیص داده شد.",
+      carDriverChanged: "راننده تغییر کرد.",
+      carCustodyEnded: "تخصیص پایان یافت.",
       signedOut: "خروج انجام شد.",
     },
     map: {
@@ -246,12 +249,18 @@ const fa: Translation = {
         deleteUserTitle: "حذف کاربر؟",
         deleteUserDescription:
           "«{name}» برای همیشه حذف می‌شود و دیگر نمی‌تواند وارد شود.",
+        deleteUserConfirm: "حذف",
+        deleteUserDeleting: "در حال حذف…",
         deleteDriverTitle: "غیرفعال‌سازی راننده؟",
         deleteDriverDescription:
           "«{name}» غیرفعال می‌شود و دیگر قابل انتساب به خودرو نیست؛ تاریخچه انتساب حفظ می‌شود.",
+        deleteDriverConfirm: "غیرفعال کردن",
+        deleteDriverDeleting: "در حال غیرفعال‌سازی…",
         deleteCarTitle: "غیرفعال‌سازی خودرو؟",
         deleteCarDescription:
           "خودرو با پلاک «{licensePlate}» غیرفعال می‌شود و از فهرست فعال خارج می‌گردد؛ تاریخچه انتساب در دسترس می‌ماند.",
+        deleteCarConfirm: "غیرفعال کردن",
+        deleteCarDeleting: "در حال غیرفعال‌سازی…",
         mqttCredentialsAction: "اعتبارنامه MQTT",
         mqttCredentialsConfirmTitle: "صدور اعتبارنامه MQTT؟",
         mqttCredentialsConfirmDescription:
@@ -278,6 +287,29 @@ const fa: Translation = {
         carNotFoundDescription: "این خودرو حذف شده یا لینک نامعتبر است.",
         carDetailTitle: "جزئیات خودرو",
         carDetailSubtitle: "خلاصه اطلاعات این خودرو",
+        custodyFailed: "به‌روزرسانی تخصیص انجام نشد. لطفاً دوباره تلاش کنید.",
+        custodyConflict:
+          "تخصیص از وقتی که شروع کردید تغییر کرده است. تازه کنید و دوباره تلاش کنید.",
+        assignDriver: "تخصیص راننده",
+        changeDriver: "تغییر راننده",
+        endCustody: "پایان تخصیص",
+        assignDriverTitle: "تخصیص راننده",
+        changeDriverTitle: "تغییر راننده",
+        assignDriverDescription: "راننده فعلی این خودرو را انتخاب کنید.",
+        changeDriverDescription: "راننده جدید این خودرو را انتخاب کنید.",
+        assignConfirm: "تخصیص",
+        changeConfirm: "تغییر",
+        assigning: "در حال تخصیص…",
+        endCustodyTitle: "پایان تخصیص؟",
+        endCustodyDescription:
+          "{driverName} دیگر {licensePlate} را نخواهد داشت.",
+        endCustodyConfirm: "پایان تخصیص",
+        endingCustody: "در حال پایان…",
+        transferConfirmTitle: "انتقال این راننده؟",
+        transferConfirmDescription:
+          "{driverName} روی {otherPlate} است. تخصیص اینجا، آن تخصیص را پایان می‌دهد.",
+        transferConfirm: "انتقال به اینجا",
+        driverOnOtherVehicle: "روی {licensePlate}",
         driverAssignmentHistoryTitle: "سابقه رانندگان",
         driverAssignmentHistorySubtitle: "واگذاری‌های این خودرو به رانندگان",
         driverAssignmentHistoryLoading: "در حال بارگذاری سابقه رانندگان…",

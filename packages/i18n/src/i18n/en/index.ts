@@ -127,6 +127,9 @@ const en: BaseTranslation = {
       carDeleted: 'Car deactivated.',
       carMqttCredentialsProvisioned: 'MQTT credentials provisioned.',
       carMqttCredentialsRotated: 'MQTT credentials rotated.',
+      carDriverAssigned: 'Driver assigned.',
+      carDriverChanged: 'Driver changed.',
+      carCustodyEnded: 'Custody ended.',
       signedOut: 'Signed out.',
     },
     map: {
@@ -245,12 +248,18 @@ const en: BaseTranslation = {
         deleteUserTitle: 'Delete user?',
         deleteUserDescription:
           'This will permanently delete {name:string}. They will no longer be able to sign in.',
+        deleteUserConfirm: 'Delete',
+        deleteUserDeleting: 'Deleting…',
         deleteDriverTitle: 'Deactivate driver?',
         deleteDriverDescription:
           'This will deactivate {name:string}. They can no longer be assigned to vehicles; assignment history is kept.',
+        deleteDriverConfirm: 'Deactivate',
+        deleteDriverDeleting: 'Deactivating…',
         deleteCarTitle: 'Deactivate car?',
         deleteCarDescription:
           'This will deactivate {licensePlate:string}. Assignment history stays available; the vehicle leaves active lists.',
+        deleteCarConfirm: 'Deactivate',
+        deleteCarDeleting: 'Deactivating…',
         mqttCredentialsAction: 'MQTT credentials',
         mqttCredentialsConfirmTitle: 'Provision MQTT credentials?',
         mqttCredentialsConfirmDescription:
@@ -276,6 +285,29 @@ const en: BaseTranslation = {
         carNotFoundDescription: 'This vehicle may have been deleted or the link is invalid.',
         carDetailTitle: 'Vehicle details',
         carDetailSubtitle: 'Overview of this vehicle',
+        custodyFailed: 'Could not update custody. Please try again.',
+        custodyConflict:
+          'Custody changed since you started. Refresh and try again.',
+        assignDriver: 'Assign driver',
+        changeDriver: 'Change driver',
+        endCustody: 'End custody',
+        assignDriverTitle: 'Assign driver',
+        changeDriverTitle: 'Change driver',
+        assignDriverDescription: 'Choose who should have this vehicle now.',
+        changeDriverDescription: 'Choose the new driver for this vehicle.',
+        assignConfirm: 'Assign',
+        changeConfirm: 'Change',
+        assigning: 'Assigning…',
+        endCustodyTitle: 'End custody?',
+        endCustodyDescription:
+          '{driverName:string} will no longer have {licensePlate:string}.',
+        endCustodyConfirm: 'End custody',
+        endingCustody: 'Ending…',
+        transferConfirmTitle: 'Move this driver?',
+        transferConfirmDescription:
+          '{driverName:string} is on {otherPlate:string}. Assigning them here will end that custody.',
+        transferConfirm: 'Move here',
+        driverOnOtherVehicle: 'On {licensePlate:string}',
         driverAssignmentHistoryTitle: 'Driver custody history',
         driverAssignmentHistorySubtitle:
           'When this vehicle was assigned to each driver',
