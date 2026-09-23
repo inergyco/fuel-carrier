@@ -85,6 +85,7 @@ export class CompaniesService {
         const company = _mapCompany(row);
 
         await this.auditLogService.record(context, {
+          tx,
           action: AuditActions.COMPANY_CREATED,
           companyId: company.id,
           entityType: AuditEntityType.COMPANY,
@@ -122,6 +123,7 @@ export class CompaniesService {
         const company = _mapCompany(row);
 
         await this.auditLogService.record(context, {
+          tx,
           action: AuditActions.COMPANY_UPDATED,
           companyId: company.id,
           entityType: AuditEntityType.COMPANY,
@@ -147,9 +149,11 @@ export class CompaniesService {
     return this.tenantDb.run(context, async (tx) => {
       const existing = await _findCompanyById(tx, id);
 
-      await tx.delete(companies).where(eq(companies.id, id));
-
+      // Record before delete on the same tx. A nested tenantDb.run after
+      // delete deadlocks: the audit INSERT waits on the companies FK lock
+      // held by this transaction, while we wait for the audit to finish.
       await this.auditLogService.record(context, {
+        tx,
         action: AuditActions.COMPANY_DELETED,
         companyId: id,
         entityType: AuditEntityType.COMPANY,
@@ -162,6 +166,8 @@ export class CompaniesService {
           ),
         },
       });
+
+      await tx.delete(companies).where(eq(companies.id, id));
 
       return null;
     });

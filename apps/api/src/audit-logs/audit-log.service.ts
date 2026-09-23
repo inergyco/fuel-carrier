@@ -20,6 +20,7 @@ import { auditLogs } from '../database/schema/audit-logs';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
+import type { TenantTransaction } from '../database/tenant-db.types';
 import { actorFromSession } from './audit-log.utils';
 import { AuditRequestContext } from './audit-request.context';
 
@@ -30,6 +31,13 @@ export type RecordAuditLogInput = {
   entityId?: string | null;
   metadata?: AuditLogMetadata;
   actor?: AuditActor | AuthSession | null;
+  /**
+   * When recording inside an open `tenantDb.run` callback, pass that `tx`.
+   * Otherwise a nested `tenantDb.run` opens a second connection and can
+   * deadlock on FKs to rows locked by the outer transaction (e.g. company
+   * create/delete).
+   */
+  tx?: TenantTransaction;
 };
 
 @Injectable()
@@ -58,20 +66,27 @@ export class AuditLogService {
         metadata.portal = this._inferPortal(actor.role);
       }
 
+      const values = {
+        companyId: input.companyId ?? actor.companyId ?? null,
+        actorUserId: actor.userId,
+        actorRole: actor.role,
+        actorUsername: actor.username,
+        actorDisplayName: actor.displayName,
+        action: input.action,
+        entityType: input.entityType ?? null,
+        entityId: input.entityId ?? null,
+        metadata,
+        ipAddress: this.auditRequestContext.getIpAddress(),
+        userAgent: this.auditRequestContext.getUserAgent(),
+      };
+
+      if (input.tx) {
+        await input.tx.insert(auditLogs).values(values);
+        return;
+      }
+
       await this.tenantDb.run(context, async (tx) => {
-        await tx.insert(auditLogs).values({
-          companyId: input.companyId ?? actor.companyId ?? null,
-          actorUserId: actor.userId,
-          actorRole: actor.role,
-          actorUsername: actor.username,
-          actorDisplayName: actor.displayName,
-          action: input.action,
-          entityType: input.entityType ?? null,
-          entityId: input.entityId ?? null,
-          metadata,
-          ipAddress: this.auditRequestContext.getIpAddress(),
-          userAgent: this.auditRequestContext.getUserAgent(),
-        });
+        await tx.insert(auditLogs).values(values);
       });
     } catch (error) {
       this.logger.error(
