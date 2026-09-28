@@ -34,6 +34,9 @@ const shellGridClassName =
 const shellHeaderClassName =
   'flex h-14 shrink-0 items-center gap-3 border-b border-base-content/8'
 
+const sidebarHeaderClassName =
+  'flex h-14 shrink-0 items-center gap-3 border-b px-5'
+
 export function PanelShell({
   navItems,
   brandTitle,
@@ -109,17 +112,30 @@ export function PanelShell({
 
       <div className="drawer-side z-30">
         <label htmlFor={drawerId} aria-label={openMenuLabel} className="drawer-overlay" />
-        <aside className="flex h-full w-72 flex-col border-base-content/12 bg-base-200 ltr:border-r rtl:border-l">
+        <aside
+          className={cn(
+            'flex h-full w-72 flex-col ltr:border-r rtl:border-l',
+            // Themes may set --panel-sidebar (e.g. external navy). Fallback = base-200.
+            'border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_12%,transparent)]',
+            'bg-[var(--panel-sidebar,var(--color-base-200))]',
+            'text-[var(--panel-sidebar-content,var(--color-base-content))]',
+          )}
+        >
           <div aria-hidden className={shellGridClassName} />
 
-          <div className={cn(shellHeaderClassName, 'relative px-5')}>
-            <div className="flex h-10 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/15 px-1.5 text-primary [&_img]:h-8 [&_img]:w-auto [&_img]:max-w-[5.5rem] [&_img]:object-contain [&_svg]:size-5">
+          <div
+            className={cn(
+              sidebarHeaderClassName,
+              'relative border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_12%,transparent)]',
+            )}
+          >
+            <div className="flex h-10 shrink-0 items-center justify-center rounded-lg border border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_25%,transparent)] bg-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_12%,transparent)] px-1.5 text-[var(--panel-sidebar-content,var(--color-primary))] [&_img]:h-8 [&_img]:w-auto [&_img]:max-w-[5.5rem] [&_img]:object-contain [&_svg]:size-5">
               {brandIcon}
             </div>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold tracking-tight">{brandTitle}</p>
               {brandSubtitle ? (
-                <p className="truncate text-xs font-semibold uppercase tracking-wide text-base-content/50">
+                <p className="truncate text-xs font-semibold uppercase tracking-wide text-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_55%,transparent)]">
                   {brandSubtitle}
                 </p>
               ) : null}
@@ -145,14 +161,33 @@ export function PanelShell({
                   onClick={handleNavClick}
                   className={cn(
                     'group flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all',
-                    'text-base-content/75 hover:bg-base-content/5 hover:text-base-content',
+                    'text-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_75%,transparent)]',
+                    'hover:bg-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_8%,transparent)]',
+                    'hover:text-[var(--panel-sidebar-content,var(--color-base-content))]',
                   )}
                   activeProps={{
-                    className:
-                      'bg-primary/10 text-primary border border-primary/15 shadow-[0_0_24px_-8px] shadow-primary/30 [&_svg]:text-primary',
+                    className: cn(
+                      'border shadow-[0_0_24px_-8px]',
+                      // On brand navy sidebars, highlight with light glass; otherwise primary tint.
+                      '[--active-fg:var(--panel-sidebar-content,var(--color-primary))]',
+                      'bg-[color-mix(in_oklab,var(--active-fg)_14%,transparent)]',
+                      'text-[var(--active-fg)]',
+                      'border-[color-mix(in_oklab,var(--active-fg)_20%,transparent)]',
+                      'shadow-[color-mix(in_oklab,var(--active-fg)_30%,transparent)]',
+                      '[&_svg]:text-[var(--active-fg)]',
+                    ),
                   }}
                 >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-base-content/12 bg-base-100 text-base-content/85 transition-colors group-hover:border-base-content/20 group-hover:text-base-content [&_svg]:size-5">
+                  <span
+                    className={cn(
+                      'flex h-9 w-9 shrink-0 items-center justify-center rounded-md transition-colors [&_svg]:size-5',
+                      'border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_14%,transparent)]',
+                      'bg-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-100))_10%,transparent)]',
+                      'text-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_85%,transparent)]',
+                      'group-hover:border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_22%,transparent)]',
+                      'group-hover:text-[var(--panel-sidebar-content,var(--color-base-content))]',
+                    )}
+                  >
                     {item.icon}
                   </span>
                   <span className="truncate font-medium">{item.label}</span>
@@ -162,7 +197,15 @@ export function PanelShell({
           </nav>
 
           {footer ? (
-            <div className="relative border-t border-base-content/12 bg-base-200 p-3">{footer}</div>
+            <div
+              className={cn(
+                'relative border-t p-3',
+                'border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_12%,transparent)]',
+                'bg-[var(--panel-sidebar,var(--color-base-200))]',
+              )}
+            >
+              {footer}
+            </div>
           ) : null}
         </aside>
       </div>

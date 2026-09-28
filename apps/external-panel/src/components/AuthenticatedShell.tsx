@@ -147,19 +147,19 @@ export function AuthenticatedShell({
         }
         footer={
           <div className="space-y-3">
-            <div className="rounded-xl border border-base-content/12 bg-base-100 p-3">
+            <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-gradient-to-br from-primary/15 to-secondary/10 text-xs font-semibold text-primary">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
                   {initials}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">
                     {user.firstName} {user.lastName}
                   </p>
-                  <p className="truncate font-mono text-[10px] text-base-content/40">
+                  <p className="truncate font-mono text-[10px] text-white/45">
                     @{user.username}
                   </p>
-                  <p className="truncate text-[10px] text-base-content/45">
+                  <p className="truncate text-[10px] text-white/50">
                     {levelLabel}
                   </p>
                 </div>
@@ -167,13 +167,16 @@ export function AuthenticatedShell({
               <Button
                 type="button"
                 variant="ghost"
-                className="h-9 w-full justify-center border border-base-content/8 bg-base-100/30 normal-case tracking-normal"
+                className="h-9 w-full justify-center border border-white/12 bg-white/5 text-white normal-case tracking-normal hover:bg-white/10"
                 onClick={handleOpenLogoutModal}
               >
                 {LL.externalPanel.nav.signOut()}
               </Button>
             </div>
-            <InergyFooter stacked className="hidden lg:flex" />
+            <InergyFooter
+              stacked
+              className="hidden text-white/40 lg:flex [&_p]:text-white/40"
+            />
           </div>
         }
       >
