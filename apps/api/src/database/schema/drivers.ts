@@ -18,6 +18,7 @@ export const drivers = pgTable(
     firstName: varchar('first_name', { length: 100 }).notNull(),
     lastName: varchar('last_name', { length: 100 }).notNull(),
     nationalId: varchar('national_id', { length: 32 }).notNull(),
+    mobileNumber: varchar('mobile_number', { length: 20 }).notNull(),
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),
@@ -35,6 +36,13 @@ export const drivers = pgTable(
     uniqueIndex('drivers_national_id_unique')
       .on(table.nationalId)
       .where(sql`${table.deletedAt} IS NULL`),
+    /**
+     * Soft-deleted mobiles may be reused. Empty values (legacy backfill) are
+     * excluded so multiple unset rows do not collide until a real number is set.
+     */
+    uniqueIndex('drivers_mobile_number_unique')
+      .on(table.mobileNumber)
+      .where(sql`${table.deletedAt} IS NULL AND ${table.mobileNumber} <> ''`),
     /** Allows cars(driver_id, company_id) → drivers(id, company_id) composite FK. */
     unique('drivers_id_company_id_unique').on(table.id, table.companyId),
   ],

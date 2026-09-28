@@ -77,6 +77,12 @@ export function getDriverColumns({
       className: 'font-mono text-sm',
     },
     {
+      key: 'mobileNumber',
+      header: LL.internalPanel.companies.detail.mobileNumber(),
+      cell: (driver) => driver.mobileNumber,
+      className: 'font-mono text-sm',
+    },
+    {
       key: 'car',
       header: LL.internalPanel.companies.detail.car(),
       cell: (driver) =>

@@ -32,6 +32,14 @@ export function getDriverColumns({
       className: 'font-mono text-sm',
     },
     {
+      key: 'mobileNumber',
+      header: LL.externalPanel.drivers.mobileNumber(),
+      cell: function renderMobileNumber(driver) {
+        return driver.mobileNumber ?? emptyCell
+      },
+      className: 'font-mono text-sm',
+    },
+    {
       key: 'car',
       header: LL.externalPanel.drivers.car(),
       cell: function renderCar(driver) {

@@ -119,6 +119,7 @@ async function seedCompany(
         firstName: driverSeed.firstName,
         lastName: driverSeed.lastName,
         nationalId: driverSeed.nationalId,
+        mobileNumber: driverSeed.mobileNumber,
         companyId: company.id,
       })
       .returning({ id: drivers.id });

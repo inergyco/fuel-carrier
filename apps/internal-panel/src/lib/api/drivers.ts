@@ -29,6 +29,7 @@ export type DriverFormValues = {
   firstName: string
   lastName: string
   nationalId: string
+  mobileNumber: string
 }
 
 export type FetchDriversParams = ResourceListParams & {
@@ -40,6 +41,7 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
     firstName: driver?.firstName ?? '',
     lastName: driver?.lastName ?? '',
     nationalId: driver?.nationalId ?? '',
+    mobileNumber: driver?.mobileNumber ?? '',
   }
 }
 

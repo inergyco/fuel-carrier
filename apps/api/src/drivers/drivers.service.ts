@@ -48,6 +48,7 @@ type CreateDriverPayload = {
   firstName: string;
   lastName: string;
   nationalId: string;
+  mobileNumber: string;
   companyId: string;
 };
 
@@ -59,6 +60,12 @@ const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
     constraint: 'drivers_national_id_unique',
     field: 'nationalId',
     message: 'A driver with this national ID already exists',
+  },
+  {
+    code: POSTGRES_UNIQUE_VIOLATION,
+    constraint: 'drivers_mobile_number_unique',
+    field: 'mobileNumber',
+    message: 'A driver with this mobile number already exists',
   },
   {
     code: POSTGRES_FOREIGN_KEY_VIOLATION,
@@ -360,6 +367,7 @@ function _mapDriver(row: typeof drivers.$inferSelect): Driver {
     firstName: row.firstName,
     lastName: row.lastName,
     nationalId: row.nationalId,
+    mobileNumber: row.mobileNumber,
     companyId: row.companyId,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
@@ -380,5 +388,6 @@ const DRIVER_AUDIT_FIELDS = [
   'firstName',
   'lastName',
   'nationalId',
+  'mobileNumber',
   'companyId',
 ] as const satisfies readonly (keyof Driver)[];

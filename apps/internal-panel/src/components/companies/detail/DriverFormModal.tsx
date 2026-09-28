@@ -81,10 +81,12 @@ export function DriverFormModal({
         applyApiFieldErrors({
           error,
           setError,
-          fields: ['firstName', 'lastName', 'nationalId'],
+          fields: ['firstName', 'lastName', 'nationalId', 'mobileNumber'],
           messages: {
             nationalId: () =>
               LL.internalPanel.companies.detail.duplicateDriverNationalId(),
+            mobileNumber: () =>
+              LL.internalPanel.companies.detail.duplicateDriverMobileNumber(),
           },
           fallbackMessage: LL.internalPanel.companies.detail.createFailed(),
         }),
@@ -155,6 +157,15 @@ export function DriverFormModal({
           label={LL.internalPanel.companies.nationalId()}
           type="text"
           inputMode="numeric"
+        />
+
+        <FormInput
+          name="mobileNumber"
+          label={LL.internalPanel.companies.detail.mobileNumber()}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder={LL.internalPanel.companies.detail.mobileNumberPlaceholder()}
         />
 
         {serverError && (

@@ -882,6 +882,14 @@ type RootTranslation = {
 				 */
 				noCar: string
 				/**
+				 * M​o​b​i​l​e​ ​n​u​m​b​e​r
+				 */
+				mobileNumber: string
+				/**
+				 * 0​9​1​2​ ​3​4​5​ ​6​7​8​9
+				 */
+				mobileNumberPlaceholder: string
+				/**
 				 * A​d​d​ ​c​o​m​p​a​n​y​ ​u​s​e​r
 				 */
 				userCreateTitle: string
@@ -918,7 +926,7 @@ type RootTranslation = {
 				 */
 				driversEmptyFiltered: string
 				/**
-				 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
+				 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​m​o​b​i​l​e
 				 */
 				driversSearchPlaceholder: string
 				/**
@@ -1277,6 +1285,10 @@ type RootTranslation = {
 				 */
 				duplicateDriverNationalId: string
 				/**
+				 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+				 */
+				duplicateDriverMobileNumber: string
+				/**
 				 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 				 */
 				duplicateLicensePlate: string
@@ -1459,6 +1471,10 @@ type RootTranslation = {
 					 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
 					 */
 					driverId: string
+					/**
+					 * M​o​b​i​l​e​ ​n​u​m​b​e​r
+					 */
+					mobileNumber: string
 				}
 				/**
 				 * —
@@ -1881,6 +1897,14 @@ type RootTranslation = {
 			 */
 			lastName: string
 			/**
+			 * M​o​b​i​l​e​ ​n​u​m​b​e​r
+			 */
+			mobileNumber: string
+			/**
+			 * 0​9​1​2​ ​3​4​5​ ​6​7​8​9
+			 */
+			mobileNumberPlaceholder: string
+			/**
 			 * A​s​s​i​g​n​e​d​ ​v​e​h​i​c​l​e
 			 */
 			car: string
@@ -1909,7 +1933,7 @@ type RootTranslation = {
 			 */
 			emptyFiltered: string
 			/**
-			 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
+			 * S​e​a​r​c​h​ ​b​y​ ​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​m​o​b​i​l​e
 			 */
 			searchPlaceholder: string
 			/**
@@ -1969,6 +1993,10 @@ type RootTranslation = {
 			 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​n​a​t​i​o​n​a​l​ ​I​D​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
 			duplicateNationalId: string
+			/**
+			 * A​ ​d​r​i​v​e​r​ ​w​i​t​h​ ​t​h​i​s​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateMobileNumber: string
 		}
 		cars: {
 			/**
@@ -2638,6 +2666,10 @@ type RootTranslation = {
 				 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
 				 */
 				driverId: string
+				/**
+				 * M​o​b​i​l​e​ ​n​u​m​b​e​r
+				 */
+				mobileNumber: string
 			}
 			/**
 			 * —
@@ -3484,6 +3516,14 @@ export type TranslationFunctions = {
 				 */
 				noCar: () => LocalizedString
 				/**
+				 * Mobile number
+				 */
+				mobileNumber: () => LocalizedString
+				/**
+				 * 0912 345 6789
+				 */
+				mobileNumberPlaceholder: () => LocalizedString
+				/**
 				 * Add company user
 				 */
 				userCreateTitle: () => LocalizedString
@@ -3520,7 +3560,7 @@ export type TranslationFunctions = {
 				 */
 				driversEmptyFiltered: () => LocalizedString
 				/**
-				 * Search by name or national ID
+				 * Search by name, national ID, or mobile
 				 */
 				driversSearchPlaceholder: () => LocalizedString
 				/**
@@ -3868,6 +3908,10 @@ export type TranslationFunctions = {
 				 */
 				duplicateDriverNationalId: () => LocalizedString
 				/**
+				 * A driver with this mobile number already exists.
+				 */
+				duplicateDriverMobileNumber: () => LocalizedString
+				/**
 				 * A vehicle with this license plate already exists.
 				 */
 				duplicateLicensePlate: () => LocalizedString
@@ -4050,6 +4094,10 @@ export type TranslationFunctions = {
 					 * Assigned driver
 					 */
 					driverId: () => LocalizedString
+					/**
+					 * Mobile number
+					 */
+					mobileNumber: () => LocalizedString
 				}
 				/**
 				 * —
@@ -4465,6 +4513,14 @@ export type TranslationFunctions = {
 			 */
 			lastName: () => LocalizedString
 			/**
+			 * Mobile number
+			 */
+			mobileNumber: () => LocalizedString
+			/**
+			 * 0912 345 6789
+			 */
+			mobileNumberPlaceholder: () => LocalizedString
+			/**
 			 * Assigned vehicle
 			 */
 			car: () => LocalizedString
@@ -4493,7 +4549,7 @@ export type TranslationFunctions = {
 			 */
 			emptyFiltered: () => LocalizedString
 			/**
-			 * Search by name or national ID
+			 * Search by name, national ID, or mobile
 			 */
 			searchPlaceholder: () => LocalizedString
 			/**
@@ -4552,6 +4608,10 @@ export type TranslationFunctions = {
 			 * A driver with this national ID already exists.
 			 */
 			duplicateNationalId: () => LocalizedString
+			/**
+			 * A driver with this mobile number already exists.
+			 */
+			duplicateMobileNumber: () => LocalizedString
 		}
 		cars: {
 			/**
@@ -5205,6 +5265,10 @@ export type TranslationFunctions = {
 				 * Assigned driver
 				 */
 				driverId: () => LocalizedString
+				/**
+				 * Mobile number
+				 */
+				mobileNumber: () => LocalizedString
 			}
 			/**
 			 * —

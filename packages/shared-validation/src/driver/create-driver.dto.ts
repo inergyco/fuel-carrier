@@ -4,11 +4,13 @@ import { z } from 'zod';
 export const DRIVER_FIRST_NAME_MAX_LENGTH = 100;
 export const DRIVER_LAST_NAME_MAX_LENGTH = 100;
 export const DRIVER_NATIONAL_ID_MAX_LENGTH = 32;
+export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = 20;
 
 const driverBaseSchema = z.object({
   firstName: z.string().min(1).max(DRIVER_FIRST_NAME_MAX_LENGTH),
   lastName: z.string().min(1).max(DRIVER_LAST_NAME_MAX_LENGTH),
   nationalId: z.string().min(1).max(DRIVER_NATIONAL_ID_MAX_LENGTH),
+  mobileNumber: z.string().min(1).max(DRIVER_MOBILE_NUMBER_MAX_LENGTH),
 });
 
 /** Internal admin: companyId is required in the request body. */

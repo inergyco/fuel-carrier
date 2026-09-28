@@ -95,9 +95,10 @@ export function useDriverFormModal({
       applyApiFieldErrors({
         error,
         setError,
-        fields: ['firstName', 'lastName', 'nationalId'],
+        fields: ['firstName', 'lastName', 'nationalId', 'mobileNumber'],
         messages: {
           nationalId: () => LL.externalPanel.drivers.duplicateNationalId(),
+          mobileNumber: () => LL.externalPanel.drivers.duplicateMobileNumber(),
         },
         fallbackMessage: LL.externalPanel.drivers.createFailed(),
       }),

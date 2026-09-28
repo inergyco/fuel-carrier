@@ -11,6 +11,7 @@ export type SeedDriver = {
   firstName: string;
   lastName: string;
   nationalId: string;
+  mobileNumber: string;
 };
 
 export type SeedCar = {
@@ -74,10 +75,30 @@ export const SEED_COMPANIES: SeedCompany[] = [
       },
     ],
     drivers: [
-      { firstName: 'محمد', lastName: 'حسینی', nationalId: '1234567890' },
-      { firstName: 'رضا', lastName: 'احمدی', nationalId: '2345678901' },
-      { firstName: 'امیر', lastName: 'قاسمی', nationalId: '3456789012' },
-      { firstName: 'علی', lastName: 'موسوی', nationalId: '4567890123' },
+      {
+        firstName: 'محمد',
+        lastName: 'حسینی',
+        nationalId: '1234567890',
+        mobileNumber: '09121234567',
+      },
+      {
+        firstName: 'رضا',
+        lastName: 'احمدی',
+        nationalId: '2345678901',
+        mobileNumber: '09122345678',
+      },
+      {
+        firstName: 'امیر',
+        lastName: 'قاسمی',
+        nationalId: '3456789012',
+        mobileNumber: '09123456789',
+      },
+      {
+        firstName: 'علی',
+        lastName: 'موسوی',
+        nationalId: '4567890123',
+        mobileNumber: '09124567890',
+      },
     ],
     cars: [
       {
@@ -146,10 +167,30 @@ export const SEED_COMPANIES: SeedCompany[] = [
       },
     ],
     drivers: [
-      { firstName: 'حسین', lastName: 'جعفری', nationalId: '5678901234' },
-      { firstName: 'مجید', lastName: 'رحیمی', nationalId: '6789012345' },
-      { firstName: 'سعید', lastName: 'زارعی', nationalId: '7890123456' },
-      { firstName: 'کامران', lastName: 'شریفی', nationalId: '8901234567' },
+      {
+        firstName: 'حسین',
+        lastName: 'جعفری',
+        nationalId: '5678901234',
+        mobileNumber: '09131234567',
+      },
+      {
+        firstName: 'مجید',
+        lastName: 'رحیمی',
+        nationalId: '6789012345',
+        mobileNumber: '09132345678',
+      },
+      {
+        firstName: 'سعید',
+        lastName: 'زارعی',
+        nationalId: '7890123456',
+        mobileNumber: '09133456789',
+      },
+      {
+        firstName: 'کامران',
+        lastName: 'شریفی',
+        nationalId: '8901234567',
+        mobileNumber: '09134567890',
+      },
     ],
     cars: [
       {
@@ -218,10 +259,30 @@ export const SEED_COMPANIES: SeedCompany[] = [
       },
     ],
     drivers: [
-      { firstName: 'داود', lastName: 'مرادی', nationalId: '9012345678' },
-      { firstName: 'فرهاد', lastName: 'یزدانی', nationalId: '0123456789' },
-      { firstName: 'بهمن', lastName: 'کاظمی', nationalId: '1098765432' },
-      { firstName: 'ایمان', lastName: 'فلاح', nationalId: '2109876543' },
+      {
+        firstName: 'داود',
+        lastName: 'مرادی',
+        nationalId: '9012345678',
+        mobileNumber: '09171234567',
+      },
+      {
+        firstName: 'فرهاد',
+        lastName: 'یزدانی',
+        nationalId: '0123456789',
+        mobileNumber: '09172345678',
+      },
+      {
+        firstName: 'بهمن',
+        lastName: 'کاظمی',
+        nationalId: '1098765432',
+        mobileNumber: '09173456789',
+      },
+      {
+        firstName: 'ایمان',
+        lastName: 'فلاح',
+        nationalId: '2109876543',
+        mobileNumber: '09174567890',
+      },
     ],
     cars: [
       {

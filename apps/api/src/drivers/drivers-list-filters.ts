@@ -14,6 +14,7 @@ export function buildDriverSearchFilter(searchText: string | undefined) {
     ilike(drivers.firstName, pattern),
     ilike(drivers.lastName, pattern),
     ilike(drivers.nationalId, pattern),
+    ilike(drivers.mobileNumber, pattern),
   );
 }
 

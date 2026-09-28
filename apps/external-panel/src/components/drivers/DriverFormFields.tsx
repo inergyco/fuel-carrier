@@ -32,6 +32,15 @@ export function DriverFormFields({ serverError }: DriverFormFieldsProps) {
         inputMode="numeric"
       />
 
+      <FormInput
+        name="mobileNumber"
+        label={LL.externalPanel.drivers.mobileNumber()}
+        type="tel"
+        inputMode="tel"
+        autoComplete="tel"
+        placeholder={LL.externalPanel.drivers.mobileNumberPlaceholder()}
+      />
+
       {serverError && (
         <div className="rounded-lg border border-error/20 bg-error/8 px-3 py-2 text-xs text-error">
           {serverError}
