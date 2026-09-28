@@ -10,6 +10,8 @@ export type CompanyUser = {
   nationalId: string | null;
   email: string | null;
   level: CompanyUserLevel;
+  /** ISO-8601 timestamptz when soft-deleted; null while live. */
+  deletedAt: string | null;
 };
 
 export type CompanyUserInput = {

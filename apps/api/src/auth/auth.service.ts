@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ApiErrorCode, UserRole } from '@fuel-carrier/shared-types';
@@ -66,12 +66,10 @@ export class AuthService {
       return null;
     }
 
-    const companyUser = await this.db.query.companyUsers.findFirst({
-      where: eq(companyUsers.username, username),
-      with: { user: true, company: true },
-    });
-
-    if (!companyUser?.user) {
+    const companyUser = await this._findLiveCompanyUser(
+      eq(companyUsers.username, username),
+    );
+    if (!companyUser) {
       return null;
     }
 
@@ -84,12 +82,10 @@ export class AuthService {
   }
 
   async getCompanyUserSession(userId: string): Promise<AuthSession | null> {
-    const companyUser = await this.db.query.companyUsers.findFirst({
-      where: eq(companyUsers.userId, userId),
-      with: { user: true, company: true },
-    });
-
-    if (!companyUser?.user) {
+    const companyUser = await this._findLiveCompanyUser(
+      eq(companyUsers.userId, userId),
+    );
+    if (!companyUser) {
       return null;
     }
 
@@ -131,12 +127,11 @@ export class AuthService {
     currentPassword: string,
     newPassword: string,
   ): Promise<AuthSession> {
-    const companyUser = await this.db.query.companyUsers.findFirst({
-      where: eq(companyUsers.userId, session.userId),
-      with: { user: true, company: true },
-    });
+    const companyUser = await this._findLiveCompanyUser(
+      eq(companyUsers.userId, session.userId),
+    );
 
-    if (!companyUser?.user) {
+    if (!companyUser) {
       throw createApiException(
         HttpStatus.NOT_FOUND,
         ApiErrorCode.NOT_FOUND,
@@ -161,12 +156,33 @@ export class AuthService {
     await this.db
       .update(companyUsers)
       .set({ passwordHash, mustChangePassword: false })
-      .where(eq(companyUsers.userId, session.userId));
+      .where(
+        and(
+          eq(companyUsers.userId, session.userId),
+          isNull(companyUsers.deletedAt),
+        ),
+      );
 
     return mapCompanyUserSession({
       ...companyUser,
       mustChangePassword: false,
     });
+  }
+
+  /** Live company user with profile + company; null if missing or soft-deleted. */
+  private async _findLiveCompanyUser(
+    identity: ReturnType<typeof eq>,
+  ): Promise<LiveCompanyUser | null> {
+    const companyUser = await this.db.query.companyUsers.findFirst({
+      where: and(identity, isNull(companyUsers.deletedAt)),
+      with: { user: true, company: true },
+    });
+
+    if (!companyUser?.user || companyUser.company?.deletedAt) {
+      return null;
+    }
+
+    return companyUser;
   }
 
   getInternalAuthCookieName(): string {
@@ -230,12 +246,7 @@ export class AuthService {
   }
 }
 
-function mapCompanyUserSession(
-  companyUser: typeof companyUsers.$inferSelect & {
-    user: { firstName: string; lastName: string };
-    company?: { logoUrl: string | null } | null;
-  },
-): AuthSession {
+function mapCompanyUserSession(companyUser: LiveCompanyUser): AuthSession {
   return {
     userId: companyUser.userId,
     role: UserRole.COMPANY_USER,
@@ -248,6 +259,11 @@ function mapCompanyUserSession(
     companyLogoUrl: companyUser.company?.logoUrl ?? null,
   };
 }
+
+type LiveCompanyUser = typeof companyUsers.$inferSelect & {
+  user: { firstName: string; lastName: string };
+  company?: { logoUrl: string | null; deletedAt?: Date | null } | null;
+};
 
 function parseCompanyUserLevel(value: unknown): JwtPayload['companyUserLevel'] {
   if (value === 'admin' || value === 'viewer') {

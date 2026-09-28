@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   Driver,
   PaginatedResult,
@@ -29,7 +29,6 @@ import type { CompanyScopedListParams } from '../common/types/company-scoped-lis
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
-import { ENTITY_STATUS } from '../database/schema/entity-status';
 import {
   POSTGRES_FOREIGN_KEY_VIOLATION,
   POSTGRES_UNIQUE_VIOLATION,
@@ -39,6 +38,7 @@ import {
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
+import { mapCarRow } from '../cars/cars-reader.service';
 import {
   buildDriverAssignmentFilter,
   buildDriverSearchFilter,
@@ -93,12 +93,8 @@ export class DriversService {
     }
 
     const offset = getPaginationOffset(options);
-    const activeCarJoin = and(
-      eq(cars.driverId, drivers.id),
-      eq(cars.status, ENTITY_STATUS.ACTIVE),
-    );
     const where = and(
-      eq(drivers.status, ENTITY_STATUS.ACTIVE),
+      isNull(drivers.deletedAt),
       companyId ? eq(drivers.companyId, companyId) : undefined,
       buildDriverSearchFilter(searchText),
       buildDriverAssignmentFilter(assignment),
@@ -108,28 +104,18 @@ export class DriversService {
       const [countRow] = await tx
         .select({ value: count() })
         .from(drivers)
-        .leftJoin(cars, activeCarJoin)
         .where(where);
 
-      const rows = await tx
-        .select({
-          driver: drivers,
-          car: cars,
-        })
-        .from(drivers)
-        .leftJoin(cars, activeCarJoin)
-        .where(where)
-        .orderBy(desc(drivers.createdAt))
-        .limit(limit)
-        .offset(offset);
+      const rows = await tx.query.drivers.findMany({
+        where,
+        with: { car: true },
+        orderBy: desc(drivers.createdAt),
+        limit,
+        offset,
+      });
 
       return toPaginatedResult({
-        items: rows.map((row) =>
-          _mapDriverWithCar({
-            ...row.driver,
-            car: row.car,
-          }),
-        ),
+        items: rows.map(_mapDriverWithCar),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -142,7 +128,7 @@ export class DriversService {
 
     return this.tenantDb.run(context, async (tx) => {
       const row = await tx.query.drivers.findFirst({
-        where: eq(drivers.id, id),
+        where: and(eq(drivers.id, id), isNull(drivers.deletedAt)),
         with: { car: true },
       });
 
@@ -164,13 +150,7 @@ export class DriversService {
   ): Promise<Driver> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const [row] = await tx
-          .insert(drivers)
-          .values({
-            ...dto,
-            status: ENTITY_STATUS.ACTIVE,
-          })
-          .returning();
+        const [row] = await tx.insert(drivers).values(dto).returning();
 
         if (!row) {
           throw createApiException(
@@ -214,7 +194,7 @@ export class DriversService {
         const [existing] = await tx
           .select()
           .from(drivers)
-          .where(eq(drivers.id, id))
+          .where(and(eq(drivers.id, id), isNull(drivers.deletedAt)))
           .limit(1);
 
         if (!existing) {
@@ -222,15 +202,6 @@ export class DriversService {
             HttpStatus.NOT_FOUND,
             ApiErrorCode.NOT_FOUND,
             'Driver not found',
-          );
-        }
-
-        if (existing.status !== ENTITY_STATUS.ACTIVE) {
-          throw createApiException(
-            HttpStatus.BAD_REQUEST,
-            ApiErrorCode.VALIDATION_ERROR,
-            'Validation failed',
-            [{ field: 'id', message: 'Driver is inactive' }],
           );
         }
 
@@ -244,7 +215,7 @@ export class DriversService {
         const [row] = await tx
           .update(drivers)
           .set(dto)
-          .where(eq(drivers.id, id))
+          .where(and(eq(drivers.id, id), isNull(drivers.deletedAt)))
           .returning();
 
         if (!row) {
@@ -283,7 +254,7 @@ export class DriversService {
     }
   }
 
-  /** Soft-delete: mark inactive, end custody, keep row. */
+  /** Soft-delete: set deletedAt, end custody, keep row. */
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
       const [existing] = await tx
@@ -300,13 +271,16 @@ export class DriversService {
         );
       }
 
-      if (existing.status === ENTITY_STATUS.INACTIVE) {
+      if (existing.deletedAt) {
         return null;
       }
+
+      const deletedAt = new Date();
 
       await this.carDriverAssignmentsService.closeOpenAssignmentsForDriverInTx(
         tx,
         id,
+        deletedAt,
       );
 
       await tx
@@ -316,8 +290,8 @@ export class DriversService {
 
       const [row] = await tx
         .update(drivers)
-        .set({ status: ENTITY_STATUS.INACTIVE })
-        .where(eq(drivers.id, id))
+        .set({ deletedAt })
+        .where(and(eq(drivers.id, id), isNull(drivers.deletedAt)))
         .returning({ id: drivers.id });
 
       if (!row) {
@@ -356,7 +330,7 @@ export class DriversService {
     const [assignedCar] = await tx
       .select({ id: cars.id })
       .from(cars)
-      .where(eq(cars.driverId, driverId))
+      .where(and(eq(cars.driverId, driverId), isNull(cars.deletedAt)))
       .limit(1);
 
     if (assignedCar) {
@@ -387,28 +361,18 @@ function _mapDriver(row: typeof drivers.$inferSelect): Driver {
     lastName: row.lastName,
     nationalId: row.nationalId,
     companyId: row.companyId,
-    status: row.status,
+    deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),
   };
 }
 
 function _mapDriverWithCar(row: DriverWithCar): Driver {
+  const liveCar = row.car && !row.car.deletedAt ? row.car : null;
+
   return {
     ..._mapDriver(row),
-    car: row.car
-      ? {
-          id: row.car.id,
-          name: row.car.name,
-          licensePlate: row.car.licensePlate,
-          companyId: row.car.companyId,
-          driverId: row.car.driverId,
-          note: row.car.note,
-          status: row.car.status,
-          createdAt: toIsoTimestamp(row.car.createdAt),
-          updatedAt: toIsoTimestamp(row.car.updatedAt),
-        }
-      : row.car,
+    car: liveCar ? mapCarRow(liveCar) : null,
   };
 }
 
@@ -417,5 +381,4 @@ const DRIVER_AUDIT_FIELDS = [
   'lastName',
   'nationalId',
   'companyId',
-  'status',
 ] as const satisfies readonly (keyof Driver)[];

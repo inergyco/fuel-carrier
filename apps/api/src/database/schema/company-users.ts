@@ -3,6 +3,7 @@ import {
   check,
   pgTable,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -12,6 +13,7 @@ import {
   type CompanyUserLevel,
 } from '@fuel-carrier/shared-types';
 import { companies } from './companies';
+import { softDeleteColumn } from './soft-delete';
 import { users } from './users';
 import { USERNAME_MAX_LENGTH } from '@fuel-carrier/shared-validation/username';
 
@@ -30,10 +32,8 @@ export const companyUsers = pgTable(
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),
-    username: varchar('username', { length: USERNAME_MAX_LENGTH })
-      .notNull()
-      .unique(),
-    nationalId: varchar('national_id', { length: 32 }).unique(),
+    username: varchar('username', { length: USERNAME_MAX_LENGTH }).notNull(),
+    nationalId: varchar('national_id', { length: 32 }),
     email: varchar('email', { length: 254 }),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     level: varchar('level', { length: 16 })
@@ -41,6 +41,7 @@ export const companyUsers = pgTable(
       .default(CompanyUserLevels.ADMIN)
       .$type<CompanyUserLevel>(),
     mustChangePassword: boolean('must_change_password').notNull().default(true),
+    ...softDeleteColumn(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -50,6 +51,14 @@ export const companyUsers = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
+    uniqueIndex('company_users_username_unique')
+      .on(table.username)
+      .where(sql`${table.deletedAt} IS NULL`),
+    uniqueIndex('company_users_national_id_unique')
+      .on(table.nationalId)
+      .where(
+        sql`${table.deletedAt} IS NULL AND ${table.nationalId} IS NOT NULL`,
+      ),
     check(
       'company_users_username_length',
       sql`char_length(${table.username}) >= 3`,

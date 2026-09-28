@@ -62,8 +62,9 @@ describe('AuthService.resolveSessionFromJwtPayload', () => {
       level: 'viewer',
       username: 'live_viewer',
       mustChangePassword: true,
+      deletedAt: null,
       user: { firstName: 'Live', lastName: 'Viewer' },
-      company: { logoUrl: null },
+      company: { logoUrl: null, deletedAt: null },
     });
 
     const session =

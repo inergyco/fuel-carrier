@@ -1,6 +1,14 @@
-import { pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import {
+  pgTable,
+  timestamp,
+  unique,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { companies } from './companies';
-import { entityStatusEnum } from './entity-status';
+import { softDeleteColumn } from './soft-delete';
 
 /** Tenant-owned resource: every row carries company_id for RLS enforcement. */
 export const drivers = pgTable(
@@ -9,11 +17,11 @@ export const drivers = pgTable(
     id: uuid('id').defaultRandom().primaryKey(),
     firstName: varchar('first_name', { length: 100 }).notNull(),
     lastName: varchar('last_name', { length: 100 }).notNull(),
-    nationalId: varchar('national_id', { length: 32 }).notNull().unique(),
+    nationalId: varchar('national_id', { length: 32 }).notNull(),
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),
-    status: entityStatusEnum('status').notNull().default('active'),
+    ...softDeleteColumn(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -23,6 +31,10 @@ export const drivers = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
+    /** Soft-deleted national IDs may be reused — uniqueness only among live rows. */
+    uniqueIndex('drivers_national_id_unique')
+      .on(table.nationalId)
+      .where(sql`${table.deletedAt} IS NULL`),
     /** Allows cars(driver_id, company_id) → drivers(id, company_id) composite FK. */
     unique('drivers_id_company_id_unique').on(table.id, table.companyId),
   ],

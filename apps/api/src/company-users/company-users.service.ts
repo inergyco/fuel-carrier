@@ -1,8 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, ne, sql } from 'drizzle-orm';
+import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   CompanyUser,
-  CompanyUserLevel,
   PaginatedResult,
   PaginationParams,
   TenantContext,
@@ -29,13 +28,26 @@ import {
   getPaginationOffset,
 } from '../common/pagination.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
-import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { users } from '../database/schema/users';
-import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
+import {
+  assertCompanyAccess,
+  assertCompanyExists,
+  assertNationalIdAvailable,
+  assertNotRemovingLastAdmin,
+  assertUsernameAvailable,
+  COMPANY_USER_AUDIT_FIELDS,
+  companyUserAuditRecord,
+  findCompanyUserForContext,
+  findLiveCompanyUserForContext,
+  mapCompanyUser,
+  type CompanyUserWithUser,
+  type CreateCompanyUserPayload,
+  type UpdateCompanyUserPayload,
+} from './company-users.util';
 import { COMPANY_USER_POSTGRES_MAPPINGS } from './company-users-postgres-mappings';
 
 type ListCompanyUsersOptions = PaginationParams & {
@@ -54,12 +66,15 @@ export class CompanyUsersService {
     options: ListCompanyUsersOptions,
   ): Promise<PaginatedResult<CompanyUser>> {
     const { companyId, page, limit } = options;
-    this._assertCompanyAccess(context, companyId);
-    await this._assertCompanyExists(companyId);
+    assertCompanyAccess(context, companyId);
+    await assertCompanyExists(this.tenantDb, companyId);
     assertUuidParam(companyId, 'companyId');
 
     const offset = getPaginationOffset(options);
-    const where = eq(companyUsers.companyId, companyId);
+    const where = and(
+      eq(companyUsers.companyId, companyId),
+      isNull(companyUsers.deletedAt),
+    );
 
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
@@ -77,7 +92,7 @@ export class CompanyUsersService {
 
       const items = rows
         .filter((row): row is CompanyUserWithUser => row.user != null)
-        .map(_mapCompanyUser);
+        .map(mapCompanyUser);
 
       return toPaginatedResult({
         items,
@@ -92,7 +107,7 @@ export class CompanyUsersService {
     assertUuidParam(id);
 
     return this.tenantDb.run(context, async (tx) => {
-      const row = await _findCompanyUserForContext(tx, context, id);
+      const row = await findLiveCompanyUserForContext(tx, context, id);
 
       if (!row) {
         throw createApiException(
@@ -102,7 +117,7 @@ export class CompanyUsersService {
         );
       }
 
-      return _mapCompanyUser(row);
+      return mapCompanyUser(row);
     });
   }
 
@@ -110,15 +125,15 @@ export class CompanyUsersService {
     context: TenantContext,
     dto: CreateCompanyUserPayload,
   ): Promise<CompanyUser> {
-    this._assertCompanyAccess(context, dto.companyId);
-    await this._assertCompanyExists(dto.companyId);
+    assertCompanyAccess(context, dto.companyId);
+    await assertCompanyExists(this.tenantDb, dto.companyId);
 
     const passwordHash = await hashPassword(dto.password);
 
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        await this._assertUsernameAvailable(tx, dto.username);
-        await this._assertNationalIdAvailable(tx, dto.nationalId);
+        await assertUsernameAvailable(tx, dto.username);
+        await assertNationalIdAvailable(tx, dto.nationalId);
 
         const [user] = await tx
           .insert(users)
@@ -126,7 +141,7 @@ export class CompanyUsersService {
             firstName: dto.firstName,
             lastName: dto.lastName,
           })
-          .returning({ id: users.id });
+          .returning();
 
         const [row] = await tx
           .insert(companyUsers)
@@ -141,9 +156,7 @@ export class CompanyUsersService {
           })
           .returning();
 
-        const created = await _findCompanyUserById(tx, row.id);
-
-        if (!created) {
+        if (!row || !user) {
           throw createApiException(
             HttpStatus.INTERNAL_SERVER_ERROR,
             ApiErrorCode.INTERNAL_ERROR,
@@ -151,28 +164,14 @@ export class CompanyUsersService {
           );
         }
 
-        const companyUser = _mapCompanyUser(created);
-        const companyName = await fetchCompanyName(tx, companyUser.companyId);
-
-        await this.auditLogService.record(context, {
+        const companyUser = mapCompanyUser({ ...row, user });
+        await this._recordMutationAudit(tx, context, {
           action: AuditActions.COMPANY_USER_CREATED,
-          companyId: companyUser.companyId,
-          entityType: AuditEntityType.COMPANY_USER,
-          entityId: companyUser.id,
-          metadata: {
-            ...buildAuditContext({
-              companyName,
-              entityLabel: formatAuditPersonLabel(
-                companyUser.firstName,
-                companyUser.lastName,
-                companyUser.username,
-              ),
-            }),
-            changes: createAuditChanges(
-              _companyUserAuditRecord(companyUser, true),
-              COMPANY_USER_AUDIT_FIELDS,
-            ),
-          },
+          companyUser,
+          changes: createAuditChanges(
+            companyUserAuditRecord(companyUser, true),
+            COMPANY_USER_AUDIT_FIELDS,
+          ),
         });
 
         return companyUser;
@@ -189,7 +188,7 @@ export class CompanyUsersService {
   ): Promise<CompanyUser> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const existing = await _findCompanyUserForContext(tx, context, id);
+        const existing = await findLiveCompanyUserForContext(tx, context, id);
 
         if (!existing) {
           throw createApiException(
@@ -200,14 +199,14 @@ export class CompanyUsersService {
         }
 
         if (dto.username && dto.username !== existing.username) {
-          await this._assertUsernameAvailable(tx, dto.username, id);
+          await assertUsernameAvailable(tx, dto.username, id);
         }
 
         if (
           dto.nationalId !== undefined &&
           dto.nationalId !== existing.nationalId
         ) {
-          await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+          await assertNationalIdAvailable(tx, dto.nationalId, id);
         }
 
         const existingLevel = resolveCompanyUserLevel(existing.level, 'admin');
@@ -215,13 +214,12 @@ export class CompanyUsersService {
           dto.level !== undefined
             ? resolveCompanyUserLevel(dto.level, existingLevel)
             : existingLevel;
-        await this._assertNotRemovingLastAdmin(
+        await assertNotRemovingLastAdmin({
           tx,
-          existing.companyId,
-          existing.id,
-          existingLevel,
+          companyId: existing.companyId,
+          currentLevel: existingLevel,
           nextLevel,
-        );
+        });
 
         if (dto.firstName !== undefined || dto.lastName !== undefined) {
           await tx
@@ -239,7 +237,7 @@ export class CompanyUsersService {
           ? await hashPassword(dto.password)
           : undefined;
 
-        await tx
+        const [row] = await tx
           .update(companyUsers)
           .set({
             ...(dto.username !== undefined ? { username: dto.username } : {}),
@@ -250,11 +248,10 @@ export class CompanyUsersService {
             ...(dto.level !== undefined ? { level: dto.level } : {}),
             ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
           })
-          .where(eq(companyUsers.id, id));
+          .where(and(eq(companyUsers.id, id), isNull(companyUsers.deletedAt)))
+          .returning();
 
-        const updated = await _findCompanyUserById(tx, id);
-
-        if (!updated) {
+        if (!row) {
           throw createApiException(
             HttpStatus.NOT_FOUND,
             ApiErrorCode.NOT_FOUND,
@@ -262,29 +259,25 @@ export class CompanyUsersService {
           );
         }
 
-        const companyUser = _mapCompanyUser(updated);
-        const companyName = await fetchCompanyName(tx, companyUser.companyId);
-
-        await this.auditLogService.record(context, {
-          action: AuditActions.COMPANY_USER_UPDATED,
-          companyId: companyUser.companyId,
-          entityType: AuditEntityType.COMPANY_USER,
-          entityId: companyUser.id,
-          metadata: {
-            ...buildAuditContext({
-              companyName,
-              entityLabel: formatAuditPersonLabel(
-                companyUser.firstName,
-                companyUser.lastName,
-                companyUser.username,
-              ),
-            }),
-            changes: diffAuditChanges(
-              _companyUserAuditRecord(_mapCompanyUser(existing), false),
-              _companyUserAuditRecord(companyUser, Boolean(dto.password)),
-              COMPANY_USER_AUDIT_FIELDS,
-            ),
+        const companyUser = mapCompanyUser({
+          ...row,
+          user: {
+            ...existing.user,
+            ...(dto.firstName !== undefined
+              ? { firstName: dto.firstName }
+              : {}),
+            ...(dto.lastName !== undefined ? { lastName: dto.lastName } : {}),
           },
+        });
+
+        await this._recordMutationAudit(tx, context, {
+          action: AuditActions.COMPANY_USER_UPDATED,
+          companyUser,
+          changes: diffAuditChanges(
+            companyUserAuditRecord(mapCompanyUser(existing), false),
+            companyUserAuditRecord(companyUser, Boolean(dto.password)),
+            COMPANY_USER_AUDIT_FIELDS,
+          ),
         });
 
         return companyUser;
@@ -294,9 +287,10 @@ export class CompanyUsersService {
     }
   }
 
+  /** Soft-delete: set deletedAt, keep user profile and login row. */
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
-      const existing = await _findCompanyUserForContext(tx, context, id);
+      const existing = await findCompanyUserForContext(tx, context, id);
 
       if (!existing) {
         throw createApiException(
@@ -306,17 +300,23 @@ export class CompanyUsersService {
         );
       }
 
-      await this._assertNotRemovingLastAdmin(
+      if (existing.deletedAt) {
+        return null;
+      }
+
+      await assertNotRemovingLastAdmin({
         tx,
-        existing.companyId,
-        existing.id,
-        resolveCompanyUserLevel(existing.level, 'admin'),
-        null,
-      );
+        companyId: existing.companyId,
+        currentLevel: resolveCompanyUserLevel(existing.level, 'admin'),
+        nextLevel: null,
+      });
 
-      await tx.delete(users).where(eq(users.id, existing.userId));
+      await tx
+        .update(companyUsers)
+        .set({ deletedAt: new Date() })
+        .where(and(eq(companyUsers.id, id), isNull(companyUsers.deletedAt)));
 
-      const deletedUser = _mapCompanyUser(existing);
+      const deletedUser = mapCompanyUser(existing);
       const companyName = await fetchCompanyName(tx, existing.companyId);
 
       await this.auditLogService.record(context, {
@@ -334,7 +334,7 @@ export class CompanyUsersService {
             ),
           }),
           snapshot: toAuditSnapshot(
-            _companyUserAuditRecord(deletedUser, false),
+            companyUserAuditRecord(deletedUser, false),
             COMPANY_USER_AUDIT_FIELDS,
           ),
         },
@@ -344,223 +344,34 @@ export class CompanyUsersService {
     });
   }
 
-  private _assertCompanyAccess(
+  private async _recordMutationAudit(
+    tx: TenantTransaction,
     context: TenantContext,
-    companyId: string,
-  ): void {
-    if (!context.isInternal && context.companyId !== companyId) {
-      throw createApiException(
-        HttpStatus.FORBIDDEN,
-        ApiErrorCode.FORBIDDEN,
-        'Access denied',
-      );
-    }
-  }
+    options: {
+      action: typeof AuditActions.COMPANY_USER_CREATED | typeof AuditActions.COMPANY_USER_UPDATED;
+      companyUser: CompanyUser;
+      changes: ReturnType<typeof createAuditChanges>;
+    },
+  ): Promise<void> {
+    const { action, companyUser, changes } = options;
+    const companyName = await fetchCompanyName(tx, companyUser.companyId);
 
-  private async _assertCompanyExists(companyId: string): Promise<void> {
-    await this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const [company] = await tx
-        .select({ id: companies.id })
-        .from(companies)
-        .where(eq(companies.id, companyId))
-        .limit(1);
-
-      if (!company) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Company not found',
-        );
-      }
+    await this.auditLogService.record(context, {
+      action,
+      companyId: companyUser.companyId,
+      entityType: AuditEntityType.COMPANY_USER,
+      entityId: companyUser.id,
+      metadata: {
+        ...buildAuditContext({
+          companyName,
+          entityLabel: formatAuditPersonLabel(
+            companyUser.firstName,
+            companyUser.lastName,
+            companyUser.username,
+          ),
+        }),
+        changes,
+      },
     });
   }
-
-  private async _assertUsernameAvailable(
-    tx: TenantTransaction,
-    username: string,
-    excludeId?: string,
-  ): Promise<void> {
-    const whereClause = excludeId
-      ? and(eq(companyUsers.username, username), ne(companyUsers.id, excludeId))
-      : eq(companyUsers.username, username);
-
-    const [existing] = await tx
-      .select({ id: companyUsers.id })
-      .from(companyUsers)
-      .where(whereClause)
-      .limit(1);
-
-    if (existing) {
-      throw createApiException(
-        HttpStatus.BAD_REQUEST,
-        ApiErrorCode.VALIDATION_ERROR,
-        'Validation failed',
-        [{ field: 'username', message: 'This username is already taken' }],
-      );
-    }
-  }
-
-  private async _assertNationalIdAvailable(
-    tx: TenantTransaction,
-    nationalId?: string | null,
-    excludeId?: string,
-  ): Promise<void> {
-    if (!nationalId) {
-      return;
-    }
-
-    const whereClause = excludeId
-      ? and(
-          eq(companyUsers.nationalId, nationalId),
-          ne(companyUsers.id, excludeId),
-        )
-      : eq(companyUsers.nationalId, nationalId);
-
-    const [existing] = await tx
-      .select({ id: companyUsers.id })
-      .from(companyUsers)
-      .where(whereClause)
-      .limit(1);
-
-    if (existing) {
-      throw createApiException(
-        HttpStatus.BAD_REQUEST,
-        ApiErrorCode.VALIDATION_ERROR,
-        'Validation failed',
-        [
-          {
-            field: 'nationalId',
-            message: 'A user with this national ID already exists',
-          },
-        ],
-      );
-    }
-  }
-
-  private async _assertNotRemovingLastAdmin(
-    tx: TenantTransaction,
-    companyId: string,
-    _targetId: string,
-    currentLevel: CompanyUserLevel,
-    nextLevel: CompanyUserLevel | null,
-  ): Promise<void> {
-    const isCurrentlyAdmin = currentLevel === 'admin';
-    const willRemainAdmin = nextLevel === 'admin';
-
-    if (!isCurrentlyAdmin || willRemainAdmin) {
-      return;
-    }
-
-    const [{ count }] = await tx
-      .select({ count: sql<number>`count(*)::int` })
-      .from(companyUsers)
-      .where(
-        and(
-          eq(companyUsers.companyId, companyId),
-          eq(companyUsers.level, 'admin'),
-        ),
-      );
-
-    if (count <= 1) {
-      throw createApiException(
-        HttpStatus.FORBIDDEN,
-        ApiErrorCode.FORBIDDEN,
-        'Cannot remove the last company admin',
-      );
-    }
-  }
-}
-
-async function _findCompanyUserById(
-  tx: TenantTransaction,
-  id: string,
-): Promise<CompanyUserWithUser | null> {
-  const row = await tx.query.companyUsers.findFirst({
-    where: eq(companyUsers.id, id),
-    with: { user: true },
-  });
-
-  if (!row?.user) {
-    return null;
-  }
-
-  return row;
-}
-
-async function _findCompanyUserForContext(
-  tx: TenantTransaction,
-  context: TenantContext,
-  id: string,
-): Promise<CompanyUserWithUser | null> {
-  const row = await _findCompanyUserById(tx, id);
-
-  if (!row) {
-    return null;
-  }
-
-  if (!context.isInternal && row.companyId !== context.companyId) {
-    return null;
-  }
-
-  return row;
-}
-
-function _mapCompanyUser(row: CompanyUserWithUser): CompanyUser {
-  return {
-    id: row.id,
-    userId: row.userId,
-    companyId: row.companyId,
-    username: row.username,
-    firstName: row.user.firstName,
-    lastName: row.user.lastName,
-    nationalId: row.nationalId,
-    email: row.email,
-    level: row.level,
-  };
-}
-
-type CreateCompanyUserPayload = {
-  companyId: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  password: string;
-  level: CompanyUserLevel;
-  nationalId?: string | null;
-  email?: string | null;
-};
-
-type UpdateCompanyUserPayload = Partial<
-  Omit<CreateCompanyUserPayload, 'companyId' | 'password'>
-> & {
-  password?: string;
-};
-
-type CompanyUserWithUser = typeof companyUsers.$inferSelect & {
-  user: typeof users.$inferSelect;
-};
-
-const COMPANY_USER_AUDIT_FIELDS = [
-  'firstName',
-  'lastName',
-  'username',
-  'nationalId',
-  'email',
-  'level',
-  'password',
-] as const;
-
-function _companyUserAuditRecord(
-  user: CompanyUser,
-  passwordChanged: boolean,
-): Record<string, unknown> {
-  return {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    nationalId: user.nationalId,
-    email: user.email,
-    level: user.level,
-    password: passwordChanged ? 'changed' : null,
-  };
 }

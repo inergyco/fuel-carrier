@@ -1,5 +1,4 @@
-import type { Car } from './car';
-import type { EntityStatus } from './entity-status';
+import type { Car } from "./car";
 
 export type Driver = {
   id: string;
@@ -7,7 +6,8 @@ export type Driver = {
   lastName: string;
   nationalId: string;
   companyId: string;
-  status: EntityStatus;
+  /** ISO-8601 timestamptz when soft-deleted; null while live. */
+  deletedAt: string | null;
   /** ISO-8601 timestamptz from the API. */
   createdAt: string;
   /** ISO-8601 timestamptz from the API. */
@@ -15,8 +15,8 @@ export type Driver = {
   car?: Car | null;
 };
 
-/** Create/update payload — status is server-managed (active on create, deactivate via DELETE). */
+/** Create/update payload — deletedAt is server-managed via DELETE. */
 export type DriverInput = Omit<
   Driver,
-  'id' | 'createdAt' | 'updatedAt' | 'car' | 'status'
+  "id" | "createdAt" | "updatedAt" | "car" | "deletedAt"
 >;

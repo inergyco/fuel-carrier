@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type { Car, PaginatedResult } from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
@@ -20,11 +20,10 @@ import {
   getPaginationOffset,
 } from '../common/pagination.utils';
 import { createApiException } from '../common/exceptions/api.exception';
-import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { cars } from '../database/schema/cars';
-import { ENTITY_STATUS } from '../database/schema/entity-status';
 import { drivers } from '../database/schema/drivers';
+import { mqttClients } from '../database/schema/mqtt-clients';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';
@@ -35,7 +34,7 @@ import {
   buildCarSearchFilter,
 } from './cars-list-filters';
 import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
-import { CarsReader } from './cars-reader.service';
+import { CarsReader, mapCarRow } from './cars-reader.service';
 import { assertCustodyPrecondition } from './custody-conflict';
 
 type CreateCarPayload = {
@@ -84,7 +83,7 @@ export class CarsService {
 
     const offset = getPaginationOffset(listOptions);
     const where = and(
-      eq(cars.status, ENTITY_STATUS.ACTIVE),
+      isNull(cars.deletedAt),
       companyId ? eq(cars.companyId, companyId) : undefined,
       buildCarSearchFilter(searchText),
       buildCarAssignmentFilter(assignment),
@@ -105,7 +104,7 @@ export class CarsService {
         .offset(offset);
 
       return toPaginatedResult({
-        items: rows.map(_mapCar),
+        items: rows.map(mapCarRow),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -146,7 +145,6 @@ export class CarsService {
             companyId: dto.companyId,
             driverId: dto.driverId ?? null,
             note: dto.note ?? null,
-            status: ENTITY_STATUS.ACTIVE,
           })
           .returning();
 
@@ -171,7 +169,7 @@ export class CarsService {
           );
         }
 
-        const car = _mapCar(row);
+        const car = mapCarRow(row);
         const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {
@@ -211,7 +209,6 @@ export class CarsService {
         }
 
         const existing = await this.carsReader.getById(tx, id);
-        this._assertCarActive(existing);
 
         if (dto.driverId !== undefined) {
           assertCustodyPrecondition({
@@ -259,7 +256,7 @@ export class CarsService {
             ...(dto.driverId !== undefined ? { driverId: dto.driverId } : {}),
             ...(dto.note !== undefined ? { note: dto.note } : {}),
           })
-          .where(eq(cars.id, id))
+          .where(and(eq(cars.id, id), isNull(cars.deletedAt)))
           .returning();
 
         if (!row) {
@@ -270,7 +267,7 @@ export class CarsService {
           );
         }
 
-        const car = _mapCar(row);
+        const car = mapCarRow(row);
         const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {
@@ -294,27 +291,35 @@ export class CarsService {
     }
   }
 
-  /** Soft-delete: mark inactive, end custody, keep row for assignment history. */
+  /** Soft-delete: set deletedAt, end custody, disable MQTT, keep row for history. */
   async delete(context: ApiTenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
-      const existing = await this.carsReader.getById(tx, id);
+      const existing = await this.carsReader.getByIdIncludingDeleted(tx, id);
 
-      if (existing.status === ENTITY_STATUS.INACTIVE) {
+      if (existing.deletedAt) {
         return null;
       }
+
+      const deletedAt = new Date();
 
       await this.carDriverAssignmentsService.closeOpenAssignmentsForCarInTx(
         tx,
         id,
+        deletedAt,
       );
+
+      await tx
+        .update(mqttClients)
+        .set({ enabled: false })
+        .where(eq(mqttClients.carId, id));
 
       const [row] = await tx
         .update(cars)
         .set({
-          status: ENTITY_STATUS.INACTIVE,
+          deletedAt,
           driverId: null,
         })
-        .where(eq(cars.id, id))
+        .where(and(eq(cars.id, id), isNull(cars.deletedAt)))
         .returning({ id: cars.id });
 
       if (!row) {
@@ -345,19 +350,8 @@ export class CarsService {
     });
   }
 
-  private _assertCarActive(car: Car): void {
-    if (car.status !== ENTITY_STATUS.ACTIVE) {
-      throw createApiException(
-        HttpStatus.BAD_REQUEST,
-        ApiErrorCode.VALIDATION_ERROR,
-        'Validation failed',
-        [{ field: 'id', message: 'Car is inactive' }],
-      );
-    }
-  }
-
   /**
-   * Driver must share companyId and be active. RLS hides other-company drivers
+   * Driver must share companyId and be live. RLS hides other-company drivers
    * for company users; internal admins see all drivers, so this check is required.
    */
   private async _assertDriverAssignableToCompany(
@@ -369,10 +363,10 @@ export class CarsService {
       .select({
         id: drivers.id,
         companyId: drivers.companyId,
-        status: drivers.status,
+        deletedAt: drivers.deletedAt,
       })
       .from(drivers)
-      .where(eq(drivers.id, driverId))
+      .where(and(eq(drivers.id, driverId), isNull(drivers.deletedAt)))
       .limit(1);
 
     if (!driver || driver.companyId !== companyId) {
@@ -388,30 +382,7 @@ export class CarsService {
         ],
       );
     }
-
-    if (driver.status !== ENTITY_STATUS.ACTIVE) {
-      throw createApiException(
-        HttpStatus.BAD_REQUEST,
-        ApiErrorCode.VALIDATION_ERROR,
-        'Validation failed',
-        [{ field: 'driverId', message: 'Driver is inactive' }],
-      );
-    }
   }
-}
-
-function _mapCar(row: typeof cars.$inferSelect): Car {
-  return {
-    id: row.id,
-    name: row.name,
-    licensePlate: row.licensePlate,
-    companyId: row.companyId,
-    driverId: row.driverId,
-    note: row.note,
-    status: row.status,
-    createdAt: toIsoTimestamp(row.createdAt),
-    updatedAt: toIsoTimestamp(row.updatedAt),
-  };
 }
 
 const CAR_AUDIT_FIELDS = [
@@ -419,5 +390,4 @@ const CAR_AUDIT_FIELDS = [
   'licensePlate',
   'driverId',
   'note',
-  'status',
 ] as const satisfies readonly (keyof Car)[];

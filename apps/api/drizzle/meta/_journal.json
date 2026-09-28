@@ -155,6 +155,13 @@
       "when": 1788800000000,
       "tag": "0021_assignment_no_overlap",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1790585015262,
+      "tag": "0022_fine_phalanx",
+      "breakpoints": true
     }
   ]
 }

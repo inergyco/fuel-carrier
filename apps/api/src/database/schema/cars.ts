@@ -1,14 +1,16 @@
+import { sql } from 'drizzle-orm';
 import {
   foreignKey,
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
 import { companies } from './companies';
 import { drivers } from './drivers';
-import { entityStatusEnum } from './entity-status';
+import { softDeleteColumn } from './soft-delete';
 
 /** Tenant-owned resource: every row carries company_id for RLS enforcement. */
 export const cars = pgTable(
@@ -16,14 +18,14 @@ export const cars = pgTable(
   {
     id: uuid('id').defaultRandom().primaryKey(),
     name: varchar('name', { length: 200 }),
-    licensePlate: varchar('license_plate', { length: 32 }).notNull().unique(),
+    licensePlate: varchar('license_plate', { length: 32 }).notNull(),
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),
     /** One-to-one: each driver may be assigned to at most one car. */
     driverId: uuid('driver_id').unique(),
     note: text('note'),
-    status: entityStatusEnum('status').notNull().default('active'),
+    ...softDeleteColumn(),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -33,6 +35,12 @@ export const cars = pgTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
+    /**
+     * Soft-deleted plates may be reused — uniqueness only among live rows.
+     */
+    uniqueIndex('cars_license_plate_unique')
+      .on(table.licensePlate)
+      .where(sql`${table.deletedAt} IS NULL`),
     /**
      * Composite FK: assigned driver must belong to the same company as the car.
      * MATCH SIMPLE: null driver_id skips the check. ON DELETE NO ACTION — clear

@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import type {
   CarMqttCredentials,
   TenantContext,
@@ -52,7 +52,7 @@ export class MqttCredentialsService {
       const [car] = await tx
         .select()
         .from(cars)
-        .where(eq(cars.id, carId))
+        .where(and(eq(cars.id, carId), isNull(cars.deletedAt)))
         .limit(1);
 
       if (!car) {

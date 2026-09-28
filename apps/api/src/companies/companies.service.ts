@@ -1,5 +1,15 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, ilike, ne, or } from 'drizzle-orm';
+import {
+  and,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  isNull,
+  ne,
+  or,
+} from 'drizzle-orm';
 import type {
   Company,
   CompanyDeletionImpact,
@@ -28,10 +38,12 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import type { ApiTenantContext } from '../database/tenant-context.types';
+import { carDriverAssignments } from '../database/schema/car-driver-assignments';
 import { cars } from '../database/schema/cars';
 import { companies } from '../database/schema/companies';
 import { companyUsers } from '../database/schema/company-users';
 import { drivers } from '../database/schema/drivers';
+import { mqttClients } from '../database/schema/mqtt-clients';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
@@ -55,7 +67,10 @@ export class CompaniesService {
   }): Promise<PaginatedResult<Company>> {
     const { page, limit, search: searchText } = options;
     const offset = getPaginationOffset(options);
-    const where = buildCompanySearchFilter(searchText);
+    const where = and(
+      isNull(companies.deletedAt),
+      buildCompanySearchFilter(searchText),
+    );
 
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
       const [countRow] = await tx
@@ -84,7 +99,7 @@ export class CompaniesService {
     assertUuidParam(id);
 
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      const row = await _findCompanyById(tx, id);
+      const row = await _findLiveCompanyById(tx, id);
       return _mapCompany(row);
     });
   }
@@ -93,18 +108,23 @@ export class CompaniesService {
     assertUuidParam(id);
 
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
-      await _findCompanyById(tx, id);
+      await _findLiveCompanyById(tx, id);
 
       const [[carsRow], [driversRow], [usersRow]] = await Promise.all([
-        tx.select({ value: count() }).from(cars).where(eq(cars.companyId, id)),
+        tx
+          .select({ value: count() })
+          .from(cars)
+          .where(and(eq(cars.companyId, id), isNull(cars.deletedAt))),
         tx
           .select({ value: count() })
           .from(drivers)
-          .where(eq(drivers.companyId, id)),
+          .where(and(eq(drivers.companyId, id), isNull(drivers.deletedAt))),
         tx
           .select({ value: count() })
           .from(companyUsers)
-          .where(eq(companyUsers.companyId, id)),
+          .where(
+            and(eq(companyUsers.companyId, id), isNull(companyUsers.deletedAt)),
+          ),
       ]);
 
       return {
@@ -151,7 +171,7 @@ export class CompaniesService {
 
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const existing = await _findCompanyById(tx, id);
+        const existing = await _findLiveCompanyById(tx, id);
 
         if (dto.nationalId !== undefined) {
           await this._assertNationalIdAvailable(tx, dto.nationalId, id);
@@ -160,7 +180,7 @@ export class CompaniesService {
         const [row] = await tx
           .update(companies)
           .set(dto)
-          .where(eq(companies.id, id))
+          .where(and(eq(companies.id, id), isNull(companies.deletedAt)))
           .returning();
 
         const company = _mapCompany(row);
@@ -188,15 +208,31 @@ export class CompaniesService {
     }
   }
 
+  /** Soft-delete company and cascade soft-delete to cars, drivers, and users. */
   async delete(context: ApiTenantContext, id: string): Promise<null> {
     assertUuidParam(id);
 
     return this.tenantDb.run(context, async (tx) => {
-      const existing = await _findCompanyById(tx, id);
+      const [existing] = await tx
+        .select()
+        .from(companies)
+        .where(eq(companies.id, id))
+        .limit(1);
 
-      // Record before delete on the same tx. A nested tenantDb.run after
-      // delete deadlocks: the audit INSERT waits on the companies FK lock
-      // held by this transaction, while we wait for the audit to finish.
+      if (!existing) {
+        throw createApiException(
+          HttpStatus.NOT_FOUND,
+          ApiErrorCode.NOT_FOUND,
+          'Company not found',
+        );
+      }
+
+      if (existing.deletedAt) {
+        return null;
+      }
+
+      const deletedAt = new Date();
+
       await this.auditLogService.record(context, {
         tx,
         action: AuditActions.COMPANY_DELETED,
@@ -212,7 +248,7 @@ export class CompaniesService {
         },
       });
 
-      await tx.delete(companies).where(eq(companies.id, id));
+      await _softDeleteCompanyCascade(tx, id, deletedAt);
 
       return null;
     });
@@ -224,8 +260,12 @@ export class CompaniesService {
     excludeId?: string,
   ): Promise<void> {
     const whereClause = excludeId
-      ? and(eq(companies.nationalId, nationalId), ne(companies.id, excludeId))
-      : eq(companies.nationalId, nationalId);
+      ? and(
+          eq(companies.nationalId, nationalId),
+          ne(companies.id, excludeId),
+          isNull(companies.deletedAt),
+        )
+      : and(eq(companies.nationalId, nationalId), isNull(companies.deletedAt));
 
     const [existing] = await tx
       .select({ id: companies.id })
@@ -249,14 +289,69 @@ export class CompaniesService {
   }
 }
 
-async function _findCompanyById(
+async function _softDeleteCompanyCascade(
+  tx: TenantTransaction,
+  companyId: string,
+  deletedAt: Date,
+): Promise<void> {
+  await tx
+    .update(carDriverAssignments)
+    .set({ unassignedAt: deletedAt })
+    .where(
+      and(
+        eq(carDriverAssignments.companyId, companyId),
+        isNull(carDriverAssignments.unassignedAt),
+      ),
+    );
+
+  const liveCars = await tx
+    .select({ id: cars.id })
+    .from(cars)
+    .where(and(eq(cars.companyId, companyId), isNull(cars.deletedAt)));
+
+  const carIds = liveCars.map((car) => car.id);
+
+  if (carIds.length > 0) {
+    await tx
+      .update(mqttClients)
+      .set({ enabled: false })
+      .where(inArray(mqttClients.carId, carIds));
+  }
+
+  await tx
+    .update(cars)
+    .set({ deletedAt, driverId: null })
+    .where(and(eq(cars.companyId, companyId), isNull(cars.deletedAt)));
+
+  await tx
+    .update(drivers)
+    .set({ deletedAt })
+    .where(and(eq(drivers.companyId, companyId), isNull(drivers.deletedAt)));
+
+  await tx
+    .update(companyUsers)
+    .set({ deletedAt })
+    .where(
+      and(
+        eq(companyUsers.companyId, companyId),
+        isNull(companyUsers.deletedAt),
+      ),
+    );
+
+  await tx
+    .update(companies)
+    .set({ deletedAt })
+    .where(and(eq(companies.id, companyId), isNull(companies.deletedAt)));
+}
+
+async function _findLiveCompanyById(
   tx: TenantTransaction,
   id: string,
 ): Promise<typeof companies.$inferSelect> {
   const [row] = await tx
     .select()
     .from(companies)
-    .where(eq(companies.id, id))
+    .where(and(eq(companies.id, id), isNull(companies.deletedAt)))
     .limit(1);
 
   if (!row) {
@@ -279,6 +374,7 @@ function _mapCompany(row: typeof companies.$inferSelect): Company {
     address: row.address,
     note: row.note,
     logoUrl: row.logoUrl,
+    deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),
   };
