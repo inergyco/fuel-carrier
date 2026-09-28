@@ -36,7 +36,7 @@ const shellGridClassName =
   'pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--bc)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--bc)/0.03)_1px,transparent_1px)] bg-[size:32px_32px]'
 
 const sidebarHeaderClassName =
-  'flex h-14 shrink-0 items-center gap-3 border-b px-5'
+  'relative flex min-h-16 shrink-0 items-center gap-3.5 px-5 py-3'
 
 export function PanelShell({
   navItems,
@@ -143,19 +143,16 @@ export function PanelShell({
         >
           <div aria-hidden className={shellGridClassName} />
 
-          <div
-            className={cn(
-              sidebarHeaderClassName,
-              'relative border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_12%,transparent)]',
-            )}
-          >
-            <div className="flex h-10 shrink-0 items-center justify-center rounded-lg border border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_25%,transparent)] bg-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_12%,transparent)] px-1.5 text-[var(--panel-sidebar-content,var(--color-primary))] [&_img]:h-8 [&_img]:w-auto [&_img]:max-w-[5.5rem] [&_img]:object-contain [&_svg]:size-5">
+          <div className={sidebarHeaderClassName}>
+            <div className="flex h-12 shrink-0 items-center justify-center rounded-xl border border-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_25%,transparent)] bg-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-primary))_12%,transparent)] px-2 text-[var(--panel-sidebar-content,var(--color-primary))] [&_img]:h-10 [&_img]:w-auto [&_img]:max-w-[7rem] [&_img]:object-contain [&_svg]:size-7">
               {brandIcon}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold tracking-tight">{brandTitle}</p>
+              <p className="truncate text-base font-semibold tracking-tight md:text-lg">
+                {brandTitle}
+              </p>
               {brandSubtitle ? (
-                <p className="truncate text-xs font-semibold uppercase tracking-wide text-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_55%,transparent)]">
+                <p className="truncate text-xs font-semibold uppercase tracking-wide text-[color-mix(in_oklab,var(--panel-sidebar-content,var(--color-base-content))_55%,transparent)] md:text-sm">
                   {brandSubtitle}
                 </p>
               ) : null}
