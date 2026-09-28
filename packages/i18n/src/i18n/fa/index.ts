@@ -442,6 +442,12 @@ const fa: Translation = {
       location: "موقعیت",
       locationLive: "زنده",
       locationUnknown: "بدون موقعیت زنده",
+      statusMoving: "در حال حرکت",
+      statusStopped: "متوقف",
+      mobileUnknown: "بدون شماره موبایل",
+      fuelVolume: "{volume} {unit}",
+      fuelVolumeOfCapacity: "{volume} / {capacity} {unit}",
+      vehicleStatusTitle: "وضعیت خودروها",
     },
     nav: {
       dashboard: "داشبورد",

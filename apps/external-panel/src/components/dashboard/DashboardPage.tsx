@@ -31,11 +31,11 @@ export function DashboardPage() {
   const telemetryQuery = useCarTelemetryLive(api)
   const isOnline = useNavigatorOnline()
 
-  const driverNameById = useMemo(
-    function mapDriverNames() {
+  const driverById = useMemo(
+    function mapDrivers() {
       return new Map(
         (driversQuery.data ?? []).map(function toDriverEntry(driver) {
-          return [driver.id, `${driver.firstName} ${driver.lastName}`]
+          return [driver.id, driver]
         }),
       )
     },
@@ -101,20 +101,25 @@ export function DashboardPage() {
           </div>
         ) : (
           <>
-            <p className="mb-5 text-xs text-base-content/40">
-              {LL.externalPanel.home.fleetSummary({ count: cars.length })}
-            </p>
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="mb-4 flex items-end justify-between gap-3">
+              <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
+                {LL.externalPanel.home.vehicleStatusTitle()}
+              </h2>
+              <p className="text-xs text-base-content/40">
+                {LL.externalPanel.home.fleetSummary({ count: cars.length })}
+              </p>
+            </div>
+            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {cars.map(function renderCarCard(car) {
-                const driverName = car.driverId
-                  ? (driverNameById.get(car.driverId) ?? null)
+                const driver = car.driverId
+                  ? (driverById.get(car.driverId) ?? null)
                   : null
 
                 return (
                   <li key={car.id}>
                     <DashboardCarCard
                       car={car}
-                      driverName={driverName}
+                      driver={driver}
                       telemetry={telemetryByCarId.get(car.id) ?? null}
                     />
                   </li>

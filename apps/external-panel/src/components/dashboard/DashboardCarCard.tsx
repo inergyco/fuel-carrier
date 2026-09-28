@@ -1,77 +1,182 @@
-import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
-import { MapPin, Truck, User } from '@fuel-carrier/web-ui/icons'
-import { Link } from '@tanstack/react-router'
+import type {
+  Car,
+  CarTelemetryMarker,
+  Driver,
+} from "@fuel-carrier/shared-types";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+  formatVolume,
+} from "@fuel-carrier/web-ui/cars";
+import { ICON_STROKE_WIDTH } from "@fuel-carrier/web-ui/ui";
+import { Info, MapPin, Phone, User } from "@fuel-carrier/web-ui/icons";
+import { Link } from "@tanstack/react-router";
+
+const MOVING_SPEED_KMH = 1;
+
+/** Matches the tanks diagram on the vehicle detail page. */
+const TOTAL_CAPACITY_LITERS = DEFAULT_TANK_CAPACITY_LITERS * DEFAULT_TANK_COUNT;
 
 export type DashboardCarCardProps = {
-  car: Car
-  driverName: string | null
-  telemetry: CarTelemetryMarker | null
-}
+  car: Car;
+  driver: Driver | null;
+  telemetry: CarTelemetryMarker | null;
+};
 
 export function DashboardCarCard({
   car,
-  driverName,
+  driver,
   telemetry,
 }: DashboardCarCardProps) {
-  const { LL } = useI18nContext()
-  const title = car.name?.trim()
-    ? car.name
-    : LL.externalPanel.map.unnamedVehicle()
+  const { LL } = useI18nContext();
+
+  const isLive = telemetry != null;
+  const isMoving =
+    isLive && telemetry.speed != null && telemetry.speed > MOVING_SPEED_KMH;
+
+  const remainFuel =
+    telemetry?.remainFuel != null && Number.isFinite(telemetry.remainFuel)
+      ? Math.max(0, telemetry.remainFuel)
+      : null;
+
+  const fillPercent =
+    remainFuel != null
+      ? Math.min(100, Math.round((remainFuel / TOTAL_CAPACITY_LITERS) * 100))
+      : null;
+
+  const statusLabel = !isLive
+    ? LL.externalPanel.home.locationUnknown()
+    : isMoving
+      ? LL.externalPanel.home.statusMoving()
+      : LL.externalPanel.home.statusStopped();
+
+  const statusDotClass = !isLive
+    ? "bg-base-content/30"
+    : isMoving
+      ? "bg-success"
+      : "bg-warning";
+
+  const driverName = driver
+    ? `${driver.firstName} ${driver.lastName}`
+    : LL.externalPanel.cars.noDriver();
+
+  const mobileNumber = driver?.mobileNumber?.trim() || null;
+  const locationLabel = isLive
+    ? LL.externalPanel.home.locationLive()
+    : LL.externalPanel.home.locationUnknown();
 
   return (
-    <Link
-      to="/cars/$carId"
-      params={{ carId: car.id }}
-      className="group flex flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-xl transition-all hover:border-primary/25 hover:bg-base-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 h-full"
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary transition-colors group-hover:border-primary/35 group-hover:bg-primary/15">
-          <Truck className="h-5 w-5" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold tracking-tight text-base-content">
-            {title}
-          </p>
-          <p className="mt-0.5 font-mono text-xs text-base-content/55">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
+      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+        <div className="min-w-0">
+          <p className="truncate font-mono text-sm font-semibold tracking-tight text-base-content">
             {car.licensePlate}
+          </p>
+          <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-base-content/55">
+            <span
+              aria-hidden
+              className={`size-1.5 shrink-0 rounded-full ${statusDotClass}`}
+            />
+            {statusLabel}
           </p>
         </div>
       </div>
 
-      <dl className="space-y-2 text-xs text-base-content/55">
-        <div className="flex items-center gap-2">
-          <User className="h-3.5 w-3.5 shrink-0" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          <dt className="sr-only">{LL.externalPanel.cars.driver()}</dt>
-          <dd className="truncate">
-            {driverName ?? LL.externalPanel.cars.noDriver()}
-          </dd>
+      <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3 text-xs text-base-content/60">
+        <div className="flex min-w-0 items-center gap-2">
+          <User
+            className="size-3.5 shrink-0 text-base-content/40"
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          <span className="truncate font-medium text-base-content/75">
+            {driverName}
+          </span>
         </div>
-        <div className="flex items-center gap-2">
-          <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-          <dt className="sr-only">{LL.externalPanel.home.location()}</dt>
-          <dd className="inline-flex items-center gap-1.5">
-            <span
-              aria-hidden
-              className={
-                telemetry
-                  ? 'size-1.5 rounded-full bg-success'
-                  : 'size-1.5 rounded-full bg-base-content/30'
-              }
-            />
-            {telemetry
-              ? LL.externalPanel.home.locationLive()
-              : LL.externalPanel.home.locationUnknown()}
-          </dd>
-        </div>
-      </dl>
 
-      {car.note?.trim() ? (
-        <p className="line-clamp-2 border-t border-base-content/6 pt-3 text-xs text-base-content/45">
-          {car.note}
-        </p>
-      ) : null}
-    </Link>
-  )
+        <div className="flex min-w-0 items-center gap-2" dir="ltr">
+          <Phone
+            className="size-3.5 shrink-0 text-base-content/40"
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          <span className="truncate font-mono tabular-nums">
+            {mobileNumber ?? LL.externalPanel.home.mobileUnknown()}
+          </span>
+        </div>
+
+        <div className="flex min-w-0 items-center gap-2">
+          <MapPin
+            className="size-3.5 shrink-0 text-base-content/40"
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          <span className="truncate">{locationLabel}</span>
+        </div>
+
+        <div className="mt-1 space-y-1.5">
+          <div className="flex items-center justify-between gap-2 text-[11px] tabular-nums">
+            <span>
+              {remainFuel != null
+                ? LL.externalPanel.home.fuelVolumeOfCapacity({
+                    volume: formatVolume(remainFuel),
+                    capacity: formatVolume(TOTAL_CAPACITY_LITERS),
+                    unit: LL.externalPanel.cars.tankUnit(),
+                  })
+                : LL.externalPanel.cars.remainFuelUnknown()}
+            </span>
+            {fillPercent != null ? <span>{fillPercent}%</span> : null}
+          </div>
+          {remainFuel != null ? (
+            <div
+              className="h-1.5 overflow-hidden rounded-full bg-base-content/8"
+              role="meter"
+              aria-valuemin={0}
+              aria-valuemax={TOTAL_CAPACITY_LITERS}
+              aria-valuenow={remainFuel}
+            >
+              <div
+                className="h-full rounded-full bg-primary transition-[width] duration-500"
+                style={{ width: `${fillPercent}%` }}
+              />
+            </div>
+          ) : (
+            <div className="h-1.5 rounded-full bg-base-content/8" aria-hidden />
+          )}
+        </div>
+      </div>
+
+      <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
+        <div className="relative h-16 w-24 shrink-0 overflow-hidden">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-base-100 via-base-100/55 to-base-100/10"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 bg-linear-to-l from-base-100/70 via-transparent to-base-100/35"
+          />
+          <img
+            src="/truck-card.png"
+            alt=""
+            className="h-full w-full scale-110 object-contain object-bottom opacity-80 filter-[blur(1.35px)_saturate(1.02)_contrast(0.92)_brightness(1.06)] mask-[radial-gradient(ellipse_80%_70%_at_50%_60%,black_35%,transparent_78%)]"
+            draggable={false}
+          />
+        </div>
+        <Link
+          to="/cars/$carId"
+          params={{ carId: car.id }}
+          className="inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-primary px-3.5 text-sm font-medium text-primary-content transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        >
+          <Info
+            className="size-3.5"
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          {LL.externalPanel.auditLogs.details()}
+        </Link>
+      </div>
+    </article>
+  );
 }

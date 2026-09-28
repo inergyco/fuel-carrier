@@ -442,6 +442,13 @@ const en: BaseTranslation = {
       location: 'Location',
       locationLive: 'Live',
       locationUnknown: 'No live location',
+      statusMoving: 'Moving',
+      statusStopped: 'Stopped',
+      mobileUnknown: 'No mobile number',
+      fuelVolume: '{volume:string} {unit:string}',
+      fuelVolumeOfCapacity:
+        '{volume:string} / {capacity:string} {unit:string}',
+      vehicleStatusTitle: 'Vehicle status',
     },
     nav: {
       dashboard: 'Dashboard',

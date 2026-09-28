@@ -4,6 +4,10 @@ export {
 } from './fuel-truck'
 export { formatVolume } from './fuel-truck'
 export {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+} from './fuel-truck'
+export {
   CarTanksSection,
   type CarTanksSectionLabels,
   type CarTanksSectionProps,

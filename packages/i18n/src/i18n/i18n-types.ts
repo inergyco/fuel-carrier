@@ -1618,6 +1618,35 @@ type RootTranslation = {
 			 * N​o​ ​l​i​v​e​ ​l​o​c​a​t​i​o​n
 			 */
 			locationUnknown: string
+			/**
+			 * M​o​v​i​n​g
+			 */
+			statusMoving: string
+			/**
+			 * S​t​o​p​p​e​d
+			 */
+			statusStopped: string
+			/**
+			 * N​o​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r
+			 */
+			mobileUnknown: string
+			/**
+			 * {​v​o​l​u​m​e​}​ ​{​u​n​i​t​}
+			 * @param {string} unit
+			 * @param {string} volume
+			 */
+			fuelVolume: RequiredParams<'unit' | 'volume'>
+			/**
+			 * {​v​o​l​u​m​e​}​ ​/​ ​{​c​a​p​a​c​i​t​y​}​ ​{​u​n​i​t​}
+			 * @param {string} capacity
+			 * @param {string} unit
+			 * @param {string} volume
+			 */
+			fuelVolumeOfCapacity: RequiredParams<'capacity' | 'unit' | 'volume'>
+			/**
+			 * V​e​h​i​c​l​e​ ​s​t​a​t​u​s
+			 */
+			vehicleStatusTitle: string
 		}
 		nav: {
 			/**
@@ -4236,6 +4265,30 @@ export type TranslationFunctions = {
 			 * No live location
 			 */
 			locationUnknown: () => LocalizedString
+			/**
+			 * Moving
+			 */
+			statusMoving: () => LocalizedString
+			/**
+			 * Stopped
+			 */
+			statusStopped: () => LocalizedString
+			/**
+			 * No mobile number
+			 */
+			mobileUnknown: () => LocalizedString
+			/**
+			 * {volume} {unit}
+			 */
+			fuelVolume: (arg: { unit: string, volume: string }) => LocalizedString
+			/**
+			 * {volume} / {capacity} {unit}
+			 */
+			fuelVolumeOfCapacity: (arg: { capacity: string, unit: string, volume: string }) => LocalizedString
+			/**
+			 * Vehicle status
+			 */
+			vehicleStatusTitle: () => LocalizedString
 		}
 		nav: {
 			/**
