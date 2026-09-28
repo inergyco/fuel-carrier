@@ -3,7 +3,7 @@
   themes: internal-light --default, internal-dark --prefersdark;
 }
 
-/* Warm amber palette — distinct from the external panel's cyan-violet themes */
+/* Solid teal primary — distinct from the external panel’s navy brand */
 @plugin "daisyui/theme" {
   name: "internal-dark";
   default: false;
@@ -13,14 +13,14 @@
   --color-base-200: oklch(18% 0.022 80);
   --color-base-300: oklch(24% 0.026 80);
   --color-base-content: oklch(92% 0.01 80);
-  --color-primary: oklch(80% 0.16 75);
-  --color-primary-content: oklch(16% 0.03 75);
-  --color-secondary: oklch(68% 0.17 45);
-  --color-secondary-content: oklch(16% 0.03 45);
-  --color-accent: oklch(74% 0.15 95);
-  --color-accent-content: oklch(16% 0.03 95);
-  --color-neutral: oklch(22% 0.022 80);
-  --color-neutral-content: oklch(90% 0.01 80);
+  --color-primary: oklch(76% 0.12 185);
+  --color-primary-content: oklch(16% 0.03 185);
+  --color-secondary: oklch(68% 0.14 210);
+  --color-secondary-content: oklch(16% 0.03 210);
+  --color-accent: oklch(74% 0.13 155);
+  --color-accent-content: oklch(16% 0.03 155);
+  --color-neutral: oklch(22% 0.04 185);
+  --color-neutral-content: oklch(90% 0.01 185);
   --color-info: oklch(70% 0.13 240);
   --color-info-content: oklch(14% 0.02 240);
   --color-success: oklch(72% 0.17 155);
@@ -43,14 +43,14 @@
   --color-base-200: oklch(95% 0.012 80);
   --color-base-300: oklch(90% 0.015 80);
   --color-base-content: oklch(22% 0.03 80);
-  --color-primary: oklch(54% 0.14 75);
-  --color-primary-content: oklch(98% 0.005 75);
-  --color-secondary: oklch(56% 0.16 45);
-  --color-secondary-content: oklch(98% 0.005 45);
-  --color-accent: oklch(58% 0.14 95);
-  --color-accent-content: oklch(98% 0.005 95);
-  --color-neutral: oklch(28% 0.03 80);
-  --color-neutral-content: oklch(95% 0.01 80);
+  --color-primary: oklch(45% 0.11 185);
+  --color-primary-content: oklch(98% 0.005 185);
+  --color-secondary: oklch(48% 0.12 210);
+  --color-secondary-content: oklch(98% 0.005 210);
+  --color-accent: oklch(50% 0.12 155);
+  --color-accent-content: oklch(98% 0.005 155);
+  --color-neutral: oklch(22% 0.05 185);
+  --color-neutral-content: oklch(92% 0.015 185);
   --color-info: oklch(55% 0.12 240);
   --color-info-content: oklch(98% 0.005 240);
   --color-success: oklch(52% 0.14 155);
@@ -62,4 +62,11 @@
   --radius-selector: 0.5rem;
   --radius-field: 0.5rem;
   --radius-box: 1rem;
+}
+
+/* Sidebar rail — deep teal in both themes (matches brand primary hue). */
+[data-theme="internal-light"],
+[data-theme="internal-dark"] {
+  --panel-sidebar: oklch(22% 0.05 185);
+  --panel-sidebar-content: oklch(92% 0.015 185);
 }

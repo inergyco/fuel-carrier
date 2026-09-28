@@ -1,5 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { AuthSession, Car, Company, Driver } from '@fuel-carrier/shared-types'
+import type { Car, Company, Driver } from '@fuel-carrier/shared-types'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import {
@@ -14,11 +14,7 @@ import { companyKeys, fetchCompanies } from '../../lib/api/companies'
 import { driverKeys, fetchAllDrivers } from '../../lib/api/drivers'
 import { DashboardCompanyCard } from './DashboardCompanyCard'
 
-export type DashboardPageProps = {
-  user: AuthSession
-}
-
-export function DashboardPage({ user }: DashboardPageProps) {
+export function DashboardPage() {
   const { LL } = useI18nContext()
 
   const companiesQuery = useQuery({
@@ -98,15 +94,6 @@ export function DashboardPage({ user }: DashboardPageProps) {
 
   return (
     <div className="flex min-h-0 flex-col gap-6">
-      <header>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-          {LL.internalPanel.home.title()}
-        </h1>
-        <p className="mt-1 text-sm text-base-content/50">
-          {LL.internalPanel.home.welcome({ firstName: user.firstName })}
-        </p>
-      </header>
-
       <ConnectivityBanner
         isOnline={isOnline}
         isQueryError={telemetryQuery.isError}

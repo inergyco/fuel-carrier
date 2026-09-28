@@ -18,6 +18,10 @@ interface PanelShellProps {
   brandIcon?: ReactNode
   drawerId?: string
   openMenuLabel: string
+  /** Page title shown in the top app bar (start side). */
+  appBarTitle?: string
+  /** Optional subtitle under the app bar title (e.g. welcome line). */
+  appBarSubtitle?: string
   footer?: ReactNode
   pageFooter?: ReactNode
   background?: ReactNode
@@ -31,9 +35,6 @@ interface PanelShellProps {
 const shellGridClassName =
   'pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,oklch(var(--bc)/0.03)_1px,transparent_1px),linear-gradient(to_bottom,oklch(var(--bc)/0.03)_1px,transparent_1px)] bg-[size:32px_32px]'
 
-const shellHeaderClassName =
-  'flex h-14 shrink-0 items-center gap-3 border-b border-base-content/8'
-
 const sidebarHeaderClassName =
   'flex h-14 shrink-0 items-center gap-3 border-b px-5'
 
@@ -44,6 +45,8 @@ export function PanelShell({
   brandIcon,
   drawerId = 'panel-shell-drawer',
   openMenuLabel,
+  appBarTitle,
+  appBarSubtitle,
   footer,
   pageFooter,
   background,
@@ -63,19 +66,36 @@ export function PanelShell({
       >
         <header
           className={cn(
-            shellHeaderClassName,
-            'sticky top-0 z-20 bg-base-100/70 px-4 backdrop-blur-xl lg:px-6',
+            'sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-base-content/8 bg-base-100/70 px-4 backdrop-blur-xl lg:px-6',
+            appBarSubtitle ? 'min-h-14 py-2' : 'h-14',
           )}
         >
           <label
             htmlFor={drawerId}
             aria-label={openMenuLabel}
-            className="btn btn-ghost btn-sm btn-square size-11 min-h-11 min-w-11 cursor-pointer lg:hidden"
+            className="btn btn-ghost btn-sm btn-square size-11 min-h-11 min-w-11 shrink-0 cursor-pointer lg:hidden"
           >
             <Menu className="size-6" strokeWidth={2.25} aria-hidden />
           </label>
 
-          <div className="flex flex-1 items-center justify-end">
+          {appBarTitle || appBarSubtitle ? (
+            <div className="min-w-0 flex-1">
+              {appBarTitle ? (
+                <h1 className="truncate text-base font-semibold tracking-tight md:text-lg">
+                  {appBarTitle}
+                </h1>
+              ) : null}
+              {appBarSubtitle ? (
+                <p className="truncate text-xs text-base-content/50 md:text-sm">
+                  {appBarSubtitle}
+                </p>
+              ) : null}
+            </div>
+          ) : (
+            <div className="flex-1" />
+          )}
+
+          <div className="flex shrink-0 items-center justify-end">
             <LocaleControls className="relative top-auto end-auto" />
           </div>
         </header>

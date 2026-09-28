@@ -47,6 +47,7 @@ export function AuthenticatedShell({
     },
   });
   const isMapPage = pathname === "/map";
+  const isHomePage = pathname === "/";
 
   const navItems = useMemo(
     function createNavItems(): PanelNavItem[] {
@@ -136,6 +137,14 @@ export function AuthenticatedShell({
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
+        appBarTitle={
+          isHomePage ? LL.externalPanel.home.title() : undefined
+        }
+        appBarSubtitle={
+          isHomePage
+            ? LL.externalPanel.home.welcome({ firstName: user.firstName })
+            : undefined
+        }
         fullWidthMain={isMapPage}
         pageFooter={
           isMapPage ? undefined : (
