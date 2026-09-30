@@ -10,6 +10,14 @@ type CarCustodyDriverSelectProps = {
   onChange: (driverId: string) => void
 }
 
+function isSelectableDriver(driver: Driver, car: Car): boolean {
+  if (!driver.car) {
+    return true
+  }
+
+  return driver.car.id === car.id
+}
+
 export function CarCustodyDriverSelect({
   car,
   custody,
@@ -18,6 +26,11 @@ export function CarCustodyDriverSelect({
 }: CarCustodyDriverSelectProps) {
   const { LL } = useI18nContext()
   const detail = LL.internalPanel.companies.detail
+  const selectableDrivers = custody.drivers.filter(function filterSelectable(
+    driver: Driver,
+  ) {
+    return isSelectableDriver(driver, car)
+  })
 
   return (
     <Select
@@ -30,20 +43,12 @@ export function CarCustodyDriverSelect({
       <option value="">
         {custody.driversLoading
           ? LL.internalPanel.companies.loading()
-          : detail.noDriver()}
+          : detail.selectDriver()}
       </option>
-      {custody.drivers.map(function renderDriverOption(driver: Driver) {
-        const onOther =
-          driver.car && driver.car.id !== car.id
-            ? detail.driverOnOtherVehicle({
-                licensePlate: driver.car.licensePlate,
-              })
-            : null
-
+      {selectableDrivers.map(function renderDriverOption(driver: Driver) {
         return (
           <option key={driver.id} value={driver.id}>
             {custody.driverLabel(driver)}
-            {onOther ? ` — ${onOther}` : ''}
           </option>
         )
       })}

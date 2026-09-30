@@ -56,7 +56,11 @@ export function CarFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
-        <CarFormFields drivers={drivers} serverError={serverError} />
+        <CarFormFields
+          mode={mode}
+          drivers={drivers}
+          serverError={serverError}
+        />
       </Form>
     </Modal>
   )

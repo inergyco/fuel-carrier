@@ -282,6 +282,26 @@ export class DriversService {
         return null;
       }
 
+      const [assignedCar] = await tx
+        .select({ id: cars.id })
+        .from(cars)
+        .where(and(eq(cars.driverId, id), isNull(cars.deletedAt)))
+        .limit(1);
+
+      if (assignedCar) {
+        throw createApiException(
+          HttpStatus.CONFLICT,
+          ApiErrorCode.CONFLICT,
+          'Driver is assigned to a vehicle',
+          [
+            {
+              field: 'id',
+              message: 'Driver is assigned to a vehicle',
+            },
+          ],
+        );
+      }
+
       const deletedAt = new Date();
 
       await this.carDriverAssignmentsService.closeOpenAssignmentsForDriverInTx(
@@ -289,11 +309,6 @@ export class DriversService {
         id,
         deletedAt,
       );
-
-      await tx
-        .update(cars)
-        .set({ driverId: null })
-        .where(eq(cars.driverId, id));
 
       const [row] = await tx
         .update(drivers)

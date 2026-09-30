@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
+import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useResourceListSearch, useToast } from '@fuel-carrier/web-ui/ui'
 import { deleteDriver, driverKeys, fetchDrivers } from '../../lib/api/drivers'
@@ -16,7 +18,6 @@ export function useDrivers() {
     listParams,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -39,7 +40,17 @@ export function useDrivers() {
       setDeleteTarget(null)
       toast.success(LL.externalPanel.toast.driverDeleted())
     },
-    onError: () => toast.error(LL.externalPanel.drivers.deleteFailed()),
+    onError: function onDriverDeleteError(error) {
+      if (
+        isApiClientError(error) &&
+        error.apiError.code === ApiErrorCode.CONFLICT
+      ) {
+        toast.error(LL.externalPanel.drivers.deleteAssignedFailed())
+        return
+      }
+
+      toast.error(LL.externalPanel.drivers.deleteFailed())
+    },
   })
 
   async function handleChanged() {
@@ -61,8 +72,6 @@ export function useDrivers() {
     handleLimitChange,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
-    assignment: listParams.assignment ?? 'all',
     hasActiveFilters,
   }
 }

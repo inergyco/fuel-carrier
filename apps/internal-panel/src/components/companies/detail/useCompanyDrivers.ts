@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
+import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { useResourceListSearch, useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys } from '../../../lib/api/cars'
@@ -17,7 +19,6 @@ export function useCompanyDrivers(companyId: string) {
     listParams,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -41,7 +42,17 @@ export function useCompanyDrivers(companyId: string) {
       setDeleteTarget(null)
       toast.success(LL.internalPanel.toast.driverDeleted())
     },
-    onError: function onDriverDeleteError() {
+    onError: function onDriverDeleteError(error) {
+      if (
+        isApiClientError(error) &&
+        error.apiError.code === ApiErrorCode.CONFLICT
+      ) {
+        toast.error(
+          LL.internalPanel.companies.detail.deleteDriverAssignedFailed(),
+        )
+        return
+      }
+
       toast.error(LL.internalPanel.companies.detail.deleteFailed())
     },
   })
@@ -63,8 +74,6 @@ export function useCompanyDrivers(companyId: string) {
     handleLimitChange,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
-    assignment: listParams.assignment ?? 'all',
     hasActiveFilters,
   }
 }

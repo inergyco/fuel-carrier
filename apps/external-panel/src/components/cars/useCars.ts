@@ -18,7 +18,6 @@ export function useCars() {
     listParams,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -79,8 +78,6 @@ export function useCars() {
     handleLimitChange,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
-    assignment: listParams.assignment ?? 'all',
     hasActiveFilters,
   }
 }

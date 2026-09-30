@@ -15,12 +15,6 @@ const fa: Translation = {
       pageOf: "صفحه {current} از {total}",
       perPage: "در هر صفحه",
     },
-    listFilters: {
-      assignmentAll: "همه",
-      assignmentAssigned: "تخصیص‌یافته",
-      assignmentUnassigned: "بدون تخصیص",
-      assignmentFilterLabel: "تخصیص",
-    },
     connectivity: {
       offline: "آفلاین هستید. اتصال اینترنت را بررسی کنید.",
       loadFailed: "بارگذاری داده‌های زنده ممکن نشد. دوباره تلاش کنید.",
@@ -261,9 +255,11 @@ const fa: Translation = {
         deleteUserDeleting: "در حال حذف…",
         deleteDriverTitle: "غیرفعال‌سازی راننده؟",
         deleteDriverDescription:
-          "«{name}» غیرفعال می‌شود و دیگر قابل انتساب به خودرو نیست؛ تاریخچه انتساب حفظ می‌شود.",
+          "«{name}» فقط وقتی خودرویی نداشته باشد غیرفعال می‌شود؛ تاریخچه انتساب حفظ می‌شود.",
         deleteDriverConfirm: "غیرفعال کردن",
         deleteDriverDeleting: "در حال غیرفعال‌سازی…",
+        deleteDriverAssignedFailed:
+          "این راننده خودرو دارد. ابتدا حضانت را تغییر دهید، سپس غیرفعال کنید.",
         deleteCarTitle: "غیرفعال‌سازی خودرو؟",
         deleteCarDescription:
           "خودرو با پلاک «{licensePlate}» غیرفعال می‌شود و از فهرست فعال خارج می‌گردد؛ تاریخچه انتساب در دسترس می‌ماند.",
@@ -298,6 +294,8 @@ const fa: Translation = {
         custodyFailed: "به‌روزرسانی تخصیص انجام نشد. لطفاً دوباره تلاش کنید.",
         custodyConflict:
           "تخصیص از وقتی که شروع کردید تغییر کرده است. تازه کنید و دوباره تلاش کنید.",
+        driverBusyConflict:
+          "این راننده خودرو دیگری دارد. یک راننده آزاد انتخاب کنید.",
         assignDriver: "تخصیص راننده",
         changeDriver: "تغییر راننده",
         endCustody: "پایان تخصیص",
@@ -318,6 +316,7 @@ const fa: Translation = {
           "{driverName} روی {otherPlate} است. تخصیص اینجا، آن تخصیص را پایان می‌دهد.",
         transferConfirm: "انتقال به اینجا",
         driverOnOtherVehicle: "روی {licensePlate}",
+        selectDriver: "انتخاب راننده",
         driverAssignmentHistoryTitle: "سابقه رانندگان",
         driverAssignmentHistorySubtitle: "واگذاری‌های این خودرو به رانندگان",
         driverAssignmentHistoryLoading: "در حال بارگذاری سابقه رانندگان…",
@@ -548,9 +547,11 @@ const fa: Translation = {
       updating: "در حال ذخیره…",
       createFailed: "ذخیره انجام نشد. دوباره تلاش کنید.",
       deleteFailed: "غیرفعال‌سازی انجام نشد. دوباره تلاش کنید.",
+      deleteAssignedFailed:
+        "این راننده خودرو دارد. ابتدا حضانت را تغییر دهید، سپس غیرفعال کنید.",
       deleteTitle: "غیرفعال‌سازی راننده؟",
       deleteDescription:
-        "این کار {name} را غیرفعال می‌کند و انتساب خودرو پایان می‌یابد؛ تاریخچه حفظ می‌شود.",
+        "این کار {name} را غیرفعال می‌کند؛ فقط وقتی راننده خودرویی نداشته باشد ممکن است.",
       deleteConfirm: "غیرفعال کردن",
       deleting: "در حال غیرفعال‌سازی…",
       duplicateNationalId: "راننده‌ای با این شناسه ملی از قبل وجود دارد.",
@@ -583,6 +584,8 @@ const fa: Translation = {
       custodyFailed: "به‌روزرسانی حضانت انجام نشد. دوباره تلاش کنید.",
       custodyConflict:
         "حضانت از زمان شروع ویرایش تغییر کرده است. تازه کنید و دوباره تلاش کنید.",
+      driverBusyConflict:
+        "این راننده خودرو دیگری دارد. یک راننده آزاد انتخاب کنید.",
       deleteTitle: "غیرفعال‌سازی خودرو؟",
       deleteDescription:
         "این کار {licensePlate} را غیرفعال می‌کند؛ تاریخچه انتساب در دسترس می‌ماند.",
@@ -608,6 +611,7 @@ const fa: Translation = {
         "{driverName} الان روی {otherPlate} است. تخصیص اینجا، حضانت قبلی را پایان می‌دهد.",
       transferConfirm: "انتقال به اینجا",
       driverOnOtherVehicle: "روی {licensePlate}",
+      selectDriver: "انتخاب راننده",
       mqttCredentialsAction: "اعتبارنامه MQTT",
       mqttCredentialsConfirmTitle: "صدور اعتبارنامه MQTT؟",
       mqttCredentialsConfirmDescription:

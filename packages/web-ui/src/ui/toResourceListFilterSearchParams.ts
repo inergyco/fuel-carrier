@@ -10,9 +10,5 @@ export function toResourceListFilterSearchParams(
     searchParams.search = filters.search
   }
 
-  if (filters.assignment && filters.assignment !== 'all') {
-    searchParams.assignment = filters.assignment
-  }
-
   return searchParams
 }

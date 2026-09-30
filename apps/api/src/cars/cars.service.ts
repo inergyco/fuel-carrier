@@ -41,11 +41,12 @@ type CreateCarPayload = {
   name?: string | null;
   licensePlate: string;
   companyId: string;
-  driverId?: string | null;
+  driverId: string;
   note?: string | null;
 };
 
-type UpdateCarPayload = Partial<CreateCarPayload> & {
+type UpdateCarPayload = Partial<Omit<CreateCarPayload, 'driverId'>> & {
+  driverId?: string;
   expectedDriverId?: string | null;
 };
 
@@ -119,23 +120,17 @@ export class CarsService {
   async create(context: ApiTenantContext, dto: CreateCarPayload): Promise<Car> {
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const custodyAt = dto.driverId ? new Date() : null;
+        const custodyAt = new Date();
 
-        if (dto.driverId && custodyAt) {
-          await this._assertDriverAssignableToCompany(
-            tx,
-            dto.driverId,
-            dto.companyId,
-          );
-          await this.carDriverAssignmentsService.releaseDriverFromOtherCarInTx(
-            tx,
-            {
-              driverId: dto.driverId,
-              exceptCarId: null,
-              at: custodyAt,
-            },
-          );
-        }
+        await this._assertDriverAssignableToCompany(
+          tx,
+          dto.driverId,
+          dto.companyId,
+        );
+        await this.carDriverAssignmentsService.assertDriverFreeOrThrowInTx(tx, {
+          driverId: dto.driverId,
+          exceptCarId: null,
+        });
 
         const [row] = await tx
           .insert(cars)
@@ -143,7 +138,7 @@ export class CarsService {
             name: dto.name ?? null,
             licensePlate: dto.licensePlate,
             companyId: dto.companyId,
-            driverId: dto.driverId ?? null,
+            driverId: dto.driverId,
             note: dto.note ?? null,
           })
           .returning();
@@ -156,18 +151,16 @@ export class CarsService {
           );
         }
 
-        if (dto.driverId && custodyAt) {
-          await this.carDriverAssignmentsService.insertOpenAssignmentInTx(
-            tx,
-            context,
-            {
-              carId: row.id,
-              driverId: dto.driverId,
-              companyId: row.companyId,
-              assignedAt: custodyAt,
-            },
-          );
-        }
+        await this.carDriverAssignmentsService.insertOpenAssignmentInTx(
+          tx,
+          context,
+          {
+            carId: row.id,
+            driverId: dto.driverId,
+            companyId: row.companyId,
+            assignedAt: custodyAt,
+          },
+        );
 
         const car = mapCarRow(row);
         const companyName = await fetchCompanyName(tx, car.companyId);

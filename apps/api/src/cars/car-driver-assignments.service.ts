@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, asc, count, desc, eq, isNull, or } from 'drizzle-orm';
 import type {
   CarDriverAssignment,
@@ -6,12 +6,14 @@ import type {
   PaginationParams,
   TenantContext,
 } from '@fuel-carrier/shared-types';
+import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
 import { carDriverAssignments } from '../database/schema/car-driver-assignments';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
 import { users } from '../database/schema/users';
+import { createApiException } from '../common/exceptions/api.exception';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import {
@@ -104,20 +106,13 @@ export class CarDriverAssignmentsService {
     /** One instant for close+open so abutting ranges do not overlap. */
     const at = new Date();
 
-    if (input.nextDriverId) {
-      await this.releaseDriverFromOtherCarInTx(tx, {
-        driverId: input.nextDriverId,
-        exceptCarId: input.carId,
-        alreadyLocked: true,
-        at,
-      });
-    }
+    await this.assertDriverFreeOrThrowInTx(tx, {
+      driverId: input.nextDriverId,
+      exceptCarId: input.carId,
+      alreadyLocked: true,
+    });
 
     await this.closeOpenAssignmentsForCarInTx(tx, input.carId, at);
-
-    if (!input.nextDriverId) {
-      return;
-    }
 
     await this.insertOpenAssignmentInTx(tx, context, {
       carId: input.carId,
@@ -135,11 +130,10 @@ export class CarDriverAssignmentsService {
     const at = new Date();
 
     await this.lockCustodyRowsInTx(tx, input.carId, input.driverId);
-    await this.releaseDriverFromOtherCarInTx(tx, {
+    await this.assertDriverFreeOrThrowInTx(tx, {
       driverId: input.driverId,
       exceptCarId: input.carId,
       alreadyLocked: true,
-      at,
     });
     await this.closeOpenAssignmentsForCarInTx(tx, input.carId, at);
     await this.insertOpenAssignmentInTx(tx, context, {
@@ -196,16 +190,15 @@ export class CarDriverAssignmentsService {
       );
   }
 
-  async releaseDriverFromOtherCarInTx(
+  /**
+   * Drivers stay in custody of at most one live car. Moving a busy driver
+   * would leave the other car unassigned — reject instead.
+   */
+  async assertDriverFreeOrThrowInTx(
     tx: TenantTransaction,
-    input: ReleaseDriverFromOtherCarInput,
+    input: AssertDriverFreeInput,
   ): Promise<void> {
-    const {
-      driverId,
-      exceptCarId,
-      alreadyLocked = false,
-      at = new Date(),
-    } = input;
+    const { driverId, exceptCarId, alreadyLocked = false } = input;
 
     if (!alreadyLocked) {
       await this.lockCustodyRowsInTx(tx, exceptCarId, driverId);
@@ -214,18 +207,24 @@ export class CarDriverAssignmentsService {
     const [otherCar] = await tx
       .select({ id: cars.id })
       .from(cars)
-      .where(eq(cars.driverId, driverId))
+      .where(and(eq(cars.driverId, driverId), isNull(cars.deletedAt)))
       .limit(1);
 
     if (!otherCar || otherCar.id === exceptCarId) {
       return;
     }
 
-    await this.closeOpenAssignmentsForCarInTx(tx, otherCar.id, at);
-    await tx
-      .update(cars)
-      .set({ driverId: null })
-      .where(eq(cars.id, otherCar.id));
+    throw createApiException(
+      HttpStatus.CONFLICT,
+      ApiErrorCode.CONFLICT,
+      'Driver is already assigned to another vehicle',
+      [
+        {
+          field: 'driverId',
+          message: 'Driver is already assigned to another vehicle',
+        },
+      ],
+    );
   }
 
   /**
@@ -327,13 +326,11 @@ type SyncDriverChangeInput = {
   carId: string;
   companyId: string;
   previousDriverId: string | null;
-  nextDriverId: string | null;
+  nextDriverId: string;
 };
 
-type ReleaseDriverFromOtherCarInput = {
+type AssertDriverFreeInput = {
   driverId: string;
   exceptCarId: string | null;
   alreadyLocked?: boolean;
-  /** Shared instant when a new open assignment follows this release. */
-  at?: Date;
 };

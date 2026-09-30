@@ -8,19 +8,29 @@ const OTHER_COMPANY_ID = '22222222-2222-4222-8222-222222222222';
 const DRIVER_ID = '33333333-3333-4333-8333-333333333333';
 
 describe('car update DTO schemas', () => {
-  it('applies create defaults when optional fields are omitted', () => {
+  it('requires driverId on create', () => {
     const parsed = createInternalCarDtoSchema.parse({
       companyId: COMPANY_ID,
       licensePlate: '12ب345-67',
+      driverId: DRIVER_ID,
     });
 
     expect(parsed).toEqual({
       companyId: COMPANY_ID,
       licensePlate: '12ب345-67',
       name: '',
-      driverId: null,
+      driverId: DRIVER_ID,
       note: '',
     });
+  });
+
+  it('rejects create without driverId', () => {
+    const result = createInternalCarDtoSchema.safeParse({
+      companyId: COMPANY_ID,
+      licensePlate: '12ب345-67',
+    });
+
+    expect(result.success).toBe(false);
   });
 
   it('does not invent driverId/name/note on partial companyId PATCH', () => {
@@ -36,16 +46,13 @@ describe('car update DTO schemas', () => {
     expect('note' in parsed).toBe(false);
   });
 
-  it('still allows explicit unassign via driverId null with expectedDriverId', () => {
-    const parsed = updateInternalCarDtoSchema.parse({
+  it('rejects unassign via driverId null', () => {
+    const result = updateInternalCarDtoSchema.safeParse({
       driverId: null,
       expectedDriverId: DRIVER_ID,
     });
 
-    expect(parsed).toEqual({
-      driverId: null,
-      expectedDriverId: DRIVER_ID,
-    });
+    expect(result.success).toBe(false);
   });
 
   it('still allows assigning a driver on update with expectedDriverId', () => {

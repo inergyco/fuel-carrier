@@ -66,24 +66,6 @@ type RootTranslation = {
 			 */
 			perPage: string
 		}
-		listFilters: {
-			/**
-			 * A​l​l
-			 */
-			assignmentAll: string
-			/**
-			 * A​s​s​i​g​n​e​d
-			 */
-			assignmentAssigned: string
-			/**
-			 * U​n​a​s​s​i​g​n​e​d
-			 */
-			assignmentUnassigned: string
-			/**
-			 * A​s​s​i​g​n​m​e​n​t
-			 */
-			assignmentFilterLabel: string
-		}
 		connectivity: {
 			/**
 			 * Y​o​u​’​r​e​ ​o​f​f​l​i​n​e​.​ ​C​h​e​c​k​ ​y​o​u​r​ ​c​o​n​n​e​c​t​i​o​n​.
@@ -963,7 +945,7 @@ type RootTranslation = {
 				 */
 				deleteDriverTitle: string
 				/**
-				 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​T​h​e​y​ ​c​a​n​ ​n​o​ ​l​o​n​g​e​r​ ​b​e​ ​a​s​s​i​g​n​e​d​ ​t​o​ ​v​e​h​i​c​l​e​s​;​ ​a​s​s​i​g​n​m​e​n​t​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
+				 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​O​n​l​y​ ​p​o​s​s​i​b​l​e​ ​w​h​e​n​ ​t​h​e​y​ ​h​a​v​e​ ​n​o​ ​v​e​h​i​c​l​e​;​ ​a​s​s​i​g​n​m​e​n​t​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
 				 * @param {string} name
 				 */
 				deleteDriverDescription: RequiredParams<'name'>
@@ -975,6 +957,10 @@ type RootTranslation = {
 				 * D​e​a​c​t​i​v​a​t​i​n​g​…
 				 */
 				deleteDriverDeleting: string
+				/**
+				 * T​h​i​s​ ​d​r​i​v​e​r​ ​h​a​s​ ​a​ ​v​e​h​i​c​l​e​.​ ​C​h​a​n​g​e​ ​c​u​s​t​o​d​y​ ​f​i​r​s​t​,​ ​t​h​e​n​ ​d​e​a​c​t​i​v​a​t​e​.
+				 */
+				deleteDriverAssignedFailed: string
 				/**
 				 * D​e​a​c​t​i​v​a​t​e​ ​c​a​r​?
 				 */
@@ -1094,6 +1080,10 @@ type RootTranslation = {
 				 */
 				custodyConflict: string
 				/**
+				 * T​h​a​t​ ​d​r​i​v​e​r​ ​a​l​r​e​a​d​y​ ​h​a​s​ ​a​n​o​t​h​e​r​ ​v​e​h​i​c​l​e​.​ ​C​h​o​o​s​e​ ​a​ ​f​r​e​e​ ​d​r​i​v​e​r​.
+				 */
+				driverBusyConflict: string
+				/**
 				 * A​s​s​i​g​n​ ​d​r​i​v​e​r
 				 */
 				assignDriver: string
@@ -1170,6 +1160,10 @@ type RootTranslation = {
 				 * @param {string} licensePlate
 				 */
 				driverOnOtherVehicle: RequiredParams<'licensePlate'>
+				/**
+				 * S​e​l​e​c​t​ ​a​ ​d​r​i​v​e​r
+				 */
+				selectDriver: string
 				/**
 				 * D​r​i​v​e​r​ ​c​u​s​t​o​d​y​ ​h​i​s​t​o​r​y
 				 */
@@ -2002,11 +1996,15 @@ type RootTranslation = {
 			 */
 			deleteFailed: string
 			/**
+			 * T​h​i​s​ ​d​r​i​v​e​r​ ​h​a​s​ ​a​ ​v​e​h​i​c​l​e​.​ ​C​h​a​n​g​e​ ​c​u​s​t​o​d​y​ ​f​i​r​s​t​,​ ​t​h​e​n​ ​d​e​a​c​t​i​v​a​t​e​.
+			 */
+			deleteAssignedFailed: string
+			/**
 			 * D​e​a​c​t​i​v​a​t​e​ ​d​r​i​v​e​r​?
 			 */
 			deleteTitle: string
 			/**
-			 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​A​n​y​ ​v​e​h​i​c​l​e​ ​a​s​s​i​g​n​m​e​n​t​ ​w​i​l​l​ ​b​e​ ​e​n​d​e​d​;​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
+			 * T​h​i​s​ ​w​i​l​l​ ​d​e​a​c​t​i​v​a​t​e​ ​{​n​a​m​e​}​.​ ​O​n​l​y​ ​p​o​s​s​i​b​l​e​ ​w​h​e​n​ ​t​h​e​ ​d​r​i​v​e​r​ ​h​a​s​ ​n​o​ ​v​e​h​i​c​l​e​;​ ​h​i​s​t​o​r​y​ ​i​s​ ​k​e​p​t​.
 			 * @param {string} name
 			 */
 			deleteDescription: RequiredParams<'name'>
@@ -2129,6 +2127,10 @@ type RootTranslation = {
 			 */
 			custodyConflict: string
 			/**
+			 * T​h​a​t​ ​d​r​i​v​e​r​ ​a​l​r​e​a​d​y​ ​h​a​s​ ​a​n​o​t​h​e​r​ ​v​e​h​i​c​l​e​.​ ​C​h​o​o​s​e​ ​a​ ​f​r​e​e​ ​d​r​i​v​e​r​.
+			 */
+			driverBusyConflict: string
+			/**
 			 * D​e​a​c​t​i​v​a​t​e​ ​v​e​h​i​c​l​e​?
 			 */
 			deleteTitle: string
@@ -2222,6 +2224,10 @@ type RootTranslation = {
 			 * @param {string} licensePlate
 			 */
 			driverOnOtherVehicle: RequiredParams<'licensePlate'>
+			/**
+			 * S​e​l​e​c​t​ ​a​ ​d​r​i​v​e​r
+			 */
+			selectDriver: string
 			/**
 			 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s
 			 */
@@ -2759,24 +2765,6 @@ export type TranslationFunctions = {
 			 * Per page
 			 */
 			perPage: () => LocalizedString
-		}
-		listFilters: {
-			/**
-			 * All
-			 */
-			assignmentAll: () => LocalizedString
-			/**
-			 * Assigned
-			 */
-			assignmentAssigned: () => LocalizedString
-			/**
-			 * Unassigned
-			 */
-			assignmentUnassigned: () => LocalizedString
-			/**
-			 * Assignment
-			 */
-			assignmentFilterLabel: () => LocalizedString
 		}
 		connectivity: {
 			/**
@@ -3625,7 +3613,7 @@ export type TranslationFunctions = {
 				 */
 				deleteDriverTitle: () => LocalizedString
 				/**
-				 * This will deactivate {name}. They can no longer be assigned to vehicles; assignment history is kept.
+				 * This will deactivate {name}. Only possible when they have no vehicle; assignment history is kept.
 				 */
 				deleteDriverDescription: (arg: { name: string }) => LocalizedString
 				/**
@@ -3636,6 +3624,10 @@ export type TranslationFunctions = {
 				 * Deactivating…
 				 */
 				deleteDriverDeleting: () => LocalizedString
+				/**
+				 * This driver has a vehicle. Change custody first, then deactivate.
+				 */
+				deleteDriverAssignedFailed: () => LocalizedString
 				/**
 				 * Deactivate car?
 				 */
@@ -3753,6 +3745,10 @@ export type TranslationFunctions = {
 				 */
 				custodyConflict: () => LocalizedString
 				/**
+				 * That driver already has another vehicle. Choose a free driver.
+				 */
+				driverBusyConflict: () => LocalizedString
+				/**
 				 * Assign driver
 				 */
 				assignDriver: () => LocalizedString
@@ -3824,6 +3820,10 @@ export type TranslationFunctions = {
 				 * On {licensePlate}
 				 */
 				driverOnOtherVehicle: (arg: { licensePlate: string }) => LocalizedString
+				/**
+				 * Select a driver
+				 */
+				selectDriver: () => LocalizedString
 				/**
 				 * Driver custody history
 				 */
@@ -4642,11 +4642,15 @@ export type TranslationFunctions = {
 			 */
 			deleteFailed: () => LocalizedString
 			/**
+			 * This driver has a vehicle. Change custody first, then deactivate.
+			 */
+			deleteAssignedFailed: () => LocalizedString
+			/**
 			 * Deactivate driver?
 			 */
 			deleteTitle: () => LocalizedString
 			/**
-			 * This will deactivate {name}. Any vehicle assignment will be ended; history is kept.
+			 * This will deactivate {name}. Only possible when the driver has no vehicle; history is kept.
 			 */
 			deleteDescription: (arg: { name: string }) => LocalizedString
 			/**
@@ -4768,6 +4772,10 @@ export type TranslationFunctions = {
 			 */
 			custodyConflict: () => LocalizedString
 			/**
+			 * That driver already has another vehicle. Choose a free driver.
+			 */
+			driverBusyConflict: () => LocalizedString
+			/**
 			 * Deactivate vehicle?
 			 */
 			deleteTitle: () => LocalizedString
@@ -4855,6 +4863,10 @@ export type TranslationFunctions = {
 			 * On {licensePlate}
 			 */
 			driverOnOtherVehicle: (arg: { licensePlate: string }) => LocalizedString
+			/**
+			 * Select a driver
+			 */
+			selectDriver: () => LocalizedString
 			/**
 			 * MQTT credentials
 			 */

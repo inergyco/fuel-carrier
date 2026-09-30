@@ -3,12 +3,18 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { FormInput, FormSelect, FormTextarea } from '@fuel-carrier/web-ui/ui'
 
 interface CarFormFieldsProps {
+  mode: 'create' | 'edit'
   drivers: Driver[]
   serverError: string | null
 }
 
-export function CarFormFields({ drivers, serverError }: CarFormFieldsProps) {
+export function CarFormFields({
+  mode,
+  drivers,
+  serverError,
+}: CarFormFieldsProps) {
   const { LL } = useI18nContext()
+  const freeDrivers = drivers.filter((driver) => !driver.car)
 
   return (
     <>
@@ -24,16 +30,16 @@ export function CarFormFields({ drivers, serverError }: CarFormFieldsProps) {
         type="text"
       />
 
-      <FormSelect name="driverId" label={LL.externalPanel.cars.driver()}>
-        <option value="">{LL.externalPanel.cars.noDriver()}</option>
-        {drivers.map(function renderDriverOption(driver) {
-          return (
+      {mode === 'create' ? (
+        <FormSelect name="driverId" label={LL.externalPanel.cars.driver()}>
+          <option value="">{LL.externalPanel.cars.selectDriver()}</option>
+          {freeDrivers.map((driver) => (
             <option key={driver.id} value={driver.id}>
               {driver.firstName} {driver.lastName}
             </option>
-          )
-        })}
-      </FormSelect>
+          ))}
+        </FormSelect>
+      ) : null}
 
       <FormTextarea
         name="note"

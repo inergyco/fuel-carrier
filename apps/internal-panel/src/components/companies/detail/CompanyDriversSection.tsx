@@ -49,8 +49,6 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
             searchPlaceholder={LL.internalPanel.companies.detail.driversSearchPlaceholder()}
             searchText={drivers.draftSearchText}
             onSearchTextChange={drivers.setDraftSearchText}
-            assignment={drivers.assignment}
-            onAssignmentChange={drivers.setAssignment}
           />
         }
         footer={

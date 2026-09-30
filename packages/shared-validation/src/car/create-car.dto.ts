@@ -1,4 +1,3 @@
-import type { CarInput } from "@fuel-carrier/shared-types";
 import { z } from "zod";
 import { optionalTextField } from "../optional-text-field";
 
@@ -11,14 +10,17 @@ const carLicensePlateField = z
   .string()
   .min(1)
   .max(CAR_LICENSE_PLATE_MAX_LENGTH);
-const carDriverIdField = z.uuid().nullable();
+/** Live custody driver — uuid only; null unassign is not allowed. */
+const carDriverIdField = z.uuid();
+/** Optimistic concurrency token — null means "expect unassigned". */
+const carExpectedDriverIdField = z.uuid().nullable();
 const carNoteField = optionalTextField(CAR_NOTE_MAX_LENGTH);
 
 /** Create body: omitted optional fields get create-time defaults. */
 const carBaseSchema = z.object({
   name: carNameField.optional().default(""),
   licensePlate: carLicensePlateField,
-  driverId: carDriverIdField.optional().default(null),
+  driverId: carDriverIdField,
   note: carNoteField.optional().default(""),
 });
 
@@ -28,6 +30,7 @@ const carBaseSchema = z.object({
  *
  * When `driverId` is present, `expectedDriverId` is required so concurrent
  * custody writes can return 409 instead of last-write-wins false success.
+ * `driverId` must be a uuid — unassigning is not allowed.
  */
 const carUpdateBaseSchema = z
   .object({
@@ -35,14 +38,14 @@ const carUpdateBaseSchema = z
     licensePlate: carLicensePlateField.optional(),
     driverId: carDriverIdField.optional(),
     note: carNoteField.optional(),
-    expectedDriverId: carDriverIdField.optional(),
+    expectedDriverId: carExpectedDriverIdField.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.driverId !== undefined && data.expectedDriverId === undefined) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'expectedDriverId is required when driverId is set',
-        path: ['expectedDriverId'],
+        code: "custom",
+        message: "expectedDriverId is required when driverId is set",
+        path: ["expectedDriverId"],
       });
     }
   });
@@ -60,7 +63,7 @@ export const updateInternalCarDtoSchema = carUpdateBaseSchema.extend({
 });
 export const updateExternalCarDtoSchema = carUpdateBaseSchema;
 
-export type CreateInternalCarDto = CarInput;
-export type CreateExternalCarDto = Omit<CarInput, "companyId">;
+export type CreateInternalCarDto = z.infer<typeof createInternalCarDtoSchema>;
+export type CreateExternalCarDto = z.infer<typeof createExternalCarDtoSchema>;
 export type UpdateInternalCarDto = z.infer<typeof updateInternalCarDtoSchema>;
 export type UpdateExternalCarDto = z.infer<typeof updateExternalCarDtoSchema>;

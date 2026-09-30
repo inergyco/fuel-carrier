@@ -66,8 +66,6 @@ function DriversPage() {
             searchPlaceholder={LL.externalPanel.drivers.searchPlaceholder()}
             searchText={drivers.draftSearchText}
             onSearchTextChange={drivers.setDraftSearchText}
-            assignment={drivers.assignment}
-            onAssignmentChange={drivers.setAssignment}
           />
         }
         footer={

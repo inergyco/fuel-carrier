@@ -1,10 +1,9 @@
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { UserMinus, UserPlus, UserRoundPen } from '@fuel-carrier/web-ui/icons'
+import { UserPlus, UserRoundPen } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
-  dataTableDeleteActionClassName,
   dataTableEditActionClassName,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
@@ -33,42 +32,23 @@ export function CarCustodyActions({
     custody.openChange(car)
   }
 
-  function handleEnd() {
-    custody.openEnd(car)
-  }
-
   if (layout === 'compact') {
     return (
       <div className="flex flex-nowrap items-center gap-2">
         {hasDriver ? (
-          <>
-            <Button
-              type="button"
-              variant="ghost"
-              className={dataTableEditActionClassName()}
-              onClick={handleChange}
-              aria-label={detail.changeDriver()}
-            >
-              <UserRoundPen
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              className={dataTableDeleteActionClassName()}
-              onClick={handleEnd}
-              aria-label={detail.endCustody()}
-            >
-              <UserMinus
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-            </Button>
-          </>
+          <Button
+            type="button"
+            variant="ghost"
+            className={dataTableEditActionClassName()}
+            onClick={handleChange}
+            aria-label={detail.changeDriver()}
+          >
+            <UserRoundPen
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+          </Button>
         ) : (
           <Button
             type="button"
@@ -91,23 +71,13 @@ export function CarCustodyActions({
   return (
     <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
       {hasDriver ? (
-        <>
-          <Button
-            type="button"
-            className="h-11 w-full sm:w-auto sm:px-5"
-            onClick={handleChange}
-          >
-            {detail.changeDriver()}
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-11 w-full border border-base-content/12 bg-base-100/45 sm:w-auto sm:px-4"
-            onClick={handleEnd}
-          >
-            {detail.endCustody()}
-          </Button>
-        </>
+        <Button
+          type="button"
+          className="h-11 w-full sm:w-auto sm:px-5"
+          onClick={handleChange}
+        >
+          {detail.changeDriver()}
+        </Button>
       ) : (
         <Button
           type="button"

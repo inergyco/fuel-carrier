@@ -218,7 +218,6 @@ function CompaniesPage() {
             searchPlaceholder={LL.internalPanel.companies.searchPlaceholder()}
             searchText={draftSearchText}
             onSearchTextChange={setDraftSearchText}
-            showAssignmentFilter={false}
           />
         </div>
         {renderBody()}

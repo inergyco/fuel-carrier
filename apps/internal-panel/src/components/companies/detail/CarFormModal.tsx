@@ -13,7 +13,14 @@ import {
   type SubmitHandler,
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, FormSelect, FormTextarea, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
+import {
+  FormInput,
+  FormSelect,
+  FormTextarea,
+  Modal,
+  ModalActions,
+  useToast,
+} from '@fuel-carrier/web-ui/ui'
 import { z } from 'zod'
 import {
   carToFormValues,
@@ -21,14 +28,15 @@ import {
   updateCar,
 } from '../../../lib/api/cars'
 
-const carFormSchema = createInternalCarDtoSchema.omit({ companyId: true }).extend({
-  driverId: z
-    .union([z.literal(''), z.uuid()])
-    .transform((value) => value || null),
-})
+const carCreateFormSchema = createInternalCarDtoSchema.omit({ companyId: true })
+const carEditFormSchema = carCreateFormSchema.omit({ driverId: true })
 
-type CarFormInput = z.input<typeof carFormSchema>
-type CarFormOutput = z.output<typeof carFormSchema>
+type CarFormInput =
+  | z.input<typeof carCreateFormSchema>
+  | z.input<typeof carEditFormSchema>
+type CarFormOutput =
+  | z.output<typeof carCreateFormSchema>
+  | z.output<typeof carEditFormSchema>
 
 type CarFormModalMode = 'create' | 'edit'
 
@@ -39,6 +47,10 @@ interface CarFormModalProps {
   car?: Car
   onClose: () => void
   onSuccess: () => void
+}
+
+function isUnassignedDriver(driver: Driver): boolean {
+  return !driver.car
 }
 
 export function CarFormModal({
@@ -52,10 +64,21 @@ export function CarFormModal({
   const { LL } = useI18nContext()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
+  const detail = LL.internalPanel.companies.detail
+  const freeDrivers = drivers.filter(isUnassignedDriver)
+  const schema = mode === 'create' ? carCreateFormSchema : carEditFormSchema
+  const defaults = carToFormValues(car)
 
   const form = useForm<CarFormInput, unknown, CarFormOutput>({
-    resolver: zodResolver(carFormSchema),
-    defaultValues: carToFormValues(car),
+    resolver: zodResolver(schema),
+    defaultValues:
+      mode === 'create'
+        ? defaults
+        : {
+            name: defaults.name,
+            licensePlate: defaults.licensePlate,
+            note: defaults.note,
+          },
   })
 
   const {
@@ -65,11 +88,6 @@ export function CarFormModal({
 
   const saveMutation = useMutation({
     mutationFn: async function saveCar(data: CarFormOutput) {
-      const payload: CreateInternalCarDto = {
-        ...data,
-        companyId,
-      }
-
       if (mode === 'edit' && car) {
         return updateCar(car.id, {
           name: data.name,
@@ -79,6 +97,10 @@ export function CarFormModal({
         })
       }
 
+      const payload: CreateInternalCarDto = {
+        ...(data as z.output<typeof carCreateFormSchema>),
+        companyId,
+      }
       return createCar(payload)
     },
     onSuccess: function handleSaveSuccess() {
@@ -106,10 +128,9 @@ export function CarFormModal({
           setError,
           fields: ['name', 'licensePlate', 'note', 'driverId'],
           messages: {
-            licensePlate: () =>
-              LL.internalPanel.companies.detail.duplicateLicensePlate(),
+            licensePlate: () => detail.duplicateLicensePlate(),
           },
-          fallbackMessage: LL.internalPanel.companies.detail.createFailed(),
+          fallbackMessage: detail.createFailed(),
         }),
       )
     }
@@ -123,14 +144,11 @@ export function CarFormModal({
 
   const isSaving = isSubmitting || saveMutation.isPending
   const title =
-    mode === 'edit'
-      ? LL.internalPanel.companies.detail.carEditTitle()
-      : LL.internalPanel.companies.detail.carCreateTitle()
-
+    mode === 'edit' ? detail.carEditTitle() : detail.carCreateTitle()
   const confirmLabel =
     mode === 'edit'
       ? LL.internalPanel.companies.update()
-      : LL.internalPanel.companies.detail.addCar()
+      : detail.addCar()
 
   return (
     <Modal
@@ -160,21 +178,20 @@ export function CarFormModal({
       >
         <FormInput
           name="licensePlate"
-          label={LL.internalPanel.companies.detail.licensePlate()}
+          label={detail.licensePlate()}
           type="text"
         />
 
-        <FormInput name="name" label={LL.internalPanel.companies.name()} type="text" />
+        <FormInput
+          name="name"
+          label={LL.internalPanel.companies.name()}
+          type="text"
+        />
 
         {mode === 'create' ? (
-          <FormSelect
-            name="driverId"
-            label={LL.internalPanel.companies.detail.driver()}
-          >
-            <option value="">
-              {LL.internalPanel.companies.detail.noDriver()}
-            </option>
-            {drivers.map(function renderDriverOption(driver) {
+          <FormSelect name="driverId" label={detail.driver()}>
+            <option value="">{detail.selectDriver()}</option>
+            {freeDrivers.map(function renderDriverOption(driver) {
               return (
                 <option key={driver.id} value={driver.id}>
                   {driver.firstName} {driver.lastName}

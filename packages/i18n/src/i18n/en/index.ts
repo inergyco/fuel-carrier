@@ -15,12 +15,6 @@ const en: BaseTranslation = {
       pageOf: 'Page {current:number} of {total:number}',
       perPage: 'Per page',
     },
-    listFilters: {
-      assignmentAll: 'All',
-      assignmentAssigned: 'Assigned',
-      assignmentUnassigned: 'Unassigned',
-      assignmentFilterLabel: 'Assignment',
-    },
     connectivity: {
       offline: 'You’re offline. Check your connection.',
       loadFailed: 'Couldn’t load live data. Try again.',
@@ -260,9 +254,11 @@ const en: BaseTranslation = {
         deleteUserDeleting: 'Deleting…',
         deleteDriverTitle: 'Deactivate driver?',
         deleteDriverDescription:
-          'This will deactivate {name:string}. They can no longer be assigned to vehicles; assignment history is kept.',
+          'This will deactivate {name:string}. Only possible when they have no vehicle; assignment history is kept.',
         deleteDriverConfirm: 'Deactivate',
         deleteDriverDeleting: 'Deactivating…',
+        deleteDriverAssignedFailed:
+          'This driver has a vehicle. Change custody first, then deactivate.',
         deleteCarTitle: 'Deactivate car?',
         deleteCarDescription:
           'This will deactivate {licensePlate:string}. Assignment history stays available; the vehicle leaves active lists.',
@@ -296,6 +292,8 @@ const en: BaseTranslation = {
         custodyFailed: 'Could not update custody. Please try again.',
         custodyConflict:
           'Custody changed since you started. Refresh and try again.',
+        driverBusyConflict:
+          'That driver already has another vehicle. Choose a free driver.',
         assignDriver: 'Assign driver',
         changeDriver: 'Change driver',
         endCustody: 'End custody',
@@ -316,6 +314,7 @@ const en: BaseTranslation = {
           '{driverName:string} is on {otherPlate:string}. Assigning them here will end that custody.',
         transferConfirm: 'Move here',
         driverOnOtherVehicle: 'On {licensePlate:string}',
+        selectDriver: 'Select a driver',
         driverAssignmentHistoryTitle: 'Driver custody history',
         driverAssignmentHistorySubtitle:
           'When this vehicle was assigned to each driver',
@@ -548,9 +547,11 @@ const en: BaseTranslation = {
       updating: 'Saving…',
       createFailed: 'Could not save. Please try again.',
       deleteFailed: 'Could not delete. Please try again.',
+      deleteAssignedFailed:
+        'This driver has a vehicle. Change custody first, then deactivate.',
       deleteTitle: 'Deactivate driver?',
       deleteDescription:
-        'This will deactivate {name:string}. Any vehicle assignment will be ended; history is kept.',
+        'This will deactivate {name:string}. Only possible when the driver has no vehicle; history is kept.',
       deleteConfirm: 'Deactivate',
       deleting: 'Deactivating…',
       duplicateNationalId: 'A driver with this national ID already exists.',
@@ -583,6 +584,8 @@ const en: BaseTranslation = {
       custodyFailed: 'Could not update custody. Please try again.',
       custodyConflict:
         'Custody changed since you started. Refresh and try again.',
+      driverBusyConflict:
+        'That driver already has another vehicle. Choose a free driver.',
       deleteTitle: 'Deactivate vehicle?',
       deleteDescription:
         'This will deactivate {licensePlate:string}. Assignment history stays available; the vehicle leaves active lists.',
@@ -608,6 +611,7 @@ const en: BaseTranslation = {
         '{driverName:string} is on {otherPlate:string}. Assigning them here will end that custody.',
       transferConfirm: 'Move here',
       driverOnOtherVehicle: 'On {licensePlate:string}',
+      selectDriver: 'Select a driver',
       mqttCredentialsAction: 'MQTT credentials',
       mqttCredentialsConfirmTitle: 'Provision MQTT credentials?',
       mqttCredentialsConfirmDescription:

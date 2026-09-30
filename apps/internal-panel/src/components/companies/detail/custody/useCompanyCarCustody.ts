@@ -8,11 +8,23 @@ import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, updateCar } from '../../../../lib/api/cars'
 import { driverKeys, fetchAllDrivers } from '../../../../lib/api/drivers'
 
-export type CarCustodyMode = 'assign' | 'change' | 'end'
+export type CarCustodyMode = 'assign' | 'change'
 
 export type CarCustodyTarget = {
   car: Car
   mode: CarCustodyMode
+}
+
+function isDriverBusyConflict(error: unknown): boolean {
+  return (
+    isApiClientError(error) &&
+    error.apiError.code === ApiErrorCode.CONFLICT &&
+    Boolean(
+      error.apiError.fields?.some(
+        (field) => field.message === 'Driver is already assigned to another vehicle',
+      ),
+    )
+  )
 }
 
 export function useCompanyCarCustody(companyId: string) {
@@ -38,7 +50,7 @@ export function useCompanyCarCustody(companyId: string) {
   const mutation = useMutation({
     mutationFn: (input: {
       carId: string
-      driverId: string | null
+      driverId: string
       expectedDriverId: string | null
       mode: CarCustodyMode
     }) =>
@@ -58,14 +70,14 @@ export function useCompanyCarCustody(companyId: string) {
         return
       }
 
-      if (variables.mode === 'change') {
-        toast.success(LL.internalPanel.toast.carDriverChanged())
+      toast.success(LL.internalPanel.toast.carDriverChanged())
+    },
+    onError: (error) => {
+      if (isDriverBusyConflict(error)) {
+        toast.error(detail.driverBusyConflict())
         return
       }
 
-      toast.success(LL.internalPanel.toast.carCustodyEnded())
-    },
-    onError: (error) => {
       if (
         isApiClientError(error) &&
         error.apiError.code === ApiErrorCode.CONFLICT
@@ -84,10 +96,6 @@ export function useCompanyCarCustody(companyId: string) {
 
   function openChange(car: Car) {
     setTarget({ car, mode: 'change' })
-  }
-
-  function openEnd(car: Car) {
-    setTarget({ car, mode: 'end' })
   }
 
   function close() {
@@ -118,10 +126,9 @@ export function useCompanyCarCustody(companyId: string) {
     mutation,
     openAssign,
     openChange,
-    openEnd,
     close,
   }
 }
 
 export type CompanyCarCustodyApi = ReturnType<typeof useCompanyCarCustody>
-export type CarCustodyPickerMode = Extract<CarCustodyMode, 'assign' | 'change'>
+export type CarCustodyPickerMode = CarCustodyMode

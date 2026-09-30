@@ -23,7 +23,6 @@ export function useCompanyCars(companyId: string) {
     listParams,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -132,8 +131,6 @@ export function useCompanyCars(companyId: string) {
     handleLimitChange,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
-    assignment: listParams.assignment ?? 'all',
     hasActiveFilters,
   }
 }

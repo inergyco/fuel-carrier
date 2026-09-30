@@ -90,8 +90,6 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}
-            assignment={cars.assignment}
-            onAssignmentChange={cars.setAssignment}
           />
         }
         footer={

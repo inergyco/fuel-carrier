@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import type { CreateExternalCarDto } from '@fuel-carrier/shared-validation/car/create'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
@@ -12,7 +13,8 @@ import { useMutation } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carToFormValues, createCar, updateCar } from '../../lib/api/cars'
 import {
-  carFormSchema,
+  carCreateFormSchema,
+  carEditFormSchema,
   type CarFormInput,
   type CarFormModalMode,
   type CarFormOutput,
@@ -44,10 +46,19 @@ export function useCarFormModal({
   const { LL } = useI18nContext()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
+  const schema = mode === 'create' ? carCreateFormSchema : carEditFormSchema
+  const defaults = carToFormValues(car)
 
   const form = useForm<CarFormInput, unknown, CarFormOutput>({
-    resolver: zodResolver(carFormSchema),
-    defaultValues: carToFormValues(car),
+    resolver: zodResolver(schema),
+    defaultValues:
+      mode === 'create'
+        ? defaults
+        : {
+            name: defaults.name,
+            licensePlate: defaults.licensePlate,
+            note: defaults.note,
+          },
   })
 
   const {
@@ -58,13 +69,10 @@ export function useCarFormModal({
   const saveMutation = useMutation({
     mutationFn: async function saveCar(data: CarFormOutput) {
       if (mode === 'edit' && car) {
-        return updateCar(car.id, {
-          ...data,
-          expectedDriverId: car.driverId,
-        })
+        return updateCar(car.id, data)
       }
 
-      return createCar(data)
+      return createCar(data as CreateExternalCarDto)
     },
     onSuccess: function handleSaveSuccess() {
       toast.success(

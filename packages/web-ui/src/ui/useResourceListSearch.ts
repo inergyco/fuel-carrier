@@ -1,10 +1,8 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import {
-  ASSIGNMENT_FILTERS,
   DEFAULT_LIMIT,
   MAX_LIMIT,
-  type AssignmentFilter,
   type ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import {
@@ -13,12 +11,10 @@ import {
 } from './usePagination'
 
 const SEARCH_DEBOUNCE_MS = 300
-const ASSIGNMENT_VALUES = new Set<string>(ASSIGNMENT_FILTERS)
 
 /** Optional list filters on top of `?page=&limit=`. */
 export type ResourceListSearch = PaginationSearch & {
   search?: string
-  assignment?: AssignmentFilter
 }
 
 /**
@@ -37,14 +33,6 @@ export function parseResourceListSearch(
     }
   }
 
-  if (
-    typeof search.assignment === 'string' &&
-    ASSIGNMENT_VALUES.has(search.assignment) &&
-    search.assignment !== 'all'
-  ) {
-    result.assignment = search.assignment as AssignmentFilter
-  }
-
   return result
 }
 
@@ -53,10 +41,6 @@ function toUrlSearch(params: ResourceListParams): ResourceListSearch {
     page: params.page > 1 ? params.page : undefined,
     limit: params.limit !== DEFAULT_LIMIT ? params.limit : undefined,
     search: params.search,
-    assignment:
-      params.assignment && params.assignment !== 'all'
-        ? params.assignment
-        : undefined,
   }
 }
 
@@ -73,7 +57,7 @@ function mergeUrlSearch(
 }
 
 /**
- * Syncs list pagination + search/assignment filters with the current route URL.
+ * Syncs list pagination + search with the current route URL.
  * Draft search text is debounced before writing `search` to the URL.
  */
 export function useResourceListSearch() {
@@ -84,7 +68,6 @@ export function useResourceListSearch() {
     page: parsed.page ?? 1,
     limit: parsed.limit ?? DEFAULT_LIMIT,
     search: parsed.search,
-    assignment: parsed.assignment ?? 'all',
   }
   const urlSearchText = listParams.search ?? ''
 
@@ -122,7 +105,6 @@ export function useResourceListSearch() {
             toUrlSearch({
               page: 1,
               limit: listParams.limit,
-              assignment: listParams.assignment,
               search: nextSearch,
             }),
           ),
@@ -131,17 +113,7 @@ export function useResourceListSearch() {
     }, SEARCH_DEBOUNCE_MS)
 
     return () => window.clearTimeout(timeoutId)
-  }, [
-    draftSearchText,
-    listParams.search,
-    listParams.limit,
-    listParams.assignment,
-    navigate,
-  ])
-
-  function setAssignment(assignment: AssignmentFilter) {
-    patchListParams({ page: 1, assignment })
-  }
+  }, [draftSearchText, listParams.search, listParams.limit, navigate])
 
   function handlePageChange(page: number) {
     patchListParams({ page })
@@ -161,10 +133,8 @@ export function useResourceListSearch() {
     listParams,
     draftSearchText,
     setDraftSearchText,
-    setAssignment,
     handlePageChange,
     handleLimitChange,
-    hasActiveFilters:
-      Boolean(listParams.search) || listParams.assignment !== 'all',
+    hasActiveFilters: Boolean(listParams.search),
   }
 }

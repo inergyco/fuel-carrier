@@ -8,11 +8,23 @@ import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carKeys, updateCar } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 
-export type CarCustodyMode = 'assign' | 'change' | 'end'
+export type CarCustodyMode = 'assign' | 'change'
 
 export type CarCustodyTarget = {
   car: Car
   mode: CarCustodyMode
+}
+
+function isDriverBusyConflict(error: unknown): boolean {
+  return (
+    isApiClientError(error) &&
+    error.apiError.code === ApiErrorCode.CONFLICT &&
+    Boolean(
+      error.apiError.fields?.some(
+        (field) => field.message === 'Driver is already assigned to another vehicle',
+      ),
+    )
+  )
 }
 
 export function useCarCustody() {
@@ -40,7 +52,7 @@ export function useCarCustody() {
   const mutation = useMutation({
     mutationFn: (input: {
       carId: string
-      driverId: string | null
+      driverId: string
       expectedDriverId: string | null
       mode: CarCustodyMode
     }) =>
@@ -60,14 +72,14 @@ export function useCarCustody() {
         return
       }
 
-      if (variables.mode === 'change') {
-        toast.success(LL.externalPanel.toast.carDriverChanged())
+      toast.success(LL.externalPanel.toast.carDriverChanged())
+    },
+    onError: (error) => {
+      if (isDriverBusyConflict(error)) {
+        toast.error(LL.externalPanel.cars.driverBusyConflict())
         return
       }
 
-      toast.success(LL.externalPanel.toast.carCustodyEnded())
-    },
-    onError: (error) => {
       if (
         isApiClientError(error) &&
         error.apiError.code === ApiErrorCode.CONFLICT
@@ -86,10 +98,6 @@ export function useCarCustody() {
 
   function openChange(car: Car) {
     setTarget({ car, mode: 'change' })
-  }
-
-  function openEnd(car: Car) {
-    setTarget({ car, mode: 'end' })
   }
 
   function close() {
@@ -122,10 +130,9 @@ export function useCarCustody() {
     mutation,
     openAssign,
     openChange,
-    openEnd,
     close,
   }
 }
 
 export type CarCustodyApi = ReturnType<typeof useCarCustody>
-export type CarCustodyPickerMode = Extract<CarCustodyMode, 'assign' | 'change'>
+export type CarCustodyPickerMode = CarCustodyMode

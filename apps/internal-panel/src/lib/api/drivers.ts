@@ -14,7 +14,6 @@ import { toResourceListFilterSearchParams } from '@fuel-carrier/web-ui/ui'
 const DEFAULT_LIST_PARAMS: ResourceListParams = {
   page: 1,
   limit: DEFAULT_LIMIT,
-  assignment: 'all',
 }
 
 export const driverKeys = {
@@ -65,7 +64,6 @@ export async function fetchAllDrivers(companyId?: string): Promise<Driver[]> {
   return fetchAllPaginated((pagination) =>
     fetchDrivers({
       ...pagination,
-      assignment: 'all',
       ...(typeof companyId === 'string' ? { companyId } : {}),
     }),
   )

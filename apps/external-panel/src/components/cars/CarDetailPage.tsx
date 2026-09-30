@@ -3,7 +3,7 @@ import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
 import { CarDriverAssignmentHistorySection } from '@fuel-carrier/web-ui/cars'
 import { QueryErrorState } from '@fuel-carrier/web-ui/ui'
 import { getRouteApi } from '@tanstack/react-router'
-import { CarCustodyModals } from './CarCustodyModals'
+import { CarCustodyPickerSession } from './CarCustodyPickerSession'
 import { useCarCustody } from './useCarCustody'
 import { useCarQuery } from './useCarQuery'
 import {
@@ -71,7 +71,14 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
           labelScope="external"
         />
       </div>
-      {canManage ? <CarCustodyModals custody={custody} /> : null}
+      {canManage && custody.target ? (
+        <CarCustodyPickerSession
+          key={`${custody.target.car.id}-${custody.target.mode}`}
+          car={custody.target.car}
+          mode={custody.target.mode}
+          custody={custody}
+        />
+      ) : null}
     </div>
   )
 }

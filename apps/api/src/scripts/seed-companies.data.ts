@@ -128,6 +128,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
         name: 'تانکر ۱۸۰۰۰ لیتر',
         licensePlate: '۳۴س۵۶۷-۸۹',
         note: 'توزیع شهری',
+        driverIndex: 3,
         latitude: 35.7448,
         longitude: 51.3755,
       },
@@ -219,6 +220,7 @@ export const SEED_COMPANIES: SeedCompany[] = [
       {
         name: 'تانکر ۲۰۰۰۰ لیتر',
         licensePlate: '۱۱س۲۳۴-۵۶',
+        driverIndex: 3,
         latitude: 32.6619,
         longitude: 51.7011,
       },

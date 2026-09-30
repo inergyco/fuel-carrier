@@ -9,7 +9,7 @@ import {
 } from '@fuel-carrier/web-ui/ui'
 import { CarFormModal } from '../../components/cars/CarFormModal'
 import { CarCustodyActions } from '../../components/cars/CarCustodyActions'
-import { CarCustodyModals } from '../../components/cars/CarCustodyModals'
+import { CarCustodyPickerSession } from '../../components/cars/CarCustodyPickerSession'
 import { CarMqttCredentialsModals } from '../../components/cars/CarMqttCredentialsModals'
 import { CarViewAction } from '../../components/cars/CarViewAction'
 import { getCarColumns } from '../../components/cars/carColumns'
@@ -93,8 +93,6 @@ function CarsPage() {
             searchPlaceholder={LL.externalPanel.cars.searchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}
-            assignment={cars.assignment}
-            onAssignmentChange={cars.setAssignment}
           />
         }
         footer={
@@ -149,7 +147,14 @@ function CarsPage() {
         />
       ) : null}
 
-      {canManage ? <CarCustodyModals custody={custody} /> : null}
+      {canManage && custody.target ? (
+        <CarCustodyPickerSession
+          key={`${custody.target.car.id}-${custody.target.mode}`}
+          car={custody.target.car}
+          mode={custody.target.mode}
+          custody={custody}
+        />
+      ) : null}
     </div>
   )
 }
