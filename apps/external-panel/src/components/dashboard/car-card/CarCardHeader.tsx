@@ -18,7 +18,13 @@ export function CarCardHeader({
         <p className="truncate font-mono text-base font-semibold tracking-tight text-base-content">
           {licensePlate}
         </p>
-        <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-base-content/55">
+        <p
+          className={`mt-1 inline-flex items-center gap-1.5 text-sm ${
+            liveness === 'live'
+              ? 'text-success'
+              : 'text-base-content/55'
+          }`}
+        >
           <span
             aria-hidden
             className={`size-2 shrink-0 rounded-full ${getLivenessDotClass(liveness)}`}
