@@ -83,7 +83,7 @@ export function CarsMap({
             icon={markerIconForColor(markerColor, isSelected)}
             instant={instantMarkerUpdates}
           >
-            <Popup>
+            <Popup className="w-60">
               <CarMarkerPopup
                 marker={marker}
                 title={title}
