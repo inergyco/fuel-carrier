@@ -52,8 +52,8 @@ export function CarMarkerPopup({
       ) : null}
       {marker.resistance ? (
         <div className="space-y-1.5">
-          <p className="text-[10px] font-medium uppercase tracking-wider text-base-content/45">
-            R
+          <p className="text-[10px] font-medium tracking-wider text-base-content/45">
+            {labels.resistanceTitle()}
           </p>
           <div className="flex flex-wrap items-center gap-1.5">
             <ResistanceValue

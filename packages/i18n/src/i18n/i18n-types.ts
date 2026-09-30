@@ -501,12 +501,9 @@ type RootTranslation = {
 			 */
 			remainFuel: RequiredParams<'volume'>
 			/**
-			 * R​:​ ​{​t​a​n​k​T​o​G​r​o​u​n​d​}​ ​/​ ​{​t​a​n​k​T​o​N​o​z​z​l​e​}​ ​/​ ​{​g​r​o​u​n​d​T​o​V​e​h​i​c​l​e​}​ ​Ω
-			 * @param {string} groundToVehicle
-			 * @param {string} tankToGround
-			 * @param {string} tankToNozzle
+			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 			 */
-			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
+			resistanceTitle: string
 			/**
 			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
 			 */
@@ -2502,12 +2499,9 @@ type RootTranslation = {
 			 */
 			remainFuel: RequiredParams<'volume'>
 			/**
-			 * R​:​ ​{​t​a​n​k​T​o​G​r​o​u​n​d​}​ ​/​ ​{​t​a​n​k​T​o​N​o​z​z​l​e​}​ ​/​ ​{​g​r​o​u​n​d​T​o​V​e​h​i​c​l​e​}​ ​Ω
-			 * @param {string} groundToVehicle
-			 * @param {string} tankToGround
-			 * @param {string} tankToNozzle
+			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 			 */
-			resistanceSummary: RequiredParams<'groundToVehicle' | 'tankToGround' | 'tankToNozzle'>
+			resistanceTitle: string
 			/**
 			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
 			 */
@@ -3232,9 +3226,9 @@ export type TranslationFunctions = {
 			 */
 			remainFuel: (arg: { volume: string }) => LocalizedString
 			/**
-			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
+			 * Tank resistance
 			 */
-			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
+			resistanceTitle: () => LocalizedString
 			/**
 			 * Company colors
 			 */
@@ -5186,9 +5180,9 @@ export type TranslationFunctions = {
 			 */
 			remainFuel: (arg: { volume: string }) => LocalizedString
 			/**
-			 * R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω
+			 * Tank resistance
 			 */
-			resistanceSummary: (arg: { groundToVehicle: string, tankToGround: string, tankToNozzle: string }) => LocalizedString
+			resistanceTitle: () => LocalizedString
 			/**
 			 * Select vehicle
 			 */

@@ -139,8 +139,7 @@ const fa: Translation = {
       viewVehicle: "مشاهده",
       unnamedVehicle: "خودروی بدون نام",
       remainFuel: "سوخت: {volume}",
-      resistanceSummary:
-        "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
+      resistanceTitle: "مقاومت مخزن",
       companyLegend: "رنگ شرکت‌ها",
       unnamedCompany: "شرکت ناشناس",
       showAllCompanies: "نمایش همه",
@@ -686,8 +685,7 @@ const fa: Translation = {
       viewVehicle: "مشاهده",
       unnamedVehicle: "خودروی بدون نام",
       remainFuel: "سوخت: {volume}",
-      resistanceSummary:
-        "R: {tankToGround} / {tankToNozzle} / {groundToVehicle} Ω",
+      resistanceTitle: "مقاومت مخزن",
       selectVehicle: "انتخاب خودرو",
       selectedVehicle: "خودرو",
       clickVehicleHint: "روی خودرو کلیک کنید و از داخل پنجره، بازه زمانی مسیر را انتخاب کنید.",

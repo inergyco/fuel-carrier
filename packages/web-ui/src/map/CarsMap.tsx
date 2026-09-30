@@ -17,11 +17,7 @@ export type CarsMapLabels = {
   viewVehicle: () => string;
   chooseTimeRange?: () => string;
   remainFuel: (params: { volume: string }) => string;
-  resistanceSummary: (params: {
-    tankToGround: string;
-    tankToNozzle: string;
-    groundToVehicle: string;
-  }) => string;
+  resistanceTitle: () => string;
 };
 
 export type CarsMapProps = {
