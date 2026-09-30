@@ -10,6 +10,7 @@ import {
   carFuelTypeLabel,
   formatVolume,
 } from "@fuel-carrier/web-ui/cars";
+import { getFuelLevelColor } from "@fuel-carrier/web-ui/map";
 import { ICON_STROKE_WIDTH } from "@fuel-carrier/web-ui/ui";
 import { Fuel, Info, MapPin, Phone, User } from "@fuel-carrier/web-ui/icons";
 import { Link } from "@tanstack/react-router";
@@ -72,8 +73,18 @@ export function DashboardCarCard({
   );
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
-      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
+      {fillPercent != null ? (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute end-4 top-1/4 z-0 -translate-y-1/2 select-none text-[7rem] font-semibold leading-none tracking-tighter tabular-nums opacity-30"
+          style={{ color: getFuelLevelColor(remainFuel) }}
+        >
+          {fillPercent}%
+        </span>
+      ) : null}
+
+      <div className="relative z-10 flex items-start justify-between gap-3 px-4 pt-4">
         <div className="min-w-0">
           <p className="truncate font-mono text-base font-semibold tracking-tight text-base-content">
             {car.licensePlate}
@@ -100,7 +111,7 @@ export function DashboardCarCard({
           </span>
         </div>
 
-        <div className="flex min-w-0 items-center gap-2" dir="ltr">
+        <div className="flex min-w-0 items-center gap-2">
           <Phone
             className="size-4 shrink-0 text-base-content/40"
             strokeWidth={ICON_STROKE_WIDTH}
@@ -161,7 +172,7 @@ export function DashboardCarCard({
         </div>
       </div>
 
-      <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
+      <div className="relative z-10 mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
         <div className="relative h-16 w-28 shrink-0">
           <img
             src="/truck-card.png"
