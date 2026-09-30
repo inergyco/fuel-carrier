@@ -7,6 +7,6 @@ export type CompanyScopedListParams = {
   page: number;
   limit: number;
   search?: string;
-  assignment?: 'all' | 'assigned' | 'unassigned';
+  fuelGrade?: 'all' | 'highGrade' | 'normal';
   companyId?: string;
 };

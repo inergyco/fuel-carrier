@@ -72,5 +72,10 @@ export { ResourceListSkeleton } from './ResourceListSkeleton'
 export { DashboardCardsSkeleton } from './DashboardCardsSkeleton'
 export { ResourceListToolbar } from './ResourceListToolbar'
 export type { ResourceListToolbarProps } from './ResourceListToolbar'
+export {
+  FuelGradeFilterControl,
+  type FuelGradeFilterLabels,
+  type FuelGradeFilterProps,
+} from './FuelGradeFilterControl'
 export { toResourceListFilterSearchParams } from './toResourceListFilterSearchParams'
 

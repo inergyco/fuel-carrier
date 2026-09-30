@@ -40,7 +40,6 @@ import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 import { mapCarRow } from '../cars/cars-reader.service';
 import {
-  buildDriverAssignmentFilter,
   buildDriverSearchFilter,
 } from './drivers-list-filters';
 
@@ -94,7 +93,7 @@ export class DriversService {
     context: TenantContext,
     options: CompanyScopedListParams,
   ): Promise<PaginatedResult<Driver>> {
-    const { page, limit, companyId, search: searchText, assignment } = options;
+    const { page, limit, companyId, search: searchText } = options;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
@@ -104,7 +103,6 @@ export class DriversService {
       isNull(drivers.deletedAt),
       companyId ? eq(drivers.companyId, companyId) : undefined,
       buildDriverSearchFilter(searchText),
-      buildDriverAssignmentFilter(assignment),
     );
 
     return this.tenantDb.run(context, async (tx) => {

@@ -15,6 +15,12 @@ const en: BaseTranslation = {
       pageOf: 'Page {current:number} of {total:number}',
       perPage: 'Per page',
     },
+    listFilters: {
+      fuelGradeAll: 'All',
+      fuelGradeHighGrade: 'High-grade',
+      fuelGradeNormal: 'Normal',
+      fuelGradeFilterLabel: 'Fuel type',
+    },
     connectivity: {
       offline: 'You’re offline. Check your connection.',
       loadFailed: 'Couldn’t load live data. Try again.',

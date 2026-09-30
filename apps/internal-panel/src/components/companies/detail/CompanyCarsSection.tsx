@@ -90,6 +90,14 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}
+            fuelGrade={cars.fuelGrade}
+            onFuelGradeChange={cars.setFuelGrade}
+            fuelGradeLabels={{
+              all: LL.common.listFilters.fuelGradeAll,
+              highGrade: LL.common.listFilters.fuelGradeHighGrade,
+              normal: LL.common.listFilters.fuelGradeNormal,
+              filterLabel: LL.common.listFilters.fuelGradeFilterLabel,
+            }}
           />
         }
         footer={

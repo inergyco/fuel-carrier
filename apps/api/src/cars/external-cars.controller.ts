@@ -79,9 +79,9 @@ export class ExternalCarsController {
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({ name: 'search', required: false, type: String })
   @ApiQuery({
-    name: 'assignment',
+    name: 'fuelGrade',
     required: false,
-    enum: ['all', 'assigned', 'unassigned'],
+    enum: ['all', 'highGrade', 'normal'],
   })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()

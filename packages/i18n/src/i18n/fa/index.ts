@@ -15,6 +15,12 @@ const fa: Translation = {
       pageOf: "صفحه {current} از {total}",
       perPage: "در هر صفحه",
     },
+    listFilters: {
+      fuelGradeAll: "همه",
+      fuelGradeHighGrade: "سوپر",
+      fuelGradeNormal: "معمولی",
+      fuelGradeFilterLabel: "نوع سوخت",
+    },
     connectivity: {
       offline: "آفلاین هستید. اتصال اینترنت را بررسی کنید.",
       loadFailed: "بارگذاری داده‌های زنده ممکن نشد. دوباره تلاش کنید.",

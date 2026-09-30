@@ -30,7 +30,7 @@ import type { ApiTenantContext } from '../database/tenant-context.types';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import {
-  buildCarAssignmentFilter,
+  buildCarFuelGradeFilter,
   buildCarSearchFilter,
 } from './cars-list-filters';
 import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
@@ -55,7 +55,7 @@ type ListCarsOptions = {
   page: number;
   limit: number;
   search?: string;
-  assignment?: 'all' | 'assigned' | 'unassigned';
+  fuelGrade?: 'all' | 'highGrade' | 'normal';
   companyId?: string;
 };
 
@@ -77,7 +77,7 @@ export class CarsService {
       limit,
       companyId,
       search: searchText,
-      assignment,
+      fuelGrade,
     } = listOptions;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
@@ -88,7 +88,7 @@ export class CarsService {
       isNull(cars.deletedAt),
       companyId ? eq(cars.companyId, companyId) : undefined,
       buildCarSearchFilter(searchText),
-      buildCarAssignmentFilter(assignment),
+      buildCarFuelGradeFilter(fuelGrade),
     );
 
     return this.tenantDb.run(context, async (tx) => {

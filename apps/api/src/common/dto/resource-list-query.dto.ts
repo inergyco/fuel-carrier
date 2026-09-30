@@ -1,6 +1,6 @@
 export {
-  ASSIGNMENT_FILTERS,
+  FUEL_GRADE_FILTERS,
   resourceListQuerySchema,
-  type AssignmentFilter,
+  type FuelGradeFilter,
   type ResourceListQueryDto,
 } from '@fuel-carrier/shared-validation/pagination';

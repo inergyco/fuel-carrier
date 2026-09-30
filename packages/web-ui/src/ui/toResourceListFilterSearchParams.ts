@@ -10,5 +10,9 @@ export function toResourceListFilterSearchParams(
     searchParams.search = filters.search
   }
 
+  if (filters.fuelGrade && filters.fuelGrade !== 'all') {
+    searchParams.fuelGrade = filters.fuelGrade
+  }
+
   return searchParams
 }

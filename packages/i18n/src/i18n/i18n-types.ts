@@ -66,6 +66,24 @@ type RootTranslation = {
 			 */
 			perPage: string
 		}
+		listFilters: {
+			/**
+			 * A​l​l
+			 */
+			fuelGradeAll: string
+			/**
+			 * H​i​g​h​-​g​r​a​d​e
+			 */
+			fuelGradeHighGrade: string
+			/**
+			 * N​o​r​m​a​l
+			 */
+			fuelGradeNormal: string
+			/**
+			 * F​u​e​l​ ​t​y​p​e
+			 */
+			fuelGradeFilterLabel: string
+		}
 		connectivity: {
 			/**
 			 * Y​o​u​’​r​e​ ​o​f​f​l​i​n​e​.​ ​C​h​e​c​k​ ​y​o​u​r​ ​c​o​n​n​e​c​t​i​o​n​.
@@ -2797,6 +2815,24 @@ export type TranslationFunctions = {
 			 * Per page
 			 */
 			perPage: () => LocalizedString
+		}
+		listFilters: {
+			/**
+			 * All
+			 */
+			fuelGradeAll: () => LocalizedString
+			/**
+			 * High-grade
+			 */
+			fuelGradeHighGrade: () => LocalizedString
+			/**
+			 * Normal
+			 */
+			fuelGradeNormal: () => LocalizedString
+			/**
+			 * Fuel type
+			 */
+			fuelGradeFilterLabel: () => LocalizedString
 		}
 		connectivity: {
 			/**

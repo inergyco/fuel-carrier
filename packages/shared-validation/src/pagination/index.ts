@@ -4,9 +4,9 @@ export {
 } from './pagination-query.dto'
 
 export {
-  ASSIGNMENT_FILTERS,
+  FUEL_GRADE_FILTERS,
   resourceListQuerySchema,
-  type AssignmentFilter,
+  type FuelGradeFilter,
   type ResourceListFilters,
   type ResourceListParams,
   type ResourceListQueryDto,

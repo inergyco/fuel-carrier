@@ -2,7 +2,9 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import {
   DEFAULT_LIMIT,
+  FUEL_GRADE_FILTERS,
   MAX_LIMIT,
+  type FuelGradeFilter,
   type ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import {
@@ -11,10 +13,12 @@ import {
 } from './usePagination'
 
 const SEARCH_DEBOUNCE_MS = 300
+const FUEL_GRADE_VALUES = new Set<string>(FUEL_GRADE_FILTERS)
 
 /** Optional list filters on top of `?page=&limit=`. */
 export type ResourceListSearch = PaginationSearch & {
   search?: string
+  fuelGrade?: FuelGradeFilter
 }
 
 /**
@@ -33,6 +37,14 @@ export function parseResourceListSearch(
     }
   }
 
+  if (
+    typeof search.fuelGrade === 'string' &&
+    FUEL_GRADE_VALUES.has(search.fuelGrade) &&
+    search.fuelGrade !== 'all'
+  ) {
+    result.fuelGrade = search.fuelGrade as FuelGradeFilter
+  }
+
   return result
 }
 
@@ -41,6 +53,10 @@ function toUrlSearch(params: ResourceListParams): ResourceListSearch {
     page: params.page > 1 ? params.page : undefined,
     limit: params.limit !== DEFAULT_LIMIT ? params.limit : undefined,
     search: params.search,
+    fuelGrade:
+      params.fuelGrade && params.fuelGrade !== 'all'
+        ? params.fuelGrade
+        : undefined,
   }
 }
 
@@ -57,7 +73,7 @@ function mergeUrlSearch(
 }
 
 /**
- * Syncs list pagination + search with the current route URL.
+ * Syncs list pagination + search/fuel-grade filters with the current route URL.
  * Draft search text is debounced before writing `search` to the URL.
  */
 export function useResourceListSearch() {
@@ -68,6 +84,7 @@ export function useResourceListSearch() {
     page: parsed.page ?? 1,
     limit: parsed.limit ?? DEFAULT_LIMIT,
     search: parsed.search,
+    fuelGrade: parsed.fuelGrade ?? 'all',
   }
   const urlSearchText = listParams.search ?? ''
 
@@ -105,6 +122,7 @@ export function useResourceListSearch() {
             toUrlSearch({
               page: 1,
               limit: listParams.limit,
+              fuelGrade: listParams.fuelGrade,
               search: nextSearch,
             }),
           ),
@@ -113,7 +131,17 @@ export function useResourceListSearch() {
     }, SEARCH_DEBOUNCE_MS)
 
     return () => window.clearTimeout(timeoutId)
-  }, [draftSearchText, listParams.search, listParams.limit, navigate])
+  }, [
+    draftSearchText,
+    listParams.search,
+    listParams.limit,
+    listParams.fuelGrade,
+    navigate,
+  ])
+
+  function setFuelGrade(fuelGrade: FuelGradeFilter) {
+    patchListParams({ page: 1, fuelGrade })
+  }
 
   function handlePageChange(page: number) {
     patchListParams({ page })
@@ -133,8 +161,10 @@ export function useResourceListSearch() {
     listParams,
     draftSearchText,
     setDraftSearchText,
+    setFuelGrade,
     handlePageChange,
     handleLimitChange,
-    hasActiveFilters: Boolean(listParams.search),
+    hasActiveFilters:
+      Boolean(listParams.search) || listParams.fuelGrade !== 'all',
   }
 }

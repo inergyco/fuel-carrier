@@ -1,17 +1,13 @@
 import type { PaginationParams } from './pagination';
 
-export const ASSIGNMENT_FILTERS = [
-  'all',
-  'assigned',
-  'unassigned',
-] as const;
+export const FUEL_GRADE_FILTERS = ['all', 'highGrade', 'normal'] as const;
 
-export type AssignmentFilter = (typeof ASSIGNMENT_FILTERS)[number];
+export type FuelGradeFilter = (typeof FUEL_GRADE_FILTERS)[number];
 
-/** Text / assignment filters for resource list endpoints. */
+/** Text / fuel-grade filters for resource list endpoints. */
 export type ResourceListFilters = {
   search?: string;
-  assignment?: AssignmentFilter;
+  fuelGrade?: FuelGradeFilter;
 };
 
 /** Pagination + filters for cars/drivers-style list APIs. */
