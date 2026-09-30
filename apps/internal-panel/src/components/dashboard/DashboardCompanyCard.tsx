@@ -23,12 +23,14 @@ import { Link } from '@tanstack/react-router'
 export type DashboardCompanyCardProps = {
   company: Company
   cars: Car[]
+  driversCount: number
   telemetryByCarId: Map<string, CarTelemetryMarker>
 }
 
 export function DashboardCompanyCard({
   company,
   cars,
+  driversCount,
   telemetryByCarId,
 }: DashboardCompanyCardProps) {
   const { LL } = useI18nContext()
@@ -85,7 +87,7 @@ export function DashboardCompanyCard({
           {LL.internalPanel.home.vehiclesCount({ count: cars.length })}
         </span>
         <span className="rounded-lg border border-base-content/8 bg-base-100/50 px-2.5 py-1">
-          {LL.internalPanel.home.driversCount({ count: drivers.length })}
+          {LL.internalPanel.home.driversCount({ count: driversCount })}
         </span>
         <span className="rounded-lg border border-base-content/8 bg-base-100/50 px-2.5 py-1">
           {LL.internalPanel.home.liveCount({ count: liveCount })}

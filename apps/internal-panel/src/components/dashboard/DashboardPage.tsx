@@ -11,6 +11,7 @@ import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo } from 'react'
 import { carKeys, fetchAllCars } from '../../lib/api/cars'
 import { companyKeys, fetchCompanies } from '../../lib/api/companies'
+import { driverKeys, fetchAllDrivers } from '../../lib/api/drivers'
 import { DashboardCompanyCard } from './DashboardCompanyCard'
 
 export function DashboardPage() {
@@ -24,6 +25,11 @@ export function DashboardPage() {
   const carsQuery = useQuery({
     queryKey: carKeys.all,
     queryFn: () => fetchAllCars(),
+  })
+
+  const driversQuery = useQuery({
+    queryKey: driverKeys.all,
+    queryFn: () => fetchAllDrivers(),
   })
 
   const telemetryQuery = useCarTelemetryLive(api)
@@ -56,9 +62,21 @@ export function DashboardPage() {
     [carsQuery.data],
   )
 
+  const driversCountByCompanyId = useMemo(
+    function countDrivers() {
+      const counts = new Map<string, number>()
+      for (const driver of driversQuery.data ?? []) {
+        counts.set(driver.companyId, (counts.get(driver.companyId) ?? 0) + 1)
+      }
+      return counts
+    },
+    [driversQuery.data],
+  )
+
   const companies = companiesQuery.data ?? []
   const cars = carsQuery.data ?? []
-  const isLoading = companiesQuery.isLoading || carsQuery.isLoading
+  const isLoading =
+    companiesQuery.isLoading || carsQuery.isLoading || driversQuery.isLoading
 
   const liveCount = useMemo(
     function countLiveCars() {
@@ -111,6 +129,7 @@ export function DashboardPage() {
                   <DashboardCompanyCard
                     company={company}
                     cars={carsByCompanyId.get(company.id) ?? []}
+                    driversCount={driversCountByCompanyId.get(company.id) ?? 0}
                     telemetryByCarId={telemetryByCarId}
                   />
                 </li>
