@@ -1,8 +1,6 @@
 export { CarsMap } from './CarsMap'
 export type { CarsMapLabels, CarsMapProps } from './CarsMap'
 export { mapPopupActionClassName } from './CarMarkerPopup'
-export { FleetMapView } from './FleetMapView'
-export type { FleetMapViewLabels, FleetMapViewProps } from './FleetMapView'
 export { FuelLevelLegend } from './FuelLevelLegend'
 export type { FuelLevelLegendLabels } from './FuelLevelLegend'
 export {
