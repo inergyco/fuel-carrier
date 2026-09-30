@@ -92,12 +92,6 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             onSearchTextChange={cars.setDraftSearchText}
             fuelGrade={cars.fuelGrade}
             onFuelGradeChange={cars.setFuelGrade}
-            fuelGradeLabels={{
-              all: LL.common.listFilters.fuelGradeAll,
-              highGrade: LL.common.listFilters.fuelGradeHighGrade,
-              normal: LL.common.listFilters.fuelGradeNormal,
-              filterLabel: LL.common.listFilters.fuelGradeFilterLabel,
-            }}
           />
         }
         footer={

@@ -132,12 +132,6 @@ export function DashboardPage() {
               <FuelGradeFilterControl
                 value={fuelGrade}
                 onChange={setFuelGrade}
-                labels={{
-                  all: LL.common.listFilters.fuelGradeAll,
-                  highGrade: LL.common.listFilters.fuelGradeHighGrade,
-                  normal: LL.common.listFilters.fuelGradeNormal,
-                  filterLabel: LL.common.listFilters.fuelGradeFilterLabel,
-                }}
               />
             </div>
             {filteredCars.length === 0 ? (

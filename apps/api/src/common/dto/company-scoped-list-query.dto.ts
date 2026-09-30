@@ -1,13 +1,14 @@
-import { FUEL_GRADE_FILTERS } from '@fuel-carrier/shared-types/resource-list';
 import { z } from 'zod';
 import { paginationQuerySchema } from './pagination-query.dto';
+
+const fuelGradeFilterSchema = z.enum(['all', 'highGrade', 'normal']);
 
 /** Optional company scope + pagination + list filters for internal car/driver lists. */
 export const companyScopedListQuerySchema = paginationQuerySchema
   .extend({
     companyId: z.uuid().optional(),
     search: z.string().max(64).optional(),
-    fuelGrade: z.enum(FUEL_GRADE_FILTERS).optional(),
+    fuelGrade: fuelGradeFilterSchema.optional(),
   })
   .transform((query) => {
     const searchText = query.search?.trim();

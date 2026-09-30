@@ -1,4 +1,4 @@
-import { FUEL_GRADE_FILTERS } from '@fuel-carrier/shared-types/resource-list'
+import { FUEL_GRADE_FILTERS } from '@fuel-carrier/shared-types'
 import { z } from 'zod'
 import { paginationQuerySchema } from './pagination-query.dto'
 
@@ -7,7 +7,7 @@ export {
   type FuelGradeFilter,
   type ResourceListFilters,
   type ResourceListParams,
-} from '@fuel-carrier/shared-types/resource-list'
+} from '@fuel-carrier/shared-types'
 
 export const resourceListQuerySchema = paginationQuerySchema
   .extend({
