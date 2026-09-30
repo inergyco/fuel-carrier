@@ -28,6 +28,8 @@ const fa: Translation = {
       fuelMidLow: "سوخت ۲۵–۵۰٪",
       fuelLow: "سوخت کمتر از ۲۵٪",
       highGrade: "سوپر",
+      fuelRingTitle: "نمای کلی سوخت ناوگان",
+      fuelRingEmpty: "هنوز خوانش سوختی نیست",
     },
     connectivity: {
       offline: "آفلاین هستید. اتصال اینترنت را بررسی کنید.",

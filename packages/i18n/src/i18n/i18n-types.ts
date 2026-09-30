@@ -109,6 +109,14 @@ type RootTranslation = {
 			 * H​i​g​h​-​g​r​a​d​e
 			 */
 			highGrade: string
+			/**
+			 * F​l​e​e​t​ ​f​u​e​l​ ​o​v​e​r​v​i​e​w
+			 */
+			fuelRingTitle: string
+			/**
+			 * N​o​ ​f​u​e​l​ ​r​e​a​d​i​n​g​s​ ​y​e​t
+			 */
+			fuelRingEmpty: string
 		}
 		connectivity: {
 			/**
@@ -2953,6 +2961,14 @@ export type TranslationFunctions = {
 			 * High-grade
 			 */
 			highGrade: () => LocalizedString
+			/**
+			 * Fleet fuel overview
+			 */
+			fuelRingTitle: () => LocalizedString
+			/**
+			 * No fuel readings yet
+			 */
+			fuelRingEmpty: () => LocalizedString
 		}
 		connectivity: {
 			/**

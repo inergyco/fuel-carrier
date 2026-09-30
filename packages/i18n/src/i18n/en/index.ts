@@ -28,6 +28,8 @@ const en: BaseTranslation = {
       fuelMidLow: '25–50% fuel',
       fuelLow: 'Under 25% fuel',
       highGrade: 'High-grade',
+      fuelRingTitle: 'Fleet fuel overview',
+      fuelRingEmpty: 'No fuel readings yet',
     },
     connectivity: {
       offline: 'You’re offline. Check your connection.',

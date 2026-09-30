@@ -21,6 +21,7 @@ import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './DashboardCarCard'
 import { FleetStatsSection } from './FleetStatsSection'
+import { FuelLevelRingSection } from './FuelLevelRingSection'
 
 export function DashboardPage() {
   const { LL } = useI18nContext()
@@ -89,8 +90,8 @@ export function DashboardPage() {
         isOnline={isOnline}
         isQueryError={telemetryQuery.isError}
         onRetry={() => {
-          void telemetryQuery.refetch()
-          void queryClient.invalidateQueries({ queryKey: carKeys.stats })
+          void telemetryQuery.refetch();
+          void queryClient.invalidateQueries({ queryKey: carKeys.stats });
         }}
         labels={{
           offline: LL.common.connectivity.offline(),
@@ -101,16 +102,19 @@ export function DashboardPage() {
 
       <FleetStatsSection />
 
-      <TrajectoryMapView
-        className="h-[40svh] min-h-56 shrink-0 overflow-hidden rounded-2xl border border-base-content/8"
-        api={api}
-        cars={carsQuery.data ?? []}
-        markers={telemetryQuery.data ?? []}
-        isLoading={telemetryQuery.isLoading || carsQuery.isLoading}
-        labels={LL.externalPanel.map}
-        renderVehicleLink={renderVehicleLink}
-        titleAs="h2"
-      />
+      <div className="flex min-h-0 flex-col gap-3 lg:flex-row lg:items-stretch">
+        <TrajectoryMapView
+          className="h-[40svh] min-h-56 w-full flex-1 overflow-hidden rounded-2xl border border-base-content/8 lg:h-auto lg:min-h-72"
+          api={api}
+          cars={carsQuery.data ?? []}
+          markers={telemetryQuery.data ?? []}
+          isLoading={telemetryQuery.isLoading || carsQuery.isLoading}
+          labels={LL.externalPanel.map}
+          renderVehicleLink={renderVehicleLink}
+          titleAs="h2"
+        />
+        <FuelLevelRingSection className="w-full shrink-0 lg:w-72 xl:w-80" />
+      </div>
 
       <section className="flex-1">
         {isCarsLoading ? (
@@ -150,7 +154,7 @@ export function DashboardPage() {
                 {filteredCars.map(function renderCarCard(car) {
                   const driver = car.driverId
                     ? (driverById.get(car.driverId) ?? null)
-                    : null
+                    : null;
 
                   return (
                     <li key={car.id}>
@@ -160,7 +164,7 @@ export function DashboardPage() {
                         telemetry={telemetryByCarId.get(car.id) ?? null}
                       />
                     </li>
-                  )
+                  );
                 })}
               </ul>
             )}
@@ -168,5 +172,5 @@ export function DashboardPage() {
         )}
       </section>
     </div>
-  )
+  );
 }
