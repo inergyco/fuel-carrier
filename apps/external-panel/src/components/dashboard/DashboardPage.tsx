@@ -2,8 +2,8 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { CarTelemetryMarker, FuelGradeFilter } from '@fuel-carrier/shared-types'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import {
-  FleetMapView,
   mapPopupActionClassName,
+  TrajectoryMapView,
   useCarTelemetryLive,
 } from '@fuel-carrier/web-ui/map'
 import {
@@ -96,10 +96,12 @@ export function DashboardPage() {
         }}
       />
 
-      <FleetMapView
+      <TrajectoryMapView
         className="h-[40svh] min-h-56 shrink-0 overflow-hidden rounded-2xl border border-base-content/8"
+        api={api}
+        cars={carsQuery.data ?? []}
         markers={telemetryQuery.data ?? []}
-        isLoading={telemetryQuery.isLoading}
+        isLoading={telemetryQuery.isLoading || carsQuery.isLoading}
         labels={LL.externalPanel.map}
         renderVehicleLink={renderVehicleLink}
         titleAs="h2"

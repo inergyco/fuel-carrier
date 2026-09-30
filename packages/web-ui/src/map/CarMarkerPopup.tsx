@@ -34,7 +34,7 @@ export function CarMarkerPopup({
       </p>
       <p className="text-xs text-base-content/70">
         {labels.fuelType({
-          type: carFuelTypeLabel(marker.hasHighGrade, labels),
+          type: carFuelTypeLabel(marker.hasHighGrade ?? false, labels),
         })}
       </p>
       {marker.remainFuel != null ? (
