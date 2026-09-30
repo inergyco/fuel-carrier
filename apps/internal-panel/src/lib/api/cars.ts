@@ -31,6 +31,7 @@ export type CarFormValues = {
   licensePlate: string;
   note: string;
   driverId: string;
+  hasHighGrade: boolean;
 };
 
 export type FetchCarsParams = ResourceListParams & {
@@ -43,6 +44,7 @@ export function carToFormValues(car?: Car): CarFormValues {
     licensePlate: car?.licensePlate ?? "",
     note: car?.note ?? "",
     driverId: car?.driverId ?? "",
+    hasHighGrade: car?.hasHighGrade ?? false,
   };
 }
 

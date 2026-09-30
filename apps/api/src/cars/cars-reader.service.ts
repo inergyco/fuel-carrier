@@ -60,6 +60,7 @@ export function mapCarRow(row: typeof cars.$inferSelect): Car {
     licensePlate: row.licensePlate,
     companyId: row.companyId,
     driverId: row.driverId,
+    hasHighGrade: row.hasHighGrade,
     note: row.note,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),

@@ -4,6 +4,8 @@ export type Car = {
   licensePlate: string;
   companyId: string;
   driverId: string | null;
+  /** True when the vehicle has high-grade petrol; false = normal. */
+  hasHighGrade: boolean;
   note: string | null;
   /** ISO-8601 timestamptz when soft-deleted; null while live. */
   deletedAt: string | null;

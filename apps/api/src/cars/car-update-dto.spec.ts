@@ -20,6 +20,7 @@ describe('car update DTO schemas', () => {
       licensePlate: '12ب345-67',
       name: '',
       driverId: DRIVER_ID,
+      hasHighGrade: false,
       note: '',
     });
   });

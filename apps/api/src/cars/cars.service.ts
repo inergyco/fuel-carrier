@@ -42,6 +42,7 @@ type CreateCarPayload = {
   licensePlate: string;
   companyId: string;
   driverId: string;
+  hasHighGrade?: boolean;
   note?: string | null;
 };
 
@@ -139,6 +140,7 @@ export class CarsService {
             licensePlate: dto.licensePlate,
             companyId: dto.companyId,
             driverId: dto.driverId,
+            hasHighGrade: dto.hasHighGrade ?? false,
             note: dto.note ?? null,
           })
           .returning();
@@ -247,6 +249,9 @@ export class CarsService {
               ? { companyId: dto.companyId }
               : {}),
             ...(dto.driverId !== undefined ? { driverId: dto.driverId } : {}),
+            ...(dto.hasHighGrade !== undefined
+              ? { hasHighGrade: dto.hasHighGrade }
+              : {}),
             ...(dto.note !== undefined ? { note: dto.note } : {}),
           })
           .where(and(eq(cars.id, id), isNull(cars.deletedAt)))
@@ -382,5 +387,6 @@ const CAR_AUDIT_FIELDS = [
   'name',
   'licensePlate',
   'driverId',
+  'hasHighGrade',
   'note',
 ] as const satisfies readonly (keyof Car)[];

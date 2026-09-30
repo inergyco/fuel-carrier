@@ -14,6 +14,7 @@ import {
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import {
+  FormCheckbox,
   FormInput,
   FormSelect,
   FormTextarea,
@@ -78,6 +79,7 @@ export function CarFormModal({
             name: defaults.name,
             licensePlate: defaults.licensePlate,
             note: defaults.note,
+            hasHighGrade: defaults.hasHighGrade,
           },
   })
 
@@ -93,6 +95,7 @@ export function CarFormModal({
           name: data.name,
           licensePlate: data.licensePlate,
           note: data.note,
+          hasHighGrade: data.hasHighGrade,
           companyId,
         })
       }
@@ -200,6 +203,8 @@ export function CarFormModal({
             })}
           </FormSelect>
         ) : null}
+
+        <FormCheckbox name="hasHighGrade" label={detail.hasHighGrade()} />
 
         <FormTextarea
           name="note"

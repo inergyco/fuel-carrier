@@ -15,12 +15,14 @@ const carDriverIdField = z.uuid();
 /** Optimistic concurrency token — null means "expect unassigned". */
 const carExpectedDriverIdField = z.uuid().nullable();
 const carNoteField = optionalTextField(CAR_NOTE_MAX_LENGTH);
+const carHasHighGradeField = z.boolean();
 
 /** Create body: omitted optional fields get create-time defaults. */
 const carBaseSchema = z.object({
   name: carNameField.optional().default(""),
   licensePlate: carLicensePlateField,
   driverId: carDriverIdField,
+  hasHighGrade: carHasHighGradeField.optional().default(false),
   note: carNoteField.optional().default(""),
 });
 
@@ -37,6 +39,7 @@ const carUpdateBaseSchema = z
     name: carNameField.optional(),
     licensePlate: carLicensePlateField.optional(),
     driverId: carDriverIdField.optional(),
+    hasHighGrade: carHasHighGradeField.optional(),
     note: carNoteField.optional(),
     expectedDriverId: carExpectedDriverIdField.optional(),
   })

@@ -58,6 +58,7 @@ export function useCarFormModal({
             name: defaults.name,
             licensePlate: defaults.licensePlate,
             note: defaults.note,
+            hasHighGrade: defaults.hasHighGrade,
           },
   })
 

@@ -1,0 +1,20 @@
+---
+description: Keep loading skeletons in sync when redesigning UI
+alwaysApply: true
+---
+
+# Skeleton parity with UI redesigns
+
+Whenever you change a component's **layout, structure, or visual chrome**, update its matching loading skeleton in the same change.
+
+## Checklist
+
+- After redesigning a card, list row, page section, or panel, find and update the related `*Skeleton` (e.g. `DashboardCardsSkeleton`, `ResourceListSkeleton`, or a local placeholder).
+- Mirror the real UI: shell classes (border, radius, background, shadow), section order, approximate heights/widths, and footer/CTA footprints.
+- Prefer shared skeletons in `@fuel-carrier/web-ui` with a `variant` when one skeleton serves multiple layouts (e.g. company vs car dashboard cards).
+- Match grid/list column classes used by the loaded state so the skeleton does not reflow when data arrives.
+
+## Do not
+
+- Ship a redesigned component while leaving an outdated skeleton that still reflects the previous layout.
+- Rely on a generic block placeholder when the loaded UI has a distinct multi-section composition.

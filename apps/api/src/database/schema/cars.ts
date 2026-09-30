@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import {
+  boolean,
   foreignKey,
   pgTable,
   text,
@@ -24,6 +25,8 @@ export const cars = pgTable(
       .references(() => companies.id, { onDelete: 'cascade' }),
     /** One-to-one: each driver may be assigned to at most one car. */
     driverId: uuid('driver_id').unique(),
+    /** True when the vehicle has high-grade petrol; false = normal. */
+    hasHighGrade: boolean('has_high_grade').notNull().default(false),
     note: text('note'),
     ...softDeleteColumn(),
     createdAt: timestamp('created_at', { withTimezone: true })

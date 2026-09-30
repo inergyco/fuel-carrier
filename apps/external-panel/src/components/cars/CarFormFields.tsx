@@ -1,6 +1,11 @@
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { FormInput, FormSelect, FormTextarea } from '@fuel-carrier/web-ui/ui'
+import {
+  FormCheckbox,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from '@fuel-carrier/web-ui/ui'
 
 interface CarFormFieldsProps {
   mode: 'create' | 'edit'
@@ -40,6 +45,11 @@ export function CarFormFields({
           ))}
         </FormSelect>
       ) : null}
+
+      <FormCheckbox
+        name="hasHighGrade"
+        label={LL.externalPanel.cars.hasHighGrade()}
+      />
 
       <FormTextarea
         name="note"

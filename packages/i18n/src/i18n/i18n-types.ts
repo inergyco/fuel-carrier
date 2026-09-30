@@ -860,6 +860,10 @@ type RootTranslation = {
 				 */
 				noDriver: string
 				/**
+				 * H​i​g​h​-​g​r​a​d​e​ ​p​e​t​r​o​l
+				 */
+				hasHighGrade: string
+				/**
 				 * N​o​ ​c​a​r​ ​a​s​s​i​g​n​e​d
 				 */
 				noCar: string
@@ -2050,6 +2054,10 @@ type RootTranslation = {
 			 * N​o​ ​d​r​i​v​e​r​ ​a​s​s​i​g​n​e​d
 			 */
 			noDriver: string
+			/**
+			 * H​i​g​h​-​g​r​a​d​e​ ​p​e​t​r​o​l
+			 */
+			hasHighGrade: string
 			/**
 			 * N​o​t​e
 			 */
@@ -3529,6 +3537,10 @@ export type TranslationFunctions = {
 				 */
 				noDriver: () => LocalizedString
 				/**
+				 * High-grade petrol
+				 */
+				hasHighGrade: () => LocalizedString
+				/**
 				 * No car assigned
 				 */
 				noCar: () => LocalizedString
@@ -4695,6 +4707,10 @@ export type TranslationFunctions = {
 			 * No driver assigned
 			 */
 			noDriver: () => LocalizedString
+			/**
+			 * High-grade petrol
+			 */
+			hasHighGrade: () => LocalizedString
 			/**
 			 * Note
 			 */

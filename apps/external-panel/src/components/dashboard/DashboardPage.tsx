@@ -94,7 +94,11 @@ export function DashboardPage() {
 
       <section className="flex-1">
         {isCarsLoading ? (
-          <DashboardCardsSkeleton label={LL.externalPanel.cars.loading()} />
+          <DashboardCardsSkeleton
+            label={LL.externalPanel.cars.loading()}
+            variant="car"
+            columnsClassName="grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+          />
         ) : cars.length === 0 ? (
           <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
             {LL.externalPanel.cars.empty()}

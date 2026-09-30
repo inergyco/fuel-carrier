@@ -70,23 +70,23 @@ export function DashboardCarCard({
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
       <div className="flex items-start justify-between gap-3 px-4 pt-4">
         <div className="min-w-0">
-          <p className="truncate font-mono text-sm font-semibold tracking-tight text-base-content">
+          <p className="truncate font-mono text-base font-semibold tracking-tight text-base-content">
             {car.licensePlate}
           </p>
-          <p className="mt-1 inline-flex items-center gap-1.5 text-xs text-base-content/55">
+          <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-base-content/55">
             <span
               aria-hidden
-              className={`size-1.5 shrink-0 rounded-full ${statusDotClass}`}
+              className={`size-2 shrink-0 rounded-full ${statusDotClass}`}
             />
             {statusLabel}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3 text-xs text-base-content/60">
+      <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3 text-sm text-base-content/60">
         <div className="flex min-w-0 items-center gap-2">
           <User
-            className="size-3.5 shrink-0 text-base-content/40"
+            className="size-4 shrink-0 text-base-content/40"
             strokeWidth={ICON_STROKE_WIDTH}
             aria-hidden
           />
@@ -97,7 +97,7 @@ export function DashboardCarCard({
 
         <div className="flex min-w-0 items-center gap-2" dir="ltr">
           <Phone
-            className="size-3.5 shrink-0 text-base-content/40"
+            className="size-4 shrink-0 text-base-content/40"
             strokeWidth={ICON_STROKE_WIDTH}
             aria-hidden
           />
@@ -108,7 +108,7 @@ export function DashboardCarCard({
 
         <div className="flex min-w-0 items-center gap-2">
           <MapPin
-            className="size-3.5 shrink-0 text-base-content/40"
+            className="size-4 shrink-0 text-base-content/40"
             strokeWidth={ICON_STROKE_WIDTH}
             aria-hidden
           />
@@ -116,7 +116,7 @@ export function DashboardCarCard({
         </div>
 
         <div className="mt-1 space-y-1.5">
-          <div className="flex items-center justify-between gap-2 text-[11px] tabular-nums">
+          <div className="flex items-center justify-between gap-2 text-xs tabular-nums">
             <span>
               {remainFuel != null
                 ? LL.externalPanel.home.fuelVolumeOfCapacity({
@@ -137,7 +137,7 @@ export function DashboardCarCard({
               aria-valuenow={remainFuel}
             >
               <div
-                className="h-full rounded-full bg-primary transition-[width] duration-500"
+                className="h-full rounded-full bg-success transition-[width] duration-500"
                 style={{ width: `${fillPercent}%` }}
               />
             </div>
