@@ -6,13 +6,11 @@ import type { ResourceColumn } from '../users/ResourceSection'
 interface CarColumnOptions {
   LL: TranslationFunctions
   emptyCell?: string
-  driverNameById: Map<string, string>
 }
 
 export function getCarColumns({
   LL,
   emptyCell,
-  driverNameById,
 }: CarColumnOptions): ResourceColumn<Car>[] {
   const cars = LL.externalPanel.cars
 
@@ -36,8 +34,8 @@ export function getCarColumns({
       key: 'driver',
       header: cars.driver(),
       cell: function renderDriver(car) {
-        return car.driverId
-          ? (driverNameById.get(car.driverId) ?? cars.noDriver())
+        return car.driver
+          ? `${car.driver.firstName} ${car.driver.lastName}`
           : cars.noDriver()
       },
     },

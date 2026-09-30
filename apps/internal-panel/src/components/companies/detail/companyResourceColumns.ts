@@ -6,7 +6,6 @@ import type { ResourceColumn } from './ResourceSection'
 interface CompanyResourceColumnOptions {
   LL: TranslationFunctions
   emptyCell?: string
-  driverNameById?: Map<string, string>
 }
 
 function formatLevel(
@@ -96,7 +95,6 @@ export function getDriverColumns({
 export function getCarColumns({
   LL,
   emptyCell,
-  driverNameById,
 }: CompanyResourceColumnOptions): ResourceColumn<Car>[] {
   return [
     {
@@ -114,9 +112,8 @@ export function getCarColumns({
       key: 'driver',
       header: LL.internalPanel.companies.detail.driver(),
       cell: (car) =>
-        car.driverId
-          ? (driverNameById?.get(car.driverId) ??
-            LL.internalPanel.companies.detail.noDriver())
+        car.driver
+          ? `${car.driver.firstName} ${car.driver.lastName}`
           : LL.internalPanel.companies.detail.noDriver(),
     },
     {

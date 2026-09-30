@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Car, CarMqttCredentials, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
@@ -47,19 +47,6 @@ export function useCompanyCars(companyId: string) {
 
   const companyDrivers = driversQuery.data ?? EMPTY_DRIVERS
   const companyCars = carsQuery.data?.items ?? EMPTY_CARS
-
-  const driverNameById = useMemo(
-    function mapDriverNames() {
-      const drivers = driversQuery.data ?? EMPTY_DRIVERS
-      return new Map(
-        drivers.map((driver) => [
-          driver.id,
-          `${driver.firstName} ${driver.lastName}`,
-        ]),
-      )
-    },
-    [driversQuery.data],
-  )
 
   const deleteMutation = useMutation({
     mutationFn: deleteCar,
@@ -115,7 +102,6 @@ export function useCompanyCars(companyId: string) {
     carsQuery,
     companyDrivers,
     companyCars,
-    driverNameById,
     carModal,
     setCarModal,
     deleteTarget,

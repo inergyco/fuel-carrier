@@ -1,5 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { Car, Company, Driver } from '@fuel-carrier/shared-types'
+import type { Car, Company } from '@fuel-carrier/shared-types'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import {
@@ -11,7 +11,6 @@ import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo } from 'react'
 import { carKeys, fetchAllCars } from '../../lib/api/cars'
 import { companyKeys, fetchCompanies } from '../../lib/api/companies'
-import { driverKeys, fetchAllDrivers } from '../../lib/api/drivers'
 import { DashboardCompanyCard } from './DashboardCompanyCard'
 
 export function DashboardPage() {
@@ -25,11 +24,6 @@ export function DashboardPage() {
   const carsQuery = useQuery({
     queryKey: carKeys.all,
     queryFn: () => fetchAllCars(),
-  })
-
-  const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: () => fetchAllDrivers(),
   })
 
   const telemetryQuery = useCarTelemetryLive(api)
@@ -62,26 +56,9 @@ export function DashboardPage() {
     [carsQuery.data],
   )
 
-  const driversByCompanyId = useMemo(
-    function groupDrivers() {
-      const grouped = new Map<string, Driver[]>()
-      for (const driver of driversQuery.data ?? []) {
-        const existing = grouped.get(driver.companyId)
-        if (existing) {
-          existing.push(driver)
-        } else {
-          grouped.set(driver.companyId, [driver])
-        }
-      }
-      return grouped
-    },
-    [driversQuery.data],
-  )
-
   const companies = companiesQuery.data ?? []
   const cars = carsQuery.data ?? []
-  const isLoading =
-    companiesQuery.isLoading || carsQuery.isLoading || driversQuery.isLoading
+  const isLoading = companiesQuery.isLoading || carsQuery.isLoading
 
   const liveCount = useMemo(
     function countLiveCars() {
@@ -134,7 +111,6 @@ export function DashboardPage() {
                   <DashboardCompanyCard
                     company={company}
                     cars={carsByCompanyId.get(company.id) ?? []}
-                    drivers={driversByCompanyId.get(company.id) ?? []}
                     telemetryByCarId={telemetryByCarId}
                   />
                 </li>

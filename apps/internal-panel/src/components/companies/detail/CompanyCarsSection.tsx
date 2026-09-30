@@ -58,7 +58,6 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         columns={getCarColumns({
           LL,
           emptyCell,
-          driverNameById: cars.driverNameById,
         })}
         onAdd={function openCreateCar() {
           cars.setCarModal({ mode: 'create' })

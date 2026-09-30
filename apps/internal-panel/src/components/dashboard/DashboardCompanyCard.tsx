@@ -2,7 +2,6 @@ import type {
   Car,
   CarTelemetryMarker,
   Company,
-  Driver,
 } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { carFuelTypeLabel, formatVolume } from '@fuel-carrier/web-ui/cars'
@@ -24,14 +23,12 @@ import { Link } from '@tanstack/react-router'
 export type DashboardCompanyCardProps = {
   company: Company
   cars: Car[]
-  drivers: Driver[]
   telemetryByCarId: Map<string, CarTelemetryMarker>
 }
 
 export function DashboardCompanyCard({
   company,
   cars,
-  drivers,
   telemetryByCarId,
 }: DashboardCompanyCardProps) {
   const { LL } = useI18nContext()
@@ -39,12 +36,6 @@ export function DashboardCompanyCard({
   const liveCount = cars.filter(function isLive(car) {
     return telemetryByCarId.has(car.id)
   }).length
-
-  const driverNameById = new Map(
-    drivers.map(function toDriverEntry(driver) {
-      return [driver.id, `${driver.firstName} ${driver.lastName}`]
-    }),
-  )
 
   return (
     <article className="flex h-full flex-col gap-4 rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-xl sm:p-5">
@@ -113,8 +104,8 @@ export function DashboardCompanyCard({
               const title = car.name?.trim()
                 ? car.name
                 : LL.internalPanel.map.unnamedVehicle()
-              const driverName = car.driverId
-                ? (driverNameById.get(car.driverId) ?? null)
+              const driverName = car.driver
+                ? `${car.driver.firstName} ${car.driver.lastName}`
                 : null
 
               return (

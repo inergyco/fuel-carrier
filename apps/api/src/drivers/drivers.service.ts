@@ -39,9 +39,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 import { mapCarRow } from '../cars/cars-reader.service';
-import {
-  buildDriverSearchFilter,
-} from './drivers-list-filters';
+import { buildDriverSearchFilter } from './drivers-list-filters';
 
 type CreateDriverPayload = {
   firstName: string;
@@ -393,7 +391,7 @@ function _mapDriverWithCar(row: DriverWithCar): Driver {
 
   return {
     ..._mapDriver(row),
-    car: liveCar ? mapCarRow(liveCar) : null,
+    car: liveCar ? mapCarRow(liveCar, row) : null,
   };
 }
 

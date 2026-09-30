@@ -104,16 +104,18 @@ export class CarsService {
         .from(cars)
         .where(where);
 
-      const rows = await tx
-        .select()
-        .from(cars)
-        .where(where)
-        .orderBy(desc(cars.createdAt))
-        .limit(limit)
-        .offset(offset);
+      const rows = await tx.query.cars.findMany({
+        where,
+        with: { driver: true },
+        orderBy: desc(cars.createdAt),
+        limit,
+        offset,
+      });
 
       return toPaginatedResult({
-        items: rows.map(mapCarRow),
+        items: rows.map(function toCar(row) {
+          return mapCarRow(row, row.driver);
+        }),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -204,7 +206,7 @@ export class CarsService {
           },
         );
 
-        const car = mapCarRow(row);
+        const car = await this.carsReader.getById(tx, row.id);
         const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {
@@ -305,7 +307,7 @@ export class CarsService {
           );
         }
 
-        const car = mapCarRow(row);
+        const car = await this.carsReader.getById(tx, row.id);
         const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {

@@ -1,51 +1,42 @@
-import type {
-  Car,
-  CarTelemetryMarker,
-  Driver,
-} from "@fuel-carrier/shared-types";
-import { useI18nContext } from "@fuel-carrier/i18n/react";
-import { carFuelTypeLabel } from "@fuel-carrier/web-ui/cars";
-import { CarCardDetails } from "./CarCardDetails";
-import { CarCardFooter } from "./CarCardFooter";
-import { CarCardFuelSection } from "./CarCardFuelSection";
-import { CarCardHeader } from "./CarCardHeader";
-import { CarCardWatermark } from "./CarCardWatermark";
-import { getFuelFillPercent, getRemainFuelLiters } from "./car-card-utils";
-import { useCarCardLiveness } from "./useCarCardLiveness";
+import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { carFuelTypeLabel } from '@fuel-carrier/web-ui/cars'
+import { CarCardDetails } from './CarCardDetails'
+import { CarCardFooter } from './CarCardFooter'
+import { CarCardFuelSection } from './CarCardFuelSection'
+import { CarCardHeader } from './CarCardHeader'
+import { CarCardWatermark } from './CarCardWatermark'
+import { getFuelFillPercent, getRemainFuelLiters } from './car-card-utils'
+import { useCarCardLiveness } from './useCarCardLiveness'
 
 export type DashboardCarCardProps = {
-  car: Car;
-  driver: Driver | null;
-  telemetry: CarTelemetryMarker | null;
-};
+  car: Car
+  telemetry: CarTelemetryMarker | null
+}
 
-export function DashboardCarCard({
-  car,
-  driver,
-  telemetry,
-}: DashboardCarCardProps) {
-  const { LL } = useI18nContext();
-  const liveness = useCarCardLiveness(telemetry);
-  const isLive = liveness === "live";
+export function DashboardCarCard({ car, telemetry }: DashboardCarCardProps) {
+  const { LL } = useI18nContext()
+  const liveness = useCarCardLiveness(telemetry)
+  const isLive = liveness === 'live'
 
-  const remainFuel = getRemainFuelLiters(telemetry);
-  const fillPercent = getFuelFillPercent(remainFuel);
+  const remainFuel = getRemainFuelLiters(telemetry)
+  const fillPercent = getFuelFillPercent(remainFuel)
 
   const statusLabel = isLive
     ? LL.externalPanel.home.locationLive()
-    : LL.externalPanel.home.statusOffline();
+    : LL.externalPanel.home.statusOffline()
 
-  const driverName = driver
-    ? `${driver.firstName} ${driver.lastName}`
-    : LL.externalPanel.cars.noDriver();
+  const driverName = car.driver
+    ? `${car.driver.firstName} ${car.driver.lastName}`
+    : LL.externalPanel.cars.noDriver()
 
   const mobileNumber =
-    driver?.mobileNumber?.trim() || LL.externalPanel.home.mobileUnknown();
+    car.driver?.mobileNumber?.trim() || LL.externalPanel.home.mobileUnknown()
 
   const fuelTypeLabel = carFuelTypeLabel(
     car.hasHighGrade,
     LL.externalPanel.cars,
-  );
+  )
 
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
@@ -70,5 +61,5 @@ export function DashboardCarCard({
 
       <CarCardFooter carId={car.id} />
     </article>
-  );
+  )
 }

@@ -68,7 +68,6 @@ function CarsPage() {
         columns={getCarColumns({
           LL,
           emptyCell,
-          driverNameById: cars.driverNameById,
         })}
         actionLabels={{
           loading: LL.externalPanel.cars.loading(),

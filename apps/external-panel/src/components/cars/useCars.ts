@@ -37,13 +37,6 @@ export function useCars() {
     queryFn: () => fetchAllPaginated(fetchDrivers),
   })
 
-  const driverNameById = new Map(
-    (driversQuery.data ?? []).map((driver) => [
-      driver.id,
-      `${driver.firstName} ${driver.lastName}`,
-    ]),
-  )
-
   const deleteMutation = useMutation({
     mutationFn: deleteCar,
     onSuccess: async function onCarDeleted() {
@@ -68,7 +61,6 @@ export function useCars() {
     carsQuery,
     driversQuery,
     items: carsQuery.data?.items ?? EMPTY_CARS,
-    driverNameById,
     carModal,
     setCarModal,
     deleteTarget,

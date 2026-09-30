@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Car, Driver } from '@fuel-carrier/shared-types'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
@@ -38,14 +38,6 @@ export function useCompanyCarCustody(companyId: string) {
     queryKey: [...driverKeys.byCompany(companyId), 'all'] as const,
     queryFn: () => fetchAllDrivers(companyId),
   })
-
-  const driverNameById = useMemo(() => {
-    const map = new Map<string, string>()
-    for (const driver of driversQuery.data ?? []) {
-      map.set(driver.id, `${driver.firstName} ${driver.lastName}`)
-    }
-    return map
-  }, [driversQuery.data])
 
   const mutation = useMutation({
     mutationFn: (input: {
@@ -109,18 +101,17 @@ export function useCompanyCarCustody(companyId: string) {
   }
 
   function currentDriverName(car: Car): string {
-    if (!car.driverId) {
-      return detail.noDriver()
+    if (car.driver) {
+      return `${car.driver.firstName} ${car.driver.lastName}`
     }
 
-    return driverNameById.get(car.driverId) ?? detail.noDriver()
+    return detail.noDriver()
   }
 
   return {
     target,
     drivers: driversQuery.data ?? [],
     driversLoading: driversQuery.isLoading,
-    driverNameById,
     currentDriverName,
     driverLabel,
     mutation,

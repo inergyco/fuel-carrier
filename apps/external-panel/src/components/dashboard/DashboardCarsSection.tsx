@@ -4,7 +4,6 @@ import type {
   FuelGradeFilter,
   ResourceListParams,
 } from '@fuel-carrier/shared-types'
-import { fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import {
   DashboardCardsSkeleton,
   FuelGradeFilterControl,
@@ -13,7 +12,6 @@ import {
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo, useState } from 'react'
 import { carKeys, fetchCars } from '../../lib/api/cars'
-import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './car-card'
 
 const DASHBOARD_CARS_PAGE_SIZE = 4
@@ -44,22 +42,6 @@ export function DashboardCarsSection({
     placeholderData: (previous) => previous,
   })
 
-  const driversQuery = useQuery({
-    queryKey: [...driverKeys.all, 'all'] as const,
-    queryFn: () => fetchAllPaginated(fetchDrivers),
-  })
-
-  const driverById = useMemo(
-    function mapDrivers() {
-      return new Map(
-        (driversQuery.data ?? []).map(function toDriverEntry(driver) {
-          return [driver.id, driver]
-        }),
-      )
-    },
-    [driversQuery.data],
-  )
-
   const telemetryByCarId = useMemo(
     function mapTelemetry() {
       return new Map(
@@ -87,6 +69,8 @@ export function DashboardCarsSection({
         <DashboardCardsSkeleton
           label={LL.externalPanel.cars.loading()}
           variant="car"
+          count={DASHBOARD_CARS_PAGE_SIZE}
+          showPagination
           columnsClassName={CAR_GRID_CLASS_NAME}
         />
       </section>
@@ -130,15 +114,10 @@ export function DashboardCarsSection({
         <>
           <ul className={`grid ${CAR_GRID_CLASS_NAME}`}>
             {cars.map(function renderCarCard(car) {
-              const driver = car.driverId
-                ? (driverById.get(car.driverId) ?? null)
-                : null
-
               return (
                 <li key={car.id}>
                   <DashboardCarCard
                     car={car}
-                    driver={driver}
                     telemetry={telemetryByCarId.get(car.id) ?? null}
                   />
                 </li>

@@ -10,6 +10,8 @@ type DashboardCardsSkeletonProps = {
    * `car` matches external fleet cards (plate, rows, fuel bar, truck + CTA).
    */
   variant?: 'company' | 'car'
+  /** Mirror the pager under the card grid (dashboard cars). */
+  showPagination?: boolean
 }
 
 const DEFAULT_COUNT = 6
@@ -22,10 +24,22 @@ export function DashboardCardsSkeleton({
   count = DEFAULT_COUNT,
   columnsClassName = 'grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3',
   variant = 'company',
+  showPagination = false,
 }: DashboardCardsSkeletonProps) {
   return (
     <div role="status" aria-busy="true" aria-label={label}>
-      <Skeleton className="mb-5 h-3 w-48" />
+      {variant === 'car' ? (
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-3 w-40" />
+          </div>
+          <Skeleton className="h-9 w-36 shrink-0 rounded-lg" />
+        </div>
+      ) : (
+        <Skeleton className="mb-5 h-3 w-48" />
+      )}
+
       <ul className={`grid ${columnsClassName}`}>
         {Array.from({ length: count }, function renderCard(_, index) {
           return (
@@ -35,6 +49,23 @@ export function DashboardCardsSkeleton({
           )
         })}
       </ul>
+
+      {showPagination ? <PaginationSkeleton /> : null}
+    </div>
+  )
+}
+
+function PaginationSkeleton() {
+  return (
+    <div className="mt-4 flex flex-col gap-3 border-t border-base-content/8 pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <Skeleton className="h-3 w-44" />
+      <div className="flex items-center justify-between gap-3 sm:justify-end">
+        <Skeleton className="h-3 w-24" />
+        <div className="flex items-center gap-1">
+          <Skeleton className="size-8 rounded-lg" />
+          <Skeleton className="size-8 rounded-lg" />
+        </div>
+      </div>
     </div>
   )
 }

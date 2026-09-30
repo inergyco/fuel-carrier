@@ -40,7 +40,11 @@ export function CarOverviewSection({
   const emptyCell = labels.emptyCell()
   const driverDisplay =
     currentDriverName?.trim() ||
-    (car.driverId ? emptyCell : labels.noDriver())
+    (car.driver
+      ? `${car.driver.firstName} ${car.driver.lastName}`
+      : car.driverId
+        ? emptyCell
+        : labels.noDriver())
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 backdrop-blur-sm md:p-6">

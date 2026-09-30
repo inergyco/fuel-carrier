@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Car, Driver } from '@fuel-carrier/shared-types'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
@@ -37,17 +37,6 @@ export function useCarCustody() {
     queryKey: [...driverKeys.all, 'all'] as const,
     queryFn: () => fetchAllPaginated(fetchDrivers),
   })
-
-  const driverNameById = useMemo(
-    () =>
-      new Map(
-        (driversQuery.data ?? []).map((driver) => [
-          driver.id,
-          `${driver.firstName} ${driver.lastName}`,
-        ]),
-      ),
-    [driversQuery.data],
-  )
 
   const mutation = useMutation({
     mutationFn: (input: {
@@ -111,20 +100,17 @@ export function useCarCustody() {
   }
 
   function currentDriverName(car: Car): string {
-    if (!car.driverId) {
-      return LL.externalPanel.cars.noDriver()
+    if (car.driver) {
+      return `${car.driver.firstName} ${car.driver.lastName}`
     }
 
-    return (
-      driverNameById.get(car.driverId) ?? LL.externalPanel.cars.noDriver()
-    )
+    return LL.externalPanel.cars.noDriver()
   }
 
   return {
     target,
     drivers: driversQuery.data ?? [],
     driversLoading: driversQuery.isLoading,
-    driverNameById,
     currentDriverName,
     driverLabel,
     mutation,
