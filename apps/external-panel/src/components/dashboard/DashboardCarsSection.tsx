@@ -7,9 +7,10 @@ import type {
 } from '@fuel-carrier/shared-types'
 import {
   DashboardCardsSkeleton,
-  FuelGradeFilterControl,
-  FuelLevelFilterControl,
+  normalizeResourceListSearchText,
   Pagination,
+  ResourceListToolbar,
+  useDebouncedValue,
 } from '@fuel-carrier/web-ui/ui'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { useMemo, useState } from 'react'
@@ -30,12 +31,16 @@ export function DashboardCarsSection({
 }: DashboardCarsSectionProps) {
   const { LL } = useI18nContext()
   const [page, setPage] = useState(1)
+  const [draftSearchText, setDraftSearchText] = useState('')
   const [fuelGrade, setFuelGrade] = useState<FuelGradeFilter>('all')
   const [fuelLevel, setFuelLevel] = useState<FuelLevelFilter>('all')
+  const debouncedDraftSearchText = useDebouncedValue(draftSearchText)
+  const search = normalizeResourceListSearchText(debouncedDraftSearchText)
 
   const listParams: ResourceListParams = {
     page,
     limit: DASHBOARD_CARS_PAGE_SIZE,
+    search,
     fuelGrade,
     fuelLevel,
   }
@@ -61,7 +66,13 @@ export function DashboardCarsSection({
   const cars = carsResult?.items ?? []
   const totalItems = carsResult?.totalItems ?? 0
   const isCarsLoading = carsQuery.isLoading && !carsResult
-  const hasActiveFilters = fuelGrade !== 'all' || fuelLevel !== 'all'
+  const hasActiveFilters =
+    Boolean(search) || fuelGrade !== 'all' || fuelLevel !== 'all'
+
+  function handleSearchTextChange(nextSearchText: string) {
+    setDraftSearchText(nextSearchText)
+    setPage(1)
+  }
 
   function handleFuelGradeChange(nextFuelGrade: FuelGradeFilter) {
     setFuelGrade(nextFuelGrade)
@@ -99,28 +110,26 @@ export function DashboardCarsSection({
 
   return (
     <section className="flex-1">
-      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex items-end justify-between gap-3 sm:block">
-          <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
-            {LL.externalPanel.home.vehicleStatusTitle()}
-          </h2>
-          <p className="text-xs text-base-content/40 sm:mt-1">
-            {LL.externalPanel.home.fleetSummary({
-              count: totalItems,
-            })}
-          </p>
-        </div>
-        <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
-          <FuelLevelFilterControl
-            value={fuelLevel}
-            onChange={handleFuelLevelChange}
-          />
-          <FuelGradeFilterControl
-            value={fuelGrade}
-            onChange={handleFuelGradeChange}
-          />
-        </div>
+      <div className="mb-4 flex items-end justify-between gap-3 sm:block">
+        <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
+          {LL.externalPanel.home.vehicleStatusTitle()}
+        </h2>
+        <p className="text-xs text-base-content/40 sm:mt-1">
+          {LL.externalPanel.home.fleetSummary({
+            count: totalItems,
+          })}
+        </p>
       </div>
+
+      <ResourceListToolbar
+        searchPlaceholder={LL.externalPanel.cars.searchPlaceholder()}
+        searchText={draftSearchText}
+        onSearchTextChange={handleSearchTextChange}
+        fuelGrade={fuelGrade}
+        onFuelGradeChange={handleFuelGradeChange}
+        fuelLevel={fuelLevel}
+        onFuelLevelChange={handleFuelLevelChange}
+      />
 
       {cars.length === 0 ? (
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">

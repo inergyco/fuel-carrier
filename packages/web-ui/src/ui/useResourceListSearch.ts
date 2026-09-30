@@ -9,12 +9,13 @@ import {
   type FuelLevelFilter,
   type ResourceListParams,
 } from '@fuel-carrier/shared-types'
+import { useDebouncedValue } from './useDebouncedValue'
 import {
   parsePaginationSearch,
   type PaginationSearch,
 } from './usePagination'
 
-const SEARCH_DEBOUNCE_MS = 300
+const RESOURCE_LIST_SEARCH_MAX_LENGTH = 64
 const FUEL_GRADE_VALUES = new Set<string>(FUEL_GRADE_FILTERS)
 const FUEL_LEVEL_VALUES = new Set<string>(FUEL_LEVEL_FILTERS)
 
@@ -23,6 +24,14 @@ export type ResourceListSearch = PaginationSearch & {
   search?: string
   fuelGrade?: FuelGradeFilter
   fuelLevel?: FuelLevelFilter
+}
+
+/** Trim, cap length, and treat blank as no search filter. */
+export function normalizeResourceListSearchText(
+  searchText: string,
+): string | undefined {
+  const trimmed = searchText.trim().slice(0, RESOURCE_LIST_SEARCH_MAX_LENGTH)
+  return trimmed.length > 0 ? trimmed : undefined
 }
 
 /**
@@ -35,8 +44,8 @@ export function parseResourceListSearch(
   const result: ResourceListSearch = { ...parsePaginationSearch(search) }
 
   if (typeof search.search === 'string') {
-    const searchText = search.search.trim().slice(0, 64)
-    if (searchText.length > 0) {
+    const searchText = normalizeResourceListSearchText(search.search)
+    if (searchText) {
       result.search = searchText
     }
   }
@@ -122,35 +131,38 @@ export function useResourceListSearch() {
     })
   }
 
-  useEffect(() => {
-    const trimmed = draftSearchText.trim().slice(0, 64)
-    const nextSearch = trimmed.length > 0 ? trimmed : undefined
+  const draftSearch = normalizeResourceListSearchText(draftSearchText)
+  const debouncedSearch = useDebouncedValue(draftSearch)
 
-    if (nextSearch === listParams.search) {
+  useEffect(() => {
+    // Draft already matches the URL (e.g. browser back synced the input).
+    if (draftSearch === listParams.search) {
       return
     }
 
-    const timeoutId = window.setTimeout(() => {
-      void navigate({
-        to: '.',
-        search: (previous: unknown) =>
-          mergeUrlSearch(
-            previous,
-            toUrlSearch({
-              page: 1,
-              limit: listParams.limit,
-              fuelGrade: listParams.fuelGrade,
-              fuelLevel: listParams.fuelLevel,
-              search: nextSearch,
-            }),
-          ),
-        replace: true,
-      })
-    }, SEARCH_DEBOUNCE_MS)
+    // Still waiting for the draft to settle.
+    if (debouncedSearch !== draftSearch) {
+      return
+    }
 
-    return () => window.clearTimeout(timeoutId)
+    void navigate({
+      to: '.',
+      search: (previous: unknown) =>
+        mergeUrlSearch(
+          previous,
+          toUrlSearch({
+            page: 1,
+            limit: listParams.limit,
+            fuelGrade: listParams.fuelGrade,
+            fuelLevel: listParams.fuelLevel,
+            search: debouncedSearch,
+          }),
+        ),
+      replace: true,
+    })
   }, [
-    draftSearchText,
+    draftSearch,
+    debouncedSearch,
     listParams.search,
     listParams.limit,
     listParams.fuelGrade,
