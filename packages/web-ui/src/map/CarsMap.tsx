@@ -17,6 +17,9 @@ export type CarsMapLabels = {
   viewVehicle: () => string;
   chooseTimeRange?: () => string;
   remainFuel: (params: { volume: string }) => string;
+  fuelType: (params: { type: string }) => string;
+  fuelTypeHighGrade: () => string;
+  fuelTypeNormal: () => string;
   resistanceTitle: () => string;
 };
 

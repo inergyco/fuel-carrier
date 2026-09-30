@@ -501,6 +501,19 @@ type RootTranslation = {
 			 */
 			remainFuel: RequiredParams<'volume'>
 			/**
+			 * F​u​e​l​ ​t​y​p​e​:​ ​{​t​y​p​e​}
+			 * @param {string} type
+			 */
+			fuelType: RequiredParams<'type'>
+			/**
+			 * H​i​g​h​-​g​r​a​d​e
+			 */
+			fuelTypeHighGrade: string
+			/**
+			 * N​o​r​m​a​l
+			 */
+			fuelTypeNormal: string
+			/**
 			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 			 */
 			resistanceTitle: string
@@ -2499,6 +2512,19 @@ type RootTranslation = {
 			 */
 			remainFuel: RequiredParams<'volume'>
 			/**
+			 * F​u​e​l​ ​t​y​p​e​:​ ​{​t​y​p​e​}
+			 * @param {string} type
+			 */
+			fuelType: RequiredParams<'type'>
+			/**
+			 * H​i​g​h​-​g​r​a​d​e
+			 */
+			fuelTypeHighGrade: string
+			/**
+			 * N​o​r​m​a​l
+			 */
+			fuelTypeNormal: string
+			/**
 			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 			 */
 			resistanceTitle: string
@@ -3225,6 +3251,18 @@ export type TranslationFunctions = {
 			 * Fuel: {volume}
 			 */
 			remainFuel: (arg: { volume: string }) => LocalizedString
+			/**
+			 * Fuel type: {type}
+			 */
+			fuelType: (arg: { type: string }) => LocalizedString
+			/**
+			 * High-grade
+			 */
+			fuelTypeHighGrade: () => LocalizedString
+			/**
+			 * Normal
+			 */
+			fuelTypeNormal: () => LocalizedString
 			/**
 			 * Tank resistance
 			 */
@@ -5179,6 +5217,18 @@ export type TranslationFunctions = {
 			 * Fuel: {volume}
 			 */
 			remainFuel: (arg: { volume: string }) => LocalizedString
+			/**
+			 * Fuel type: {type}
+			 */
+			fuelType: (arg: { type: string }) => LocalizedString
+			/**
+			 * High-grade
+			 */
+			fuelTypeHighGrade: () => LocalizedString
+			/**
+			 * Normal
+			 */
+			fuelTypeNormal: () => LocalizedString
 			/**
 			 * Tank resistance
 			 */

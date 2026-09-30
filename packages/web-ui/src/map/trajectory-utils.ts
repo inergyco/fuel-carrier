@@ -93,6 +93,7 @@ export function toHistoryMarker({
     licensePlate: car.licensePlate,
     companyId: car.companyId,
     companyName: liveMarker?.companyName,
+    hasHighGrade: car.hasHighGrade,
     latitude: point.latitude,
     longitude: point.longitude,
     updatedAt: point.updatedAt,

@@ -42,6 +42,7 @@ type TargetCar = {
   companyId: string;
   name: string | null;
   licensePlate: string;
+  hasHighGrade: boolean;
 };
 
 async function simulateCarPath(): Promise<void> {
@@ -114,6 +115,7 @@ async function resolveCar(
         companyId: cars.companyId,
         name: cars.name,
         licensePlate: cars.licensePlate,
+        hasHighGrade: cars.hasHighGrade,
       })
       .from(cars)
       .where(eq(cars.licensePlate, plate))
@@ -187,6 +189,7 @@ async function recordStep(
       name: car.name,
       licensePlate: car.licensePlate,
       companyId: car.companyId,
+      hasHighGrade: car.hasHighGrade,
       speed: 28,
       remainFuel,
       resistance,

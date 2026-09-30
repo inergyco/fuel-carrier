@@ -1,6 +1,7 @@
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
 import type { ReactNode } from 'react';
 import { useMap } from 'react-leaflet';
+import { carFuelTypeLabel } from '../cars/CarOverviewSection';
 import { ResistanceValue } from '../cars/ResistanceValue';
 import { Button } from '../ui';
 import type { CarsMapLabels } from './CarsMap';
@@ -33,18 +34,11 @@ export function CarMarkerPopup({
       <p className="font-mono text-xs text-base-content/60">
         {marker.licensePlate}
       </p>
-      {marker.companyName ? (
-        <p className="flex items-center gap-2 text-xs text-base-content/55">
-          {companyColor ? (
-            <span
-              className="size-2.5 shrink-0 rounded-full"
-              style={{ backgroundColor: companyColor }}
-              aria-hidden
-            />
-          ) : null}
-          {marker.companyName}
-        </p>
-      ) : null}
+      <p className="text-xs text-base-content/70">
+        {labels.fuelType({
+          type: carFuelTypeLabel(marker.hasHighGrade, labels),
+        })}
+      </p>
       {marker.remainFuel != null ? (
         <p className="text-xs text-base-content/70">
           {labels.remainFuel({ volume: String(marker.remainFuel) })}

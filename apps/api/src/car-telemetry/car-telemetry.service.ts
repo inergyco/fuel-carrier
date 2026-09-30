@@ -61,6 +61,7 @@ type FleetCar = {
   name: string | null;
   licensePlate: string;
   companyId: string;
+  hasHighGrade: boolean;
   company: {
     name: string;
   } | null;
@@ -125,6 +126,7 @@ export class CarTelemetryService {
       return {
         name: car.name,
         licensePlate: car.licensePlate,
+        hasHighGrade: car.hasHighGrade,
         companyName: car.company?.name ?? '',
       };
     });
@@ -159,6 +161,7 @@ export class CarTelemetryService {
       licensePlate: markerIdentity.licensePlate,
       companyId: input.companyId,
       companyName: markerIdentity.companyName,
+      hasHighGrade: markerIdentity.hasHighGrade,
     };
     await this.realtime.publish({
       type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
@@ -323,6 +326,7 @@ export class CarTelemetryService {
           name: true,
           licensePlate: true,
           companyId: true,
+          hasHighGrade: true,
         },
         with: {
           company: {
@@ -443,6 +447,7 @@ function toMarkers(
         licensePlate: car.licensePlate,
         companyId: car.companyId,
         companyName: car.company?.name ?? '',
+        hasHighGrade: car.hasHighGrade,
       });
     }
   }
