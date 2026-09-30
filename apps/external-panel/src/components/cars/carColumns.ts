@@ -1,5 +1,6 @@
 import type { Car } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
+import { carFuelTypeLabel } from '@fuel-carrier/web-ui/cars'
 import type { ResourceColumn } from '../users/ResourceSection'
 
 interface CarColumnOptions {
@@ -13,10 +14,12 @@ export function getCarColumns({
   emptyCell,
   driverNameById,
 }: CarColumnOptions): ResourceColumn<Car>[] {
+  const cars = LL.externalPanel.cars
+
   return [
     {
       key: 'licensePlate',
-      header: LL.externalPanel.cars.licensePlate(),
+      header: cars.licensePlate(),
       cell: function renderLicensePlate(car) {
         return car.licensePlate
       },
@@ -24,23 +27,30 @@ export function getCarColumns({
     },
     {
       key: 'name',
-      header: LL.externalPanel.cars.name(),
+      header: cars.name(),
       cell: function renderName(car) {
         return car.name ?? emptyCell
       },
     },
     {
       key: 'driver',
-      header: LL.externalPanel.cars.driver(),
+      header: cars.driver(),
       cell: function renderDriver(car) {
         return car.driverId
-          ? (driverNameById.get(car.driverId) ?? LL.externalPanel.cars.noDriver())
-          : LL.externalPanel.cars.noDriver()
+          ? (driverNameById.get(car.driverId) ?? cars.noDriver())
+          : cars.noDriver()
+      },
+    },
+    {
+      key: 'fuelType',
+      header: cars.fuelType(),
+      cell: function renderFuelType(car) {
+        return carFuelTypeLabel(car.hasHighGrade, cars)
       },
     },
     {
       key: 'note',
-      header: LL.externalPanel.cars.note(),
+      header: cars.note(),
       cell: function renderNote(car) {
         return car.note ?? emptyCell
       },

@@ -120,6 +120,14 @@ export function getCarColumns({
           : LL.internalPanel.companies.detail.noDriver(),
     },
     {
+      key: 'fuelType',
+      header: LL.internalPanel.companies.detail.fuelType(),
+      cell: (car) =>
+        car.hasHighGrade
+          ? LL.internalPanel.companies.detail.fuelTypeHighGrade()
+          : LL.internalPanel.companies.detail.fuelTypeNormal(),
+    },
+    {
       key: 'note',
       header: LL.internalPanel.companies.note(),
       cell: (car) => car.note ?? emptyCell,

@@ -5,7 +5,7 @@ import type {
   Driver,
 } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { formatVolume } from '@fuel-carrier/web-ui/cars'
+import { carFuelTypeLabel, formatVolume } from '@fuel-carrier/web-ui/cars'
 import {
   CompanyBrandLogo,
   ICON_STROKE_WIDTH,
@@ -13,6 +13,7 @@ import {
 import {
   ArrowRight,
   Droplets,
+  Fuel,
   MapPin,
   Phone,
   Truck,
@@ -163,6 +164,17 @@ export function DashboardCompanyCard({
                             {driverName ??
                               LL.internalPanel.home.unassignedDriver()}
                           </span>
+                        </span>
+                        <span className="inline-flex items-center gap-1.5">
+                          <Fuel
+                            className="size-3.5 shrink-0"
+                            strokeWidth={ICON_STROKE_WIDTH}
+                            aria-hidden
+                          />
+                          {carFuelTypeLabel(
+                            car.hasHighGrade,
+                            LL.internalPanel.companies.detail,
+                          )}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
                           <Droplets

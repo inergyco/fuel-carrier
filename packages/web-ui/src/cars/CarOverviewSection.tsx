@@ -1,5 +1,17 @@
 import type { Car } from '@fuel-carrier/shared-types'
 
+export type CarFuelTypeLabels = {
+  fuelTypeHighGrade: () => string
+  fuelTypeNormal: () => string
+}
+
+export function carFuelTypeLabel(
+  hasHighGrade: boolean,
+  labels: CarFuelTypeLabels,
+): string {
+  return hasHighGrade ? labels.fuelTypeHighGrade() : labels.fuelTypeNormal()
+}
+
 export type CarOverviewSectionLabels = {
   detailTitle: () => string
   detailSubtitle: () => string
@@ -8,6 +20,9 @@ export type CarOverviewSectionLabels = {
   note: () => string
   driver: () => string
   noDriver: () => string
+  fuelType: () => string
+  fuelTypeHighGrade: () => string
+  fuelTypeNormal: () => string
   emptyCell: () => string
 }
 
@@ -55,6 +70,14 @@ export function CarOverviewSection({
             {labels.driver()}
           </dt>
           <dd className="mt-1.5 text-sm">{driverDisplay}</dd>
+        </div>
+        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
+          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
+            {labels.fuelType()}
+          </dt>
+          <dd className="mt-1.5 text-sm">
+            {carFuelTypeLabel(car.hasHighGrade, labels)}
+          </dd>
         </div>
         <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:col-span-2 sm:px-5 sm:py-4">
           <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">

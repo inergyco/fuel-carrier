@@ -14,6 +14,8 @@ export {
 } from './CarTanksSection'
 export {
   CarOverviewSection,
+  carFuelTypeLabel,
+  type CarFuelTypeLabels,
   type CarOverviewSectionLabels,
   type CarOverviewSectionProps,
 } from './CarOverviewSection'

@@ -7,10 +7,11 @@ import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
+  carFuelTypeLabel,
   formatVolume,
 } from "@fuel-carrier/web-ui/cars";
 import { ICON_STROKE_WIDTH } from "@fuel-carrier/web-ui/ui";
-import { Info, MapPin, Phone, User } from "@fuel-carrier/web-ui/icons";
+import { Fuel, Info, MapPin, Phone, User } from "@fuel-carrier/web-ui/icons";
 import { Link } from "@tanstack/react-router";
 
 const MOVING_SPEED_KMH = 1;
@@ -65,6 +66,10 @@ export function DashboardCarCard({
   const locationLabel = isLive
     ? LL.externalPanel.home.locationLive()
     : LL.externalPanel.home.locationUnknown();
+  const fuelTypeLabel = carFuelTypeLabel(
+    car.hasHighGrade,
+    LL.externalPanel.cars,
+  );
 
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
@@ -113,6 +118,15 @@ export function DashboardCarCard({
             aria-hidden
           />
           <span className="truncate">{locationLabel}</span>
+        </div>
+
+        <div className="flex min-w-0 items-center gap-2">
+          <Fuel
+            className="size-4 shrink-0 text-base-content/40"
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          <span className="truncate">{fuelTypeLabel}</span>
         </div>
 
         <div className="mt-1 space-y-1.5">

@@ -864,6 +864,18 @@ type RootTranslation = {
 				 */
 				hasHighGrade: string
 				/**
+				 * F​u​e​l​ ​t​y​p​e
+				 */
+				fuelType: string
+				/**
+				 * H​i​g​h​-​g​r​a​d​e
+				 */
+				fuelTypeHighGrade: string
+				/**
+				 * N​o​r​m​a​l
+				 */
+				fuelTypeNormal: string
+				/**
 				 * N​o​ ​c​a​r​ ​a​s​s​i​g​n​e​d
 				 */
 				noCar: string
@@ -2058,6 +2070,18 @@ type RootTranslation = {
 			 * H​i​g​h​-​g​r​a​d​e​ ​p​e​t​r​o​l
 			 */
 			hasHighGrade: string
+			/**
+			 * F​u​e​l​ ​t​y​p​e
+			 */
+			fuelType: string
+			/**
+			 * H​i​g​h​-​g​r​a​d​e
+			 */
+			fuelTypeHighGrade: string
+			/**
+			 * N​o​r​m​a​l
+			 */
+			fuelTypeNormal: string
 			/**
 			 * N​o​t​e
 			 */
@@ -3541,6 +3565,18 @@ export type TranslationFunctions = {
 				 */
 				hasHighGrade: () => LocalizedString
 				/**
+				 * Fuel type
+				 */
+				fuelType: () => LocalizedString
+				/**
+				 * High-grade
+				 */
+				fuelTypeHighGrade: () => LocalizedString
+				/**
+				 * Normal
+				 */
+				fuelTypeNormal: () => LocalizedString
+				/**
 				 * No car assigned
 				 */
 				noCar: () => LocalizedString
@@ -4711,6 +4747,18 @@ export type TranslationFunctions = {
 			 * High-grade petrol
 			 */
 			hasHighGrade: () => LocalizedString
+			/**
+			 * Fuel type
+			 */
+			fuelType: () => LocalizedString
+			/**
+			 * High-grade
+			 */
+			fuelTypeHighGrade: () => LocalizedString
+			/**
+			 * Normal
+			 */
+			fuelTypeNormal: () => LocalizedString
 			/**
 			 * Note
 			 */

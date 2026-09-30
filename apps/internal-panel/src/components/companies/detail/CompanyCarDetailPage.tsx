@@ -100,6 +100,9 @@ export function CompanyCarDetailPage({
             note: LL.internalPanel.companies.note,
             driver: detailLabels.driver,
             noDriver: detailLabels.noDriver,
+            fuelType: detailLabels.fuelType,
+            fuelTypeHighGrade: detailLabels.fuelTypeHighGrade,
+            fuelTypeNormal: detailLabels.fuelTypeNormal,
             emptyCell: LL.internalPanel.companies.emptyCell,
           }}
         />
