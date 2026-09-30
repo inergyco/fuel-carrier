@@ -471,6 +471,7 @@ const fa: Translation = {
       locationUnknown: "بدون موقعیت زنده",
       statusMoving: "در حال حرکت",
       statusStopped: "متوقف",
+      statusOffline: "قطع",
       mobileUnknown: "بدون شماره موبایل",
       fuelVolume: "{volume} {unit}",
       fuelVolumeOfCapacity: "{volume} / {capacity} {unit}",

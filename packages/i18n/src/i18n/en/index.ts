@@ -472,6 +472,7 @@ const en: BaseTranslation = {
       locationUnknown: 'No live location',
       statusMoving: 'Moving',
       statusStopped: 'Stopped',
+      statusOffline: 'Offline',
       mobileUnknown: 'No mobile number',
       fuelVolume: '{volume:string} {unit:string}',
       fuelVolumeOfCapacity:

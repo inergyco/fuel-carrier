@@ -1723,6 +1723,10 @@ type RootTranslation = {
 			 */
 			statusStopped: string
 			/**
+			 * O​f​f​l​i​n​e
+			 */
+			statusOffline: string
+			/**
 			 * N​o​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r
 			 */
 			mobileUnknown: string
@@ -4529,6 +4533,10 @@ export type TranslationFunctions = {
 			 * Stopped
 			 */
 			statusStopped: () => LocalizedString
+			/**
+			 * Offline
+			 */
+			statusOffline: () => LocalizedString
 			/**
 			 * No mobile number
 			 */

@@ -1,15 +1,15 @@
-import type { CarCardMotionStatus } from './car-card-utils'
-import { getMotionStatusDotClass } from './car-card-utils'
+import type { CarCardLiveness } from './car-card-utils'
+import { getLivenessDotClass } from './car-card-utils'
 
 type CarCardHeaderProps = {
   licensePlate: string
-  status: CarCardMotionStatus
+  liveness: CarCardLiveness
   statusLabel: string
 }
 
 export function CarCardHeader({
   licensePlate,
-  status,
+  liveness,
   statusLabel,
 }: CarCardHeaderProps) {
   return (
@@ -21,7 +21,7 @@ export function CarCardHeader({
         <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-base-content/55">
           <span
             aria-hidden
-            className={`size-2 shrink-0 rounded-full ${getMotionStatusDotClass(status)}`}
+            className={`size-2 shrink-0 rounded-full ${getLivenessDotClass(liveness)}`}
           />
           {statusLabel}
         </p>

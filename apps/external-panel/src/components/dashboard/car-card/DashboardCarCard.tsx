@@ -11,7 +11,7 @@ import { CarCardFuelSection } from './CarCardFuelSection'
 import { CarCardHeader } from './CarCardHeader'
 import { CarCardWatermark } from './CarCardWatermark'
 import {
-  getCarCardMotionStatus,
+  getCarCardLiveness,
   getFuelFillPercent,
   getRemainFuelLiters,
 } from './car-card-utils'
@@ -31,14 +31,12 @@ export function DashboardCarCard({
 
   const remainFuel = getRemainFuelLiters(telemetry)
   const fillPercent = getFuelFillPercent(remainFuel)
-  const motionStatus = getCarCardMotionStatus(telemetry)
+  const liveness = getCarCardLiveness(telemetry)
+  const isLive = liveness === 'live'
 
-  const statusLabel =
-    motionStatus === 'offline'
-      ? LL.externalPanel.home.locationUnknown()
-      : motionStatus === 'moving'
-        ? LL.externalPanel.home.statusMoving()
-        : LL.externalPanel.home.statusStopped()
+  const statusLabel = isLive
+    ? LL.externalPanel.home.locationLive()
+    : LL.externalPanel.home.statusOffline()
 
   const driverName = driver
     ? `${driver.firstName} ${driver.lastName}`
@@ -46,11 +44,6 @@ export function DashboardCarCard({
 
   const mobileNumber =
     driver?.mobileNumber?.trim() || LL.externalPanel.home.mobileUnknown()
-
-  const locationLabel =
-    motionStatus === 'offline'
-      ? LL.externalPanel.home.locationUnknown()
-      : LL.externalPanel.home.locationLive()
 
   const fuelTypeLabel = carFuelTypeLabel(
     car.hasHighGrade,
@@ -65,7 +58,7 @@ export function DashboardCarCard({
 
       <CarCardHeader
         licensePlate={car.licensePlate}
-        status={motionStatus}
+        liveness={liveness}
         statusLabel={statusLabel}
       />
 
@@ -73,7 +66,7 @@ export function DashboardCarCard({
         <CarCardDetails
           driverName={driverName}
           mobileNumber={mobileNumber}
-          locationLabel={locationLabel}
+          locationLabel={statusLabel}
           fuelTypeLabel={fuelTypeLabel}
         />
         <CarCardFuelSection

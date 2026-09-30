@@ -4,13 +4,14 @@ import {
   DEFAULT_TANK_COUNT,
 } from '@fuel-carrier/web-ui/cars'
 
-const MOVING_SPEED_KMH = 1
-
 /** Matches the tanks diagram on the vehicle detail page. */
 export const CAR_CARD_TOTAL_CAPACITY_LITERS =
   DEFAULT_TANK_CAPACITY_LITERS * DEFAULT_TANK_COUNT
 
-export type CarCardMotionStatus = 'offline' | 'moving' | 'stopped'
+/** Telemetry older than this is treated as offline (not live). */
+export const TELEMETRY_LIVE_MAX_AGE_MS = 5 * 60 * 1000
+
+export type CarCardLiveness = 'live' | 'offline'
 
 export function getRemainFuelLiters(
   telemetry: CarTelemetryMarker | null,
@@ -33,27 +34,29 @@ export function getFuelFillPercent(remainFuel: number | null): number | null {
   )
 }
 
-export function getCarCardMotionStatus(
+export function getCarCardLiveness(
   telemetry: CarTelemetryMarker | null,
-): CarCardMotionStatus {
+  nowMs: number = Date.now(),
+): CarCardLiveness {
   if (telemetry == null) {
     return 'offline'
   }
 
-  if (telemetry.speed != null && telemetry.speed > MOVING_SPEED_KMH) {
-    return 'moving'
+  const updatedAtMs = Date.parse(telemetry.updatedAt)
+  if (!Number.isFinite(updatedAtMs)) {
+    return 'offline'
   }
 
-  return 'stopped'
+  if (nowMs - updatedAtMs > TELEMETRY_LIVE_MAX_AGE_MS) {
+    return 'offline'
+  }
+
+  return 'live'
 }
 
-export function getMotionStatusDotClass(status: CarCardMotionStatus): string {
-  if (status === 'moving') {
+export function getLivenessDotClass(liveness: CarCardLiveness): string {
+  if (liveness === 'live') {
     return 'bg-success'
-  }
-
-  if (status === 'stopped') {
-    return 'bg-warning'
   }
 
   return 'bg-base-content/30'
