@@ -148,19 +148,11 @@ export function DashboardCarCard({
       </div>
 
       <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
-        <div className="relative h-16 w-24 shrink-0 overflow-hidden">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-10 bg-linear-to-t from-base-100 via-base-100/55 to-base-100/10"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-10 bg-linear-to-l from-base-100/70 via-transparent to-base-100/35"
-          />
+        <div className="relative h-16 w-28 shrink-0">
           <img
             src="/truck-card.png"
             alt=""
-            className="h-full w-full scale-110 object-contain object-bottom opacity-80 filter-[blur(1.35px)_saturate(1.02)_contrast(0.92)_brightness(1.06)] mask-[radial-gradient(ellipse_80%_70%_at_50%_60%,black_35%,transparent_78%)]"
+            className="h-full w-full object-contain object-bottom"
             draggable={false}
           />
         </div>
