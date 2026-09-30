@@ -1,33 +1,33 @@
-import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types';
-import type { ReactNode } from 'react';
-import type { KyInstance } from '../api';
-import { cn } from '../utils';
-import { CarsMap } from './CarsMap';
-import { CompanyColorLegend } from './CompanyColorLegend';
+import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import type { ReactNode } from 'react'
+import type { KyInstance } from '../api'
+import { cn } from '../utils'
+import { CarsMap } from './CarsMap'
+import { CompanyColorLegend } from './CompanyColorLegend'
 import {
   FuelLevelLegend,
   hasFuelLevelLegendLabels,
-} from './FuelLevelLegend';
-import { TrajectoryControls } from './TrajectoryControls';
-import type { TrajectoryMapViewLabels } from './trajectory-map.types';
-import { getVehicleLabel, resolveTrajectoryStatusText } from './trajectory-utils';
-import { useCompanyMapFilter } from './useCompanyMapFilter';
-import { useTrajectoryHistory } from './useTrajectoryHistory';
-import { useTrajectorySelection } from './useTrajectorySelection';
+} from './FuelLevelLegend'
+import { TrajectoryControls } from './TrajectoryControls'
+import type { TrajectoryMapViewLabels } from './trajectory-map.types'
+import { getVehicleLabel, resolveTrajectoryStatusText } from './trajectory-utils'
+import { useCompanyMapFilter } from './useCompanyMapFilter'
+import { useTrajectoryHistory } from './useTrajectoryHistory'
+import { useTrajectorySelection } from './useTrajectorySelection'
 
-export type { TrajectoryMapViewLabels } from './trajectory-map.types';
+export type { TrajectoryMapViewLabels } from './trajectory-map.types'
 
 export type TrajectoryMapViewProps = {
-  api: KyInstance;
-  cars: Car[];
-  markers: CarTelemetryMarker[];
-  isLoading: boolean;
-  labels: TrajectoryMapViewLabels;
-  renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode;
-  className?: string;
-  titleAs?: 'h1' | 'h2';
-  colorByCompany?: boolean;
-};
+  api: KyInstance
+  cars: Car[]
+  markers: CarTelemetryMarker[]
+  isLoading: boolean
+  labels: TrajectoryMapViewLabels
+  renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode
+  className?: string
+  titleAs?: 'h1' | 'h2'
+  colorByCompany?: boolean
+}
 
 export function TrajectoryMapView({
   api,
@@ -40,41 +40,41 @@ export function TrajectoryMapView({
   titleAs = 'h1',
   colorByCompany = false,
 }: TrajectoryMapViewProps) {
-  const selection = useTrajectorySelection();
+  const selection = useTrajectorySelection()
   const companyFilter = useCompanyMapFilter({
     markers,
     unnamedCompanyLabel: labels.unnamedCompany?.() ?? '',
     enabled: colorByCompany,
-  });
+  })
   const selectedCar = cars.find(function matchCar(car) {
-    return car.id === selection.selectedCarId;
-  });
+    return car.id === selection.selectedCarId
+  })
   const selectedLiveMarker =
     markers.find(function matchMarker(marker) {
-      return marker.carId === selection.selectedCarId;
-    }) ?? null;
+      return marker.carId === selection.selectedCarId
+    }) ?? null
   const history = useTrajectoryHistory({
     api,
     historyRequest: selection.historyRequest,
     selectedCar,
     selectedLiveMarker,
-  });
+  })
   const vehicleLabel = getVehicleLabel({
     car: selectedCar,
     marker: selectedLiveMarker,
     fallback: labels.unnamedVehicle(),
-  });
-  const companyLegendLabel = labels.companyLegend;
-  const showAllCompaniesLabel = labels.showAllCompanies;
+  })
+  const companyLegendLabel = labels.companyLegend
+  const showAllCompaniesLabel = labels.showAllCompanies
   const showCompanyLegend =
     colorByCompany &&
     !selection.isHistoryMode &&
     companyLegendLabel != null &&
-    showAllCompaniesLabel != null;
+    showAllCompaniesLabel != null
   const showFuelLegend =
     !isLoading &&
     !selection.isHistoryMode &&
-    hasFuelLevelLegendLabels(labels);
+    hasFuelLevelLegendLabels(labels)
 
   return (
     <section
@@ -147,7 +147,7 @@ export function TrajectoryMapView({
         </div>
       )}
     </section>
-  );
+  )
 }
 
 function resolveMapMarkers({
@@ -156,22 +156,22 @@ function resolveMapMarkers({
   selectedLiveMarker,
   liveMarkers,
 }: {
-  isHistoryMode: boolean;
-  historyMarker: CarTelemetryMarker | null;
-  selectedLiveMarker: CarTelemetryMarker | null;
-  liveMarkers: CarTelemetryMarker[];
+  isHistoryMode: boolean
+  historyMarker: CarTelemetryMarker | null
+  selectedLiveMarker: CarTelemetryMarker | null
+  liveMarkers: CarTelemetryMarker[]
 }): CarTelemetryMarker[] {
   if (!isHistoryMode) {
-    return liveMarkers;
+    return liveMarkers
   }
 
   if (historyMarker) {
-    return [historyMarker];
+    return [historyMarker]
   }
 
   if (selectedLiveMarker) {
-    return [selectedLiveMarker];
+    return [selectedLiveMarker]
   }
 
-  return [];
+  return []
 }

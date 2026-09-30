@@ -302,6 +302,22 @@ export class CarTelemetryService {
     });
   }
 
+  /**
+   * Latest remainFuel values keyed by car id for one company (Redis latest cache).
+   */
+  async getRemainFuelByCarId(
+    companyId: string,
+  ): Promise<Map<string, number | undefined>> {
+    const telemetry = await this._readCompanyTelemetry(companyId);
+    const remainFuelByCarId = new Map<string, number | undefined>();
+
+    for (const sample of telemetry) {
+      remainFuelByCarId.set(sample.carId, sample.remainFuel);
+    }
+
+    return remainFuelByCarId;
+  }
+
   private async _listMarkersForCompanies(
     context: TenantContext,
     companyIds: string[],

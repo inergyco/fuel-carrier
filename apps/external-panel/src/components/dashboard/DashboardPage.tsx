@@ -14,15 +14,17 @@ import {
   useNavigatorOnline,
 } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
-import { useQuery } from '@fuel-carrier/web-ui/query'
+import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import { DashboardCarCard } from './DashboardCarCard'
+import { FleetStatsSection } from './FleetStatsSection'
 
 export function DashboardPage() {
   const { LL } = useI18nContext()
+  const queryClient = useQueryClient()
   const [fuelGrade, setFuelGrade] = useState<FuelGradeFilter>('all')
 
   const carsQuery = useQuery({
@@ -88,6 +90,7 @@ export function DashboardPage() {
         isQueryError={telemetryQuery.isError}
         onRetry={() => {
           void telemetryQuery.refetch()
+          void queryClient.invalidateQueries({ queryKey: carKeys.stats })
         }}
         labels={{
           offline: LL.common.connectivity.offline(),
@@ -95,6 +98,8 @@ export function DashboardPage() {
           retry: LL.common.connectivity.retry(),
         }}
       />
+
+      <FleetStatsSection />
 
       <TrajectoryMapView
         className="h-[40svh] min-h-56 shrink-0 overflow-hidden rounded-2xl border border-base-content/8"

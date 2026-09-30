@@ -21,6 +21,14 @@ const en: BaseTranslation = {
       fuelGradeNormal: 'Normal',
       fuelGradeFilterLabel: 'Fuel type',
     },
+    fleetStats: {
+      totalCars: 'Total vehicles',
+      fuelHigh: '75–100% fuel',
+      fuelMidHigh: '50–75% fuel',
+      fuelMidLow: '25–50% fuel',
+      fuelLow: 'Under 25% fuel',
+      highGrade: 'High-grade',
+    },
     connectivity: {
       offline: 'You’re offline. Check your connection.',
       loadFailed: 'Couldn’t load live data. Try again.',

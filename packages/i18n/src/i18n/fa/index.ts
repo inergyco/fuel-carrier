@@ -21,6 +21,14 @@ const fa: Translation = {
       fuelGradeNormal: "معمولی",
       fuelGradeFilterLabel: "نوع سوخت",
     },
+    fleetStats: {
+      totalCars: "کل خودروها",
+      fuelHigh: "سوخت ۷۵–۱۰۰٪",
+      fuelMidHigh: "سوخت ۵۰–۷۵٪",
+      fuelMidLow: "سوخت ۲۵–۵۰٪",
+      fuelLow: "سوخت کمتر از ۲۵٪",
+      highGrade: "سوپر",
+    },
     connectivity: {
       offline: "آفلاین هستید. اتصال اینترنت را بررسی کنید.",
       loadFailed: "بارگذاری داده‌های زنده ممکن نشد. دوباره تلاش کنید.",

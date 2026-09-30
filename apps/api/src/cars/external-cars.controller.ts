@@ -20,6 +20,7 @@ import {
 import type {
   Car,
   CarDriverAssignment,
+  CarFleetStats,
   CarMqttCredentials,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
@@ -56,6 +57,7 @@ import {
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
 import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
+import { CarFleetStatsDto } from '../swagger/dto/car-fleet-stats.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
@@ -91,6 +93,17 @@ export class ExternalCarsController {
     query: ResourceListQueryDto,
   ): Promise<PaginatedResult<Car>> {
     return this.carsService.list(tenantContextFromSession(user), query);
+  }
+
+  @Get('stats')
+  @ApiOperation({
+    summary:
+      'Fleet KPI stats for the authenticated company (totals, fuel bands, high-grade)',
+  })
+  @ApiEnvelopeOkResponse(CarFleetStatsDto)
+  @ApiEnvelopeUnauthorizedResponse()
+  getFleetStats(@CurrentUser() user: AuthSession): Promise<CarFleetStats> {
+    return this.carsService.getFleetStats(tenantContextFromSession(user));
   }
 
   @Get(':id/driver-assignments')

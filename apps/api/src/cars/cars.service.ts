@@ -1,11 +1,16 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
-import type { Car, PaginatedResult } from '@fuel-carrier/shared-types';
+import type {
+  Car,
+  CarFleetStats,
+  PaginatedResult,
+} from '@fuel-carrier/shared-types';
 import {
   ApiErrorCode,
   AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
+import { computeCarFleetStats } from '@fuel-carrier/shared-types/car-fleet-stats';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -21,6 +26,7 @@ import {
 } from '../common/pagination.utils';
 import { createApiException } from '../common/exceptions/api.exception';
 import { assertUuidParam } from '../common/validation/uuid.utils';
+import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { cars } from '../database/schema/cars';
 import { drivers } from '../database/schema/drivers';
 import { mqttClients } from '../database/schema/mqtt-clients';
@@ -66,6 +72,7 @@ export class CarsService {
     private readonly auditLogService: AuditLogService,
     private readonly carsReader: CarsReader,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
+    private readonly carTelemetryService: CarTelemetryService,
   ) {}
 
   async list(
@@ -112,6 +119,39 @@ export class CarsService {
         totalItems: countRow?.value ?? 0,
       });
     });
+  }
+
+  /**
+   * Fleet KPI counts for the company: totals, fuel bands (from live remainFuel),
+   * and high-grade petrol cars.
+   */
+  async getFleetStats(context: ApiTenantContext): Promise<CarFleetStats> {
+    if (!context.companyId) {
+      return {
+        totalCars: 0,
+        fuelHigh: 0,
+        fuelMidHigh: 0,
+        fuelMidLow: 0,
+        fuelLow: 0,
+        highGrade: 0,
+      };
+    }
+
+    const companyId = context.companyId;
+    const [fleetCars, remainFuelByCarId] = await Promise.all([
+      this.tenantDb.run(context, async (tx) => {
+        return tx
+          .select({
+            id: cars.id,
+            hasHighGrade: cars.hasHighGrade,
+          })
+          .from(cars)
+          .where(and(isNull(cars.deletedAt), eq(cars.companyId, companyId)));
+      }),
+      this.carTelemetryService.getRemainFuelByCarId(companyId),
+    ]);
+
+    return computeCarFleetStats(fleetCars, remainFuelByCarId);
   }
 
   async getById(context: ApiTenantContext, id: string): Promise<Car> {

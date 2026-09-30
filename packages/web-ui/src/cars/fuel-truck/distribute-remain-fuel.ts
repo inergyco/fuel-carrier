@@ -1,6 +1,9 @@
-/** Default compartment capacity used until cars expose tank capacity from the API. */
-export const DEFAULT_TANK_CAPACITY_LITERS = 500;
-export const DEFAULT_TANK_COUNT = 3;
+import {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+} from '@fuel-carrier/shared-types';
+
+export { DEFAULT_TANK_CAPACITY_LITERS, DEFAULT_TANK_COUNT };
 
 /**
  * Fills tanks from front to back with the remaining fuel volume from telemetry.

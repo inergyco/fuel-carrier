@@ -84,6 +84,32 @@ type RootTranslation = {
 			 */
 			fuelGradeFilterLabel: string
 		}
+		fleetStats: {
+			/**
+			 * T​o​t​a​l​ ​v​e​h​i​c​l​e​s
+			 */
+			totalCars: string
+			/**
+			 * 7​5​–​1​0​0​%​ ​f​u​e​l
+			 */
+			fuelHigh: string
+			/**
+			 * 5​0​–​7​5​%​ ​f​u​e​l
+			 */
+			fuelMidHigh: string
+			/**
+			 * 2​5​–​5​0​%​ ​f​u​e​l
+			 */
+			fuelMidLow: string
+			/**
+			 * U​n​d​e​r​ ​2​5​%​ ​f​u​e​l
+			 */
+			fuelLow: string
+			/**
+			 * H​i​g​h​-​g​r​a​d​e
+			 */
+			highGrade: string
+		}
 		connectivity: {
 			/**
 			 * Y​o​u​’​r​e​ ​o​f​f​l​i​n​e​.​ ​C​h​e​c​k​ ​y​o​u​r​ ​c​o​n​n​e​c​t​i​o​n​.
@@ -2901,6 +2927,32 @@ export type TranslationFunctions = {
 			 * Fuel type
 			 */
 			fuelGradeFilterLabel: () => LocalizedString
+		}
+		fleetStats: {
+			/**
+			 * Total vehicles
+			 */
+			totalCars: () => LocalizedString
+			/**
+			 * 75–100% fuel
+			 */
+			fuelHigh: () => LocalizedString
+			/**
+			 * 50–75% fuel
+			 */
+			fuelMidHigh: () => LocalizedString
+			/**
+			 * 25–50% fuel
+			 */
+			fuelMidLow: () => LocalizedString
+			/**
+			 * Under 25% fuel
+			 */
+			fuelLow: () => LocalizedString
+			/**
+			 * High-grade
+			 */
+			highGrade: () => LocalizedString
 		}
 		connectivity: {
 			/**
