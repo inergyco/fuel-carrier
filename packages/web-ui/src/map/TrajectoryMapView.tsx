@@ -4,6 +4,10 @@ import type { KyInstance } from '../api';
 import { cn } from '../utils';
 import { CarsMap } from './CarsMap';
 import { CompanyColorLegend } from './CompanyColorLegend';
+import {
+  FuelLevelLegend,
+  hasFuelLevelLegendLabels,
+} from './FuelLevelLegend';
 import { TrajectoryControls } from './TrajectoryControls';
 import type { TrajectoryMapViewLabels } from './trajectory-map.types';
 import { getVehicleLabel, resolveTrajectoryStatusText } from './trajectory-utils';
@@ -62,11 +66,15 @@ export function TrajectoryMapView({
   });
   const companyLegendLabel = labels.companyLegend;
   const showAllCompaniesLabel = labels.showAllCompanies;
-  const showLegend =
+  const showCompanyLegend =
     colorByCompany &&
     !selection.isHistoryMode &&
     companyLegendLabel != null &&
     showAllCompaniesLabel != null;
+  const showFuelLegend =
+    !isLoading &&
+    !selection.isHistoryMode &&
+    hasFuelLevelLegendLabels(labels);
 
   return (
     <section
@@ -99,7 +107,7 @@ export function TrajectoryMapView({
         onClearSelection={selection.handleClearSelection}
       />
 
-      {showLegend ? (
+      {showCompanyLegend ? (
         <CompanyColorLegend
           title={companyLegendLabel()}
           showAllLabel={showAllCompaniesLabel()}
@@ -109,6 +117,8 @@ export function TrajectoryMapView({
           onShowAll={companyFilter.handleShowAllCompanies}
         />
       ) : null}
+
+      {showFuelLegend ? <FuelLevelLegend labels={labels} /> : null}
 
       {isLoading ? (
         <div className="flex h-full items-center justify-center bg-base-300/40 text-sm text-base-content/50">
@@ -125,11 +135,6 @@ export function TrajectoryMapView({
             })}
             labels={labels}
             renderVehicleLink={renderVehicleLink}
-            companyColors={
-              !selection.isHistoryMode && colorByCompany
-                ? companyFilter.companyColors
-                : undefined
-            }
             pathPoints={
               selection.isHistoryMode ? history.historyPathPoints : undefined
             }

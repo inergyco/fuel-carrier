@@ -518,6 +518,30 @@ type RootTranslation = {
 			 */
 			resistanceTitle: string
 			/**
+			 * F​u​e​l​ ​l​e​v​e​l
+			 */
+			fuelLevelLegend: string
+			/**
+			 * 7​5​–​1​0​0​%
+			 */
+			fuelLevelHigh: string
+			/**
+			 * 5​0​–​7​5​%
+			 */
+			fuelLevelMidHigh: string
+			/**
+			 * 2​5​–​5​0​%
+			 */
+			fuelLevelMidLow: string
+			/**
+			 * U​n​d​e​r​ ​2​5​%
+			 */
+			fuelLevelLow: string
+			/**
+			 * U​n​k​n​o​w​n
+			 */
+			fuelLevelUnknown: string
+			/**
 			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
 			 */
 			companyLegend: string
@@ -2529,6 +2553,30 @@ type RootTranslation = {
 			 */
 			resistanceTitle: string
 			/**
+			 * F​u​e​l​ ​l​e​v​e​l
+			 */
+			fuelLevelLegend: string
+			/**
+			 * 7​5​–​1​0​0​%
+			 */
+			fuelLevelHigh: string
+			/**
+			 * 5​0​–​7​5​%
+			 */
+			fuelLevelMidHigh: string
+			/**
+			 * 2​5​–​5​0​%
+			 */
+			fuelLevelMidLow: string
+			/**
+			 * U​n​d​e​r​ ​2​5​%
+			 */
+			fuelLevelLow: string
+			/**
+			 * U​n​k​n​o​w​n
+			 */
+			fuelLevelUnknown: string
+			/**
 			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
 			 */
 			selectVehicle: string
@@ -3267,6 +3315,30 @@ export type TranslationFunctions = {
 			 * Tank resistance
 			 */
 			resistanceTitle: () => LocalizedString
+			/**
+			 * Fuel level
+			 */
+			fuelLevelLegend: () => LocalizedString
+			/**
+			 * 75–100%
+			 */
+			fuelLevelHigh: () => LocalizedString
+			/**
+			 * 50–75%
+			 */
+			fuelLevelMidHigh: () => LocalizedString
+			/**
+			 * 25–50%
+			 */
+			fuelLevelMidLow: () => LocalizedString
+			/**
+			 * Under 25%
+			 */
+			fuelLevelLow: () => LocalizedString
+			/**
+			 * Unknown
+			 */
+			fuelLevelUnknown: () => LocalizedString
 			/**
 			 * Company colors
 			 */
@@ -5233,6 +5305,30 @@ export type TranslationFunctions = {
 			 * Tank resistance
 			 */
 			resistanceTitle: () => LocalizedString
+			/**
+			 * Fuel level
+			 */
+			fuelLevelLegend: () => LocalizedString
+			/**
+			 * 75–100%
+			 */
+			fuelLevelHigh: () => LocalizedString
+			/**
+			 * 50–75%
+			 */
+			fuelLevelMidHigh: () => LocalizedString
+			/**
+			 * 25–50%
+			 */
+			fuelLevelMidLow: () => LocalizedString
+			/**
+			 * Under 25%
+			 */
+			fuelLevelLow: () => LocalizedString
+			/**
+			 * Unknown
+			 */
+			fuelLevelUnknown: () => LocalizedString
 			/**
 			 * Select vehicle
 			 */

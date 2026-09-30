@@ -30,7 +30,7 @@ export function CompanyColorLegend({
   const hasFilter = selectedCompanyId != null;
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-10 z-1000 flex justify-center p-3 md:bottom-4 md:justify-start md:p-4">
+    <div className="pointer-events-none absolute inset-x-0 bottom-28 z-1000 flex justify-center p-3 md:bottom-24 md:justify-start md:p-4">
       <aside
         aria-label={title}
         className="pointer-events-auto max-h-56 w-full max-w-xs overflow-y-auto rounded-2xl border border-base-content/8 bg-base-200/70 px-4 py-3 shadow-lg backdrop-blur-xl sm:max-h-72"

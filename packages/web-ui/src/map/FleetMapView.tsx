@@ -9,20 +9,26 @@ import {
   fleetMapStatusLabel,
   toCompanyLegendItems,
 } from './company-legend'
+import {
+  FuelLevelLegend,
+  hasFuelLevelLegendLabels,
+  type FuelLevelLegendLabels,
+} from './FuelLevelLegend'
 
-export type FleetMapViewLabels = CarsMapLabels & {
-  title: () => string
-  loading: () => string
-  empty: () => string
-  vehiclesOnMap: (params: { count: number }) => string
-  companyLegend?: () => string
-  unnamedCompany?: () => string
-  showAllCompanies?: () => string
-  vehiclesOnMapForCompany?: (params: {
-    count: number
-    company: string
-  }) => string
-}
+export type FleetMapViewLabels = CarsMapLabels &
+  Partial<FuelLevelLegendLabels> & {
+    title: () => string
+    loading: () => string
+    empty: () => string
+    vehiclesOnMap: (params: { count: number }) => string
+    companyLegend?: () => string
+    unnamedCompany?: () => string
+    showAllCompanies?: () => string
+    vehiclesOnMapForCompany?: (params: {
+      count: number
+      company: string
+    }) => string
+  }
 
 export type FleetMapViewProps = {
   markers: CarTelemetryMarker[]
@@ -33,7 +39,7 @@ export type FleetMapViewProps = {
   className?: string
   /** Heading level for the overlay title. Defaults to `h1` (standalone map page). */
   titleAs?: 'h1' | 'h2'
-  /** Color markers by company and show a legend. Internal fleet map only. */
+  /** Filter markers by company and show a company legend. Internal fleet map only. */
   colorByCompany?: boolean
 }
 
@@ -64,6 +70,7 @@ export function FleetMapView({
     : []
   const { activeCompanyId, selectedCompanyName, visibleMarkers } =
     applyCompanyFilter(markers, legendItems, selectedCompanyId)
+  const showFuelLegend = hasFuelLevelLegendLabels(labels)
 
   function handleSelectCompany(companyId: string) {
     setSelectedCompanyId(function toggleCompany(current) {
@@ -106,6 +113,8 @@ export function FleetMapView({
         />
       ) : null}
 
+      {!isLoading && showFuelLegend ? <FuelLevelLegend labels={labels} /> : null}
+
       {isLoading ? (
         <div className="flex h-full items-center justify-center bg-base-300/40 text-sm text-base-content/50">
           {labels.loading()}
@@ -116,7 +125,6 @@ export function FleetMapView({
             markers={visibleMarkers}
             labels={labels}
             renderVehicleLink={renderVehicleLink}
-            companyColors={colorByCompany ? companyColors : undefined}
           />
         </div>
       )}

@@ -7,6 +7,7 @@ import { AnimatedCarMarker } from './AnimatedCarMarker';
 import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
 import { FitMarkers } from './FitMarkers';
+import { getFuelLevelColor } from './fuel-level';
 import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
 import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
 import { createSmoothedPath, type PathPoint } from './path-smoothing';
@@ -27,7 +28,6 @@ export type CarsMapProps = {
   markers: CarTelemetryMarker[];
   labels: CarsMapLabels;
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode;
-  companyColors?: ReadonlyMap<string, string>;
   pathPoints?: readonly CarsMapPathPoint[];
   instantMarkerUpdates?: boolean;
   selectedCarId?: string | null;
@@ -40,7 +40,6 @@ export function CarsMap({
   markers,
   labels,
   renderVehicleLink,
-  companyColors,
   pathPoints,
   instantMarkerUpdates = false,
   selectedCarId = null,
@@ -72,9 +71,8 @@ export function CarsMap({
         const title = marker.name?.trim()
           ? marker.name
           : labels.unnamedVehicle();
-        const companyColor = companyColors?.get(marker.companyId);
         const isSelected = marker.carId === selectedCarId;
-        const markerColor = companyColor ?? 'var(--color-primary)';
+        const markerColor = getFuelLevelColor(marker.remainFuel);
 
         return (
           <AnimatedCarMarker
