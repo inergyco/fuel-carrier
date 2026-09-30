@@ -1,7 +1,6 @@
-import type { ReactNode } from 'react'
 import type { CarFleetStats } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Car, Droplets, Fuel } from '@fuel-carrier/web-ui/icons'
+import { Car, Droplets, Fuel, type LucideIcon } from '@fuel-carrier/web-ui/icons'
 import { FUEL_LEVEL_COLORS } from '@fuel-carrier/web-ui/map'
 import { ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
@@ -18,7 +17,7 @@ type StatItem = {
   label: string
   value: number
   tone: StatTone
-  icon: ReactNode
+  Icon: LucideIcon
   swatch?: string
 }
 
@@ -32,7 +31,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       label: labels.totalCars(),
       value: stats.totalCars,
       tone: 'primary',
-      icon: <Car className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      Icon: Car,
     },
     {
       key: 'fuel-high',
@@ -40,7 +39,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.fuelHigh,
       tone: 'success',
       swatch: FUEL_LEVEL_COLORS.high,
-      icon: <Fuel className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      Icon: Fuel,
     },
     {
       key: 'fuel-mid-high',
@@ -48,7 +47,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.fuelMidHigh,
       tone: 'info',
       swatch: FUEL_LEVEL_COLORS.midHigh,
-      icon: <Fuel className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      Icon: Fuel,
     },
     {
       key: 'fuel-mid-low',
@@ -56,7 +55,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.fuelMidLow,
       tone: 'warning',
       swatch: FUEL_LEVEL_COLORS.midLow,
-      icon: <Fuel className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      Icon: Fuel,
     },
     {
       key: 'fuel-low',
@@ -64,16 +63,14 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.fuelLow,
       tone: 'error',
       swatch: FUEL_LEVEL_COLORS.low,
-      icon: <Fuel className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      Icon: Fuel,
     },
     {
       key: 'high-grade',
       label: labels.highGrade(),
       value: stats.highGrade,
       tone: 'accent',
-      icon: (
-        <Droplets className="size-4" strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      ),
+      Icon: Droplets,
     },
   ]
 
@@ -85,6 +82,8 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       )}
     >
       {items.map(function renderStat(item) {
+        const Icon = item.Icon
+
         return (
           <li key={item.key}>
             <article className="flex h-full items-center justify-between gap-3 rounded-2xl border border-base-content/8 bg-base-100/80 px-3.5 py-3 shadow-sm backdrop-blur-xl">
@@ -112,7 +111,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
                 }
                 aria-hidden
               >
-                {item.icon}
+                <Icon className="size-4" strokeWidth={ICON_STROKE_WIDTH} />
               </span>
             </article>
           </li>
