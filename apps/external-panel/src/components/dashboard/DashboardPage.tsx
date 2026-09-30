@@ -19,7 +19,7 @@ import { Link } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
-import { DashboardCarCard } from './DashboardCarCard'
+import { DashboardCarCard } from './car-card'
 import { FleetStatsSection } from './FleetStatsSection'
 import { FuelLevelRingSection } from './FuelLevelRingSection'
 
