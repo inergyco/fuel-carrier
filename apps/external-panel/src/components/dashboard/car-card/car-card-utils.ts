@@ -33,31 +33,3 @@ export function getFuelFillPercent(remainFuel: number | null): number | null {
     Math.round((remainFuel / CAR_CARD_TOTAL_CAPACITY_LITERS) * 100),
   );
 }
-
-export function getCarCardLiveness(
-  telemetry: CarTelemetryMarker | null,
-  nowMs: number = Date.now(),
-): CarCardLiveness {
-  if (telemetry == null) {
-    return "offline";
-  }
-
-  const updatedAtMs = Date.parse(telemetry.updatedAt);
-  if (!Number.isFinite(updatedAtMs)) {
-    return "offline";
-  }
-
-  if (nowMs - updatedAtMs > TELEMETRY_LIVE_MAX_AGE_MS) {
-    return "offline";
-  }
-
-  return "live";
-}
-
-export function getLivenessDotClass(liveness: CarCardLiveness): string {
-  if (liveness === "live") {
-    return "bg-success";
-  }
-
-  return "bg-base-content/30";
-}

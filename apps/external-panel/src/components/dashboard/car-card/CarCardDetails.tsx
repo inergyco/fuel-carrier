@@ -1,17 +1,15 @@
-import { Fuel, MapPin, Phone, User } from '@fuel-carrier/web-ui/icons'
-import { CarCardMetaRow } from './CarCardMetaRow'
+import { Fuel, Phone, User } from "@fuel-carrier/web-ui/icons";
+import { CarCardMetaRow } from "./CarCardMetaRow";
 
 type CarCardDetailsProps = {
-  driverName: string
-  mobileNumber: string
-  locationLabel: string
-  fuelTypeLabel: string
-}
+  driverName: string;
+  mobileNumber: string;
+  fuelTypeLabel: string;
+};
 
 export function CarCardDetails({
   driverName,
   mobileNumber,
-  locationLabel,
   fuelTypeLabel,
 }: CarCardDetailsProps) {
   return (
@@ -22,16 +20,12 @@ export function CarCardDetails({
         label={mobileNumber}
         valueClassName="font-mono tabular-nums font-normal"
       />
-      <CarCardMetaRow
-        icon={MapPin}
-        label={locationLabel}
-        valueClassName="font-normal"
-      />
+
       <CarCardMetaRow
         icon={Fuel}
         label={fuelTypeLabel}
         valueClassName="font-normal"
       />
     </div>
-  )
+  );
 }

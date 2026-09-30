@@ -1,5 +1,4 @@
 import type { CarCardLiveness } from './car-card-utils'
-import { getLivenessDotClass } from './car-card-utils'
 
 type CarCardHeaderProps = {
   licensePlate: string
@@ -12,6 +11,8 @@ export function CarCardHeader({
   liveness,
   statusLabel,
 }: CarCardHeaderProps) {
+  const isLive = liveness === 'live'
+
   return (
     <div className="relative z-10 flex items-start justify-between gap-3 px-4 pt-4">
       <div className="min-w-0">
@@ -20,14 +21,14 @@ export function CarCardHeader({
         </p>
         <p
           className={`mt-1 inline-flex items-center gap-1.5 text-sm ${
-            liveness === 'live'
-              ? 'text-success'
-              : 'text-base-content/55'
+            isLive ? 'text-success' : 'text-base-content/55'
           }`}
         >
           <span
             aria-hidden
-            className={`size-2 shrink-0 rounded-full ${getLivenessDotClass(liveness)}`}
+            className={`size-2 shrink-0 rounded-full ${
+              isLive ? 'bg-success' : 'bg-base-content/30'
+            }`}
           />
           {statusLabel}
         </p>
