@@ -94,6 +94,8 @@ function CarsPage() {
             onSearchTextChange={cars.setDraftSearchText}
             fuelGrade={cars.fuelGrade}
             onFuelGradeChange={cars.setFuelGrade}
+            fuelLevel={cars.fuelLevel}
+            onFuelLevelChange={cars.setFuelLevel}
           />
         }
         footer={

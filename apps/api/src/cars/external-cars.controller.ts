@@ -85,6 +85,11 @@ export class ExternalCarsController {
     required: false,
     enum: ['all', 'highGrade', 'normal'],
   })
+  @ApiQuery({
+    name: 'fuelLevel',
+    required: false,
+    enum: ['all', 'high', 'midHigh', 'midLow', 'low'],
+  })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(

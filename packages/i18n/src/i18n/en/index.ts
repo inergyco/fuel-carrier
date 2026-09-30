@@ -20,6 +20,8 @@ const en: BaseTranslation = {
       fuelGradeHighGrade: 'High-grade',
       fuelGradeNormal: 'Normal',
       fuelGradeFilterLabel: 'Fuel type',
+      fuelLevelAll: 'All levels',
+      fuelLevelFilterLabel: 'Fuel level',
     },
     fleetStats: {
       totalCars: 'Total vehicles',

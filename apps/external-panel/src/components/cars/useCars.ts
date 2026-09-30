@@ -19,6 +19,7 @@ export function useCars() {
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
+    setFuelLevel,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -72,7 +73,9 @@ export function useCars() {
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
+    setFuelLevel,
     fuelGrade: listParams.fuelGrade ?? 'all',
+    fuelLevel: listParams.fuelLevel ?? 'all',
     hasActiveFilters,
   }
 }

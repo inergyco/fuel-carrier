@@ -83,6 +83,14 @@ type RootTranslation = {
 			 * F​u​e​l​ ​t​y​p​e
 			 */
 			fuelGradeFilterLabel: string
+			/**
+			 * A​l​l​ ​l​e​v​e​l​s
+			 */
+			fuelLevelAll: string
+			/**
+			 * F​u​e​l​ ​l​e​v​e​l
+			 */
+			fuelLevelFilterLabel: string
 		}
 		fleetStats: {
 			/**
@@ -2939,6 +2947,14 @@ export type TranslationFunctions = {
 			 * Fuel type
 			 */
 			fuelGradeFilterLabel: () => LocalizedString
+			/**
+			 * All levels
+			 */
+			fuelLevelAll: () => LocalizedString
+			/**
+			 * Fuel level
+			 */
+			fuelLevelFilterLabel: () => LocalizedString
 		}
 		fleetStats: {
 			/**

@@ -2,11 +2,13 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type {
   CarTelemetryMarker,
   FuelGradeFilter,
+  FuelLevelFilter,
   ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import {
   DashboardCardsSkeleton,
   FuelGradeFilterControl,
+  FuelLevelFilterControl,
   Pagination,
 } from '@fuel-carrier/web-ui/ui'
 import { useQuery } from '@fuel-carrier/web-ui/query'
@@ -29,11 +31,13 @@ export function DashboardCarsSection({
   const { LL } = useI18nContext()
   const [page, setPage] = useState(1)
   const [fuelGrade, setFuelGrade] = useState<FuelGradeFilter>('all')
+  const [fuelLevel, setFuelLevel] = useState<FuelLevelFilter>('all')
 
   const listParams: ResourceListParams = {
     page,
     limit: DASHBOARD_CARS_PAGE_SIZE,
     fuelGrade,
+    fuelLevel,
   }
 
   const carsQuery = useQuery({
@@ -57,9 +61,15 @@ export function DashboardCarsSection({
   const cars = carsResult?.items ?? []
   const totalItems = carsResult?.totalItems ?? 0
   const isCarsLoading = carsQuery.isLoading && !carsResult
+  const hasActiveFilters = fuelGrade !== 'all' || fuelLevel !== 'all'
 
   function handleFuelGradeChange(nextFuelGrade: FuelGradeFilter) {
     setFuelGrade(nextFuelGrade)
+    setPage(1)
+  }
+
+  function handleFuelLevelChange(nextFuelLevel: FuelLevelFilter) {
+    setFuelLevel(nextFuelLevel)
     setPage(1)
   }
 
@@ -77,7 +87,7 @@ export function DashboardCarsSection({
     )
   }
 
-  if (totalItems === 0 && fuelGrade === 'all') {
+  if (totalItems === 0 && !hasActiveFilters) {
     return (
       <section className="flex-1">
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
@@ -89,7 +99,7 @@ export function DashboardCarsSection({
 
   return (
     <section className="flex-1">
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex items-end justify-between gap-3 sm:block">
           <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
             {LL.externalPanel.home.vehicleStatusTitle()}
@@ -100,10 +110,16 @@ export function DashboardCarsSection({
             })}
           </p>
         </div>
-        <FuelGradeFilterControl
-          value={fuelGrade}
-          onChange={handleFuelGradeChange}
-        />
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
+          <FuelLevelFilterControl
+            value={fuelLevel}
+            onChange={handleFuelLevelChange}
+          />
+          <FuelGradeFilterControl
+            value={fuelGrade}
+            onChange={handleFuelGradeChange}
+          />
+        </div>
       </div>
 
       {cars.length === 0 ? (

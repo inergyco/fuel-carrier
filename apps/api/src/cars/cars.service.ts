@@ -1,8 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type {
   Car,
   CarFleetStats,
+  FuelLevelFilter,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import {
@@ -10,7 +11,10 @@ import {
   AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
-import { computeCarFleetStats } from '@fuel-carrier/shared-types/car-fleet-stats';
+import {
+  computeCarFleetStats,
+  getFuelLevel,
+} from '@fuel-carrier/shared-types/car-fleet-stats';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -62,6 +66,7 @@ type ListCarsOptions = {
   limit: number;
   search?: string;
   fuelGrade?: 'all' | 'highGrade' | 'normal';
+  fuelLevel?: FuelLevelFilter;
   companyId?: string;
 };
 
@@ -85,13 +90,14 @@ export class CarsService {
       companyId,
       search: searchText,
       fuelGrade,
+      fuelLevel = 'all',
     } = listOptions;
     if (companyId) {
       assertUuidParam(companyId, 'companyId');
     }
 
     const offset = getPaginationOffset(listOptions);
-    const where = and(
+    const baseWhere = and(
       isNull(cars.deletedAt),
       companyId ? eq(cars.companyId, companyId) : undefined,
       buildCarSearchFilter(searchText),
@@ -99,6 +105,23 @@ export class CarsService {
     );
 
     return this.tenantDb.run(context, async (tx) => {
+      const where = await this._applyFuelLevelFilter({
+        tx,
+        context,
+        baseWhere,
+        companyId,
+        fuelLevel,
+      });
+
+      if (where === null) {
+        return toPaginatedResult({
+          items: [],
+          page,
+          limit,
+          totalItems: 0,
+        });
+      }
+
       const [countRow] = await tx
         .select({ value: count() })
         .from(cars)
@@ -422,6 +445,53 @@ export class CarsService {
         ],
       );
     }
+  }
+
+  /**
+   * Narrows the car list to a live remain-fuel band (Redis).
+   * Returns `null` when the band matches no cars.
+   * Company-scoped only (external panel); without a company id the filter is skipped.
+   */
+  private async _applyFuelLevelFilter(options: {
+    tx: TenantTransaction;
+    context: ApiTenantContext;
+    baseWhere: ReturnType<typeof and>;
+    companyId?: string;
+    fuelLevel: FuelLevelFilter;
+  }): Promise<ReturnType<typeof and> | null> {
+    const { tx, context, baseWhere, companyId, fuelLevel } = options;
+    if (fuelLevel === 'all') {
+      return baseWhere;
+    }
+
+    const scopedCompanyId = companyId ?? context.companyId ?? null;
+    if (!scopedCompanyId) {
+      return baseWhere;
+    }
+
+    const scopeRows = await tx
+      .select({ id: cars.id })
+      .from(cars)
+      .where(baseWhere);
+
+    if (scopeRows.length === 0) {
+      return null;
+    }
+
+    const remainFuelByCarId =
+      await this.carTelemetryService.getRemainFuelByCarId(scopedCompanyId);
+
+    const matchingIds = scopeRows
+      .filter(
+        (row) => getFuelLevel(remainFuelByCarId.get(row.id)) === fuelLevel,
+      )
+      .map((row) => row.id);
+
+    if (matchingIds.length === 0) {
+      return null;
+    }
+
+    return and(baseWhere, inArray(cars.id, matchingIds));
   }
 }
 

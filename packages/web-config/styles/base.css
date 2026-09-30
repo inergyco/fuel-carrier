@@ -25,7 +25,39 @@
   }
 
   select option {
-    @apply bg-base-200 text-base-content;
+    @apply bg-base-100 text-base-content;
+  }
+
+  /*
+    DaisyUI 5 customizable select (`appearance: base-select`) inherits the
+    closed field's background onto `::picker(select)`. Keep the popper opaque
+    so table chrome cannot bleed through translucent field fills.
+  */
+  @supports (appearance: base-select) {
+    select.select::picker(select) {
+      background-color: var(--color-base-100);
+      border-color: color-mix(
+        in oklab,
+        var(--color-base-content) 12%,
+        transparent
+      );
+      padding: 0.25rem;
+    }
+
+    select.select option {
+      border-radius: var(--radius-field);
+      background-color: transparent;
+    }
+
+    select.select option:checked,
+    select.select option:hover,
+    select.select option:focus-visible {
+      background-color: color-mix(
+        in oklab,
+        var(--color-base-content) 8%,
+        transparent
+      );
+    }
   }
 
   /* DaisyUI 5 dropped default pointer cursors; restore for interactive chrome. */

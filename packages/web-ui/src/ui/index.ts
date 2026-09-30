@@ -76,5 +76,9 @@ export {
   FuelGradeFilterControl,
   type FuelGradeFilterProps,
 } from './FuelGradeFilterControl'
+export {
+  FuelLevelFilterControl,
+  type FuelLevelFilterControlProps,
+} from './FuelLevelFilterControl'
 export { toResourceListFilterSearchParams } from './toResourceListFilterSearchParams'
 

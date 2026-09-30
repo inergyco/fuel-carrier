@@ -13,7 +13,8 @@
     "./driver/create": "./src/driver/create-driver.dto.ts",
     "./company-user/create": "./src/company-user/create-company-user.dto.ts",
     "./auth/change-password": "./src/auth/change-password.dto.ts",
-    "./pagination": "./src/pagination/index.ts"
+    "./resource-list": "./src/resource-list/index.ts",
+    "./pagination": "./src/resource-list/index.ts"
   },
   "dependencies": {
     "@fuel-carrier/shared-types": "workspace:*",

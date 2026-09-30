@@ -20,6 +20,8 @@ const fa: Translation = {
       fuelGradeHighGrade: "سوپر",
       fuelGradeNormal: "معمولی",
       fuelGradeFilterLabel: "نوع سوخت",
+      fuelLevelAll: "همه سطوح",
+      fuelLevelFilterLabel: "سطح سوخت",
     },
     fleetStats: {
       totalCars: "کل خودروها",

@@ -26,7 +26,7 @@ export function CarCustodyDriverSelect({
       label={LL.externalPanel.cars.driver()}
       value={selectedDriverId}
       disabled={custody.driversLoading || custody.mutation.isPending}
-      className="h-11 border-base-content/12 bg-base-100/60"
+      className="h-11 border-base-content/12 bg-base-100"
       onChange={(event) => onChange(event.target.value)}
     >
       <option value="">
