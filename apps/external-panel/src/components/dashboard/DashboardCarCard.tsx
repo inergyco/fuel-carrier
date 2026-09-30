@@ -151,7 +151,11 @@ export function DashboardCarCard({
                   })
                 : LL.externalPanel.cars.remainFuelUnknown()}
             </span>
-            {fillPercent != null ? <span>{fillPercent}%</span> : null}
+            {fillPercent != null ? (
+              <span style={{ color: getFuelLevelColor(remainFuel) }}>
+                {fillPercent}%
+              </span>
+            ) : null}
           </div>
           {remainFuel != null ? (
             <div
@@ -162,8 +166,11 @@ export function DashboardCarCard({
               aria-valuenow={remainFuel}
             >
               <div
-                className="h-full rounded-full bg-success transition-[width] duration-500"
-                style={{ width: `${fillPercent}%` }}
+                className="h-full rounded-full transition-[width,background-color] duration-500"
+                style={{
+                  width: `${fillPercent}%`,
+                  backgroundColor: getFuelLevelColor(remainFuel),
+                }}
               />
             </div>
           ) : (
