@@ -18,9 +18,11 @@ interface PaginationProps {
   totalItems: number;
   limit: number;
   onPageChange: (page: number) => void;
-  onLimitChange: (limit: number) => void;
+  onLimitChange?: (limit: number) => void;
   labels: PaginationLabels;
   limitOptions?: readonly number[];
+  /** When false, hides the per-page select (fixed page size). Default true. */
+  showLimitSelect?: boolean;
   className?: string;
 }
 
@@ -33,6 +35,7 @@ export function Pagination({
   onLimitChange,
   labels,
   limitOptions = LIMIT_OPTIONS,
+  showLimitSelect = true,
   className,
 }: PaginationProps) {
   const { from, to } = getPaginationRange(page, limit, totalItems);
@@ -52,7 +55,7 @@ export function Pagination({
   }
 
   function handleLimitChange(event: ChangeEvent<HTMLSelectElement>) {
-    onLimitChange(Number(event.target.value));
+    onLimitChange?.(Number(event.target.value));
   }
 
   if (totalItems === 0) {
@@ -71,33 +74,35 @@ export function Pagination({
       </p>
 
       <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end">
-        <label className="flex items-center gap-2 text-xs text-base-content/60">
-          <span className="font-medium tracking-wide">{labels.perPage()}</span>
-          <div dir="ltr" className="relative">
-            <select
-              value={limit}
-              onChange={handleLimitChange}
-              aria-label={labels.perPage()}
-              className={cn(
-                "h-8 min-h-8 w-16 appearance-none rounded-lg border pe-7 ps-2 text-center text-xs tracking-wide",
-                "border-base-content/10 bg-base-200/30 text-base-content backdrop-blur-sm",
-                "focus:outline-none focus:ring-1 focus:ring-primary/40",
-              )}
-            >
-              {limitOptions.map(function renderLimitOption(option) {
-                return (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                );
-              })}
-            </select>
-            <ChevronDown
-              className="pointer-events-none absolute end-1.5 top-1/2 size-3.5 -translate-y-1/2 text-base-content/50"
-              aria-hidden
-            />
-          </div>
-        </label>
+        {showLimitSelect ? (
+          <label className="flex items-center gap-2 text-xs text-base-content/60">
+            <span className="font-medium tracking-wide">{labels.perPage()}</span>
+            <div dir="ltr" className="relative">
+              <select
+                value={limit}
+                onChange={handleLimitChange}
+                aria-label={labels.perPage()}
+                className={cn(
+                  "h-8 min-h-8 w-16 appearance-none rounded-lg border pe-7 ps-2 text-center text-xs tracking-wide",
+                  "border-base-content/10 bg-base-200/30 text-base-content backdrop-blur-sm",
+                  "focus:outline-none focus:ring-1 focus:ring-primary/40",
+                )}
+              >
+                {limitOptions.map(function renderLimitOption(option) {
+                  return (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  );
+                })}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute end-1.5 top-1/2 size-3.5 -translate-y-1/2 text-base-content/50"
+                aria-hidden
+              />
+            </div>
+          </label>
+        ) : null}
 
         <p className="text-xs font-medium tracking-wide text-base-content/60">
           {labels.pageOf({ current: page, total: totalPages })}
