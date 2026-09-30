@@ -37,7 +37,6 @@ export function CarCustodyDriverSelect({
       label={detail.driver()}
       value={selectedDriverId}
       disabled={custody.driversLoading || custody.mutation.isPending}
-      className="h-11 border-base-content/12 bg-base-100"
       onChange={(event) => onChange(event.target.value)}
     >
       <option value="">

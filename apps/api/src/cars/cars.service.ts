@@ -1,9 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { and, count, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   Car,
   CarFleetStats,
-  FuelLevelFilter,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import {
@@ -11,10 +10,7 @@ import {
   AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
-import {
-  computeCarFleetStats,
-  getFuelLevel,
-} from '@fuel-carrier/shared-types/car-fleet-stats';
+import { computeCarFleetStats } from '@fuel-carrier/shared-types/car-fleet-stats';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -32,42 +28,34 @@ import { createApiException } from '../common/exceptions/api.exception';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
 import { cars } from '../database/schema/cars';
-import { drivers } from '../database/schema/drivers';
 import { mqttClients } from '../database/schema/mqtt-clients';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';
-import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
+import { applyCarFuelLevelFilter } from './apply-car-fuel-level-filter';
+import { assertDriverAssignableToCompany } from './assert-driver-assignable';
 import {
   buildCarFuelGradeFilter,
   buildCarSearchFilter,
 } from './cars-list-filters';
 import { CAR_POSTGRES_MAPPINGS } from './cars-postgres-mappings';
 import { CarsReader, mapCarRow } from './cars-reader.service';
+import {
+  CAR_AUDIT_FIELDS,
+  type CreateCarPayload,
+  type ListCarsOptions,
+  type UpdateCarPayload,
+} from './cars.types';
 import { assertCustodyPrecondition } from './custody-conflict';
 
-type CreateCarPayload = {
-  name?: string | null;
-  licensePlate: string;
-  companyId: string;
-  driverId: string;
-  hasHighGrade?: boolean;
-  note?: string | null;
-};
-
-type UpdateCarPayload = Partial<Omit<CreateCarPayload, 'driverId'>> & {
-  driverId?: string;
-  expectedDriverId?: string | null;
-};
-
-type ListCarsOptions = {
-  page: number;
-  limit: number;
-  search?: string;
-  fuelGrade?: 'all' | 'highGrade' | 'normal';
-  fuelLevel?: FuelLevelFilter;
-  companyId?: string;
+const EMPTY_FLEET_STATS: CarFleetStats = {
+  totalCars: 0,
+  fuelHigh: 0,
+  fuelMidHigh: 0,
+  fuelMidLow: 0,
+  fuelLow: 0,
+  highGrade: 0,
 };
 
 @Injectable()
@@ -105,21 +93,17 @@ export class CarsService {
     );
 
     return this.tenantDb.run(context, async (tx) => {
-      const where = await this._applyFuelLevelFilter({
+      const where = await applyCarFuelLevelFilter({
         tx,
-        context,
         baseWhere,
-        companyId,
+        companyId: companyId ?? context.companyId ?? null,
         fuelLevel,
+        getRemainFuelByCarId: (scopedCompanyId) =>
+          this.carTelemetryService.getRemainFuelByCarId(scopedCompanyId),
       });
 
       if (where === null) {
-        return toPaginatedResult({
-          items: [],
-          page,
-          limit,
-          totalItems: 0,
-        });
+        return toPaginatedResult({ items: [], page, limit, totalItems: 0 });
       }
 
       const [countRow] = await tx
@@ -152,24 +136,14 @@ export class CarsService {
    */
   async getFleetStats(context: ApiTenantContext): Promise<CarFleetStats> {
     if (!context.companyId) {
-      return {
-        totalCars: 0,
-        fuelHigh: 0,
-        fuelMidHigh: 0,
-        fuelMidLow: 0,
-        fuelLow: 0,
-        highGrade: 0,
-      };
+      return EMPTY_FLEET_STATS;
     }
 
     const companyId = context.companyId;
     const [fleetCars, remainFuelByCarId] = await Promise.all([
       this.tenantDb.run(context, async (tx) => {
         return tx
-          .select({
-            id: cars.id,
-            hasHighGrade: cars.hasHighGrade,
-          })
+          .select({ id: cars.id, hasHighGrade: cars.hasHighGrade })
           .from(cars)
           .where(and(isNull(cars.deletedAt), eq(cars.companyId, companyId)));
       }),
@@ -188,11 +162,7 @@ export class CarsService {
       return await this.tenantDb.run(context, async (tx) => {
         const custodyAt = new Date();
 
-        await this._assertDriverAssignableToCompany(
-          tx,
-          dto.driverId,
-          dto.companyId,
-        );
+        await assertDriverAssignableToCompany(tx, dto.driverId, dto.companyId);
         await this.carDriverAssignmentsService.assertDriverFreeOrThrowInTx(tx, {
           driverId: dto.driverId,
           exceptCarId: null,
@@ -277,13 +247,12 @@ export class CarsService {
           });
         }
 
-        const nextCompanyId =
-          dto.companyId !== undefined ? dto.companyId : existing.companyId;
+        const nextCompanyId = dto.companyId ?? existing.companyId;
         const nextDriverId =
           dto.driverId !== undefined ? dto.driverId : existing.driverId;
 
         if (nextDriverId) {
-          await this._assertDriverAssignableToCompany(
+          await assertDriverAssignableToCompany(
             tx,
             nextDriverId,
             nextCompanyId,
@@ -378,10 +347,7 @@ export class CarsService {
 
       const [row] = await tx
         .update(cars)
-        .set({
-          deletedAt,
-          driverId: null,
-        })
+        .set({ deletedAt, driverId: null })
         .where(and(eq(cars.id, id), isNull(cars.deletedAt)))
         .returning({ id: cars.id });
 
@@ -412,93 +378,4 @@ export class CarsService {
       return null;
     });
   }
-
-  /**
-   * Driver must share companyId and be live. RLS hides other-company drivers
-   * for company users; internal admins see all drivers, so this check is required.
-   */
-  private async _assertDriverAssignableToCompany(
-    tx: TenantTransaction,
-    driverId: string,
-    companyId: string,
-  ): Promise<void> {
-    const [driver] = await tx
-      .select({
-        id: drivers.id,
-        companyId: drivers.companyId,
-        deletedAt: drivers.deletedAt,
-      })
-      .from(drivers)
-      .where(and(eq(drivers.id, driverId), isNull(drivers.deletedAt)))
-      .limit(1);
-
-    if (!driver || driver.companyId !== companyId) {
-      throw createApiException(
-        HttpStatus.BAD_REQUEST,
-        ApiErrorCode.VALIDATION_ERROR,
-        'Validation failed',
-        [
-          {
-            field: 'driverId',
-            message: 'Driver must belong to the same company as the car',
-          },
-        ],
-      );
-    }
-  }
-
-  /**
-   * Narrows the car list to a live remain-fuel band (Redis).
-   * Returns `null` when the band matches no cars.
-   * Company-scoped only (external panel); without a company id the filter is skipped.
-   */
-  private async _applyFuelLevelFilter(options: {
-    tx: TenantTransaction;
-    context: ApiTenantContext;
-    baseWhere: ReturnType<typeof and>;
-    companyId?: string;
-    fuelLevel: FuelLevelFilter;
-  }): Promise<ReturnType<typeof and> | null> {
-    const { tx, context, baseWhere, companyId, fuelLevel } = options;
-    if (fuelLevel === 'all') {
-      return baseWhere;
-    }
-
-    const scopedCompanyId = companyId ?? context.companyId ?? null;
-    if (!scopedCompanyId) {
-      return baseWhere;
-    }
-
-    const scopeRows = await tx
-      .select({ id: cars.id })
-      .from(cars)
-      .where(baseWhere);
-
-    if (scopeRows.length === 0) {
-      return null;
-    }
-
-    const remainFuelByCarId =
-      await this.carTelemetryService.getRemainFuelByCarId(scopedCompanyId);
-
-    const matchingIds = scopeRows
-      .filter(
-        (row) => getFuelLevel(remainFuelByCarId.get(row.id)) === fuelLevel,
-      )
-      .map((row) => row.id);
-
-    if (matchingIds.length === 0) {
-      return null;
-    }
-
-    return and(baseWhere, inArray(cars.id, matchingIds));
-  }
 }
-
-const CAR_AUDIT_FIELDS = [
-  'name',
-  'licensePlate',
-  'driverId',
-  'hasHighGrade',
-  'note',
-] as const satisfies readonly (keyof Car)[];

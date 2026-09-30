@@ -29,19 +29,13 @@ export function DashboardCardsSkeleton({
   return (
     <div role="status" aria-busy="true" aria-label={label}>
       {variant === 'car' ? (
-        <>
-          <div className="mb-4 space-y-2">
-            <Skeleton className="h-4 w-28" />
-            <Skeleton className="h-3 w-40" />
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <Skeleton className="h-11 w-full rounded-lg lg:max-w-sm" />
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
+            <Skeleton className="h-11 w-full rounded-lg sm:w-40" />
+            <Skeleton className="h-11 w-full rounded-lg sm:w-40" />
           </div>
-          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <Skeleton className="h-11 w-full rounded-lg lg:max-w-sm" />
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
-              <Skeleton className="h-11 w-full rounded-lg sm:w-40" />
-              <Skeleton className="h-11 w-full rounded-lg sm:w-40" />
-            </div>
-          </div>
-        </>
+        </div>
       ) : (
         <Skeleton className="mb-5 h-3 w-48" />
       )}

@@ -110,17 +110,6 @@ export function DashboardCarsSection({
 
   return (
     <section className="flex-1">
-      <div className="mb-4 flex items-end justify-between gap-3 sm:block">
-        <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
-          {LL.externalPanel.home.vehicleStatusTitle()}
-        </h2>
-        <p className="text-xs text-base-content/40 sm:mt-1">
-          {LL.externalPanel.home.fleetSummary({
-            count: totalItems,
-          })}
-        </p>
-      </div>
-
       <ResourceListToolbar
         searchPlaceholder={LL.externalPanel.cars.searchPlaceholder()}
         searchText={draftSearchText}
