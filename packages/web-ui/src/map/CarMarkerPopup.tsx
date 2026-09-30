@@ -13,7 +13,6 @@ type CarMarkerPopupProps = {
   marker: CarTelemetryMarker;
   title: string;
   labels: CarsMapLabels;
-  companyColor?: string;
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode;
   onPlanRoute?: (marker: CarTelemetryMarker) => void;
 };
@@ -22,7 +21,6 @@ export function CarMarkerPopup({
   marker,
   title,
   labels,
-  companyColor,
   renderVehicleLink,
   onPlanRoute,
 }: CarMarkerPopupProps) {

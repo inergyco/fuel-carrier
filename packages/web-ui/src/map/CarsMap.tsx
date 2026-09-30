@@ -88,7 +88,6 @@ export function CarsMap({
                 marker={marker}
                 title={title}
                 labels={labels}
-                companyColor={companyColor}
                 renderVehicleLink={renderVehicleLink}
                 onPlanRoute={onMarkerSelect}
               />
