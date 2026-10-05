@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Button, PageHeader } from '@fuel-carrier/web-ui/ui'
 import { CompanyCarDetailBackLink } from './CompanyCarDetailBackLink'
 
 type CompanyCarDetailNotFoundProps = {
@@ -25,12 +25,11 @@ export function CompanyCarDetailNotFound({
       <div className="mb-6">
         <CompanyCarDetailBackLink companyId={companyId} />
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
-          <h2 className="text-xl font-semibold tracking-tight">
-            {LL.internalPanel.companies.detail.carNotFound()}
-          </h2>
-          <p className="mt-2 text-sm text-base-content/50">
-            {LL.internalPanel.companies.detail.carNotFoundDescription()}
-          </p>
+          <PageHeader
+            as="h2"
+            title={LL.internalPanel.companies.detail.carNotFound()}
+            subtitle={LL.internalPanel.companies.detail.carNotFoundDescription()}
+          />
           <Button
             type="button"
             variant="ghost"

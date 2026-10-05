@@ -2,6 +2,7 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
+  PageHeader,
   QueryErrorState,
   ResourceListSkeleton,
   iconMdClassName,
@@ -110,28 +111,30 @@ export function ResourceSection<T extends { id: string }>({
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
-      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-          <p className="mt-1 text-sm text-base-content/50">{subtitle}</p>
-        </div>
-        {!readOnly ? (
-          <Button
-            type="button"
-            className="h-11 w-full sm:w-auto sm:px-5"
-            onClick={onAdd}
-          >
-            <span className="flex items-center justify-center gap-2">
-              <Plus
-                className={iconMdClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-              {addLabel}
-            </span>
-          </Button>
-        ) : null}
-      </div>
+      <PageHeader
+        as="h2"
+        className="mb-4"
+        title={title}
+        subtitle={subtitle}
+        actions={
+          !readOnly ? (
+            <Button
+              type="button"
+              className="h-11 w-full sm:w-auto sm:px-5"
+              onClick={onAdd}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Plus
+                  className={iconMdClassName}
+                  strokeWidth={ICON_STROKE_WIDTH}
+                  aria-hidden
+                />
+                {addLabel}
+              </span>
+            </Button>
+          ) : undefined
+        }
+      />
 
       {toolbar}
 

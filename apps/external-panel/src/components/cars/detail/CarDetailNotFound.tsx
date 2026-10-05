@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Button, PageHeader } from '@fuel-carrier/web-ui/ui'
 import { CarDetailBackLink } from './CarDetailBackLink'
 
 export function CarDetailNotFound() {
@@ -16,12 +16,10 @@ export function CarDetailNotFound() {
       <div className="mb-6">
         <CarDetailBackLink />
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
-          <h1 className="text-xl font-semibold tracking-tight">
-            {LL.externalPanel.cars.notFound()}
-          </h1>
-          <p className="mt-2 text-sm text-base-content/50">
-            {LL.externalPanel.cars.notFoundDescription()}
-          </p>
+          <PageHeader
+            title={LL.externalPanel.cars.notFound()}
+            subtitle={LL.externalPanel.cars.notFoundDescription()}
+          />
           <Button
             type="button"
             variant="ghost"

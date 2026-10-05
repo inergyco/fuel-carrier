@@ -17,6 +17,8 @@ export { LanguageToggle } from './LanguageToggle'
 export { LocaleControls } from './LocaleControls'
 export { PanelShell } from './PanelShell'
 export type { PanelNavItem } from './PanelShell'
+export { PageHeader } from './PageHeader'
+export type { PageHeaderProps } from './PageHeader'
 export {
   ICON_STROKE_WIDTH,
   iconSmClassName,
@@ -26,6 +28,11 @@ export {
 } from './iconClassName'
 export { ConfirmModal } from './ConfirmModal'
 export { CompanyBrandLogo } from './CompanyBrandLogo'
+export { FileUploader } from './FileUploader'
+export type { FileUploaderLabels, FileUploaderProps } from './FileUploader'
+export { ImageUploader } from './ImageUploader'
+export type { ImageUploaderLabels, ImageUploaderProps } from './ImageUploader'
+export { CompanyLogoUploader } from './CompanyLogoUploader'
 export {
   DataTable,
   DataTableBody,

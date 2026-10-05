@@ -164,6 +164,44 @@ type RootTranslation = {
 			 */
 			viewer: string
 		}
+		companyLogo: {
+			/**
+			 * L​o​g​o
+			 */
+			label: string
+			/**
+			 * P​N​G​,​ ​J​P​G​,​ ​W​E​B​P​,​ ​G​I​F​,​ ​o​r​ ​S​V​G​.​ ​U​p​ ​t​o​ ​2​ ​M​B​.
+			 */
+			hint: string
+			/**
+			 * C​h​o​o​s​e​ ​i​m​a​g​e
+			 */
+			choose: string
+			/**
+			 * C​h​a​n​g​e​ ​i​m​a​g​e
+			 */
+			change: string
+			/**
+			 * R​e​m​o​v​e
+			 */
+			remove: string
+			/**
+			 * U​p​l​o​a​d​i​n​g​…
+			 */
+			uploading: string
+			/**
+			 * C​h​o​o​s​e​ ​a​ ​P​N​G​,​ ​J​P​G​,​ ​W​E​B​P​,​ ​G​I​F​,​ ​o​r​ ​S​V​G​ ​i​m​a​g​e​.
+			 */
+			invalidType: string
+			/**
+			 * L​o​g​o​ ​m​u​s​t​ ​b​e​ ​2​ ​M​B​ ​o​r​ ​s​m​a​l​l​e​r​.
+			 */
+			tooLarge: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​l​o​a​d​ ​t​h​e​ ​l​o​g​o​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			uploadFailed: string
+		}
 		/**
 		 * S​h​o​w​ ​p​a​s​s​w​o​r​d
 		 */
@@ -716,7 +754,7 @@ type RootTranslation = {
 			 */
 			note: string
 			/**
-			 * L​o​g​o​ ​U​R​L
+			 * L​o​g​o
 			 */
 			logoUrl: string
 			/**
@@ -1766,6 +1804,10 @@ type RootTranslation = {
 			 */
 			users: string
 			/**
+			 * S​e​t​t​i​n​g​s
+			 */
+			settings: string
+			/**
 			 * D​r​i​v​e​r​s
 			 */
 			drivers: string
@@ -1888,6 +1930,20 @@ type RootTranslation = {
 			 * P​a​s​s​w​o​r​d​ ​u​p​d​a​t​e​d​.
 			 */
 			passwordChanged: string
+			/**
+			 * L​o​g​o​ ​u​p​d​a​t​e​d​.
+			 */
+			logoUpdated: string
+		}
+		settings: {
+			/**
+			 * S​e​t​t​i​n​g​s
+			 */
+			title: string
+			/**
+			 * M​a​n​a​g​e​ ​y​o​u​r​ ​c​o​m​p​a​n​y​ ​p​o​r​t​a​l​ ​p​r​e​f​e​r​e​n​c​e​s
+			 */
+			subtitle: string
 		}
 		users: {
 			/**
@@ -3028,6 +3084,44 @@ export type TranslationFunctions = {
 			 */
 			viewer: () => LocalizedString
 		}
+		companyLogo: {
+			/**
+			 * Logo
+			 */
+			label: () => LocalizedString
+			/**
+			 * PNG, JPG, WEBP, GIF, or SVG. Up to 2 MB.
+			 */
+			hint: () => LocalizedString
+			/**
+			 * Choose image
+			 */
+			choose: () => LocalizedString
+			/**
+			 * Change image
+			 */
+			change: () => LocalizedString
+			/**
+			 * Remove
+			 */
+			remove: () => LocalizedString
+			/**
+			 * Uploading…
+			 */
+			uploading: () => LocalizedString
+			/**
+			 * Choose a PNG, JPG, WEBP, GIF, or SVG image.
+			 */
+			invalidType: () => LocalizedString
+			/**
+			 * Logo must be 2 MB or smaller.
+			 */
+			tooLarge: () => LocalizedString
+			/**
+			 * Could not upload the logo. Please try again.
+			 */
+			uploadFailed: () => LocalizedString
+		}
 		/**
 		 * Show password
 		 */
@@ -3556,7 +3650,7 @@ export type TranslationFunctions = {
 			 */
 			note: () => LocalizedString
 			/**
-			 * Logo URL
+			 * Logo
 			 */
 			logoUrl: () => LocalizedString
 			/**
@@ -4580,6 +4674,10 @@ export type TranslationFunctions = {
 			 */
 			users: () => LocalizedString
 			/**
+			 * Settings
+			 */
+			settings: () => LocalizedString
+			/**
 			 * Drivers
 			 */
 			drivers: () => LocalizedString
@@ -4701,6 +4799,20 @@ export type TranslationFunctions = {
 			 * Password updated.
 			 */
 			passwordChanged: () => LocalizedString
+			/**
+			 * Logo updated.
+			 */
+			logoUpdated: () => LocalizedString
+		}
+		settings: {
+			/**
+			 * Settings
+			 */
+			title: () => LocalizedString
+			/**
+			 * Manage your company portal preferences
+			 */
+			subtitle: () => LocalizedString
 		}
 		users: {
 			/**

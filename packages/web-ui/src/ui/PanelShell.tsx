@@ -3,6 +3,7 @@ import { Menu } from '@fuel-carrier/web-ui/icons'
 import type { ReactNode } from 'react'
 import { cn } from '../utils'
 import { LocaleControls } from './LocaleControls'
+import { PageHeader } from './PageHeader'
 
 export interface PanelNavItem {
   to: string
@@ -79,18 +80,11 @@ export function PanelShell({
           </label>
 
           {appBarTitle || appBarSubtitle ? (
-            <div className="min-w-0 flex-1">
-              {appBarTitle ? (
-                <h1 className="truncate text-base font-semibold tracking-tight md:text-lg">
-                  {appBarTitle}
-                </h1>
-              ) : null}
-              {appBarSubtitle ? (
-                <p className="truncate text-xs text-base-content/50 md:text-sm">
-                  {appBarSubtitle}
-                </p>
-              ) : null}
-            </div>
+            <PageHeader
+              className="min-w-0 flex-1"
+              title={appBarTitle}
+              subtitle={appBarSubtitle}
+            />
           ) : (
             <div className="flex-1" />
           )}

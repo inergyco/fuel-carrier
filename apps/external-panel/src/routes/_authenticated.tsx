@@ -1,4 +1,5 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { useQuery } from "@fuel-carrier/web-ui/query";
 import { AuthenticatedShell } from "../components/AuthenticatedShell";
 import { authKeys, fetchMe } from "../lib/api/auth";
 import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
@@ -33,9 +34,14 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const { user } = Route.useRouteContext();
+  const meQuery = useQuery({
+    queryKey: authKeys.me,
+    queryFn: fetchMe,
+    staleTime: 60_000,
+  });
 
   return (
-    <AuthenticatedShell user={user}>
+    <AuthenticatedShell user={meQuery.data ?? user}>
       <Outlet />
     </AuthenticatedShell>
   );

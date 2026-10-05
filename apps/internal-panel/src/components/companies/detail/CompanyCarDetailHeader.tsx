@@ -4,6 +4,7 @@ import { KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
+  PageHeader,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
 import { CompanyCarDetailBackLink } from './CompanyCarDetailBackLink'
@@ -44,14 +45,15 @@ export function CompanyCarDetailHeader({
       <CompanyCarDetailBackLink companyId={companyId} />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <h2 className="text-xl font-semibold tracking-tight md:text-2xl">
-            {heading}
-          </h2>
-          {car ? (
-            <p className="mt-1 font-mono text-sm text-base-content/50">
-              {car.licensePlate}
-            </p>
-          ) : null}
+          <PageHeader
+            as="h2"
+            title={heading}
+            subtitle={
+              car ? (
+                <span className="font-mono">{car.licensePlate}</span>
+              ) : undefined
+            }
+          />
           {car && driverName ? (
             <p className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-base-content/10 bg-base-100/40 px-3 py-2 text-sm">
               <User

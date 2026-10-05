@@ -14,6 +14,7 @@ import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
 import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
 import { Route as AuthenticatedCarsRouteImport } from './routes/_authenticated/cars'
@@ -43,6 +44,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedMapRoute = AuthenticatedMapRouteImport.update({
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/cars': typeof AuthenticatedCarsRouteWithChildren
   '/drivers': typeof AuthenticatedDriversRoute
   '/map': typeof AuthenticatedMapRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
   '/cars/': typeof AuthenticatedCarsIndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/drivers': typeof AuthenticatedDriversRoute
   '/map': typeof AuthenticatedMapRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/': typeof AuthenticatedIndexRoute
   '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/_authenticated/cars': typeof AuthenticatedCarsRouteWithChildren
   '/_authenticated/drivers': typeof AuthenticatedDriversRoute
   '/_authenticated/map': typeof AuthenticatedMapRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/cars/$carId': typeof AuthenticatedCarsCarIdRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/cars'
     | '/drivers'
     | '/map'
+    | '/settings'
     | '/users'
     | '/cars/$carId'
     | '/cars/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/audit-logs'
     | '/drivers'
     | '/map'
+    | '/settings'
     | '/users'
     | '/'
     | '/cars/$carId'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cars'
     | '/_authenticated/drivers'
     | '/_authenticated/map'
+    | '/_authenticated/settings'
     | '/_authenticated/users'
     | '/_authenticated/'
     | '/_authenticated/cars/$carId'
@@ -193,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/map': {
@@ -258,6 +277,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCarsRoute: typeof AuthenticatedCarsRouteWithChildren
   AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
   AuthenticatedMapRoute: typeof AuthenticatedMapRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
@@ -267,6 +287,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCarsRoute: AuthenticatedCarsRouteWithChildren,
   AuthenticatedDriversRoute: AuthenticatedDriversRoute,
   AuthenticatedMapRoute: AuthenticatedMapRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }

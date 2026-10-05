@@ -48,6 +48,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { COMPANY_POSTGRES_MAPPINGS } from './companies-postgres-mappings';
+import { removeStoredCompanyLogo } from './company-logo-storage';
 
 /**
  * Companies are not tenant-owned rows, but all database access still flows
@@ -206,6 +207,26 @@ export class CompaniesService {
     } catch (error) {
       rethrowPostgresError(error, COMPANY_POSTGRES_MAPPINGS);
     }
+  }
+
+  /**
+   * Explicit logo replace/clear. File cleanup stays here — not on generic
+   * `update` — so a normal company PATCH never touches the filesystem.
+   */
+  async replaceLogo(
+    context: ApiTenantContext,
+    id: string,
+    logoUrl: string | null,
+  ): Promise<Company> {
+    const existing = await this.getById(id);
+    if (existing.logoUrl === logoUrl) {
+      return existing;
+    }
+
+    const previousLogoUrl = existing.logoUrl;
+    const company = await this.update(context, id, { logoUrl });
+    await removeStoredCompanyLogo(previousLogoUrl);
+    return company;
   }
 
   /** Soft-delete company and cascade soft-delete to cars, drivers, and users. */

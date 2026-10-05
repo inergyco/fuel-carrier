@@ -3,10 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -17,6 +20,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import type { FastifyRequest } from 'fastify';
 import type {
   AuthSession,
   Company,
@@ -41,6 +45,7 @@ import {
   companyListQuerySchema,
   type CompanyListQueryDto,
 } from '../common/dto/company-list-query.dto';
+import { parseZodDto } from '../common/validation/zod.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -48,15 +53,20 @@ import {
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
+  ApiMultipartFileBody,
 } from '../swagger/decorators/api-envelope.decorator';
 import {
   CompanyDeletionImpactDto,
   CompanyDto,
+  CompanyLogoUploadDto,
   CreateCompanyRequestDto,
+  ReplaceCompanyLogoRequestDto,
   UpdateCompanyRequestDto,
 } from '../swagger/dto/company.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CompaniesService } from './companies.service';
+import { readCompanyLogoUpload } from './read-company-logo-upload';
+import { replaceCompanyLogoDtoSchema } from './replace-company-logo.dto';
 
 @ApiTags('companies')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
@@ -102,6 +112,20 @@ export class InternalCompaniesController {
     return this.companiesService.getById(id);
   }
 
+  @Post('logo')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Upload a company logo and return its public path' })
+  @ApiMultipartFileBody()
+  @ApiEnvelopeOkResponse(CompanyLogoUploadDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  async uploadLogo(
+    @Req() request: FastifyRequest,
+  ): Promise<CompanyLogoUploadDto> {
+    const logoUrl = await readCompanyLogoUpload(request);
+    return { logoUrl };
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a company' })
   @ApiBody({ type: CreateCompanyRequestDto })
@@ -114,6 +138,44 @@ export class InternalCompaniesController {
     dto: CreateCompanyDto,
   ): Promise<Company> {
     return this.companiesService.create(internalTenantContext(user), dto);
+  }
+
+  @Patch(':id/logo')
+  @ApiOperation({ summary: 'Replace a company logo' })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: ReplaceCompanyLogoRequestDto })
+  @ApiEnvelopeOkResponse(CompanyDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  replaceLogo(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body() body: unknown,
+  ): Promise<Company> {
+    const { logoUrl } = parseZodDto(replaceCompanyLogoDtoSchema, body);
+    return this.companiesService.replaceLogo(
+      internalTenantContext(user),
+      id,
+      logoUrl,
+    );
+  }
+
+  @Delete(':id/logo')
+  @ApiOperation({ summary: 'Remove a company logo' })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(CompanyDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  removeLogo(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<Company> {
+    return this.companiesService.replaceLogo(
+      internalTenantContext(user),
+      id,
+      null,
+    );
   }
 
   @Patch(':id')

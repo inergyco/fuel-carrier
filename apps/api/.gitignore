@@ -46,6 +46,10 @@ lerna-debug.log*
 .temp
 .tmp
 
+# Uploaded company logos. Keep the directory, ignore the files.
+/uploads/company-logos/*
+!/uploads/company-logos/.gitkeep
+
 # Runtime data
 pids
 *.pid

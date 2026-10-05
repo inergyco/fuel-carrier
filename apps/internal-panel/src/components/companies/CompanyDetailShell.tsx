@@ -4,6 +4,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   Button,
   ICON_STROKE_WIDTH,
+  PageHeader,
   QueryErrorState,
   iconMdClassName,
 } from '@fuel-carrier/web-ui/ui'
@@ -38,12 +39,10 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
     if (isNotFound) {
       return (
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
-          <h1 className="text-xl font-semibold tracking-tight">
-            {LL.internalPanel.companies.notFound()}
-          </h1>
-          <p className="mt-2 text-sm text-base-content/50">
-            {LL.internalPanel.companies.notFoundDescription()}
-          </p>
+          <PageHeader
+            title={LL.internalPanel.companies.notFound()}
+            subtitle={LL.internalPanel.companies.notFoundDescription()}
+          />
           <Button
             type="button"
             variant="ghost"
@@ -71,14 +70,10 @@ export function CompanyDetailShell({ companyId, children }: CompanyDetailShellPr
     }
 
     return (
-      <>
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-          {companyQuery.data.name}
-        </h1>
-        <p className="mt-1 text-sm text-base-content/50">
-          {LL.internalPanel.companies.subtitle()}
-        </p>
-      </>
+      <PageHeader
+        title={companyQuery.data.name}
+        subtitle={LL.internalPanel.companies.subtitle()}
+      />
     )
   }
 

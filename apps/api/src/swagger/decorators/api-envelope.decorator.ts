@@ -1,6 +1,8 @@
 import { applyDecorators, HttpStatus, type Type } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
+  ApiConsumes,
   ApiExtraModels,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -9,6 +11,27 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { ApiErrorBodyDto } from '../dto/api-error.dto';
+
+const multipartFileProperty = {
+  type: 'string',
+  format: 'binary',
+} as const;
+
+/** Multipart body with a single required file field. */
+export function ApiMultipartFileBody(fieldName = 'file') {
+  return applyDecorators(
+    ApiConsumes('multipart/form-data'),
+    ApiBody({
+      schema: {
+        type: 'object',
+        required: [fieldName],
+        properties: {
+          [fieldName]: multipartFileProperty,
+        },
+      },
+    }),
+  );
+}
 
 export function ApiEnvelopeOkResponse<T extends Type>(model: T) {
   return applyDecorators(

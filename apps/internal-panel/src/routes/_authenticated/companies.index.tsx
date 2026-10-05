@@ -6,6 +6,7 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
+  PageHeader,
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
@@ -190,27 +191,27 @@ function CompaniesPage() {
 
   return (
     <div>
-      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {LL.internalPanel.companies.title()}
-          </h1>
-          <p className="mt-1 text-sm text-base-content/50">
-            {LL.internalPanel.companies.subtitle()}
-          </p>
-        </div>
-
-        <Button
-          type="button"
-          className="h-10 w-full sm:w-auto sm:px-5"
-          onClick={handleOpenCreateModal}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <Plus className={iconMdClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-            {LL.internalPanel.companies.create()}
-          </span>
-        </Button>
-      </div>
+      <PageHeader
+        className="mb-6 sm:mb-8"
+        title={LL.internalPanel.companies.title()}
+        subtitle={LL.internalPanel.companies.subtitle()}
+        actions={
+          <Button
+            type="button"
+            className="h-10 w-full sm:w-auto sm:px-5"
+            onClick={handleOpenCreateModal}
+          >
+            <span className="flex items-center justify-center gap-2">
+              <Plus
+                className={iconMdClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+              {LL.internalPanel.companies.create()}
+            </span>
+          </Button>
+        }
+      />
 
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
         <div className="p-4 pb-0 md:p-6 md:pb-0">

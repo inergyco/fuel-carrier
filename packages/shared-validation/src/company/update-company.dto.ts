@@ -8,66 +8,46 @@ import {
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
+  isAllowedCompanyLogoUrl,
 } from './constants';
 
 /**
  * Update body: omitted keys stay undefined (leave unchanged).
+ * Logo changes go through `replaceCompanyLogoDtoSchema` / replaceLogo only —
+ * so generic PATCH never owns filesystem cleanup.
  * Do not reuse createCompanyDtoSchema — required fields + optionalTextField
- * preprocess would invent nulls for omitted address/note/logoUrl.
+ * preprocess would invent nulls for omitted address/note.
  */
 export function createUpdateCompanyDtoSchema(
   messages: CreateCompanyValidationMessages,
 ) {
-  return z.object({
-    name: z
-      .string()
-      .min(1, messages.nameRequired)
-      .max(COMPANY_NAME_MAX_LENGTH, messages.nameTooLong)
-      .optional(),
-    nationalId: z
-      .string()
-      .min(1, messages.nationalIdRequired)
-      .max(COMPANY_NATIONAL_ID_MAX_LENGTH, messages.nationalIdTooLong)
-      .optional(),
-    phoneNumber: z
-      .string()
-      .min(1, messages.phoneNumberRequired)
-      .max(COMPANY_PHONE_MAX_LENGTH, messages.phoneNumberTooLong)
-      .optional(),
-    address: optionalTextField(
-      COMPANY_ADDRESS_MAX_LENGTH,
-      messages.addressTooLong,
-    ).optional(),
-    note: optionalTextField(
-      COMPANY_NOTE_MAX_LENGTH,
-      messages.noteTooLong,
-    ).optional(),
-    logoUrl: z.preprocess(
-      function normalizeLogoUrl(value) {
-        if (value === undefined) {
-          return undefined;
-        }
-
-        if (value == null) {
-          return null;
-        }
-
-        if (typeof value === 'string' && value.trim().length === 0) {
-          return null;
-        }
-
-        return value;
-      },
-      z.union([
-        z.undefined(),
-        z.null(),
-        z
-          .string()
-          .max(COMPANY_LOGO_URL_MAX_LENGTH, messages.logoUrlTooLong)
-          .url(messages.logoUrlInvalid),
-      ]),
-    ),
-  });
+  return z
+    .object({
+      name: z
+        .string()
+        .min(1, messages.nameRequired)
+        .max(COMPANY_NAME_MAX_LENGTH, messages.nameTooLong)
+        .optional(),
+      nationalId: z
+        .string()
+        .min(1, messages.nationalIdRequired)
+        .max(COMPANY_NATIONAL_ID_MAX_LENGTH, messages.nationalIdTooLong)
+        .optional(),
+      phoneNumber: z
+        .string()
+        .min(1, messages.phoneNumberRequired)
+        .max(COMPANY_PHONE_MAX_LENGTH, messages.phoneNumberTooLong)
+        .optional(),
+      address: optionalTextField(
+        COMPANY_ADDRESS_MAX_LENGTH,
+        messages.addressTooLong,
+      ).optional(),
+      note: optionalTextField(
+        COMPANY_NOTE_MAX_LENGTH,
+        messages.noteTooLong,
+      ).optional(),
+    })
+    .strict();
 }
 
 const defaultMessages: CreateCompanyValidationMessages = {
@@ -87,3 +67,13 @@ export const updateCompanyDtoSchema =
   createUpdateCompanyDtoSchema(defaultMessages);
 
 export type UpdateCompanyDto = z.infer<typeof updateCompanyDtoSchema>;
+
+/** Explicit logo replace — clear via DELETE …/logo. */
+export const replaceCompanyLogoDtoSchema = z.object({
+  logoUrl: z
+    .string()
+    .max(COMPANY_LOGO_URL_MAX_LENGTH, defaultMessages.logoUrlTooLong)
+    .refine(isAllowedCompanyLogoUrl, defaultMessages.logoUrlInvalid),
+});
+
+export type ReplaceCompanyLogoDto = z.infer<typeof replaceCompanyLogoDtoSchema>;

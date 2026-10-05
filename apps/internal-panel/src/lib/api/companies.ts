@@ -74,6 +74,14 @@ export async function fetchCompanyDeletionImpact(
     .json<CompanyDeletionImpact>();
 }
 
+export async function uploadCompanyLogo(
+  file: File,
+): Promise<{ logoUrl: string }> {
+  const body = new FormData();
+  body.append("file", file);
+  return api.post("companies/logo", { body }).json<{ logoUrl: string }>();
+}
+
 export async function createCompany(dto: CreateCompanyDto): Promise<Company> {
   return api.post("companies", { json: dto }).json<Company>();
 }
@@ -83,6 +91,19 @@ export async function updateCompany(
   dto: UpdateCompanyDto,
 ): Promise<Company> {
   return api.patch(`companies/${id}`, { json: dto }).json<Company>();
+}
+
+export async function replaceCompanyLogo(
+  id: string,
+  logoUrl: string,
+): Promise<Company> {
+  return api
+    .patch(`companies/${id}/logo`, { json: { logoUrl } })
+    .json<Company>();
+}
+
+export async function removeCompanyLogo(id: string): Promise<Company> {
+  return api.delete(`companies/${id}/logo`).json<Company>();
 }
 
 export async function deleteCompany(id: string): Promise<void> {

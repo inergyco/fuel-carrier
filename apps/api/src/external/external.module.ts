@@ -11,6 +11,8 @@ import { AuditLogsModule } from '../audit-logs/audit-logs.module';
 import { DriversModule } from '../drivers/drivers.module';
 import { MqttModule } from '../mqtt/mqtt.module';
 import { ExternalDriversController } from '../drivers/external-drivers.controller';
+import { CompaniesModule } from '../companies/companies.module';
+import { ExternalCompanyController } from '../companies/external-company.controller';
 
 @Module({
   imports: [
@@ -19,10 +21,12 @@ import { ExternalDriversController } from '../drivers/external-drivers.controlle
     CarTelemetryModule,
     CompanyUsersModule,
     DriversModule,
+    CompaniesModule,
     MqttModule,
   ],
   controllers: [
     ExternalAuthController,
+    ExternalCompanyController,
     ExternalCompanyUsersController,
     ExternalCarsController,
     ExternalCarTelemetryController,

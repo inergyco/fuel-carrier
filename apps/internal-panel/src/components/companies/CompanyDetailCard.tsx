@@ -1,5 +1,13 @@
 import type { Company } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useQueryClient } from '@fuel-carrier/web-ui/query'
+import { CompanyLogoUploader, useToast } from '@fuel-carrier/web-ui/ui'
+import {
+  companyKeys,
+  removeCompanyLogo,
+  replaceCompanyLogo,
+  uploadCompanyLogo,
+} from '../../lib/api/companies'
 
 interface CompanyDetailCardProps {
   company: Company
@@ -23,8 +31,8 @@ function DetailField({ label, value, multiline = false }: DetailFieldProps) {
       <div
         className={
           multiline
-            ? 'min-h-24 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide break-words whitespace-pre-wrap'
-            : 'min-h-10 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide break-words'
+            ? 'min-h-24 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word whitespace-pre-wrap'
+            : 'min-h-10 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word'
         }
       >
         {displayValue}
@@ -35,9 +43,29 @@ function DetailField({ label, value, multiline = false }: DetailFieldProps) {
 
 export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
   const { LL } = useI18nContext()
+  const queryClient = useQueryClient()
+  const toast = useToast()
+
+  async function handleUploadLogo(file: File) {
+    const uploaded = await uploadCompanyLogo(file)
+    await replaceCompanyLogo(company.id, uploaded.logoUrl)
+    await queryClient.invalidateQueries({ queryKey: companyKeys.all })
+    toast.success(LL.internalPanel.toast.companyUpdated())
+  }
+
+  async function handleRemoveLogo() {
+    await removeCompanyLogo(company.id)
+    await queryClient.invalidateQueries({ queryKey: companyKeys.all })
+    toast.success(LL.internalPanel.toast.companyUpdated())
+  }
 
   return (
     <div className="flex flex-col gap-4">
+      <CompanyLogoUploader
+        logoUrl={company.logoUrl}
+        onUploadFile={handleUploadLogo}
+        onRemove={handleRemoveLogo}
+      />
       <DetailField
         label={LL.internalPanel.companies.name()}
         value={company.name}

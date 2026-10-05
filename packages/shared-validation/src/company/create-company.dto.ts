@@ -8,6 +8,7 @@ import {
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
+  isAllowedCompanyLogoUrl,
 } from './constants';
 
 export type CreateCompanyValidationMessages = {
@@ -50,7 +51,7 @@ export function createCreateCompanyDtoSchema(
     ).pipe(
       z.union([
         z.null(),
-        z.string().url(messages.logoUrlInvalid),
+        z.string().refine(isAllowedCompanyLogoUrl, messages.logoUrlInvalid),
       ]),
     ),
   });

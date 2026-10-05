@@ -4,6 +4,7 @@ import { KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
+  PageHeader,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
 import { CarMqttCredentialsModals } from '../CarMqttCredentialsModals'
@@ -38,12 +39,12 @@ export function CarDetailHeader({
       <CarDetailBackLink />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-            {title}
-          </h1>
-          <p className="mt-1 font-mono text-sm text-base-content/50">
-            {car.licensePlate}
-          </p>
+          <PageHeader
+            title={title}
+            subtitle={
+              <span className="font-mono">{car.licensePlate}</span>
+            }
+          />
           <p className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-base-content/10 bg-base-100/40 px-3 py-2 text-sm">
             <User
               className={iconSmClassName}

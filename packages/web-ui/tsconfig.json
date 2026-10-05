@@ -6,7 +6,9 @@
       "@fuel-carrier/i18n": ["../i18n/src"],
       "@fuel-carrier/i18n/*": ["../i18n/src/*"],
       "@fuel-carrier/shared-types": ["../shared-types/src"],
-      "@fuel-carrier/shared-types/*": ["../shared-types/src/*"]
+      "@fuel-carrier/shared-types/*": ["../shared-types/src/*"],
+      "@fuel-carrier/shared-validation": ["../shared-validation/src"],
+      "@fuel-carrier/shared-validation/*": ["../shared-validation/src/*"]
     }
   },
   "include": ["src", "../web-config/types/vite-env.d.ts"]

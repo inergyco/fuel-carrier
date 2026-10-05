@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  OmitType,
+  PartialType,
+} from '@nestjs/swagger';
 
 export class CompanyDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -47,10 +52,26 @@ export class CreateCompanyRequestDto {
   logoUrl?: string;
 }
 
-/** True partial PATCH — omitted fields stay unchanged. */
+/** True partial PATCH — omitted fields stay unchanged. Logo uses PATCH :id/logo. */
 export class UpdateCompanyRequestDto extends PartialType(
-  CreateCompanyRequestDto,
+  OmitType(CreateCompanyRequestDto, ['logoUrl'] as const),
 ) {}
+
+export class CompanyLogoUploadDto {
+  @ApiProperty({
+    example:
+      '/api/uploads/company-logos/550e8400-e29b-41d4-a716-446655440000.png',
+  })
+  logoUrl!: string;
+}
+
+export class ReplaceCompanyLogoRequestDto {
+  @ApiProperty({
+    example:
+      '/api/uploads/company-logos/550e8400-e29b-41d4-a716-446655440000.png',
+  })
+  logoUrl!: string;
+}
 
 export class CompanyDeletionImpactDto {
   @ApiProperty({ example: 12, description: 'Cars that cascade-delete' })

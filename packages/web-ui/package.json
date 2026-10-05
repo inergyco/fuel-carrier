@@ -21,6 +21,7 @@
   "dependencies": {
     "@fuel-carrier/i18n": "workspace:*",
     "@fuel-carrier/shared-types": "workspace:*",
+    "@fuel-carrier/shared-validation": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
     "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",

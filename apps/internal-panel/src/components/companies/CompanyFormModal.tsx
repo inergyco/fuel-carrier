@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
-import type { Company } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useMemo, useState } from "react";
+import type { Company } from "@fuel-carrier/shared-types";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
   COMPANY_LOGO_URL_MAX_LENGTH,
@@ -8,31 +8,49 @@ import {
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
-} from '@fuel-carrier/shared-validation/company/constants'
+} from "@fuel-carrier/shared-validation/company/constants";
 import {
   createCreateCompanyDtoSchema,
   type CreateCompanyDto,
-} from '@fuel-carrier/shared-validation/company/create'
-import type { z } from 'zod'
-import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
-import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
-import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, FormTextarea, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
+} from "@fuel-carrier/shared-validation/company/create";
+import type { z } from "zod";
+import { applyApiFieldErrors } from "@fuel-carrier/web-ui/api";
+import {
+  zodResolver,
+  Form,
+  useForm,
+  useWatch,
+  type SubmitHandler,
+} from "@fuel-carrier/web-ui/form";
+import { useMutation } from "@fuel-carrier/web-ui/query";
+import {
+  CompanyLogoUploader,
+  FormInput,
+  FormTextarea,
+  Modal,
+  ModalActions,
+  useToast,
+} from "@fuel-carrier/web-ui/ui";
 import {
   companyToFormValues,
   createCompany,
+  removeCompanyLogo,
+  replaceCompanyLogo,
   updateCompany,
-} from '../../lib/api/companies'
+  uploadCompanyLogo,
+} from "../../lib/api/companies";
 
-type CompanyFormModalMode = 'create' | 'edit'
+type CompanyFormModalMode = "create" | "edit";
 
-type CompanyFormInput = z.input<ReturnType<typeof createCreateCompanyDtoSchema>>
+type CompanyFormInput = z.input<
+  ReturnType<typeof createCreateCompanyDtoSchema>
+>;
 
 interface CompanyFormModalProps {
-  mode: CompanyFormModalMode
-  company?: Company
-  onClose: () => void
-  onSuccess: () => void
+  mode: CompanyFormModalMode;
+  company?: Company;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
 export function CompanyFormModal({
@@ -41,9 +59,9 @@ export function CompanyFormModal({
   onClose,
   onSuccess,
 }: CompanyFormModalProps) {
-  const { LL } = useI18nContext()
-  const toast = useToast()
-  const [serverError, setServerError] = useState<string | null>(null)
+  const { LL } = useI18nContext();
+  const toast = useToast();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const companySchema = useMemo(
     function createSchema() {
@@ -70,49 +88,71 @@ export function CompanyFormModal({
           max: COMPANY_LOGO_URL_MAX_LENGTH,
         }),
         logoUrlInvalid: LL.validation.companyLogoUrlInvalid(),
-      })
+      });
     },
     [LL],
-  )
+  );
 
   const form = useForm<CompanyFormInput, unknown, CreateCompanyDto>({
     resolver: zodResolver(companySchema),
     defaultValues: companyToFormValues(company),
-  })
+  });
 
   const {
     setError,
+    control,
+    setValue,
     formState: { isSubmitting },
-  } = form
+  } = form;
+  const logoUrl = useWatch({ control, name: "logoUrl" });
 
   const saveMutation = useMutation<Company, Error, CreateCompanyDto>({
-    mutationFn: function saveCompany(data) {
-      if (mode === 'edit' && company) {
-        return updateCompany(company.id, data)
+    mutationFn: async function saveCompany(data) {
+      if (mode === "edit" && company) {
+        const nextLogoUrl = data.logoUrl ?? null;
+        const previousLogoUrl = company.logoUrl ?? null;
+
+        if (nextLogoUrl !== previousLogoUrl) {
+          if (nextLogoUrl === null) {
+            await removeCompanyLogo(company.id);
+          } else {
+            await replaceCompanyLogo(company.id, nextLogoUrl);
+          }
+        }
+
+        return updateCompany(company.id, {
+          name: data.name,
+          nationalId: data.nationalId,
+          phoneNumber: data.phoneNumber,
+          address: data.address,
+          note: data.note,
+        });
       }
 
-      return createCompany(data)
+      return createCompany(data);
     },
     onSuccess: function handleSaveSuccess() {
       toast.success(
-        mode === 'edit'
+        mode === "edit"
           ? LL.internalPanel.toast.companyUpdated()
           : LL.internalPanel.toast.companyCreated(),
-      )
-      onSuccess()
-      onClose()
+      );
+      onSuccess();
+      onClose();
     },
-  })
+  });
 
-  const onSubmit: SubmitHandler<CreateCompanyDto> = async function onSubmit(data) {
-    setServerError(null)
+  const onSubmit: SubmitHandler<CreateCompanyDto> = async function onSubmit(
+    data,
+  ) {
+    setServerError(null);
 
     try {
-      await saveMutation.mutateAsync(data)
+      await saveMutation.mutateAsync(data);
     } catch (error) {
-      handleFormError(error)
+      handleFormError(error);
     }
-  }
+  };
 
   function handleFormError(error: unknown) {
     setServerError(
@@ -120,35 +160,47 @@ export function CompanyFormModal({
         error,
         setError,
         fields: [
-          'name',
-          'nationalId',
-          'phoneNumber',
-          'address',
-          'note',
-          'logoUrl',
+          "name",
+          "nationalId",
+          "phoneNumber",
+          "address",
+          "note",
+          "logoUrl",
         ],
         messages: {
           nationalId: () => LL.internalPanel.companies.duplicateNationalId(),
         },
         fallbackMessage:
-          mode === 'edit'
+          mode === "edit"
             ? LL.internalPanel.companies.updateFailed()
             : LL.internalPanel.companies.createFailed(),
       }),
-    )
+    );
+  }
+
+  async function handleUploadLogo(file: File) {
+    const uploaded = await uploadCompanyLogo(file);
+    setValue("logoUrl", uploaded.logoUrl, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  }
+
+  async function handleRemoveLogo() {
+    setValue("logoUrl", "", { shouldDirty: true, shouldValidate: true });
   }
 
   function handleClose() {
     if (!isSubmitting && !saveMutation.isPending) {
-      onClose()
+      onClose();
     }
   }
 
-  const isSaving = isSubmitting || saveMutation.isPending
+  const isSaving = isSubmitting || saveMutation.isPending;
   const title =
-    mode === 'edit'
+    mode === "edit"
       ? LL.internalPanel.companies.editTitle()
-      : LL.internalPanel.companies.createTitle()
+      : LL.internalPanel.companies.createTitle();
 
   return (
     <Modal
@@ -160,7 +212,7 @@ export function CompanyFormModal({
         <ModalActions
           cancelLabel={LL.internalPanel.nav.cancel()}
           confirmLabel={
-            mode === 'edit'
+            mode === "edit"
               ? LL.internalPanel.companies.update()
               : LL.internalPanel.companies.create()
           }
@@ -168,7 +220,7 @@ export function CompanyFormModal({
           confirmForm="company-form"
           loading={isSaving}
           loadingLabel={
-            mode === 'edit'
+            mode === "edit"
               ? LL.internalPanel.companies.updating()
               : LL.internalPanel.companies.creating()
           }
@@ -216,11 +268,12 @@ export function CompanyFormModal({
           placeholder={LL.internalPanel.companies.addressPlaceholder()}
         />
 
-        <FormInput
-          name="logoUrl"
-          label={LL.internalPanel.companies.logoUrl()}
-          type="url"
-          placeholder={LL.internalPanel.companies.logoUrlPlaceholder()}
+        <CompanyLogoUploader
+          logoUrl={typeof logoUrl === "string" ? logoUrl : null}
+          error={form.formState.errors.logoUrl?.message?.toString()}
+          disabled={isSaving}
+          onUploadFile={handleUploadLogo}
+          onRemove={handleRemoveLogo}
         />
 
         <FormTextarea
@@ -237,5 +290,5 @@ export function CompanyFormModal({
         )}
       </Form>
     </Modal>
-  )
+  );
 }

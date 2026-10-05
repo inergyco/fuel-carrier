@@ -4,6 +4,7 @@ import { useQuery } from '@fuel-carrier/web-ui/query'
 import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
   MEDIA_QUERIES,
+  PageHeader,
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
@@ -36,14 +37,11 @@ function AuditLogsPage() {
   return (
     <div>
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
-        <div className="mb-4">
-          <h1 className="text-lg font-semibold tracking-tight">
-            {LL.internalPanel.auditLogs.title()}
-          </h1>
-          <p className="mt-1 text-sm text-base-content/50">
-            {LL.internalPanel.auditLogs.subtitle()}
-          </p>
-        </div>
+        <PageHeader
+          className="mb-4"
+          title={LL.internalPanel.auditLogs.title()}
+          subtitle={LL.internalPanel.auditLogs.subtitle()}
+        />
 
         {auditLogsQuery.isLoading && !result ? (
           <ResourceListSkeleton

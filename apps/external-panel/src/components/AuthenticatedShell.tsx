@@ -19,6 +19,7 @@ import {
   Truck,
   Map,
   ScrollText,
+  Settings,
 } from "@fuel-carrier/web-ui/icons";
 import { useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
@@ -87,11 +88,18 @@ export function AuthenticatedShell({
       );
 
       if (isCompanyUserAdmin(user)) {
-        items.push({
-          to: "/audit-logs",
-          label: LL.externalPanel.nav.auditLogs(),
-          icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        });
+        items.push(
+          {
+            to: "/audit-logs",
+            label: LL.externalPanel.nav.auditLogs(),
+            icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+          },
+          {
+            to: "/settings",
+            label: LL.externalPanel.nav.settings(),
+            icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+          },
+        );
       }
 
       return items;
