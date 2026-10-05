@@ -86,6 +86,7 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         renderExtraActions={renderCustodyAction}
         toolbar={
           <ResourceListToolbar
+            className="mb-4"
             searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}

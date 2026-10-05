@@ -104,28 +104,32 @@ export function ResourceSection<T extends { id: string }>({
     )
   }
 
+  const showHeader = Boolean(toolbar) || !readOnly
+
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
-      {!readOnly ? (
-        <div className="mb-4 flex justify-end">
-          <Button
-            type="button"
-            className="h-11 w-full sm:w-auto sm:px-5"
-            onClick={onAdd}
-          >
-            <span className="flex items-center justify-center gap-2">
-              <Plus
-                className={iconMdClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-              {addLabel}
-            </span>
-          </Button>
+      {showHeader ? (
+        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+          {toolbar ? <div className="min-w-0 flex-1">{toolbar}</div> : null}
+
+          {!readOnly ? (
+            <Button
+              type="button"
+              className="h-11 w-full shrink-0 sm:w-auto sm:self-start lg:self-auto sm:px-5"
+              onClick={onAdd}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Plus
+                  className={iconMdClassName}
+                  strokeWidth={ICON_STROKE_WIDTH}
+                  aria-hidden
+                />
+                {addLabel}
+              </span>
+            </Button>
+          ) : null}
         </div>
       ) : null}
-
-      {toolbar}
 
       {renderBody()}
     </section>

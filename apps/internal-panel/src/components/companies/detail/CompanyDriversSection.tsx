@@ -46,6 +46,7 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         onDelete={drivers.setDeleteTarget}
         toolbar={
           <ResourceListToolbar
+            className="mb-4"
             searchPlaceholder={LL.internalPanel.companies.detail.driversSearchPlaceholder()}
             searchText={drivers.draftSearchText}
             onSearchTextChange={drivers.setDraftSearchText}

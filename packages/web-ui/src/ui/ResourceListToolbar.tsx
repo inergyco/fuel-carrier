@@ -1,4 +1,5 @@
 import type { FuelGradeFilter, FuelLevelFilter } from '@fuel-carrier/shared-types'
+import { cn } from '../utils'
 import { Input } from './Input'
 import { FuelGradeFilterControl } from './FuelGradeFilterControl'
 import { FuelLevelFilterControl } from './FuelLevelFilterControl'
@@ -11,6 +12,7 @@ export type ResourceListToolbarProps = {
   onFuelGradeChange?: (fuelGrade: FuelGradeFilter) => void
   fuelLevel?: FuelLevelFilter
   onFuelLevelChange?: (fuelLevel: FuelLevelFilter) => void
+  className?: string
 }
 
 export function ResourceListToolbar({
@@ -21,12 +23,18 @@ export function ResourceListToolbar({
   onFuelGradeChange,
   fuelLevel = 'all',
   onFuelLevelChange,
+  className,
 }: ResourceListToolbarProps) {
   const showFilters = Boolean(onFuelGradeChange || onFuelLevelChange)
 
   return (
-    <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-      <div className="w-full lg:max-w-sm">
+    <div
+      className={cn(
+        'flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center',
+        className,
+      )}
+    >
+      <div className="min-w-0 flex-1 sm:min-w-64 sm:max-w-md">
         <Input
           type="search"
           value={searchText}
@@ -38,7 +46,7 @@ export function ResourceListToolbar({
       </div>
 
       {showFilters ? (
-        <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
           {onFuelLevelChange ? (
             <FuelLevelFilterControl
               value={fuelLevel}

@@ -111,6 +111,7 @@ export function DashboardCarsSection({
   return (
     <section className="flex-1">
       <ResourceListToolbar
+        className="mb-4"
         searchPlaceholder={LL.externalPanel.cars.searchPlaceholder()}
         searchText={draftSearchText}
         onSearchTextChange={handleSearchTextChange}
