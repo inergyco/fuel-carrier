@@ -37,8 +37,6 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
   return (
     <>
       <ResourceSection
-        title={LL.internalPanel.companies.detail.carsTitle()}
-        subtitle={LL.internalPanel.companies.detail.carsSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addCar()}
         emptyLabel={
           cars.hasActiveFilters
@@ -86,7 +84,6 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
         renderExtraActions={renderCustodyAction}
         toolbar={
           <ResourceListToolbar
-            className="mb-4"
             searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}

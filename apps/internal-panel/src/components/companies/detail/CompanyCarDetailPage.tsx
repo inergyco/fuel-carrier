@@ -1,20 +1,16 @@
 import type { Car } from '@fuel-carrier/shared-types'
-import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import {
   CarOverviewSection,
   CarTanksSection,
   CarDriverAssignmentHistorySection,
 } from '@fuel-carrier/web-ui/cars'
-import { useQuery } from '@fuel-carrier/web-ui/query'
 import { QueryErrorState } from '@fuel-carrier/web-ui/ui'
-import { carKeys, fetchCar } from '../../../lib/api/cars'
-import { CompanyCarDetailBackLink } from './CompanyCarDetailBackLink'
 import { CompanyCarDetailHeader } from './CompanyCarDetailHeader'
 import { CompanyCarDetailNotFound } from './CompanyCarDetailNotFound'
 import { CarCustodyModals } from './custody/CarCustodyModals'
 import { useCompanyCarCustody } from './custody/useCompanyCarCustody'
+import { useCarQuery } from './useCarQuery'
 
 type CompanyCarDetailPageProps = {
   companyId: string
@@ -27,24 +23,16 @@ export function CompanyCarDetailPage({
 }: CompanyCarDetailPageProps) {
   const { LL } = useI18nContext()
   const custody = useCompanyCarCustody(companyId)
-  const carQuery = useQuery<Car>({
-    queryKey: carKeys.detail(carId),
-    queryFn: function loadCar() {
-      return fetchCar(carId)
-    },
-  })
+  const { carQuery, isNotFound: isCarNotFound } = useCarQuery(carId)
   const isNotFound =
-    (carQuery.isError &&
-      isApiClientError(carQuery.error) &&
-      carQuery.error.apiError.code === ApiErrorCode.NOT_FOUND) ||
+    isCarNotFound ||
     (carQuery.data != null && carQuery.data.companyId !== companyId)
 
   if (carQuery.isLoading) {
     return (
-      <CompanyCarDetailHeader
-        companyId={companyId}
-        title={LL.internalPanel.companies.loading()}
-      />
+      <p className="text-sm text-base-content/50">
+        {LL.internalPanel.companies.loading()}
+      </p>
     )
   }
 
@@ -54,24 +42,21 @@ export function CompanyCarDetailPage({
 
   if (carQuery.isError || !carQuery.data) {
     return (
-      <div>
-        <div className="mb-6">
-          <CompanyCarDetailBackLink companyId={companyId} />
-          <QueryErrorState
-            onRetry={() => {
-              void carQuery.refetch()
-            }}
-            labels={{
-              loadFailed: LL.common.queryError.loadFailed(),
-              retry: LL.common.queryError.retry(),
-            }}
-          />
-        </div>
+      <div className="mb-6">
+        <QueryErrorState
+          onRetry={() => {
+            void carQuery.refetch()
+          }}
+          labels={{
+            loadFailed: LL.common.queryError.loadFailed(),
+            retry: LL.common.queryError.retry(),
+          }}
+        />
       </div>
     )
   }
 
-  const car = carQuery.data
+  const car: Car = carQuery.data
   const detailLabels = LL.internalPanel.companies.detail
   const currentDriverName = custody.currentDriverName(car)
   const overviewDriverName =
@@ -79,11 +64,7 @@ export function CompanyCarDetailPage({
 
   return (
     <div>
-      <CompanyCarDetailHeader
-        companyId={companyId}
-        car={car}
-        custody={custody}
-      />
+      <CompanyCarDetailHeader car={car} custody={custody} />
       <div className="flex flex-col gap-6">
         <CarTanksSection
           carId={car.id}

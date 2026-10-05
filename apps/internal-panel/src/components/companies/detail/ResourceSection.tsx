@@ -3,7 +3,6 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
-  PageHeader,
   QueryErrorState,
   ResourceListSkeleton,
   iconMdClassName,
@@ -17,8 +16,6 @@ import { ResourceList, type ResourceColumn } from './resourceListViews'
 export type { ResourceColumn } from './resourceListViews'
 
 interface ResourceSectionProps<T extends { id: string }> {
-  title: string
-  subtitle: string
   addLabel: string
   emptyLabel: string
   loading: boolean
@@ -38,8 +35,6 @@ interface ResourceSectionProps<T extends { id: string }> {
 }
 
 export function ResourceSection<T extends { id: string }>({
-  title,
-  subtitle,
   addLabel,
   emptyLabel,
   loading,
@@ -100,30 +95,24 @@ export function ResourceSection<T extends { id: string }>({
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
-      <PageHeader
-        as="h2"
-        className="mb-4"
-        title={title}
-        subtitle={subtitle}
-        actions={
-          <Button
-            type="button"
-            className="h-11 w-full sm:w-auto sm:px-5"
-            onClick={onAdd}
-          >
-            <span className="flex items-center justify-center gap-2">
-              <Plus
-                className={iconMdClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-              {addLabel}
-            </span>
-          </Button>
-        }
-      />
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+        {toolbar ? <div className="min-w-0 flex-1">{toolbar}</div> : null}
 
-      {toolbar}
+        <Button
+          type="button"
+          className="h-11 w-full shrink-0 sm:w-auto sm:self-start lg:self-auto sm:px-5"
+          onClick={onAdd}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <Plus
+              className={iconMdClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {addLabel}
+          </span>
+        </Button>
+      </div>
 
       {renderBody()}
     </section>

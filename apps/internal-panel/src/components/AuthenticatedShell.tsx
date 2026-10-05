@@ -14,6 +14,8 @@ import { getRouteApi, useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
+import { AppBarBackLink } from './shell/AppBarBackLink'
+import { useAppBarHeading } from './shell/useAppBarHeading'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
 
@@ -33,7 +35,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
     },
   })
   const isMapPage = pathname === '/map'
-  const isHomePage = pathname === '/'
+  const heading = useAppBarHeading(pathname, user.firstName)
 
   const navItems = useMemo(function createNavItems(): PanelNavItem[] {
     return [
@@ -104,11 +106,10 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         }
         openMenuLabel={LL.internalPanel.nav.openMenu()}
         navItems={navItems}
-        appBarTitle={isHomePage ? LL.internalPanel.home.title() : undefined}
-        appBarSubtitle={
-          isHomePage
-            ? LL.internalPanel.home.welcome({ firstName: user.firstName })
-            : undefined
+        appBarTitle={heading?.title}
+        appBarSubtitle={heading?.subtitle}
+        appBarBack={
+          heading?.back ? <AppBarBackLink {...heading.back} /> : null
         }
         fullWidthMain={isMapPage}
         footer={

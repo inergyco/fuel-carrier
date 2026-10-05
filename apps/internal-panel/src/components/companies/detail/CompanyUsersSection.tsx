@@ -19,8 +19,6 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
   return (
     <>
       <ResourceSection
-        title={LL.internalPanel.companies.detail.usersTitle()}
-        subtitle={LL.internalPanel.companies.detail.usersSubtitle()}
         addLabel={LL.internalPanel.companies.detail.addUser()}
         emptyLabel={LL.internalPanel.companies.detail.usersEmpty()}
         loading={users.usersQuery.isLoading && !result}

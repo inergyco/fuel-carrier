@@ -6,7 +6,6 @@ import {
   Button,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
-  PageHeader,
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
@@ -191,14 +190,18 @@ function CompaniesPage() {
 
   return (
     <div>
-      <PageHeader
-        className="mb-6 sm:mb-8"
-        title={LL.internalPanel.companies.title()}
-        subtitle={LL.internalPanel.companies.subtitle()}
-        actions={
+      <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
+        <div className="mb-4 flex flex-col gap-3 p-4 pb-0 md:flex-row md:items-center md:p-6 md:pb-0">
+          <div className="min-w-0 flex-1">
+            <ResourceListToolbar
+              searchPlaceholder={LL.internalPanel.companies.searchPlaceholder()}
+              searchText={draftSearchText}
+              onSearchTextChange={setDraftSearchText}
+            />
+          </div>
           <Button
             type="button"
-            className="h-10 w-full sm:w-auto sm:px-5"
+            className="h-11 w-full shrink-0 sm:w-auto sm:self-start md:self-auto sm:px-5"
             onClick={handleOpenCreateModal}
           >
             <span className="flex items-center justify-center gap-2">
@@ -210,17 +213,6 @@ function CompaniesPage() {
               {LL.internalPanel.companies.create()}
             </span>
           </Button>
-        }
-      />
-
-      <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
-        <div className="p-4 pb-0 md:p-6 md:pb-0">
-          <ResourceListToolbar
-            className="mb-4"
-            searchPlaceholder={LL.internalPanel.companies.searchPlaceholder()}
-            searchText={draftSearchText}
-            onSearchTextChange={setDraftSearchText}
-          />
         </div>
         {renderBody()}
       </section>
