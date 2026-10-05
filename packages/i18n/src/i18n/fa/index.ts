@@ -277,7 +277,8 @@ const fa: Translation = {
         driversSearchPlaceholder: "جستجو با نام، شناسه ملی یا موبایل",
         carsEmpty: "هنوز خودرویی برای این شرکت ثبت نشده است.",
         carsEmptyFiltered: "خودرویی با این جستجو یا فیلتر یافت نشد.",
-        carsSearchPlaceholder: "جستجو با پلاک یا نام",
+        carsSearchPlaceholder:
+          "جستجو با پلاک، نام، نام راننده یا شناسه ملی",
         deleteUserTitle: "حذف کاربر؟",
         deleteUserDescription:
           "«{name}» برای همیشه حذف می‌شود و دیگر نمی‌تواند وارد شود.",
@@ -605,7 +606,7 @@ const fa: Translation = {
       editTitle: "ویرایش خودرو",
       empty: "هنوز خودرویی وجود ندارد. اولین خودرو را اضافه کنید.",
       emptyFiltered: "هیچ خودرویی با این جستجو یا فیلتر پیدا نشد.",
-      searchPlaceholder: "جستجو با پلاک یا نام",
+      searchPlaceholder: "جستجو با پلاک، نام، نام راننده یا شناسه ملی",
       loading: "در حال بارگذاری…",
       emptyCell: "—",
       view: "مشاهده",

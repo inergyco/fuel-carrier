@@ -277,7 +277,8 @@ const en: BaseTranslation = {
         driversSearchPlaceholder: 'Search by name, national ID, or mobile',
         carsEmpty: 'No cars yet for this company.',
         carsEmptyFiltered: 'No vehicles match your search or filter.',
-        carsSearchPlaceholder: 'Search by plate or name',
+        carsSearchPlaceholder:
+          'Search by plate, name, driver name, or national ID',
         deleteUserTitle: 'Delete user?',
         deleteUserDescription:
           'This will permanently delete {name:string}. They will no longer be able to sign in.',
@@ -606,7 +607,8 @@ const en: BaseTranslation = {
       editTitle: 'Edit vehicle',
       empty: 'No vehicles yet. Add your first vehicle.',
       emptyFiltered: 'No vehicles match your search or filter.',
-      searchPlaceholder: 'Search by plate or name',
+      searchPlaceholder:
+        'Search by plate, name, driver name, or national ID',
       loading: 'Loading…',
       emptyCell: '—',
       view: 'View',

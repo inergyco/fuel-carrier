@@ -1030,7 +1030,7 @@ type RootTranslation = {
 				 */
 				carsEmptyFiltered: string
 				/**
-				 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​ ​o​r​ ​n​a​m​e
+				 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​,​ ​n​a​m​e​,​ ​d​r​i​v​e​r​ ​n​a​m​e​,​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
 				 */
 				carsSearchPlaceholder: string
 				/**
@@ -2205,7 +2205,7 @@ type RootTranslation = {
 			 */
 			emptyFiltered: string
 			/**
-			 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​ ​o​r​ ​n​a​m​e
+			 * S​e​a​r​c​h​ ​b​y​ ​p​l​a​t​e​,​ ​n​a​m​e​,​ ​d​r​i​v​e​r​ ​n​a​m​e​,​ ​o​r​ ​n​a​t​i​o​n​a​l​ ​I​D
 			 */
 			searchPlaceholder: string
 			/**
@@ -3865,7 +3865,7 @@ export type TranslationFunctions = {
 				 */
 				carsEmptyFiltered: () => LocalizedString
 				/**
-				 * Search by plate or name
+				 * Search by plate, name, driver name, or national ID
 				 */
 				carsSearchPlaceholder: () => LocalizedString
 				/**
@@ -5016,7 +5016,7 @@ export type TranslationFunctions = {
 			 */
 			emptyFiltered: () => LocalizedString
 			/**
-			 * Search by plate or name
+			 * Search by plate, name, driver name, or national ID
 			 */
 			searchPlaceholder: () => LocalizedString
 			/**
