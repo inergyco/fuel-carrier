@@ -133,21 +133,31 @@ export class CarsService {
   /**
    * Fleet KPI counts for the company: totals, fuel bands (from live remainFuel),
    * and high-grade petrol cars.
+   * Internal callers pass `companyId`; external callers rely on session tenant.
    */
-  async getFleetStats(context: ApiTenantContext): Promise<CarFleetStats> {
-    if (!context.companyId) {
+  async getFleetStats(
+    context: ApiTenantContext,
+    companyId?: string,
+  ): Promise<CarFleetStats> {
+    const scopedCompanyId = companyId ?? context.companyId;
+    if (!scopedCompanyId) {
       return EMPTY_FLEET_STATS;
     }
 
-    const companyId = context.companyId;
+    if (companyId) {
+      assertUuidParam(companyId, 'companyId');
+    }
+
     const [fleetCars, remainFuelByCarId] = await Promise.all([
       this.tenantDb.run(context, async (tx) => {
         return tx
           .select({ id: cars.id, hasHighGrade: cars.hasHighGrade })
           .from(cars)
-          .where(and(isNull(cars.deletedAt), eq(cars.companyId, companyId)));
+          .where(
+            and(isNull(cars.deletedAt), eq(cars.companyId, scopedCompanyId)),
+          );
       }),
-      this.carTelemetryService.getRemainFuelByCarId(companyId),
+      this.carTelemetryService.getRemainFuelByCarId(scopedCompanyId),
     ]);
 
     return computeCarFleetStats(fleetCars, remainFuelByCarId);

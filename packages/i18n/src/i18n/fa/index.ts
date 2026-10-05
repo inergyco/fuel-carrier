@@ -8,6 +8,12 @@ const fa: Translation = {
     switchToPersian: "تغییر به فارسی",
     languageEn: "EN",
     languageFa: "FA",
+    appearance: {
+      language: "زبان",
+      languageHint: "انگلیسی یا فارسی",
+      theme: "پوسته",
+      themeHint: "روشن یا تیره",
+    },
     pagination: {
       previous: "قبلی",
       next: "بعدی",
@@ -116,7 +122,7 @@ const fa: Translation = {
       signingOut: "در حال خروج…",
       signOut: "خروج",
       loading: "در حال بارگذاری شرکت‌ها…",
-      empty: "هنوز شرکتی ثبت نشده است. اولین شرکت را اضافه کنید تا نمای ناوگان را ببینید.",
+      empty: "هنوز شرکتی ثبت نشده است. اولین شرکت را اضافه کنید تا داشبورد ناوگان آن را ببینید.",
       summary:
         "{companies} شرکت · {vehicles} خودرو · {live} آنلاین",
       vehiclesCount: "{count} خودرو",
@@ -125,14 +131,18 @@ const fa: Translation = {
       noVehicles: "خودرویی ثبت نشده است",
       viewCompany: "مشاهده شرکت",
       vehicleLive: "آنلاین",
-      vehicleOffline: "بدون موقعیت زنده",
+      vehicleOffline: "آفلاین",
       unassignedDriver: "بدون راننده",
+      mobileUnknown: "شماره موبایل ندارد",
+      fuelVolumeOfCapacity:
+        "{volume} / {capacity} {unit}",
     },
     nav: {
       dashboard: "داشبورد",
       companies: "شرکت‌ها",
       map: "نقشه",
       auditLogs: "گزارش فعالیت",
+      settings: "تنظیمات",
       openMenu: "باز کردن منو",
       signOut: "خروج",
       signingOut: "در حال خروج…",
@@ -145,6 +155,12 @@ const fa: Translation = {
     shell: {
       brand: "سوخت رسان",
       brandSubtitle: "داخلی",
+      companySwitcherLabel: "شرکت فعال",
+      companySwitcherLoading: "در حال بارگذاری شرکت‌ها…",
+    },
+    settings: {
+      title: "تنظیمات",
+      subtitle: "زبان و پوسته",
     },
     toast: {
       companyCreated: "شرکت اضافه شد.",
@@ -550,7 +566,7 @@ const fa: Translation = {
     },
     settings: {
       title: "تنظیمات",
-      subtitle: "مدیریت تنظیمات پرتال شرکت",
+      subtitle: "زبان، پوسته و تنظیمات پرتال شرکت",
     },
     users: {
       title: "کاربران شرکت",

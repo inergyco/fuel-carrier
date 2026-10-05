@@ -39,6 +39,24 @@ type RootTranslation = {
 		 * F​A
 		 */
 		languageFa: string
+		appearance: {
+			/**
+			 * L​a​n​g​u​a​g​e
+			 */
+			language: string
+			/**
+			 * C​h​o​o​s​e​ ​E​n​g​l​i​s​h​ ​o​r​ ​P​e​r​s​i​a​n
+			 */
+			languageHint: string
+			/**
+			 * T​h​e​m​e
+			 */
+			theme: string
+			/**
+			 * C​h​o​o​s​e​ ​l​i​g​h​t​ ​o​r​ ​d​a​r​k
+			 */
+			themeHint: string
+		}
 		pagination: {
 			/**
 			 * P​r​e​v​i​o​u​s
@@ -416,7 +434,7 @@ type RootTranslation = {
 			 */
 			loading: string
 			/**
-			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​c​o​m​p​a​n​y​ ​t​o​ ​s​e​e​ ​f​l​e​e​t​ ​o​v​e​r​v​i​e​w​.
+			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​y​e​t​.​ ​A​d​d​ ​y​o​u​r​ ​f​i​r​s​t​ ​c​o​m​p​a​n​y​ ​t​o​ ​s​e​e​ ​i​t​s​ ​f​l​e​e​t​ ​d​a​s​h​b​o​a​r​d​.
 			 */
 			empty: string
 			/**
@@ -454,13 +472,24 @@ type RootTranslation = {
 			 */
 			vehicleLive: string
 			/**
-			 * N​o​ ​l​i​v​e​ ​l​o​c​a​t​i​o​n
+			 * O​f​f​l​i​n​e
 			 */
 			vehicleOffline: string
 			/**
 			 * U​n​a​s​s​i​g​n​e​d
 			 */
 			unassignedDriver: string
+			/**
+			 * N​o​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r
+			 */
+			mobileUnknown: string
+			/**
+			 * {​v​o​l​u​m​e​}​ ​/​ ​{​c​a​p​a​c​i​t​y​}​ ​{​u​n​i​t​}
+			 * @param {string} capacity
+			 * @param {string} unit
+			 * @param {string} volume
+			 */
+			fuelVolumeOfCapacity: RequiredParams<'capacity' | 'unit' | 'volume'>
 		}
 		nav: {
 			/**
@@ -479,6 +508,10 @@ type RootTranslation = {
 			 * A​u​d​i​t​ ​l​o​g
 			 */
 			auditLogs: string
+			/**
+			 * S​e​t​t​i​n​g​s
+			 */
+			settings: string
 			/**
 			 * O​p​e​n​ ​m​e​n​u
 			 */
@@ -517,6 +550,24 @@ type RootTranslation = {
 			 * I​n​t​e​r​n​a​l
 			 */
 			brandSubtitle: string
+			/**
+			 * A​c​t​i​v​e​ ​c​o​m​p​a​n​y
+			 */
+			companySwitcherLabel: string
+			/**
+			 * L​o​a​d​i​n​g​ ​c​o​m​p​a​n​i​e​s​…
+			 */
+			companySwitcherLoading: string
+		}
+		settings: {
+			/**
+			 * S​e​t​t​i​n​g​s
+			 */
+			title: string
+			/**
+			 * L​a​n​g​u​a​g​e​ ​a​n​d​ ​t​h​e​m​e
+			 */
+			subtitle: string
 		}
 		toast: {
 			/**
@@ -1992,7 +2043,7 @@ type RootTranslation = {
 			 */
 			title: string
 			/**
-			 * M​a​n​a​g​e​ ​y​o​u​r​ ​c​o​m​p​a​n​y​ ​p​o​r​t​a​l​ ​p​r​e​f​e​r​e​n​c​e​s
+			 * L​a​n​g​u​a​g​e​,​ ​t​h​e​m​e​,​ ​a​n​d​ ​c​o​m​p​a​n​y​ ​p​r​e​f​e​r​e​n​c​e​s
 			 */
 			subtitle: string
 		}
@@ -3015,6 +3066,24 @@ export type TranslationFunctions = {
 		 * FA
 		 */
 		languageFa: () => LocalizedString
+		appearance: {
+			/**
+			 * Language
+			 */
+			language: () => LocalizedString
+			/**
+			 * Choose English or Persian
+			 */
+			languageHint: () => LocalizedString
+			/**
+			 * Theme
+			 */
+			theme: () => LocalizedString
+			/**
+			 * Choose light or dark
+			 */
+			themeHint: () => LocalizedString
+		}
 		pagination: {
 			/**
 			 * Previous
@@ -3375,7 +3444,7 @@ export type TranslationFunctions = {
 			 */
 			loading: () => LocalizedString
 			/**
-			 * No companies yet. Add your first company to see fleet overview.
+			 * No companies yet. Add your first company to see its fleet dashboard.
 			 */
 			empty: () => LocalizedString
 			/**
@@ -3407,13 +3476,21 @@ export type TranslationFunctions = {
 			 */
 			vehicleLive: () => LocalizedString
 			/**
-			 * No live location
+			 * Offline
 			 */
 			vehicleOffline: () => LocalizedString
 			/**
 			 * Unassigned
 			 */
 			unassignedDriver: () => LocalizedString
+			/**
+			 * No mobile number
+			 */
+			mobileUnknown: () => LocalizedString
+			/**
+			 * {volume} / {capacity} {unit}
+			 */
+			fuelVolumeOfCapacity: (arg: { capacity: string, unit: string, volume: string }) => LocalizedString
 		}
 		nav: {
 			/**
@@ -3432,6 +3509,10 @@ export type TranslationFunctions = {
 			 * Audit log
 			 */
 			auditLogs: () => LocalizedString
+			/**
+			 * Settings
+			 */
+			settings: () => LocalizedString
 			/**
 			 * Open menu
 			 */
@@ -3470,6 +3551,24 @@ export type TranslationFunctions = {
 			 * Internal
 			 */
 			brandSubtitle: () => LocalizedString
+			/**
+			 * Active company
+			 */
+			companySwitcherLabel: () => LocalizedString
+			/**
+			 * Loading companies…
+			 */
+			companySwitcherLoading: () => LocalizedString
+		}
+		settings: {
+			/**
+			 * Settings
+			 */
+			title: () => LocalizedString
+			/**
+			 * Language and theme
+			 */
+			subtitle: () => LocalizedString
 		}
 		toast: {
 			/**
@@ -4911,7 +5010,7 @@ export type TranslationFunctions = {
 			 */
 			title: () => LocalizedString
 			/**
-			 * Manage your company portal preferences
+			 * Language, theme, and company preferences
 			 */
 			subtitle: () => LocalizedString
 		}

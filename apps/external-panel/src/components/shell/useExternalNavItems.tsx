@@ -53,21 +53,19 @@ export function useExternalNavItems(user: AuthSession): PanelNavItem[] {
           label: LL.externalPanel.nav.map(),
           icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
+        {
+          to: '/settings',
+          label: LL.externalPanel.nav.settings(),
+          icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
       )
 
       if (isCompanyUserAdmin(user)) {
-        items.push(
-          {
-            to: '/audit-logs',
-            label: LL.externalPanel.nav.auditLogs(),
-            icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-          },
-          {
-            to: '/settings',
-            label: LL.externalPanel.nav.settings(),
-            icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-          },
-        )
+        items.push({
+          to: '/audit-logs',
+          label: LL.externalPanel.nav.auditLogs(),
+          icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        })
       }
 
       return items

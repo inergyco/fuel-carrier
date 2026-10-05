@@ -1,32 +1,26 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { formatVolume } from '@fuel-carrier/web-ui/cars'
-import { getFuelLevelColor } from '@fuel-carrier/web-ui/map'
+import type { ReactNode } from 'react'
+import { getFuelLevelColor } from '../../map'
 import { CAR_CARD_TOTAL_CAPACITY_LITERS } from './car-card-utils'
 
 type CarCardFuelSectionProps = {
   remainFuel: number | null
   fillPercent: number | null
+  remainFuelUnknown: string
+  fuelVolumeLabel: ReactNode
 }
 
 export function CarCardFuelSection({
   remainFuel,
   fillPercent,
+  remainFuelUnknown,
+  fuelVolumeLabel,
 }: CarCardFuelSectionProps) {
-  const { LL } = useI18nContext()
   const fuelColor = getFuelLevelColor(remainFuel)
 
   return (
     <div className="mt-1 space-y-1.5">
       <div className="flex items-center justify-between gap-2 text-xs tabular-nums">
-        <span>
-          {remainFuel != null
-            ? LL.externalPanel.home.fuelVolumeOfCapacity({
-                volume: formatVolume(remainFuel),
-                capacity: formatVolume(CAR_CARD_TOTAL_CAPACITY_LITERS),
-                unit: LL.externalPanel.cars.tankUnit(),
-              })
-            : LL.externalPanel.cars.remainFuelUnknown()}
-        </span>
+        <span>{remainFuel != null ? fuelVolumeLabel : remainFuelUnknown}</span>
         {fillPercent != null ? (
           <span style={{ color: fuelColor }}>{fillPercent}%</span>
         ) : null}

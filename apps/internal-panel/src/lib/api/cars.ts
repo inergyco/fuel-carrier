@@ -1,5 +1,6 @@
 import type {
   Car,
+  CarFleetStats,
   CarMqttCredentials,
   PaginatedResult,
   ResourceListParams,
@@ -23,6 +24,9 @@ export const carKeys = {
     companyId: string,
     params: ResourceListParams = DEFAULT_LIST_PARAMS,
   ) => ["cars", companyId, params] as const,
+  allByCompany: (companyId: string) =>
+    ["cars", companyId, "all"] as const,
+  stats: (companyId: string) => ["cars", companyId, "stats"] as const,
   detail: (id: string) => ["cars", id] as const,
 };
 
@@ -46,6 +50,14 @@ export function carToFormValues(car?: Car): CarFormValues {
     driverId: car?.driverId ?? "",
     hasHighGrade: car?.hasHighGrade ?? false,
   };
+}
+
+export async function fetchCarFleetStats(
+  companyId: string,
+): Promise<CarFleetStats> {
+  return api
+    .get("cars/stats", { searchParams: { companyId } })
+    .json<CarFleetStats>();
 }
 
 export async function fetchCars(

@@ -1,7 +1,5 @@
 import type { Car, CarTelemetry, CarTelemetryMarker } from '@fuel-carrier/shared-types';
 import type { PathPoint } from './path-smoothing';
-import type { TrajectoryMapViewLabels } from './trajectory-map.types';
-import { fleetMapStatusLabel } from './company-legend';
 
 export type TrajectoryTimeRange = {
   carId: string;
@@ -102,49 +100,4 @@ export function toHistoryMarker({
     fuelAmount: point.fuelAmount,
     resistance: point.resistance,
   };
-}
-
-export function resolveTrajectoryStatusText({
-  labels,
-  isHistoryMode,
-  isHistoryLoading,
-  hasHistoryData,
-  vehicleLabel,
-  liveMarkerCount,
-  isLiveLoading,
-  selectedCompanyName,
-  hasSelectedCar,
-}: {
-  labels: TrajectoryMapViewLabels
-  isHistoryMode: boolean
-  isHistoryLoading: boolean
-  hasHistoryData: boolean
-  vehicleLabel: string
-  liveMarkerCount: number
-  isLiveLoading: boolean
-  selectedCompanyName: string | null
-  hasSelectedCar: boolean
-}): string {
-  if (isHistoryMode) {
-    if (isHistoryLoading) {
-      return labels.showTrajectoryLoading()
-    }
-
-    if (!hasHistoryData) {
-      return labels.noTrajectoryData()
-    }
-
-    return labels.selectedTimeRange({ vehicle: vehicleLabel })
-  }
-
-  if (hasSelectedCar) {
-    return labels.selectedVehiclePrompt({ vehicle: vehicleLabel })
-  }
-
-  return fleetMapStatusLabel(
-    isLiveLoading,
-    liveMarkerCount,
-    selectedCompanyName,
-    labels,
-  )
 }

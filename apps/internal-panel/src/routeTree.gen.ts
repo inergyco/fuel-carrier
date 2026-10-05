@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
 import { Route as AuthenticatedCompaniesRouteImport } from './routes/_authenticated/companies'
 import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated/audit-logs'
@@ -37,6 +38,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedMapRoute = AuthenticatedMapRouteImport.update({
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/companies': typeof AuthenticatedCompaniesRouteWithChildren
   '/map': typeof AuthenticatedMapRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/companies/$companyId': typeof AuthenticatedCompaniesCompanyIdRouteWithChildren
   '/companies/': typeof AuthenticatedCompaniesIndexRoute
   '/companies/$companyId/audit-logs': typeof AuthenticatedCompaniesCompanyIdAuditLogsRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/map': typeof AuthenticatedMapRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/': typeof AuthenticatedIndexRoute
   '/companies': typeof AuthenticatedCompaniesIndexRoute
   '/companies/$companyId/audit-logs': typeof AuthenticatedCompaniesCompanyIdAuditLogsRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
   '/_authenticated/companies': typeof AuthenticatedCompaniesRouteWithChildren
   '/_authenticated/map': typeof AuthenticatedMapRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/companies/$companyId': typeof AuthenticatedCompaniesCompanyIdRouteWithChildren
   '/_authenticated/companies/': typeof AuthenticatedCompaniesIndexRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/audit-logs'
     | '/companies'
     | '/map'
+    | '/settings'
     | '/companies/$companyId'
     | '/companies/'
     | '/companies/$companyId/audit-logs'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/audit-logs'
     | '/map'
+    | '/settings'
     | '/'
     | '/companies'
     | '/companies/$companyId/audit-logs'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/_authenticated/audit-logs'
     | '/_authenticated/companies'
     | '/_authenticated/map'
+    | '/_authenticated/settings'
     | '/_authenticated/'
     | '/_authenticated/companies/$companyId'
     | '/_authenticated/companies/'
@@ -231,6 +243,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/map': {
@@ -386,6 +405,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
   AuthenticatedCompaniesRoute: typeof AuthenticatedCompaniesRouteWithChildren
   AuthenticatedMapRoute: typeof AuthenticatedMapRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -393,6 +413,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
   AuthenticatedCompaniesRoute: AuthenticatedCompaniesRouteWithChildren,
   AuthenticatedMapRoute: AuthenticatedMapRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 

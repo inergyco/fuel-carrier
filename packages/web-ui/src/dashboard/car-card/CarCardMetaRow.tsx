@@ -1,6 +1,6 @@
-import type { LucideIcon } from '@fuel-carrier/web-ui/icons'
-import { ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
-import { cn } from '@fuel-carrier/web-ui/utils'
+import type { LucideIcon } from '../../icons'
+import { ICON_STROKE_WIDTH } from '../../ui/iconClassName'
+import { cn } from '../../utils'
 
 type CarCardMetaRowProps = {
   icon: LucideIcon

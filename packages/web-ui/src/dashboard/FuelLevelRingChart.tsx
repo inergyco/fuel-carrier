@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import type { CarFleetStats } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { FUEL_LEVEL_COLORS } from '@fuel-carrier/web-ui/map'
-import { cn } from '@fuel-carrier/web-ui/utils'
+import { FUEL_LEVEL_COLORS } from '../map'
+import { cn } from '../utils'
 
 type FuelLevelRingChartProps = {
   stats: CarFleetStats

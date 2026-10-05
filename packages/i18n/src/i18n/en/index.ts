@@ -8,6 +8,12 @@ const en: BaseTranslation = {
     switchToPersian: 'Switch to Persian',
     languageEn: 'EN',
     languageFa: 'FA',
+    appearance: {
+      language: 'Language',
+      languageHint: 'Choose English or Persian',
+      theme: 'Theme',
+      themeHint: 'Choose light or dark',
+    },
     pagination: {
       previous: 'Previous',
       next: 'Next',
@@ -118,7 +124,7 @@ const en: BaseTranslation = {
       signingOut: 'Signing out…',
       signOut: 'Sign out',
       loading: 'Loading companies…',
-      empty: 'No companies yet. Add your first company to see fleet overview.',
+      empty: 'No companies yet. Add your first company to see its fleet dashboard.',
       summary:
         '{companies:number} companies · {vehicles:number} vehicles · {live:number} live',
       vehiclesCount: '{count:number} vehicles',
@@ -127,14 +133,18 @@ const en: BaseTranslation = {
       noVehicles: 'No vehicles registered',
       viewCompany: 'View company',
       vehicleLive: 'Live',
-      vehicleOffline: 'No live location',
+      vehicleOffline: 'Offline',
       unassignedDriver: 'Unassigned',
+      mobileUnknown: 'No mobile number',
+      fuelVolumeOfCapacity:
+        '{volume:string} / {capacity:string} {unit:string}',
     },
     nav: {
       dashboard: 'Dashboard',
       companies: 'Companies',
       map: 'Map',
       auditLogs: 'Audit log',
+      settings: 'Settings',
       openMenu: 'Open menu',
       signOut: 'Sign out',
       signingOut: 'Signing out…',
@@ -147,6 +157,12 @@ const en: BaseTranslation = {
     shell: {
       brand: 'Fuel Carrier',
       brandSubtitle: 'Internal',
+      companySwitcherLabel: 'Active company',
+      companySwitcherLoading: 'Loading companies…',
+    },
+    settings: {
+      title: 'Settings',
+      subtitle: 'Language and theme',
     },
     toast: {
       companyCreated: 'Company added.',
@@ -551,7 +567,7 @@ const en: BaseTranslation = {
     },
     settings: {
       title: 'Settings',
-      subtitle: 'Manage your company portal preferences',
+      subtitle: 'Language, theme, and company preferences',
     },
     users: {
       title: 'Company users',

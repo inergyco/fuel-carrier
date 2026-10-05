@@ -15,6 +15,7 @@ import {
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchAllCars } from '../../lib/api/cars'
+import { useActiveCompany } from '../../components/shell/activeCompanyContext'
 
 export const Route = createFileRoute('/_authenticated/map')({
   component: MapPage,
@@ -23,11 +24,21 @@ export const Route = createFileRoute('/_authenticated/map')({
 function MapPage() {
   const { LL } = useI18nContext()
   const isOnline = useNavigatorOnline()
+  const { companyId, hasCompanies, isLoading: isCompaniesLoading } =
+    useActiveCompany()
+  const enabled = Boolean(companyId) && hasCompanies && !isCompaniesLoading
+
   const telemetryQuery = useCarTelemetryLive(api)
   const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: () => fetchAllCars(),
+    queryKey: carKeys.allByCompany(companyId ?? ''),
+    queryFn: () => fetchAllCars(companyId!),
+    enabled,
   })
+
+  const markers = telemetryQuery.data ?? []
+  const scopedMarkers = companyId
+    ? markers.filter((marker) => marker.companyId === companyId)
+    : []
 
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
@@ -46,6 +57,18 @@ function MapPage() {
     void carsQuery.refetch()
   }
 
+  if (!enabled) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col gap-3 p-4 md:p-6 lg:p-8">
+        <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
+          {isCompaniesLoading
+            ? LL.internalPanel.home.loading()
+            : LL.internalPanel.home.empty()}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3">
       <ConnectivityBanner
@@ -61,11 +84,10 @@ function MapPage() {
       <TrajectoryMapView
         api={api}
         cars={carsQuery.data ?? []}
-        markers={telemetryQuery.data ?? []}
-        isLoading={telemetryQuery.isLoading}
+        markers={scopedMarkers}
+        isLoading={telemetryQuery.isLoading || carsQuery.isLoading}
         labels={LL.internalPanel.map}
         renderVehicleLink={renderVehicleLink}
-        colorByCompany
       />
     </div>
   )

@@ -7,14 +7,18 @@ import {
   PanelShell,
   type PanelNavItem,
 } from '@fuel-carrier/web-ui/ui'
-import { Home, Building2, Map, ScrollText } from '@fuel-carrier/web-ui/icons'
+import { Home, Building2, Map, ScrollText, Settings } from '@fuel-carrier/web-ui/icons'
 import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
 import { redirectToLoginPage } from '@fuel-carrier/web-ui/utils'
 import { getRouteApi, useRouterState } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { authKeys, logout } from '../lib/api/auth'
+import {
+  ActiveCompanyProvider,
+} from './shell/ActiveCompanyProvider'
 import { AppBarBackLink } from './shell/AppBarBackLink'
+import { CompanySwitcher } from './shell/CompanySwitcher'
 import { useAppBarHeading } from './shell/useAppBarHeading'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
@@ -60,6 +64,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         label: LL.internalPanel.nav.auditLogs(),
         icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
       },
+      {
+        to: '/settings',
+        label: LL.internalPanel.nav.settings(),
+        icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+      },
     ]
   }, [LL])
 
@@ -90,7 +99,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
   const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
 
   return (
-    <>
+    <ActiveCompanyProvider>
       <PanelShell
         brandTitle={LL.internalPanel.shell.brand()}
         brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
@@ -110,6 +119,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         appBarSubtitle={heading?.subtitle}
         appBarBack={
           heading?.back ? <AppBarBackLink {...heading.back} /> : null
+        }
+        appBarActions={
+          pathname === '/' || pathname === '/map' ? (
+            <CompanySwitcher />
+          ) : null
         }
         fullWidthMain={isMapPage}
         footer={
@@ -152,6 +166,6 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         onConfirm={handleConfirmLogout}
         onCancel={handleCloseLogoutModal}
       />
-    </>
+    </ActiveCompanyProvider>
   )
 }

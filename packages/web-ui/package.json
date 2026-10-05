@@ -13,6 +13,7 @@
     "./icons": "./src/icons/index.ts",
     "./audit-logs": "./src/audit-logs/index.ts",
     "./cars": "./src/cars/index.ts",
+    "./dashboard": "./src/dashboard/index.ts",
     "./map": "./src/map/index.ts",
     "./socket": "./src/socket/index.ts",
     "./utils": "./src/utils/index.ts",

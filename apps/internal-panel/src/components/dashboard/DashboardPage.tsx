@@ -1,143 +1,121 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { Car, Company } from '@fuel-carrier/shared-types'
-import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
-import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
+import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import { api } from '@fuel-carrier/web-ui/api'
 import {
-  ConnectivityBanner,
-  DashboardCardsSkeleton,
-  useNavigatorOnline,
-} from '@fuel-carrier/web-ui/ui'
-import { useQuery } from '@fuel-carrier/web-ui/query'
-import { useMemo } from 'react'
-import { carKeys, fetchAllCars } from '../../lib/api/cars'
-import { companyKeys, fetchCompanies } from '../../lib/api/companies'
-import { driverKeys, fetchAllDrivers } from '../../lib/api/drivers'
-import { DashboardCompanyCard } from './DashboardCompanyCard'
+  CompanyDashboard,
+  type CompanyDashboardDataSource,
+  type CompanyDashboardLabels,
+  dashboardCarDetailsLinkClassName,
+} from '@fuel-carrier/web-ui/dashboard'
+import { Info } from '@fuel-carrier/web-ui/icons'
+import { mapPopupActionClassName } from '@fuel-carrier/web-ui/map'
+import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
+import { Link } from '@tanstack/react-router'
+import {
+  carKeys,
+  fetchAllCars,
+  fetchCarFleetStats,
+  fetchCars,
+} from '../../lib/api/cars'
+import { useActiveCompany } from '../shell/activeCompanyContext'
+
+const dashboardDataSource: CompanyDashboardDataSource = {
+  fetchCars,
+  fetchAllCars: (scopedCompanyId) => fetchAllCars(scopedCompanyId),
+  fetchFleetStats: (scopedCompanyId) => {
+    if (!scopedCompanyId) {
+      return Promise.reject(new Error('companyId is required'))
+    }
+    return fetchCarFleetStats(scopedCompanyId)
+  },
+  carsListKey: (params) => carKeys.byCompany(params.companyId ?? '', params),
+  carsAllKey: (scopedCompanyId) => carKeys.allByCompany(scopedCompanyId ?? ''),
+  carsStatsKey: (scopedCompanyId) => carKeys.stats(scopedCompanyId ?? ''),
+}
 
 export function DashboardPage() {
   const { LL } = useI18nContext()
+  const { companyId, hasCompanies, isLoading } = useActiveCompany()
+  const detail = LL.internalPanel.companies.detail
 
-  const companiesQuery = useQuery({
-    queryKey: companyKeys.all,
-    queryFn: () => fetchAllPaginated(fetchCompanies),
-  })
+  const labels: CompanyDashboardLabels = {
+    carsLoading: LL.internalPanel.companies.loading,
+    carsEmpty: detail.carsEmpty,
+    carsEmptyFiltered: detail.carsEmptyFiltered,
+    carsSearchPlaceholder: detail.carsSearchPlaceholder,
+    locationLive: LL.internalPanel.home.vehicleLive,
+    statusOffline: LL.internalPanel.home.vehicleOffline,
+    noDriver: detail.noDriver,
+    mobileUnknown: LL.internalPanel.home.mobileUnknown,
+    remainFuelUnknown: detail.remainFuelUnknown,
+    tankUnit: detail.tankUnit,
+    fuelVolumeOfCapacity: LL.internalPanel.home.fuelVolumeOfCapacity,
+    viewDetails: detail.viewCar,
+    fuelType: detail,
+    map: LL.internalPanel.map,
+  }
 
-  const carsQuery = useQuery({
-    queryKey: carKeys.all,
-    queryFn: () => fetchAllCars(),
-  })
+  function renderVehicleLink(marker: CarTelemetryMarker) {
+    if (!companyId) {
+      return null
+    }
 
-  const driversQuery = useQuery({
-    queryKey: driverKeys.all,
-    queryFn: () => fetchAllDrivers(),
-  })
+    return (
+      <Link
+        to="/companies/$companyId/cars/$carId"
+        params={{ companyId, carId: marker.carId }}
+        className={cn(buttonClassName.outline, mapPopupActionClassName)}
+      >
+        {LL.internalPanel.map.viewVehicle()}
+      </Link>
+    )
+  }
 
-  const telemetryQuery = useCarTelemetryLive(api)
-  const isOnline = useNavigatorOnline()
+  function renderCarDetailsLink(carId: string) {
+    if (!companyId) {
+      return null
+    }
 
-  const telemetryByCarId = useMemo(
-    function mapTelemetry() {
-      return new Map(
-        (telemetryQuery.data ?? []).map(function toTelemetryEntry(marker) {
-          return [marker.carId, marker]
-        }),
-      )
-    },
-    [telemetryQuery.data],
-  )
+    return (
+      <Link
+        to="/companies/$companyId/cars/$carId"
+        params={{ companyId, carId }}
+        className={dashboardCarDetailsLinkClassName}
+      >
+        <Info
+          className="size-3.5"
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+        {labels.viewDetails()}
+      </Link>
+    )
+  }
 
-  const carsByCompanyId = useMemo(
-    function groupCars() {
-      const grouped = new Map<string, Car[]>()
-      for (const car of carsQuery.data ?? []) {
-        const existing = grouped.get(car.companyId)
-        if (existing) {
-          existing.push(car)
-        } else {
-          grouped.set(car.companyId, [car])
-        }
-      }
-      return grouped
-    },
-    [carsQuery.data],
-  )
-
-  const driversCountByCompanyId = useMemo(
-    function countDrivers() {
-      const counts = new Map<string, number>()
-      for (const driver of driversQuery.data ?? []) {
-        counts.set(driver.companyId, (counts.get(driver.companyId) ?? 0) + 1)
-      }
-      return counts
-    },
-    [driversQuery.data],
-  )
-
-  const companies = companiesQuery.data ?? []
-  const cars = carsQuery.data ?? []
-  const isLoading =
-    companiesQuery.isLoading || carsQuery.isLoading || driversQuery.isLoading
-
-  const liveCount = useMemo(
-    function countLiveCars() {
-      return cars.filter(function isLive(car) {
-        return telemetryByCarId.has(car.id)
-      }).length
-    },
-    [cars, telemetryByCarId],
-  )
+  const enabled = Boolean(companyId) && hasCompanies && !isLoading
 
   return (
-    <div className="flex min-h-0 flex-col gap-6">
-      <ConnectivityBanner
-        isOnline={isOnline}
-        isQueryError={telemetryQuery.isError}
-        onRetry={() => {
-          void telemetryQuery.refetch()
-        }}
-        labels={{
-          offline: LL.common.connectivity.offline(),
-          loadFailed: LL.common.connectivity.loadFailed(),
-          retry: LL.common.connectivity.retry(),
-        }}
-      />
-
-      {isLoading ? (
-        <DashboardCardsSkeleton
-          label={LL.internalPanel.home.loading()}
-          count={4}
-          columnsClassName="grid-cols-1 gap-4 lg:grid-cols-2"
-        />
-      ) : companies.length === 0 ? (
+    <CompanyDashboard
+      api={api}
+      companyId={companyId ?? undefined}
+      enabled={enabled}
+      dataSource={dashboardDataSource}
+      labels={labels}
+      connectivityLabels={{
+        offline: LL.common.connectivity.offline(),
+        loadFailed: LL.common.connectivity.loadFailed(),
+        retry: LL.common.connectivity.retry(),
+      }}
+      renderVehicleLink={renderVehicleLink}
+      renderCarDetailsLink={renderCarDetailsLink}
+      emptyState={
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
-          {LL.internalPanel.home.empty()}
+          {isLoading
+            ? LL.internalPanel.home.loading()
+            : LL.internalPanel.home.empty()}
         </div>
-      ) : (
-        <>
-          <p className="text-xs text-base-content/40">
-            {LL.internalPanel.home.summary({
-              companies: companies.length,
-              vehicles: cars.length,
-              live: liveCount,
-            })}
-          </p>
-
-          <ul className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {companies.map(function renderCompanyCard(company: Company) {
-              return (
-                <li key={company.id}>
-                  <DashboardCompanyCard
-                    company={company}
-                    cars={carsByCompanyId.get(company.id) ?? []}
-                    driversCount={driversCountByCompanyId.get(company.id) ?? 0}
-                    telemetryByCarId={telemetryByCarId}
-                  />
-                </li>
-              )
-            })}
-          </ul>
-        </>
-      )}
-    </div>
+      }
+    />
   )
 }

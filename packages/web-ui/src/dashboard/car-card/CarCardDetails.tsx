@@ -1,11 +1,11 @@
-import { Fuel, Phone, User } from "@fuel-carrier/web-ui/icons";
-import { CarCardMetaRow } from "./CarCardMetaRow";
+import { Fuel, Phone, User } from '../../icons'
+import { CarCardMetaRow } from './CarCardMetaRow'
 
 type CarCardDetailsProps = {
-  driverName: string;
-  mobileNumber: string;
-  fuelTypeLabel: string;
-};
+  driverName: string
+  mobileNumber: string
+  fuelTypeLabel: string
+}
 
 export function CarCardDetails({
   driverName,
@@ -27,5 +27,5 @@ export function CarCardDetails({
         valueClassName="font-normal"
       />
     </div>
-  );
+  )
 }

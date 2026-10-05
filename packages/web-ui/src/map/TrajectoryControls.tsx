@@ -1,14 +1,11 @@
 import type { TrajectoryMapViewLabels } from './trajectory-map.types'
 import { TrajectoryFormCard } from './TrajectoryFormCard'
-import { TrajectoryStatusCard } from './TrajectoryStatusCard'
 
 const overlayShellClassName =
   'pointer-events-none absolute inset-x-0 top-0 z-1000 flex justify-center p-2 pl-14 md:justify-start md:p-3 md:pl-16'
 
 type TrajectoryControlsProps = {
   labels: TrajectoryMapViewLabels
-  titleAs: 'h1' | 'h2'
-  statusText: string
   isHistoryMode: boolean
   hasSelectedCar: boolean
   vehicleLabel: string
@@ -24,8 +21,6 @@ type TrajectoryControlsProps = {
 
 export function TrajectoryControls({
   labels,
-  titleAs,
-  statusText,
   isHistoryMode,
   hasSelectedCar,
   vehicleLabel,
@@ -40,29 +35,25 @@ export function TrajectoryControls({
 }: TrajectoryControlsProps) {
   const showTrajectoryForm = hasSelectedCar || isHistoryMode
 
+  if (!showTrajectoryForm) {
+    return null
+  }
+
   return (
     <div className={overlayShellClassName}>
-      {showTrajectoryForm ? (
-        <TrajectoryFormCard
-          labels={labels}
-          isHistoryMode={isHistoryMode}
-          vehicleLabel={vehicleLabel}
-          startAt={startAt}
-          endAt={endAt}
-          canSubmit={canSubmit}
-          isSubmitting={isSubmitting}
-          onRangeChange={onRangeChange}
-          onShowTrajectory={onShowTrajectory}
-          onBackToLiveMap={onBackToLiveMap}
-          onClearSelection={onClearSelection}
-        />
-      ) : (
-        <TrajectoryStatusCard
-          labels={labels}
-          titleAs={titleAs}
-          statusText={statusText}
-        />
-      )}
+      <TrajectoryFormCard
+        labels={labels}
+        isHistoryMode={isHistoryMode}
+        vehicleLabel={vehicleLabel}
+        startAt={startAt}
+        endAt={endAt}
+        canSubmit={canSubmit}
+        isSubmitting={isSubmitting}
+        onRangeChange={onRangeChange}
+        onShowTrajectory={onShowTrajectory}
+        onBackToLiveMap={onBackToLiveMap}
+        onClearSelection={onClearSelection}
+      />
     </div>
   )
 }

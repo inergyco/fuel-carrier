@@ -1,3 +1,4 @@
+import { FUEL_LEVEL_FILTERS } from '@fuel-carrier/shared-types';
 import { z } from 'zod';
 import { paginationQuerySchema } from './pagination-query.dto';
 
@@ -9,6 +10,7 @@ export const companyScopedListQuerySchema = paginationQuerySchema
     companyId: z.uuid().optional(),
     search: z.string().max(64).optional(),
     fuelGrade: fuelGradeFilterSchema.optional(),
+    fuelLevel: z.enum(FUEL_LEVEL_FILTERS).optional(),
   })
   .transform((query) => {
     const searchText = query.search?.trim();
@@ -19,6 +21,7 @@ export const companyScopedListQuerySchema = paginationQuerySchema
       companyId: query.companyId,
       search: searchText && searchText.length > 0 ? searchText : undefined,
       fuelGrade: query.fuelGrade ?? 'all',
+      fuelLevel: query.fuelLevel ?? 'all',
     };
   });
 

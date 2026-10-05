@@ -39,6 +39,10 @@ const staticHeadings: Record<
     title: LL.internalPanel.auditLogs.title(),
     subtitle: LL.internalPanel.auditLogs.subtitle(),
   }),
+  '/settings': (LL) => ({
+    title: LL.internalPanel.settings.title(),
+    subtitle: LL.internalPanel.settings.subtitle(),
+  }),
 }
 
 export function useAppBarHeading(

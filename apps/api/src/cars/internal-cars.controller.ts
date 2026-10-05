@@ -21,6 +21,7 @@ import type {
   AuthSession,
   Car,
   CarDriverAssignment,
+  CarFleetStats,
   CarMqttCredentials,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
@@ -44,6 +45,7 @@ import {
   paginationQuerySchema,
   type PaginationQueryDto,
 } from '../common/dto/pagination-query.dto';
+import { assertUuidParam } from '../common/validation/uuid.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
 import {
@@ -54,6 +56,7 @@ import {
   ApiEnvelopeUnauthorizedResponse,
 } from '../swagger/decorators/api-envelope.decorator';
 import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
+import { CarFleetStatsDto } from '../swagger/dto/car-fleet-stats.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
@@ -84,6 +87,11 @@ export class InternalCarsController {
     required: false,
     enum: ['all', 'highGrade', 'normal'],
   })
+  @ApiQuery({
+    name: 'fuelLevel',
+    required: false,
+    enum: ['all', 'high', 'midHigh', 'midLow', 'low'],
+  })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
   list(
@@ -91,6 +99,19 @@ export class InternalCarsController {
     query: CompanyScopedListQueryDto,
   ): Promise<PaginatedResult<Car>> {
     return this.carsService.list(internalTenantContext(), query);
+  }
+
+  @Get('stats')
+  @ApiOperation({
+    summary: 'Fleet KPI stats for a company (totals, fuel bands, high-grade)',
+  })
+  @ApiQuery({ name: 'companyId', format: 'uuid', required: true })
+  @ApiEnvelopeOkResponse(CarFleetStatsDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  getFleetStats(@Query('companyId') companyId: string): Promise<CarFleetStats> {
+    assertUuidParam(companyId, 'companyId');
+    return this.carsService.getFleetStats(internalTenantContext(), companyId);
   }
 
   @Post(':id/mqtt-credentials')

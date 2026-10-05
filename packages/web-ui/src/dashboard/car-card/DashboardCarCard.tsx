@@ -1,42 +1,57 @@
 import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { carFuelTypeLabel } from '@fuel-carrier/web-ui/cars'
+import type { ReactNode } from 'react'
+import { carFuelTypeLabel, formatVolume } from '../../cars'
+import type { CompanyDashboardLabels } from '../CompanyDashboard.types'
 import { CarCardDetails } from './CarCardDetails'
 import { CarCardFooter } from './CarCardFooter'
 import { CarCardFuelSection } from './CarCardFuelSection'
 import { CarCardHeader } from './CarCardHeader'
 import { CarCardWatermark } from './CarCardWatermark'
-import { getFuelFillPercent, getRemainFuelLiters } from './car-card-utils'
+import {
+  CAR_CARD_TOTAL_CAPACITY_LITERS,
+  getFuelFillPercent,
+  getRemainFuelLiters,
+} from './car-card-utils'
 import { useCarCardLiveness } from './useCarCardLiveness'
 
 export type DashboardCarCardProps = {
   car: Car
   telemetry: CarTelemetryMarker | null
+  labels: CompanyDashboardLabels
+  detailsLink: ReactNode
 }
 
-export function DashboardCarCard({ car, telemetry }: DashboardCarCardProps) {
-  const { LL } = useI18nContext()
+export function DashboardCarCard({
+  car,
+  telemetry,
+  labels,
+  detailsLink,
+}: DashboardCarCardProps) {
   const liveness = useCarCardLiveness(telemetry)
   const isLive = liveness === 'live'
 
   const remainFuel = getRemainFuelLiters(telemetry)
   const fillPercent = getFuelFillPercent(remainFuel)
 
-  const statusLabel = isLive
-    ? LL.externalPanel.home.locationLive()
-    : LL.externalPanel.home.statusOffline()
+  const statusLabel = isLive ? labels.locationLive() : labels.statusOffline()
 
   const driverName = car.driver
     ? `${car.driver.firstName} ${car.driver.lastName}`
-    : LL.externalPanel.cars.noDriver()
+    : labels.noDriver()
 
   const mobileNumber =
-    car.driver?.mobileNumber?.trim() || LL.externalPanel.home.mobileUnknown()
+    car.driver?.mobileNumber?.trim() || labels.mobileUnknown()
 
-  const fuelTypeLabel = carFuelTypeLabel(
-    car.hasHighGrade,
-    LL.externalPanel.cars,
-  )
+  const fuelTypeLabel = carFuelTypeLabel(car.hasHighGrade, labels.fuelType)
+
+  const fuelVolumeLabel =
+    remainFuel != null
+      ? labels.fuelVolumeOfCapacity({
+          volume: formatVolume(remainFuel),
+          capacity: formatVolume(CAR_CARD_TOTAL_CAPACITY_LITERS),
+          unit: labels.tankUnit(),
+        })
+      : null
 
   return (
     <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
@@ -56,10 +71,15 @@ export function DashboardCarCard({ car, telemetry }: DashboardCarCardProps) {
           mobileNumber={mobileNumber}
           fuelTypeLabel={fuelTypeLabel}
         />
-        <CarCardFuelSection remainFuel={remainFuel} fillPercent={fillPercent} />
+        <CarCardFuelSection
+          remainFuel={remainFuel}
+          fillPercent={fillPercent}
+          remainFuelUnknown={labels.remainFuelUnknown()}
+          fuelVolumeLabel={fuelVolumeLabel}
+        />
       </div>
 
-      <CarCardFooter carId={car.id} />
+      <CarCardFooter detailsLink={detailsLink} />
     </article>
   )
 }

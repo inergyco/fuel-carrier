@@ -3,7 +3,6 @@ import { Menu } from "@fuel-carrier/web-ui/icons";
 import type { ReactNode } from "react";
 import { cn } from "../utils";
 import { IconButton } from "./IconButton";
-import { LocaleControls } from "./LocaleControls";
 import { PageHeader } from "./PageHeader";
 
 export interface PanelNavItem {
@@ -26,6 +25,8 @@ interface PanelShellProps {
   appBarSubtitle?: string;
   /** Leading control in the app bar, such as a back button. */
   appBarBack?: ReactNode;
+  /** Trailing controls before locale toggles (e.g. company switcher). */
+  appBarActions?: ReactNode;
   footer?: ReactNode;
   pageFooter?: ReactNode;
   background?: ReactNode;
@@ -52,6 +53,7 @@ export function PanelShell({
   appBarTitle,
   appBarSubtitle,
   appBarBack,
+  appBarActions,
   footer,
   pageFooter,
   background,
@@ -71,8 +73,9 @@ export function PanelShell({
       >
         <header
           className={cn(
-            "sticky top-0 z-20 flex shrink-0 items-center gap-3 border-b border-base-content/8 bg-base-100/70 px-4 backdrop-blur-xl lg:px-6",
-            appBarSubtitle ? "min-h-14 py-2" : "h-14",
+            "sticky top-0 z-20 flex shrink-0 items-center gap-x-3 gap-y-2 border-b border-base-content/8 bg-base-100/70 px-4 backdrop-blur-xl lg:px-6",
+            appBarActions && "flex-wrap",
+            appBarSubtitle || appBarActions ? "min-h-14 py-2" : "h-14",
           )}
         >
           <IconButton
@@ -96,9 +99,11 @@ export function PanelShell({
             <div className="flex-1" />
           )}
 
-          <div className="flex shrink-0 items-center justify-end">
-            <LocaleControls className="relative top-auto end-auto" />
-          </div>
+          {appBarActions ? (
+            <div className="flex w-full min-w-0 basis-full items-center justify-end sm:ms-auto sm:w-auto sm:max-w-[min(36rem,calc(100%-11rem))] sm:basis-auto sm:flex-1 lg:max-w-none lg:flex-none">
+              {appBarActions}
+            </div>
+          ) : null}
         </header>
 
         <div className="relative flex min-h-0 flex-1 overflow-hidden">

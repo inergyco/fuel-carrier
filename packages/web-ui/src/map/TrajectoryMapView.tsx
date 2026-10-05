@@ -3,15 +3,13 @@ import type { ReactNode } from 'react'
 import type { KyInstance } from '../api'
 import { cn } from '../utils'
 import { CarsMap } from './CarsMap'
-import { CompanyColorLegend } from './CompanyColorLegend'
 import {
   FuelLevelLegend,
   hasFuelLevelLegendLabels,
 } from './FuelLevelLegend'
 import { TrajectoryControls } from './TrajectoryControls'
 import type { TrajectoryMapViewLabels } from './trajectory-map.types'
-import { getVehicleLabel, resolveTrajectoryStatusText } from './trajectory-utils'
-import { useCompanyMapFilter } from './useCompanyMapFilter'
+import { getVehicleLabel } from './trajectory-utils'
 import { useTrajectoryHistory } from './useTrajectoryHistory'
 import { useTrajectorySelection } from './useTrajectorySelection'
 
@@ -25,8 +23,6 @@ export type TrajectoryMapViewProps = {
   labels: TrajectoryMapViewLabels
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode
   className?: string
-  titleAs?: 'h1' | 'h2'
-  colorByCompany?: boolean
 }
 
 export function TrajectoryMapView({
@@ -37,15 +33,8 @@ export function TrajectoryMapView({
   labels,
   renderVehicleLink,
   className,
-  titleAs = 'h1',
-  colorByCompany = false,
 }: TrajectoryMapViewProps) {
   const selection = useTrajectorySelection()
-  const companyFilter = useCompanyMapFilter({
-    markers,
-    unnamedCompanyLabel: labels.unnamedCompany?.() ?? '',
-    enabled: colorByCompany,
-  })
   const selectedCar = cars.find(function matchCar(car) {
     return car.id === selection.selectedCarId
   })
@@ -64,13 +53,6 @@ export function TrajectoryMapView({
     marker: selectedLiveMarker,
     fallback: labels.unnamedVehicle(),
   })
-  const companyLegendLabel = labels.companyLegend
-  const showAllCompaniesLabel = labels.showAllCompanies
-  const showCompanyLegend =
-    colorByCompany &&
-    !selection.isHistoryMode &&
-    companyLegendLabel != null &&
-    showAllCompaniesLabel != null
   const showFuelLegend =
     !isLoading &&
     !selection.isHistoryMode &&
@@ -82,18 +64,6 @@ export function TrajectoryMapView({
     >
       <TrajectoryControls
         labels={labels}
-        titleAs={titleAs}
-        statusText={resolveTrajectoryStatusText({
-          labels,
-          isHistoryMode: selection.isHistoryMode,
-          isHistoryLoading: history.isLoading,
-          hasHistoryData: history.hasHistoryData,
-          vehicleLabel,
-          liveMarkerCount: companyFilter.visibleMarkers.length,
-          isLiveLoading: isLoading,
-          selectedCompanyName: companyFilter.selectedCompanyName,
-          hasSelectedCar: selection.hasSelectedCar,
-        })}
         isHistoryMode={selection.isHistoryMode}
         hasSelectedCar={selection.hasSelectedCar}
         vehicleLabel={vehicleLabel}
@@ -106,17 +76,6 @@ export function TrajectoryMapView({
         onBackToLiveMap={selection.handleBackToLiveMap}
         onClearSelection={selection.handleClearSelection}
       />
-
-      {showCompanyLegend ? (
-        <CompanyColorLegend
-          title={companyLegendLabel()}
-          showAllLabel={showAllCompaniesLabel()}
-          items={companyFilter.legendItems}
-          selectedCompanyId={companyFilter.activeCompanyId}
-          onSelectCompany={companyFilter.handleSelectCompany}
-          onShowAll={companyFilter.handleShowAllCompanies}
-        />
-      ) : null}
 
       {showFuelLegend ? <FuelLevelLegend labels={labels} /> : null}
 
@@ -131,7 +90,7 @@ export function TrajectoryMapView({
               isHistoryMode: selection.isHistoryMode,
               historyMarker: history.historyMarker,
               selectedLiveMarker,
-              liveMarkers: companyFilter.visibleMarkers,
+              liveMarkers: markers,
             })}
             labels={labels}
             renderVehicleLink={renderVehicleLink}

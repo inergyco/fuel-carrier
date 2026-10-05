@@ -2,34 +2,48 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
 import {
-  mapPopupActionClassName,
-  TrajectoryMapView,
-  useCarTelemetryLive,
-} from '@fuel-carrier/web-ui/map'
+  CompanyDashboard,
+  type CompanyDashboardDataSource,
+  type CompanyDashboardLabels,
+  dashboardCarDetailsLinkClassName,
+} from '@fuel-carrier/web-ui/dashboard'
+import { Info } from '@fuel-carrier/web-ui/icons'
 import {
-  buttonClassName,
-  ConnectivityBanner,
-  useNavigatorOnline,
-} from '@fuel-carrier/web-ui/ui'
+  mapPopupActionClassName,
+} from '@fuel-carrier/web-ui/map'
+import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
-import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
 import { Link } from '@tanstack/react-router'
-import { carKeys, fetchCars } from '../../lib/api/cars'
-import { DashboardCarsSection } from './DashboardCarsSection'
-import { FleetStatsSection } from './FleetStatsSection'
-import { FuelLevelRingSection } from './FuelLevelRingSection'
+import { carKeys, fetchCarFleetStats, fetchCars } from '../../lib/api/cars'
+
+const dashboardDataSource: CompanyDashboardDataSource = {
+  fetchCars,
+  fetchAllCars: () => fetchAllPaginated(fetchCars),
+  fetchFleetStats: () => fetchCarFleetStats(),
+  carsListKey: carKeys.list,
+  carsAllKey: () => [...carKeys.all, 'all'] as const,
+  carsStatsKey: () => carKeys.stats,
+}
 
 export function DashboardPage() {
   const { LL } = useI18nContext()
-  const queryClient = useQueryClient()
 
-  const mapCarsQuery = useQuery({
-    queryKey: [...carKeys.all, 'all'] as const,
-    queryFn: () => fetchAllPaginated(fetchCars),
-  })
-
-  const telemetryQuery = useCarTelemetryLive(api)
-  const isOnline = useNavigatorOnline()
+  const labels: CompanyDashboardLabels = {
+    carsLoading: LL.externalPanel.cars.loading,
+    carsEmpty: LL.externalPanel.cars.empty,
+    carsEmptyFiltered: LL.externalPanel.cars.emptyFiltered,
+    carsSearchPlaceholder: LL.externalPanel.cars.searchPlaceholder,
+    locationLive: LL.externalPanel.home.locationLive,
+    statusOffline: LL.externalPanel.home.statusOffline,
+    noDriver: LL.externalPanel.cars.noDriver,
+    mobileUnknown: LL.externalPanel.home.mobileUnknown,
+    remainFuelUnknown: LL.externalPanel.cars.remainFuelUnknown,
+    tankUnit: LL.externalPanel.cars.tankUnit,
+    fuelVolumeOfCapacity: LL.externalPanel.home.fuelVolumeOfCapacity,
+    viewDetails: LL.externalPanel.auditLogs.details,
+    fuelType: LL.externalPanel.cars,
+    map: LL.externalPanel.map,
+  }
 
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
@@ -43,39 +57,35 @@ export function DashboardPage() {
     )
   }
 
-  return (
-    <div className="flex min-h-0 flex-col gap-6">
-      <ConnectivityBanner
-        isOnline={isOnline}
-        isQueryError={telemetryQuery.isError}
-        onRetry={() => {
-          void telemetryQuery.refetch()
-          void queryClient.invalidateQueries({ queryKey: carKeys.stats })
-        }}
-        labels={{
-          offline: LL.common.connectivity.offline(),
-          loadFailed: LL.common.connectivity.loadFailed(),
-          retry: LL.common.connectivity.retry(),
-        }}
-      />
-
-      <FleetStatsSection />
-
-      <div className="flex min-h-0 flex-col gap-3 lg:flex-row lg:items-stretch">
-        <TrajectoryMapView
-          className="h-[40svh] min-h-56 w-full flex-1 overflow-hidden rounded-2xl border border-base-content/8 lg:h-auto lg:min-h-72"
-          api={api}
-          cars={mapCarsQuery.data ?? []}
-          markers={telemetryQuery.data ?? []}
-          isLoading={telemetryQuery.isLoading || mapCarsQuery.isLoading}
-          labels={LL.externalPanel.map}
-          renderVehicleLink={renderVehicleLink}
-          titleAs="h2"
+  function renderCarDetailsLink(carId: string) {
+    return (
+      <Link
+        to="/cars/$carId"
+        params={{ carId }}
+        className={dashboardCarDetailsLinkClassName}
+      >
+        <Info
+          className="size-3.5"
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
         />
-        <FuelLevelRingSection className="w-full shrink-0 lg:w-72 xl:w-80" />
-      </div>
+        {labels.viewDetails()}
+      </Link>
+    )
+  }
 
-      <DashboardCarsSection telemetryMarkers={telemetryQuery.data ?? []} />
-    </div>
+  return (
+    <CompanyDashboard
+      api={api}
+      dataSource={dashboardDataSource}
+      labels={labels}
+      connectivityLabels={{
+        offline: LL.common.connectivity.offline(),
+        loadFailed: LL.common.connectivity.loadFailed(),
+        retry: LL.common.connectivity.retry(),
+      }}
+      renderVehicleLink={renderVehicleLink}
+      renderCarDetailsLink={renderCarDetailsLink}
+    />
   )
 }

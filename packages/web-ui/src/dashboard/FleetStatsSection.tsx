@@ -1,21 +1,28 @@
-import { useQuery } from '@fuel-carrier/web-ui/query'
-import { cn } from '@fuel-carrier/web-ui/utils'
-import { carKeys, fetchCarFleetStats } from '../../lib/api/cars'
+import { useQuery } from '../query'
+import { cn } from '../utils'
 import { FleetStatsBar } from './FleetStatsBar'
+import type { CompanyDashboardDataSource } from './CompanyDashboard.types'
 
 type FleetStatsSectionProps = {
   className?: string
+  companyId?: string
+  dataSource: CompanyDashboardDataSource
+  enabled?: boolean
   /** Polling interval in ms. Defaults to 30s. Pass `false` to disable. */
   refetchInterval?: number | false
 }
 
 export function FleetStatsSection({
   className,
+  companyId,
+  dataSource,
+  enabled = true,
   refetchInterval = 30_000,
 }: FleetStatsSectionProps) {
   const statsQuery = useQuery({
-    queryKey: carKeys.stats,
-    queryFn: fetchCarFleetStats,
+    queryKey: dataSource.carsStatsKey(companyId),
+    queryFn: () => dataSource.fetchFleetStats(companyId),
+    enabled,
     refetchInterval: refetchInterval === false ? false : refetchInterval,
   })
 

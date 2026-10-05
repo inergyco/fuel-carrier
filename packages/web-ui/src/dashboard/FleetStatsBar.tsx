@@ -1,9 +1,9 @@
 import type { CarFleetStats } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Car, Droplets, Fuel, type LucideIcon } from '@fuel-carrier/web-ui/icons'
-import { FUEL_LEVEL_COLORS } from '@fuel-carrier/web-ui/map'
-import { ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
-import { cn } from '@fuel-carrier/web-ui/utils'
+import { Car, Droplets, Fuel, type LucideIcon } from '../icons'
+import { FUEL_LEVEL_COLORS } from '../map'
+import { ICON_STROKE_WIDTH } from '../ui/iconClassName'
+import { cn } from '../utils'
 
 type FleetStatsBarProps = {
   stats: CarFleetStats

@@ -1,4 +1,4 @@
-import { getFuelLevelColor } from '@fuel-carrier/web-ui/map'
+import { getFuelLevelColor } from '../../map'
 
 type CarCardWatermarkProps = {
   fillPercent: number

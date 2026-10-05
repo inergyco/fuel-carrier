@@ -1,16 +1,6 @@
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import type { CompanyColorLegendItem } from './CompanyColorLegend'
 
-type FleetMapStatusLabels = {
-  loading: () => string
-  empty: () => string
-  vehiclesOnMap: (params: { count: number }) => string
-  vehiclesOnMapForCompany?: (params: {
-    count: number
-    company: string
-  }) => string
-}
-
 export function toCompanyLegendItems(
   markers: CarTelemetryMarker[],
   companyColors: ReadonlyMap<string, string>,
@@ -66,28 +56,4 @@ export function applyCompanyFilter(
         })
 
   return { activeCompanyId, selectedCompanyName, visibleMarkers }
-}
-
-export function fleetMapStatusLabel(
-  isLoading: boolean,
-  visibleCount: number,
-  selectedCompanyName: string | null,
-  labels: FleetMapStatusLabels,
-): string {
-  if (isLoading) {
-    return labels.loading()
-  }
-
-  if (visibleCount === 0) {
-    return labels.empty()
-  }
-
-  if (selectedCompanyName && labels.vehiclesOnMapForCompany) {
-    return labels.vehiclesOnMapForCompany({
-      count: visibleCount,
-      company: selectedCompanyName,
-    })
-  }
-
-  return labels.vehiclesOnMap({ count: visibleCount })
 }
