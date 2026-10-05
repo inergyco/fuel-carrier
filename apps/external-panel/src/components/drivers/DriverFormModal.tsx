@@ -20,13 +20,24 @@ export function DriverFormModal({
   onSuccess,
 }: DriverFormModalProps) {
   const { LL } = useI18nContext()
-  const { form, serverError, isSaving, title, confirmLabel, onSubmit, handleClose } =
-    useDriverFormModal({
-      mode,
-      driver,
-      onClose,
-      onSuccess,
-    })
+  const {
+    form,
+    serverError,
+    isSaving,
+    title,
+    confirmLabel,
+    imageUrl,
+    imageError,
+    onUploadImage,
+    onRemoveImage,
+    onSubmit,
+    handleClose,
+  } = useDriverFormModal({
+    mode,
+    driver,
+    onClose,
+    onSuccess,
+  })
 
   return (
     <Modal
@@ -54,7 +65,14 @@ export function DriverFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
-        <DriverFormFields serverError={serverError} />
+        <DriverFormFields
+          serverError={serverError}
+          imageUrl={imageUrl}
+          imageError={imageError}
+          disabled={isSaving}
+          onUploadImage={onUploadImage}
+          onRemoveImage={onRemoveImage}
+        />
       </Form>
     </Modal>
   )

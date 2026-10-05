@@ -1,26 +1,13 @@
 import { z } from 'zod';
-import { COMPANY_LOGO_PUBLIC_PREFIX } from './company-logo.constants';
+import {
+  COMPANY_LOGO_PUBLIC_PREFIX,
+  IMAGE_UPLOAD_URL_MAX_LENGTH,
+} from '../uploads/image-upload.constants';
+import { createIsAllowedImageUploadUrl } from '../uploads/is-allowed-image-upload-url';
 
-/** Keep in sync with shared-validation `COMPANY_LOGO_URL_MAX_LENGTH`. */
-const COMPANY_LOGO_URL_MAX_LENGTH = 2048;
-
-const UPLOADED_COMPANY_LOGO_PATH = new RegExp(
-  `^${COMPANY_LOGO_PUBLIC_PREFIX}/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\.(png|jpg|webp|gif|svg)$`,
-  'i',
+const isAllowedCompanyLogoUrl = createIsAllowedImageUploadUrl(
+  COMPANY_LOGO_PUBLIC_PREFIX,
 );
-
-function isAllowedCompanyLogoUrl(value: string): boolean {
-  if (UPLOADED_COMPANY_LOGO_PATH.test(value)) {
-    return true;
-  }
-
-  try {
-    const url = new URL(value);
-    return url.protocol === 'http:' || url.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
 
 /**
  * Local schema so the API ESLint project service can resolve the type.
@@ -30,8 +17,8 @@ export const replaceCompanyLogoDtoSchema = z.object({
   logoUrl: z
     .string()
     .max(
-      COMPANY_LOGO_URL_MAX_LENGTH,
-      `Logo URL must be at most ${COMPANY_LOGO_URL_MAX_LENGTH} characters`,
+      IMAGE_UPLOAD_URL_MAX_LENGTH,
+      `Logo URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
     )
     .refine(isAllowedCompanyLogoUrl, 'Logo URL must be a valid URL'),
 });

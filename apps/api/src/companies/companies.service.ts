@@ -48,7 +48,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { COMPANY_POSTGRES_MAPPINGS } from './companies-postgres-mappings';
-import { removeStoredCompanyLogo } from './company-logo-storage';
+import { companyLogoStorage } from '../uploads/image-storages';
 
 /**
  * Companies are not tenant-owned rows, but all database access still flows
@@ -225,7 +225,7 @@ export class CompaniesService {
 
     const previousLogoUrl = existing.logoUrl;
     const company = await this.update(context, id, { logoUrl });
-    await removeStoredCompanyLogo(previousLogoUrl);
+    await companyLogoStorage.removeStored(previousLogoUrl);
     return company;
   }
 

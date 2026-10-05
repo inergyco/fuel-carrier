@@ -1,15 +1,35 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { FormInput } from '@fuel-carrier/web-ui/ui'
+import { DriverImageUploader, FormInput } from '@fuel-carrier/web-ui/ui'
 
 interface DriverFormFieldsProps {
   serverError: string | null
+  imageUrl: string | null
+  imageError?: string
+  disabled?: boolean
+  onUploadImage: (file: File) => Promise<void>
+  onRemoveImage: () => Promise<void>
 }
 
-export function DriverFormFields({ serverError }: DriverFormFieldsProps) {
+export function DriverFormFields({
+  serverError,
+  imageUrl,
+  imageError,
+  disabled = false,
+  onUploadImage,
+  onRemoveImage,
+}: DriverFormFieldsProps) {
   const { LL } = useI18nContext()
 
   return (
     <>
+      <DriverImageUploader
+        imageUrl={imageUrl}
+        error={imageError}
+        disabled={disabled}
+        onUploadFile={onUploadImage}
+        onRemove={onRemoveImage}
+      />
+
       <div className="grid gap-4 sm:grid-cols-2">
         <FormInput
           name="firstName"

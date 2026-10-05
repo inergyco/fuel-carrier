@@ -9,6 +9,7 @@
     "./company/create": "./src/company/create-company.dto.ts",
     "./company/update": "./src/company/update-company.dto.ts",
     "./company/constants": "./src/company/constants.ts",
+    "./image-upload/constants": "./src/image-upload/constants.ts",
     "./car/create": "./src/car/create-car.dto.ts",
     "./driver/create": "./src/driver/create-driver.dto.ts",
     "./company-user/create": "./src/company-user/create-company-user.dto.ts",

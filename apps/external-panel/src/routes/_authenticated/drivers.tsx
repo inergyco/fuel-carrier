@@ -8,7 +8,7 @@ import {
 } from '@fuel-carrier/web-ui/ui'
 import { DeleteDriverModal } from '../../components/drivers/DeleteDriverModal'
 import { DriverFormModal } from '../../components/drivers/DriverFormModal'
-import { getDriverColumns } from '../../components/drivers/driverColumns'
+import { getDriverColumns } from '../../components/drivers/driverColumns.tsx'
 import { useDrivers } from '../../components/drivers/useDrivers'
 import { ResourceSection } from '../../components/users/ResourceSection'
 

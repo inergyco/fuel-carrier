@@ -35,6 +35,7 @@ export type { FileUploaderLabels, FileUploaderProps } from './FileUploader'
 export { ImageUploader } from './ImageUploader'
 export type { ImageUploaderLabels, ImageUploaderProps } from './ImageUploader'
 export { CompanyLogoUploader } from './CompanyLogoUploader'
+export { DriverImageUploader } from './DriverImageUploader'
 export {
   DataTable,
   DataTableBody,

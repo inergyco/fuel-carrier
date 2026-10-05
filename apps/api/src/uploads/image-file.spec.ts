@@ -1,12 +1,12 @@
-import { detectCompanyLogoExtension } from './company-logo-file';
+import { detectImageUploadExtension } from '../uploads/image-file';
 
-describe('detectCompanyLogoExtension', () => {
+describe('detectImageUploadExtension', () => {
   it('recognizes a PNG signature', () => {
     const buffer = Buffer.from([
       0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00,
     ]);
 
-    expect(detectCompanyLogoExtension(buffer, 'application/octet-stream')).toBe(
+    expect(detectImageUploadExtension(buffer, 'application/octet-stream')).toBe(
       'png',
     );
   });
@@ -21,8 +21,8 @@ describe('detectCompanyLogoExtension', () => {
       'utf8',
     );
 
-    expect(detectCompanyLogoExtension(svg, 'image/svg+xml')).toBe('svg');
-    expect(detectCompanyLogoExtension(scripted, 'image/svg+xml')).toBeNull();
-    expect(detectCompanyLogoExtension(svg, 'text/plain')).toBeNull();
+    expect(detectImageUploadExtension(svg, 'image/svg+xml')).toBe('svg');
+    expect(detectImageUploadExtension(scripted, 'image/svg+xml')).toBeNull();
+    expect(detectImageUploadExtension(svg, 'text/plain')).toBeNull();
   });
 });

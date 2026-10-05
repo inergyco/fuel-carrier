@@ -8,9 +8,9 @@ import {
 import fastifyCookie from '@fastify/cookie';
 import { AppModule } from './app.module';
 import {
-  COMPANY_LOGO_MULTIPART_BODY_LIMIT,
-  setupCompanyLogoUploads,
-} from './companies/setup-company-logo-uploads';
+  IMAGE_UPLOAD_MULTIPART_BODY_LIMIT,
+  setupImageUploads,
+} from './uploads/setup-image-uploads';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { REQUEST_ID_HEADER, assignRequestId } from './common/logging';
@@ -26,7 +26,7 @@ async function bootstrap() {
     new FastifyAdapter({
       requestIdHeader: REQUEST_ID_HEADER,
       genReqId: assignRequestId,
-      bodyLimit: COMPANY_LOGO_MULTIPART_BODY_LIMIT,
+      bodyLimit: IMAGE_UPLOAD_MULTIPART_BODY_LIMIT,
     }),
     { bufferLogs: true },
   );
@@ -45,7 +45,7 @@ async function bootstrap() {
   await setupSecurityHeaders(app);
   await setupCors(app);
   await app.register(fastifyCookie);
-  await setupCompanyLogoUploads(app);
+  await setupImageUploads(app);
 
   // Echo request id so browsers/DevTools can show it on every response.
   const fastify = app.getHttpAdapter().getInstance();

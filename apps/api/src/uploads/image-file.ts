@@ -1,7 +1,7 @@
-export type CompanyLogoExtension = 'png' | 'jpg' | 'webp' | 'gif' | 'svg';
+export type ImageUploadExtension = 'png' | 'jpg' | 'webp' | 'gif' | 'svg';
 
 const RASTER_SIGNATURES: Array<{
-  extension: Exclude<CompanyLogoExtension, 'svg'>;
+  extension: Exclude<ImageUploadExtension, 'svg'>;
   matches: (buffer: Buffer) => boolean;
 }> = [
   {
@@ -42,11 +42,11 @@ const RASTER_SIGNATURES: Array<{
   },
 ];
 
-/** Identify a logo from its bytes. SVG also requires an image/svg+xml content type. */
-export function detectCompanyLogoExtension(
+/** Identify an image from its bytes. SVG also requires an image/svg+xml content type. */
+export function detectImageUploadExtension(
   buffer: Buffer,
   declaredMimeType: string,
-): CompanyLogoExtension | null {
+): ImageUploadExtension | null {
   for (const signature of RASTER_SIGNATURES) {
     if (signature.matches(buffer)) {
       return signature.extension;

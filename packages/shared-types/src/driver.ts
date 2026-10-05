@@ -6,6 +6,7 @@ export type Driver = {
   lastName: string;
   nationalId: string;
   mobileNumber: string;
+  imageUrl: string | null;
   companyId: string;
   /** ISO-8601 timestamptz when soft-deleted; null while live. */
   deletedAt: string | null;

@@ -40,16 +40,10 @@ export const createExternalCompanyUserDtoSchema = companyUserBaseSchema.extend({
   password: strongPasswordSchema,
 });
 
-/** @deprecated Use createInternalCompanyUserDtoSchema */
-export const createCompanyUserDtoSchema = createInternalCompanyUserDtoSchema;
-
 export const updateInternalCompanyUserDtoSchema =
   createInternalCompanyUserDtoSchema.partial();
 export const updateExternalCompanyUserDtoSchema =
   createExternalCompanyUserDtoSchema.partial();
-
-/** @deprecated Use updateInternalCompanyUserDtoSchema */
-export const updateCompanyUserDtoSchema = updateInternalCompanyUserDtoSchema;
 
 export type CreateInternalCompanyUserDto = CompanyUserInput;
 export type CreateExternalCompanyUserDto = Omit<CompanyUserInput, 'companyId'>;

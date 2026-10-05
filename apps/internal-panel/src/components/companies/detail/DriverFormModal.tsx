@@ -6,14 +6,29 @@ import {
   type CreateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
-import { zodResolver, Form, useForm, type SubmitHandler } from '@fuel-carrier/web-ui/form'
+import {
+  zodResolver,
+  Form,
+  useForm,
+  useWatch,
+  type SubmitHandler,
+} from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
-import { FormInput, Modal, ModalActions, useToast } from '@fuel-carrier/web-ui/ui'
+import {
+  DriverImageUploader,
+  FormInput,
+  Modal,
+  ModalActions,
+  useToast,
+} from '@fuel-carrier/web-ui/ui'
 import { z } from 'zod'
 import {
   createDriver,
   driverToFormValues,
+  removeDriverImage,
+  replaceDriverImage,
   updateDriver,
+  uploadDriverImage,
 } from '../../../lib/api/drivers'
 
 const driverFormSchema = createInternalDriverDtoSchema.omit({ companyId: true })
@@ -47,13 +62,36 @@ export function DriverFormModal({
 
   const {
     setError,
-    formState: { isSubmitting },
+    control,
+    setValue,
+    formState: { isSubmitting, errors },
   } = form
+  const imageUrlValue = useWatch({ control, name: 'imageUrl' })
+  const imageUrl =
+    typeof imageUrlValue === 'string' && imageUrlValue.length > 0
+      ? imageUrlValue
+      : null
 
   const saveMutation = useMutation({
-    mutationFn: function saveDriver(data: CreateExternalDriverDto) {
+    mutationFn: async function saveDriver(data: CreateExternalDriverDto) {
       if (mode === 'edit' && driver) {
-        return updateDriver(driver.id, data)
+        const nextImageUrl = data.imageUrl ?? null
+        const previousImageUrl = driver.imageUrl ?? null
+
+        if (nextImageUrl !== previousImageUrl) {
+          if (nextImageUrl === null) {
+            await removeDriverImage(driver.id)
+          } else {
+            await replaceDriverImage(driver.id, nextImageUrl)
+          }
+        }
+
+        return updateDriver(driver.id, {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          nationalId: data.nationalId,
+          mobileNumber: data.mobileNumber,
+        })
       }
 
       return createDriver({ ...data, companyId })
@@ -81,7 +119,13 @@ export function DriverFormModal({
         applyApiFieldErrors({
           error,
           setError,
-          fields: ['firstName', 'lastName', 'nationalId', 'mobileNumber'],
+          fields: [
+            'firstName',
+            'lastName',
+            'nationalId',
+            'mobileNumber',
+            'imageUrl',
+          ],
           messages: {
             nationalId: () =>
               LL.internalPanel.companies.detail.duplicateDriverNationalId(),
@@ -92,6 +136,18 @@ export function DriverFormModal({
         }),
       )
     }
+  }
+
+  async function handleUploadImage(file: File) {
+    const uploaded = await uploadDriverImage(file)
+    setValue('imageUrl', uploaded.imageUrl, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+  }
+
+  async function handleRemoveImage() {
+    setValue('imageUrl', '', { shouldDirty: true, shouldValidate: true })
   }
 
   function handleClose() {
@@ -137,6 +193,14 @@ export function DriverFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
+        <DriverImageUploader
+          imageUrl={imageUrl}
+          error={errors.imageUrl?.message?.toString()}
+          disabled={isSaving}
+          onUploadFile={handleUploadImage}
+          onRemove={handleRemoveImage}
+        />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInput
             name="firstName"

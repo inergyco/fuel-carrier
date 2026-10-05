@@ -2,13 +2,15 @@ import { z } from 'zod';
 import { optionalTextField } from '../optional-text-field';
 import type { CreateCompanyValidationMessages } from './create-company.dto';
 import {
+  IMAGE_UPLOAD_URL_MAX_LENGTH,
+  isAllowedCompanyLogoUrl,
+} from '../image-upload/constants';
+import {
   COMPANY_ADDRESS_MAX_LENGTH,
-  COMPANY_LOGO_URL_MAX_LENGTH,
   COMPANY_NAME_MAX_LENGTH,
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
-  isAllowedCompanyLogoUrl,
 } from './constants';
 
 /**
@@ -59,7 +61,7 @@ const defaultMessages: CreateCompanyValidationMessages = {
   phoneNumberTooLong: `Phone number must be at most ${COMPANY_PHONE_MAX_LENGTH} characters`,
   addressTooLong: `Address must be at most ${COMPANY_ADDRESS_MAX_LENGTH} characters`,
   noteTooLong: `Note must be at most ${COMPANY_NOTE_MAX_LENGTH} characters`,
-  logoUrlTooLong: `Logo URL must be at most ${COMPANY_LOGO_URL_MAX_LENGTH} characters`,
+  logoUrlTooLong: `Logo URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
   logoUrlInvalid: 'Logo URL must be a valid URL',
 };
 
@@ -72,7 +74,7 @@ export type UpdateCompanyDto = z.infer<typeof updateCompanyDtoSchema>;
 export const replaceCompanyLogoDtoSchema = z.object({
   logoUrl: z
     .string()
-    .max(COMPANY_LOGO_URL_MAX_LENGTH, defaultMessages.logoUrlTooLong)
+    .max(IMAGE_UPLOAD_URL_MAX_LENGTH, defaultMessages.logoUrlTooLong)
     .refine(isAllowedCompanyLogoUrl, defaultMessages.logoUrlInvalid),
 });
 

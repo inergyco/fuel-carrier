@@ -27,6 +27,7 @@ export type DriverFormValues = {
   lastName: string
   nationalId: string
   mobileNumber: string
+  imageUrl: string
 }
 
 export function driverToFormValues(driver?: Driver): DriverFormValues {
@@ -35,6 +36,7 @@ export function driverToFormValues(driver?: Driver): DriverFormValues {
     lastName: driver?.lastName ?? '',
     nationalId: driver?.nationalId ?? '',
     mobileNumber: driver?.mobileNumber ?? '',
+    imageUrl: driver?.imageUrl ?? '',
   }
 }
 
@@ -50,6 +52,27 @@ export async function fetchDrivers(
       },
     })
     .json<PaginatedResult<Driver>>()
+}
+
+export async function uploadDriverImage(
+  file: File,
+): Promise<{ imageUrl: string }> {
+  const body = new FormData()
+  body.append('file', file)
+  return api.post('drivers/image', { body }).json<{ imageUrl: string }>()
+}
+
+export async function replaceDriverImage(
+  id: string,
+  imageUrl: string,
+): Promise<Driver> {
+  return api
+    .patch(`drivers/${id}/image`, { json: { imageUrl } })
+    .json<Driver>()
+}
+
+export async function removeDriverImage(id: string): Promise<Driver> {
+  return api.delete(`drivers/${id}/image`).json<Driver>()
 }
 
 export async function createDriver(

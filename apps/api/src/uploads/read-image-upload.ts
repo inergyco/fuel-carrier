@@ -2,18 +2,17 @@ import { HttpStatus } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import type { FastifyRequest } from 'fastify';
 import { createApiException } from '../common/exceptions/api.exception';
-import { COMPANY_LOGO_MAX_BYTES } from './company-logo.constants';
-import {
-  InvalidCompanyLogoError,
-  saveCompanyLogo,
-} from './company-logo-storage';
+import { IMAGE_UPLOAD_MAX_BYTES } from './image-upload.constants';
+import type { ImageStorage } from './image-storage';
 
-export async function readCompanyLogoUpload(
+export async function readImageUpload(
   request: FastifyRequest,
+  storage: ImageStorage,
+  tooLargeMessage: string,
 ): Promise<string> {
   try {
     const uploaded = await request.file({
-      limits: { fileSize: COMPANY_LOGO_MAX_BYTES },
+      limits: { fileSize: IMAGE_UPLOAD_MAX_BYTES },
     });
 
     if (!uploaded || uploaded.fieldname !== 'file') {
@@ -26,16 +25,16 @@ export async function readCompanyLogoUpload(
 
     const buffer = await uploaded.toBuffer();
 
-    if (buffer.length === 0 || buffer.length > COMPANY_LOGO_MAX_BYTES) {
-      throw logoTooLargeException();
+    if (buffer.length === 0 || buffer.length > IMAGE_UPLOAD_MAX_BYTES) {
+      throw tooLargeException(tooLargeMessage);
     }
 
-    return await saveCompanyLogo({
+    return await storage.save({
       buffer,
       declaredMimeType: uploaded.mimetype,
     });
   } catch (error) {
-    if (error instanceof InvalidCompanyLogoError) {
+    if (error instanceof storage.InvalidImageError) {
       throw createApiException(
         HttpStatus.BAD_REQUEST,
         ApiErrorCode.VALIDATION_ERROR,
@@ -44,7 +43,7 @@ export async function readCompanyLogoUpload(
     }
 
     if (isFileTooLargeError(error)) {
-      throw logoTooLargeException();
+      throw tooLargeException(tooLargeMessage);
     }
 
     if (isInvalidMultipartError(error)) {
@@ -59,11 +58,11 @@ export async function readCompanyLogoUpload(
   }
 }
 
-function logoTooLargeException() {
+function tooLargeException(message: string) {
   return createApiException(
     HttpStatus.BAD_REQUEST,
     ApiErrorCode.VALIDATION_ERROR,
-    'Logo must be 2 MB or smaller',
+    message,
   );
 }
 

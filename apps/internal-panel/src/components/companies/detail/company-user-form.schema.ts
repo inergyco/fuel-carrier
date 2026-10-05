@@ -1,8 +1,8 @@
-import { createCompanyUserDtoSchema } from '@fuel-carrier/shared-validation/company-user/create'
+import { createInternalCompanyUserDtoSchema } from '@fuel-carrier/shared-validation/company-user/create'
 import { strongPasswordSchema } from '@fuel-carrier/shared-validation/password'
 import { z } from 'zod'
 
-export const companyUserCreateFormSchema = createCompanyUserDtoSchema.omit({
+export const companyUserCreateFormSchema = createInternalCompanyUserDtoSchema.omit({
   companyId: true,
 })
 

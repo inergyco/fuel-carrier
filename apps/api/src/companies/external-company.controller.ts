@@ -25,8 +25,9 @@ import {
 } from '../swagger/decorators/api-envelope.decorator';
 import { CompanyDto } from '../swagger/dto/company.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { companyLogoStorage } from '../uploads/image-storages';
+import { readImageUpload } from '../uploads/read-image-upload';
 import { CompaniesService } from './companies.service';
-import { readCompanyLogoUpload } from './read-company-logo-upload';
 
 @ApiTags('company')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
@@ -47,7 +48,11 @@ export class ExternalCompanyController {
     @CurrentUser() user: AuthSession,
     @Req() request: FastifyRequest,
   ): Promise<Company> {
-    const logoUrl = await readCompanyLogoUpload(request);
+    const logoUrl = await readImageUpload(
+      request,
+      companyLogoStorage,
+      'Logo must be 2 MB or smaller',
+    );
     return this.companiesService.replaceLogo(
       tenantContextFromSession(user),
       user.companyId!,

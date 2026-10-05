@@ -202,6 +202,44 @@ type RootTranslation = {
 			 */
 			uploadFailed: string
 		}
+		driverImage: {
+			/**
+			 * P​h​o​t​o
+			 */
+			label: string
+			/**
+			 * P​N​G​,​ ​J​P​G​,​ ​W​E​B​P​,​ ​G​I​F​,​ ​o​r​ ​S​V​G​.​ ​U​p​ ​t​o​ ​2​ ​M​B​.
+			 */
+			hint: string
+			/**
+			 * C​h​o​o​s​e​ ​i​m​a​g​e
+			 */
+			choose: string
+			/**
+			 * C​h​a​n​g​e​ ​i​m​a​g​e
+			 */
+			change: string
+			/**
+			 * R​e​m​o​v​e
+			 */
+			remove: string
+			/**
+			 * U​p​l​o​a​d​i​n​g​…
+			 */
+			uploading: string
+			/**
+			 * C​h​o​o​s​e​ ​a​ ​P​N​G​,​ ​J​P​G​,​ ​W​E​B​P​,​ ​G​I​F​,​ ​o​r​ ​S​V​G​ ​i​m​a​g​e​.
+			 */
+			invalidType: string
+			/**
+			 * P​h​o​t​o​ ​m​u​s​t​ ​b​e​ ​2​ ​M​B​ ​o​r​ ​s​m​a​l​l​e​r​.
+			 */
+			tooLarge: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​l​o​a​d​ ​t​h​e​ ​p​h​o​t​o​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			uploadFailed: string
+		}
 		/**
 		 * S​h​o​w​ ​p​a​s​s​w​o​r​d
 		 */
@@ -299,6 +337,15 @@ type RootTranslation = {
 		 * L​o​g​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​U​R​L
 		 */
 		companyLogoUrlInvalid: string
+		/**
+		 * P​h​o​t​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		driverImageUrlTooLong: RequiredParams<'max'>
+		/**
+		 * P​h​o​t​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​U​R​L
+		 */
+		driverImageUrlInvalid: string
 	}
 	internalPanel: {
 		login: {
@@ -1934,6 +1981,10 @@ type RootTranslation = {
 			 * L​o​g​o​ ​u​p​d​a​t​e​d​.
 			 */
 			logoUpdated: string
+			/**
+			 * D​r​i​v​e​r​ ​p​h​o​t​o​ ​u​p​d​a​t​e​d​.
+			 */
+			driverImageUpdated: string
 		}
 		settings: {
 			/**
@@ -3122,6 +3173,44 @@ export type TranslationFunctions = {
 			 */
 			uploadFailed: () => LocalizedString
 		}
+		driverImage: {
+			/**
+			 * Photo
+			 */
+			label: () => LocalizedString
+			/**
+			 * PNG, JPG, WEBP, GIF, or SVG. Up to 2 MB.
+			 */
+			hint: () => LocalizedString
+			/**
+			 * Choose image
+			 */
+			choose: () => LocalizedString
+			/**
+			 * Change image
+			 */
+			change: () => LocalizedString
+			/**
+			 * Remove
+			 */
+			remove: () => LocalizedString
+			/**
+			 * Uploading…
+			 */
+			uploading: () => LocalizedString
+			/**
+			 * Choose a PNG, JPG, WEBP, GIF, or SVG image.
+			 */
+			invalidType: () => LocalizedString
+			/**
+			 * Photo must be 2 MB or smaller.
+			 */
+			tooLarge: () => LocalizedString
+			/**
+			 * Could not upload the photo. Please try again.
+			 */
+			uploadFailed: () => LocalizedString
+		}
 		/**
 		 * Show password
 		 */
@@ -3212,6 +3301,14 @@ export type TranslationFunctions = {
 		 * Logo URL must be a valid URL
 		 */
 		companyLogoUrlInvalid: () => LocalizedString
+		/**
+		 * Photo URL must be at most {max} characters
+		 */
+		driverImageUrlTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Photo URL must be a valid URL
+		 */
+		driverImageUrlInvalid: () => LocalizedString
 	}
 	internalPanel: {
 		login: {
@@ -4803,6 +4900,10 @@ export type TranslationFunctions = {
 			 * Logo updated.
 			 */
 			logoUpdated: () => LocalizedString
+			/**
+			 * Driver photo updated.
+			 */
+			driverImageUpdated: () => LocalizedString
 		}
 		settings: {
 			/**

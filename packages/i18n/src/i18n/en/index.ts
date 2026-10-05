@@ -58,6 +58,17 @@ const en: BaseTranslation = {
       tooLarge: 'Logo must be 2 MB or smaller.',
       uploadFailed: 'Could not upload the logo. Please try again.',
     },
+    driverImage: {
+      label: 'Photo',
+      hint: 'PNG, JPG, WEBP, GIF, or SVG. Up to 2 MB.',
+      choose: 'Choose image',
+      change: 'Change image',
+      remove: 'Remove',
+      uploading: 'Uploading…',
+      invalidType: 'Choose a PNG, JPG, WEBP, GIF, or SVG image.',
+      tooLarge: 'Photo must be 2 MB or smaller.',
+      uploadFailed: 'Could not upload the photo. Please try again.',
+    },
     showPassword: 'Show password',
     hidePassword: 'Hide password',
     dismiss: 'Dismiss',
@@ -85,6 +96,8 @@ const en: BaseTranslation = {
     companyNoteTooLong: 'Note must be at most {max:number} characters',
     companyLogoUrlTooLong: 'Logo URL must be at most {max:number} characters',
     companyLogoUrlInvalid: 'Logo URL must be a valid URL',
+    driverImageUrlTooLong: 'Photo URL must be at most {max:number} characters',
+    driverImageUrlInvalid: 'Photo URL must be a valid URL',
   },
   internalPanel: {
     login: {
@@ -534,6 +547,7 @@ const en: BaseTranslation = {
       carMqttCredentialsRotated: 'MQTT credentials rotated.',
       passwordChanged: 'Password updated.',
       logoUpdated: 'Logo updated.',
+      driverImageUpdated: 'Driver photo updated.',
     },
     settings: {
       title: 'Settings',

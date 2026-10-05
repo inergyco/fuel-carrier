@@ -3,10 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,6 +28,7 @@ import {
   updateExternalDriverDtoSchema,
   type UpdateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create';
+import type { FastifyRequest } from 'fastify';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
@@ -37,6 +41,7 @@ import {
   resourceListQuerySchema,
   type ResourceListQueryDto,
 } from '../common/dto/resource-list-query.dto';
+import { parseZodDto } from '../common/validation/zod.utils';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -44,9 +49,18 @@ import {
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
+  ApiMultipartFileBody,
 } from '../swagger/decorators/api-envelope.decorator';
+import {
+  DriverDto,
+  DriverImageUploadDto,
+  ReplaceDriverImageRequestDto,
+} from '../swagger/dto/driver.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { driverImageStorage } from '../uploads/image-storages';
+import { readImageUpload } from '../uploads/read-image-upload';
 import { DriversService } from './drivers.service';
+import { replaceDriverImageDtoSchema } from './replace-driver-image.dto';
 
 @ApiTags('drivers')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
@@ -61,7 +75,7 @@ export class ExternalDriversController {
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({ name: 'search', required: false, type: String })
-  @ApiEnvelopeOkPaginatedResponse(Object)
+  @ApiEnvelopeOkPaginatedResponse(DriverDto)
   @ApiEnvelopeUnauthorizedResponse()
   list(
     @CurrentUser() user: AuthSession,
@@ -76,7 +90,7 @@ export class ExternalDriversController {
     summary: 'Get a driver belonging to the authenticated company',
   })
   @ApiParam({ name: 'id', format: 'uuid' })
-  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeOkResponse(DriverDto)
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
   getById(
@@ -86,11 +100,30 @@ export class ExternalDriversController {
     return this.driversService.getById(tenantContextFromSession(user), id);
   }
 
+  @Post('image')
+  @UseGuards(CompanyUserAdminGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Upload a driver image and return its public path' })
+  @ApiMultipartFileBody()
+  @ApiEnvelopeOkResponse(DriverImageUploadDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  async uploadImage(
+    @Req() request: FastifyRequest,
+  ): Promise<DriverImageUploadDto> {
+    const imageUrl = await readImageUpload(
+      request,
+      driverImageStorage,
+      'Image must be 2 MB or smaller',
+    );
+    return { imageUrl };
+  }
+
   @Post()
   @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({ summary: 'Create a driver for the authenticated company' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeOkResponse(DriverDto)
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
   create(
@@ -104,6 +137,50 @@ export class ExternalDriversController {
     });
   }
 
+  @Patch(':id/image')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary: 'Replace a driver image belonging to the authenticated company',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: ReplaceDriverImageRequestDto })
+  @ApiEnvelopeOkResponse(DriverDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  replaceImage(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body() body: unknown,
+  ): Promise<Driver> {
+    const { imageUrl } = parseZodDto(replaceDriverImageDtoSchema, body);
+    return this.driversService.replaceImage(
+      tenantContextFromSession(user),
+      id,
+      imageUrl,
+    );
+  }
+
+  @Delete(':id/image')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary: 'Remove a driver image belonging to the authenticated company',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(DriverDto)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  removeImage(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<Driver> {
+    return this.driversService.replaceImage(
+      tenantContextFromSession(user),
+      id,
+      null,
+    );
+  }
+
   @Patch(':id')
   @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
@@ -111,7 +188,7 @@ export class ExternalDriversController {
   })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiBody({ schema: { type: 'object' } })
-  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeOkResponse(DriverDto)
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()

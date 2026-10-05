@@ -9,7 +9,7 @@ import {
 } from '@fuel-carrier/web-ui/ui'
 import { Eye } from '@fuel-carrier/web-ui/icons'
 import type { Car } from '@fuel-carrier/shared-types'
-import { getCarColumns } from './companyResourceColumns'
+import { getCarColumns } from './companyResourceColumns.tsx'
 import { CarFormModal } from './CarFormModal'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'

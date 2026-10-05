@@ -2,13 +2,15 @@ import type { CompanyInput } from '@fuel-carrier/shared-types';
 import { z } from 'zod';
 import { optionalTextField } from '../optional-text-field';
 import {
+  IMAGE_UPLOAD_URL_MAX_LENGTH,
+  isAllowedCompanyLogoUrl,
+} from '../image-upload/constants';
+import {
   COMPANY_ADDRESS_MAX_LENGTH,
-  COMPANY_LOGO_URL_MAX_LENGTH,
   COMPANY_NAME_MAX_LENGTH,
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
-  isAllowedCompanyLogoUrl,
 } from './constants';
 
 export type CreateCompanyValidationMessages = {
@@ -46,7 +48,7 @@ export function createCreateCompanyDtoSchema(
     ),
     note: optionalTextField(COMPANY_NOTE_MAX_LENGTH, messages.noteTooLong),
     logoUrl: optionalTextField(
-      COMPANY_LOGO_URL_MAX_LENGTH,
+      IMAGE_UPLOAD_URL_MAX_LENGTH,
       messages.logoUrlTooLong,
     ).pipe(
       z.union([
@@ -66,7 +68,7 @@ const defaultMessages: CreateCompanyValidationMessages = {
   phoneNumberTooLong: `Phone number must be at most ${COMPANY_PHONE_MAX_LENGTH} characters`,
   addressTooLong: `Address must be at most ${COMPANY_ADDRESS_MAX_LENGTH} characters`,
   noteTooLong: `Note must be at most ${COMPANY_NOTE_MAX_LENGTH} characters`,
-  logoUrlTooLong: `Logo URL must be at most ${COMPANY_LOGO_URL_MAX_LENGTH} characters`,
+  logoUrlTooLong: `Logo URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
   logoUrlInvalid: 'Logo URL must be a valid URL',
 };
 

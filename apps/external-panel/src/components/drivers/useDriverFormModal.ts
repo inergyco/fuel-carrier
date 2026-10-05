@@ -5,6 +5,7 @@ import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
   useForm,
+  useWatch,
   type SubmitHandler,
   type UseFormReturn,
 } from '@fuel-carrier/web-ui/form'
@@ -13,7 +14,10 @@ import { useToast } from '@fuel-carrier/web-ui/ui'
 import {
   createDriver,
   driverToFormValues,
+  removeDriverImage,
+  replaceDriverImage,
   updateDriver,
+  uploadDriverImage,
 } from '../../lib/api/drivers'
 import {
   driverFormSchema,
@@ -35,6 +39,10 @@ interface UseDriverFormModalResult {
   isSaving: boolean
   title: string
   confirmLabel: string
+  imageUrl: string | null
+  imageError?: string
+  onUploadImage: (file: File) => Promise<void>
+  onRemoveImage: () => Promise<void>
   onSubmit: SubmitHandler<DriverFormOutput>
   handleClose: () => void
 }
@@ -56,13 +64,36 @@ export function useDriverFormModal({
 
   const {
     setError,
-    formState: { isSubmitting },
+    control,
+    setValue,
+    formState: { isSubmitting, errors },
   } = form
+  const imageUrlValue = useWatch({ control, name: 'imageUrl' })
+  const imageUrl =
+    typeof imageUrlValue === 'string' && imageUrlValue.length > 0
+      ? imageUrlValue
+      : null
 
   const saveMutation = useMutation({
     mutationFn: async function saveDriver(data: DriverFormOutput) {
       if (mode === 'edit' && driver) {
-        return updateDriver(driver.id, data)
+        const nextImageUrl = data.imageUrl ?? null
+        const previousImageUrl = driver.imageUrl ?? null
+
+        if (nextImageUrl !== previousImageUrl) {
+          if (nextImageUrl === null) {
+            await removeDriverImage(driver.id)
+          } else {
+            await replaceDriverImage(driver.id, nextImageUrl)
+          }
+        }
+
+        return updateDriver(driver.id, {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          nationalId: data.nationalId,
+          mobileNumber: data.mobileNumber,
+        })
       }
 
       return createDriver(data)
@@ -90,12 +121,30 @@ export function useDriverFormModal({
     }
   }
 
+  async function onUploadImage(file: File) {
+    const uploaded = await uploadDriverImage(file)
+    setValue('imageUrl', uploaded.imageUrl, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+  }
+
+  async function onRemoveImage() {
+    setValue('imageUrl', '', { shouldDirty: true, shouldValidate: true })
+  }
+
   function handleFormError(error: unknown) {
     setServerError(
       applyApiFieldErrors({
         error,
         setError,
-        fields: ['firstName', 'lastName', 'nationalId', 'mobileNumber'],
+        fields: [
+          'firstName',
+          'lastName',
+          'nationalId',
+          'mobileNumber',
+          'imageUrl',
+        ],
         messages: {
           nationalId: () => LL.externalPanel.drivers.duplicateNationalId(),
           mobileNumber: () => LL.externalPanel.drivers.duplicateMobileNumber(),
@@ -128,6 +177,10 @@ export function useDriverFormModal({
     isSaving,
     title,
     confirmLabel,
+    imageUrl,
+    imageError: errors.imageUrl?.message?.toString(),
+    onUploadImage,
+    onRemoveImage,
     onSubmit,
     handleClose,
   }

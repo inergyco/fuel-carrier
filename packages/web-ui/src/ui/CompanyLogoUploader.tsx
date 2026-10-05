@@ -1,9 +1,9 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
-  COMPANY_LOGO_MAX_BYTES,
-  COMPANY_LOGO_MIME_TYPES,
-  isCompanyLogoMimeType,
-} from '@fuel-carrier/shared-validation/company/constants'
+  IMAGE_UPLOAD_MAX_BYTES,
+  IMAGE_UPLOAD_MIME_TYPES,
+  isImageUploadMimeType,
+} from '@fuel-carrier/shared-validation/image-upload/constants'
 import { CompanyBrandLogo } from './CompanyBrandLogo'
 import { ImageUploader } from './ImageUploader'
 
@@ -27,9 +27,9 @@ export function CompanyLogoUploader({
   return (
     <ImageUploader
       imageUrl={logoUrl}
-      formats={COMPANY_LOGO_MIME_TYPES}
-      maxBytes={COMPANY_LOGO_MAX_BYTES}
-      isAcceptedType={isCompanyLogoMimeType}
+      formats={IMAGE_UPLOAD_MIME_TYPES}
+      maxBytes={IMAGE_UPLOAD_MAX_BYTES}
+      isAcceptedType={isImageUploadMimeType}
       emptyPreview={<CompanyBrandLogo />}
       label={LL.common.companyLogo.label()}
       error={error}

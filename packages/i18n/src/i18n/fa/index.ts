@@ -58,6 +58,17 @@ const fa: Translation = {
       tooLarge: "حجم لوگو باید ۲ مگابایت یا کمتر باشد.",
       uploadFailed: "بارگذاری لوگو انجام نشد. لطفاً دوباره تلاش کنید.",
     },
+    driverImage: {
+      label: "تصویر",
+      hint: "PNG، JPG، WEBP، GIF یا SVG. حداکثر ۲ مگابایت.",
+      choose: "انتخاب تصویر",
+      change: "تغییر تصویر",
+      remove: "حذف",
+      uploading: "در حال بارگذاری…",
+      invalidType: "یک تصویر PNG، JPG، WEBP، GIF یا SVG انتخاب کنید.",
+      tooLarge: "حجم تصویر باید ۲ مگابایت یا کمتر باشد.",
+      uploadFailed: "بارگذاری تصویر انجام نشد. لطفاً دوباره تلاش کنید.",
+    },
     showPassword: "نمایش رمز عبور",
     hidePassword: "مخفی کردن رمز عبور",
     dismiss: "بستن",
@@ -83,6 +94,8 @@ const fa: Translation = {
     companyNoteTooLong: "یادداشت باید حداکثر {max} کاراکتر باشد",
     companyLogoUrlTooLong: "آدرس لوگو باید حداکثر {max} کاراکتر باشد",
     companyLogoUrlInvalid: "آدرس لوگو باید یک URL معتبر باشد",
+    driverImageUrlTooLong: "آدرس تصویر باید حداکثر {max} کاراکتر باشد",
+    driverImageUrlInvalid: "آدرس تصویر باید یک URL معتبر باشد",
   },
   internalPanel: {
     login: {
@@ -533,6 +546,7 @@ const fa: Translation = {
       carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
       passwordChanged: "رمز عبور به‌روزرسانی شد.",
       logoUpdated: "لوگو به‌روزرسانی شد.",
+      driverImageUpdated: "تصویر راننده به‌روزرسانی شد.",
     },
     settings: {
       title: "تنظیمات",

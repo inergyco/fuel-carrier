@@ -62,7 +62,27 @@ export function getDriverColumns({
     {
       key: 'firstName',
       header: LL.internalPanel.companies.detail.firstName(),
-      cell: (driver) => driver.firstName,
+      cell: function renderFirstName(driver) {
+        return (
+          <span className="inline-flex items-center gap-2.5">
+            <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-base-100/60">
+              {driver.imageUrl ? (
+                <img
+                  src={driver.imageUrl}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              ) : (
+                <span className="text-xs font-medium text-base-content/40">
+                  {driver.firstName.charAt(0)}
+                  {driver.lastName.charAt(0)}
+                </span>
+              )}
+            </span>
+            <span>{driver.firstName}</span>
+          </span>
+        )
+      },
     },
     {
       key: 'lastName',

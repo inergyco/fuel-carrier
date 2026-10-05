@@ -19,6 +19,7 @@ export const drivers = pgTable(
     lastName: varchar('last_name', { length: 100 }).notNull(),
     nationalId: varchar('national_id', { length: 32 }).notNull(),
     mobileNumber: varchar('mobile_number', { length: 20 }).notNull(),
+    imageUrl: varchar('image_url', { length: 2048 }),
     companyId: uuid('company_id')
       .notNull()
       .references(() => companies.id, { onDelete: 'cascade' }),

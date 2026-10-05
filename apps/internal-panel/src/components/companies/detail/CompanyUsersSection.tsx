@@ -1,6 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Pagination } from '@fuel-carrier/web-ui/ui'
-import { getUserColumns } from './companyResourceColumns'
+import { getUserColumns } from './companyResourceColumns.tsx'
 import { CompanyUserFormModal } from './CompanyUserFormModal'
 import { DeleteCompanyUserModal } from './DeleteCompanyUserModal'
 import { ResourceSection } from './ResourceSection'

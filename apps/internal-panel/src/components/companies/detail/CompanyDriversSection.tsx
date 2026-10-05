@@ -1,6 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Pagination, ResourceListToolbar } from '@fuel-carrier/web-ui/ui'
-import { getDriverColumns } from './companyResourceColumns'
+import { getDriverColumns } from './companyResourceColumns.tsx'
 import { DeleteCompanyDriverModal } from './DeleteCompanyDriverModal'
 import { DriverFormModal } from './DriverFormModal'
 import { ResourceSection } from './ResourceSection'

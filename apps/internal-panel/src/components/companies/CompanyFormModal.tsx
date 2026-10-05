@@ -3,12 +3,12 @@ import type { Company } from "@fuel-carrier/shared-types";
 import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   COMPANY_ADDRESS_MAX_LENGTH,
-  COMPANY_LOGO_URL_MAX_LENGTH,
   COMPANY_NAME_MAX_LENGTH,
   COMPANY_NATIONAL_ID_MAX_LENGTH,
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
 } from "@fuel-carrier/shared-validation/company/constants";
+import { IMAGE_UPLOAD_URL_MAX_LENGTH } from "@fuel-carrier/shared-validation/image-upload/constants";
 import {
   createCreateCompanyDtoSchema,
   type CreateCompanyDto,
@@ -85,7 +85,7 @@ export function CompanyFormModal({
           max: COMPANY_NOTE_MAX_LENGTH,
         }),
         logoUrlTooLong: LL.validation.companyLogoUrlTooLong({
-          max: COMPANY_LOGO_URL_MAX_LENGTH,
+          max: IMAGE_UPLOAD_URL_MAX_LENGTH,
         }),
         logoUrlInvalid: LL.validation.companyLogoUrlInvalid(),
       });

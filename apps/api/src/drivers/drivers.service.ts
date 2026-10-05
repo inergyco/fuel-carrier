@@ -39,6 +39,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 import { mapCarRow } from '../cars/cars-reader.service';
+import { driverImageStorage } from '../uploads/image-storages';
 import { buildDriverSearchFilter } from './drivers-list-filters';
 
 type CreateDriverPayload = {
@@ -46,10 +47,13 @@ type CreateDriverPayload = {
   lastName: string;
   nationalId: string;
   mobileNumber: string;
+  imageUrl?: string | null;
   companyId: string;
 };
 
-type UpdateDriverPayload = Partial<CreateDriverPayload>;
+type UpdateDriverPayload = Partial<Omit<CreateDriverPayload, 'imageUrl'>> & {
+  imageUrl?: string | null;
+};
 
 const DRIVER_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
   {
@@ -257,6 +261,26 @@ export class DriversService {
     }
   }
 
+  /**
+   * Explicit image replace/clear. File cleanup stays here — not on generic
+   * `update` — so a normal driver PATCH never touches the filesystem.
+   */
+  async replaceImage(
+    context: TenantContext,
+    id: string,
+    imageUrl: string | null,
+  ): Promise<Driver> {
+    const existing = await this.getById(context, id);
+    const previousImageUrl = (existing as { imageUrl: string | null }).imageUrl;
+    if (previousImageUrl === imageUrl) {
+      return existing;
+    }
+
+    const driver = await this.update(context, id, { imageUrl });
+    await driverImageStorage.removeStored(previousImageUrl);
+    return driver;
+  }
+
   /** Soft-delete: set deletedAt, end custody, keep row. */
   async delete(context: TenantContext, id: string): Promise<null> {
     return this.tenantDb.run(context, async (tx) => {
@@ -379,6 +403,7 @@ function _mapDriver(row: typeof drivers.$inferSelect): Driver {
     lastName: row.lastName,
     nationalId: row.nationalId,
     mobileNumber: row.mobileNumber,
+    imageUrl: row.imageUrl ?? null,
     companyId: row.companyId,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
@@ -400,5 +425,6 @@ const DRIVER_AUDIT_FIELDS = [
   'lastName',
   'nationalId',
   'mobileNumber',
+  'imageUrl',
   'companyId',
 ] as const satisfies readonly (keyof Driver)[];
