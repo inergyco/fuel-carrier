@@ -1,39 +1,39 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
 import type {
   CarTelemetryMarker,
   FuelGradeFilter,
   FuelLevelFilter,
-} from '@fuel-carrier/shared-types'
-import { useState } from 'react'
-import { useQuery } from '../query'
+} from "@fuel-carrier/shared-types";
+import { useState } from "react";
+import { useQuery } from "../query";
 import {
   DashboardCardsSkeleton,
   normalizeResourceListSearchText,
   Pagination,
   ResourceListToolbar,
   useDebouncedValue,
-} from '../ui'
-import { DashboardCarCard } from './car-card'
+} from "../ui";
+import { DashboardCarCard } from "./car-card";
 import type {
   CompanyDashboardDataSource,
   CompanyDashboardLabels,
   CompanyDashboardLinkRenderers,
   CompanyDashboardListParams,
-} from './CompanyDashboard.types'
+} from "./CompanyDashboard.types";
 
-const DASHBOARD_CARS_PAGE_SIZE = 4
+const DASHBOARD_CARS_PAGE_SIZE = 4;
 
 const CAR_GRID_CLASS_NAME =
-  'grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+  "grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4";
 
 type DashboardCarsSectionProps = {
-  companyId?: string
-  dataSource: CompanyDashboardDataSource
-  enabled?: boolean
-  labels: CompanyDashboardLabels
-  telemetryMarkers: CarTelemetryMarker[]
-  renderCarDetailsLink: CompanyDashboardLinkRenderers['renderCarDetailsLink']
-}
+  companyId?: string;
+  dataSource: CompanyDashboardDataSource;
+  enabled?: boolean;
+  labels: CompanyDashboardLabels;
+  telemetryMarkers: CarTelemetryMarker[];
+  renderCarDetailsLink: CompanyDashboardLinkRenderers["renderCarDetailsLink"];
+};
 
 export function DashboardCarsSection({
   companyId,
@@ -43,13 +43,13 @@ export function DashboardCarsSection({
   telemetryMarkers,
   renderCarDetailsLink,
 }: DashboardCarsSectionProps) {
-  const { LL } = useI18nContext()
-  const [page, setPage] = useState(1)
-  const [draftSearchText, setDraftSearchText] = useState('')
-  const [fuelGrade, setFuelGrade] = useState<FuelGradeFilter>('all')
-  const [fuelLevel, setFuelLevel] = useState<FuelLevelFilter>('all')
-  const debouncedDraftSearchText = useDebouncedValue(draftSearchText)
-  const search = normalizeResourceListSearchText(debouncedDraftSearchText)
+  const { LL } = useI18nContext();
+  const [page, setPage] = useState(1);
+  const [draftSearchText, setDraftSearchText] = useState("");
+  const [fuelGrade, setFuelGrade] = useState<FuelGradeFilter>("all");
+  const [fuelLevel, setFuelLevel] = useState<FuelLevelFilter>("all");
+  const debouncedDraftSearchText = useDebouncedValue(draftSearchText);
+  const search = normalizeResourceListSearchText(debouncedDraftSearchText);
 
   const listParams: CompanyDashboardListParams = {
     page,
@@ -57,40 +57,40 @@ export function DashboardCarsSection({
     search,
     fuelGrade,
     fuelLevel,
-    ...(typeof companyId === 'string' ? { companyId } : {}),
-  }
+    ...(typeof companyId === "string" ? { companyId } : {}),
+  };
 
   const carsQuery = useQuery({
     queryKey: dataSource.carsListKey(listParams),
     queryFn: () => dataSource.fetchCars(listParams),
     enabled,
     placeholderData: (previous) => previous,
-  })
+  });
 
   const telemetryByCarId = new Map(
     telemetryMarkers.map((marker) => [marker.carId, marker]),
-  )
+  );
 
-  const carsResult = carsQuery.data
-  const cars = carsResult?.items ?? []
-  const totalItems = carsResult?.totalItems ?? 0
-  const isCarsLoading = carsQuery.isLoading && !carsResult
+  const carsResult = carsQuery.data;
+  const cars = carsResult?.items ?? [];
+  const totalItems = carsResult?.totalItems ?? 0;
+  const isCarsLoading = carsQuery.isLoading && !carsResult;
   const hasActiveFilters =
-    Boolean(search) || fuelGrade !== 'all' || fuelLevel !== 'all'
+    Boolean(search) || fuelGrade !== "all" || fuelLevel !== "all";
 
   function handleSearchTextChange(nextSearchText: string) {
-    setDraftSearchText(nextSearchText)
-    setPage(1)
+    setDraftSearchText(nextSearchText);
+    setPage(1);
   }
 
   function handleFuelGradeChange(nextFuelGrade: FuelGradeFilter) {
-    setFuelGrade(nextFuelGrade)
-    setPage(1)
+    setFuelGrade(nextFuelGrade);
+    setPage(1);
   }
 
   function handleFuelLevelChange(nextFuelLevel: FuelLevelFilter) {
-    setFuelLevel(nextFuelLevel)
-    setPage(1)
+    setFuelLevel(nextFuelLevel);
+    setPage(1);
   }
 
   if (isCarsLoading) {
@@ -104,7 +104,7 @@ export function DashboardCarsSection({
           columnsClassName={CAR_GRID_CLASS_NAME}
         />
       </section>
-    )
+    );
   }
 
   if (totalItems === 0 && !hasActiveFilters) {
@@ -114,13 +114,13 @@ export function DashboardCarsSection({
           {labels.carsEmpty()}
         </div>
       </section>
-    )
+    );
   }
 
   return (
     <section className="flex-1">
       <ResourceListToolbar
-        className="mb-4"
+        className="mb-4 justify-between"
         searchPlaceholder={labels.carsSearchPlaceholder()}
         searchText={draftSearchText}
         onSearchTextChange={handleSearchTextChange}
@@ -147,7 +147,7 @@ export function DashboardCarsSection({
                     detailsLink={renderCarDetailsLink(car.id)}
                   />
                 </li>
-              )
+              );
             })}
           </ul>
           {carsResult ? (
@@ -164,5 +164,5 @@ export function DashboardCarsSection({
         </>
       )}
     </section>
-  )
+  );
 }
