@@ -1,10 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
-import {
-  CompanyLogoUploader,
-  PageHeader,
-  useToast,
-} from '@fuel-carrier/web-ui/ui'
+import { CompanyLogoUploader, useToast } from '@fuel-carrier/web-ui/ui'
 import { authKeys, fetchMe } from '../../lib/api/auth'
 import { removeCompanyLogo, uploadCompanyLogo } from '../../lib/api/company'
 
@@ -35,11 +31,7 @@ export function SettingsPage() {
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm sm:p-6">
-      <PageHeader
-        title={LL.externalPanel.settings.title()}
-        subtitle={LL.externalPanel.settings.subtitle()}
-      />
-      <div className="mt-6 max-w-xl">
+      <div className="max-w-xl">
         <CompanyLogoUploader
           logoUrl={meQuery.data?.companyLogoUrl}
           onUploadFile={handleUploadLogo}

@@ -4,12 +4,16 @@ import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchCar } from '../../lib/api/cars'
 
-export function useCarQuery(carId: string) {
+export function useCarQuery(
+  carId: string,
+  options?: { enabled?: boolean },
+) {
   const carQuery = useQuery<Car>({
     queryKey: carKeys.detail(carId),
     queryFn: function loadCar() {
       return fetchCar(carId)
     },
+    enabled: (options?.enabled ?? true) && Boolean(carId),
   })
 
   const isNotFound =

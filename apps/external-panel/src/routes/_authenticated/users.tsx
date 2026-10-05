@@ -27,8 +27,6 @@ function CompanyUsersPage() {
   return (
     <div>
       <ResourceSection
-        title={LL.externalPanel.users.title()}
-        subtitle={LL.externalPanel.users.subtitle()}
         addLabel={LL.externalPanel.users.addUser()}
         emptyLabel={LL.externalPanel.users.empty()}
         loading={users.usersQuery.isLoading && !result}

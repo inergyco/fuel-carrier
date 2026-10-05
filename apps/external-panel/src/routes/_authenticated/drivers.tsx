@@ -28,8 +28,6 @@ function DriversPage() {
   return (
     <div>
       <ResourceSection
-        title={LL.externalPanel.drivers.title()}
-        subtitle={LL.externalPanel.drivers.subtitle()}
         addLabel={LL.externalPanel.drivers.addDriver()}
         emptyLabel={
           drivers.hasActiveFilters

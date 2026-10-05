@@ -1,141 +1,68 @@
-import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { useI18nContext } from '@fuel-carrier/i18n/react'
+import type { AuthSession } from '@fuel-carrier/shared-types'
+import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
+import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
-  isCompanyUserAdmin,
-  type AuthSession,
-} from "@fuel-carrier/shared-types";
-import { useQueryClient } from "@fuel-carrier/web-ui/query";
-import {
-  Button,
   CompanyBrandLogo,
   ConfirmModal,
-  ICON_STROKE_WIDTH,
   PanelShell,
-  type PanelNavItem,
-} from "@fuel-carrier/web-ui/ui";
-import {
-  Home,
-  Users,
-  Car,
-  Truck,
-  Map,
-  ScrollText,
-  Settings,
-} from "@fuel-carrier/web-ui/icons";
-import { useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
-import { authKeys, logout } from "../lib/api/auth";
-import { broadcastAuthLogout } from "@fuel-carrier/web-ui/auth";
-import { redirectToLoginPage } from "@fuel-carrier/web-ui/utils";
-import { InergyFooter } from "./InergyFooter";
+} from '@fuel-carrier/web-ui/ui'
+import { redirectToLoginPage } from '@fuel-carrier/web-ui/utils'
+import { useRouterState } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
+import { authKeys, logout } from '../lib/api/auth'
+import { InergyFooter } from './InergyFooter'
+import { AppBarBackLink } from './shell/AppBarBackLink'
+import { ShellSidebarFooter } from './shell/ShellSidebarFooter'
+import { useAppBarHeading } from './shell/useAppBarHeading'
+import { useExternalNavItems } from './shell/useExternalNavItems'
 
 interface AuthenticatedShellProps {
-  children: ReactNode;
-  user: AuthSession;
+  children: ReactNode
+  user: AuthSession
 }
 
 export function AuthenticatedShell({
   children,
   user,
 }: AuthenticatedShellProps) {
-  const { LL } = useI18nContext();
-  const queryClient = useQueryClient();
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { LL } = useI18nContext()
+  const queryClient = useQueryClient()
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const pathname = useRouterState({
     select: function selectPathname(state) {
-      return state.location.pathname;
+      return state.location.pathname
     },
-  });
-  const isMapPage = pathname === "/map";
-  const isHomePage = pathname === "/";
-
-  const navItems = useMemo(
-    function createNavItems(): PanelNavItem[] {
-      const items: PanelNavItem[] = [
-        {
-          to: "/",
-          label: LL.externalPanel.nav.dashboard(),
-          icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-          exact: true,
-        },
-      ];
-
-      if (isCompanyUserAdmin(user)) {
-        items.push({
-          to: "/users",
-          label: LL.externalPanel.nav.users(),
-          icon: <Users strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        });
-      }
-
-      items.push(
-        {
-          to: "/drivers",
-          label: LL.externalPanel.nav.drivers(),
-          icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        },
-        {
-          to: "/cars",
-          label: LL.externalPanel.nav.cars(),
-          icon: <Car strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        },
-        {
-          to: "/map",
-          label: LL.externalPanel.nav.map(),
-          icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        },
-      );
-
-      if (isCompanyUserAdmin(user)) {
-        items.push(
-          {
-            to: "/audit-logs",
-            label: LL.externalPanel.nav.auditLogs(),
-            icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-          },
-          {
-            to: "/settings",
-            label: LL.externalPanel.nav.settings(),
-            icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-          },
-        );
-      }
-
-      return items;
-    },
-    [LL, user],
-  );
+  })
+  const isMapPage = pathname === '/map'
+  const heading = useAppBarHeading(pathname, user.firstName)
+  const navItems = useExternalNavItems(user)
 
   function handleOpenLogoutModal() {
-    setIsLogoutModalOpen(true);
+    setIsLogoutModalOpen(true)
   }
 
   function handleCloseLogoutModal() {
     if (!isLoggingOut) {
-      setIsLogoutModalOpen(false);
+      setIsLogoutModalOpen(false)
     }
   }
 
   async function handleConfirmLogout() {
-    setIsLoggingOut(true);
+    setIsLoggingOut(true)
 
     try {
-      await logout();
-      queryClient.removeQueries({ queryKey: authKeys.me });
-      broadcastAuthLogout("external");
-      setIsLogoutModalOpen(false);
-      redirectToLoginPage(location.href);
+      await logout()
+      queryClient.removeQueries({ queryKey: authKeys.me })
+      broadcastAuthLogout('external')
+      setIsLogoutModalOpen(false)
+      redirectToLoginPage(location.href)
     } finally {
-      setIsLoggingOut(false);
+      setIsLoggingOut(false)
     }
   }
-
-  const initials =
-    `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
-  const levelLabel = isCompanyUserAdmin(user)
-    ? LL.common.companyUserLevel.admin()
-    : LL.common.companyUserLevel.viewer();
 
   return (
     <>
@@ -145,13 +72,12 @@ export function AuthenticatedShell({
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
-        appBarTitle={
-          isHomePage ? LL.externalPanel.home.title() : undefined
-        }
-        appBarSubtitle={
-          isHomePage
-            ? LL.externalPanel.home.welcome({ firstName: user.firstName })
-            : undefined
+        appBarTitle={heading?.title}
+        appBarSubtitle={heading?.subtitle}
+        appBarBack={
+          heading?.backTo && heading.backLabel ? (
+            <AppBarBackLink to={heading.backTo} label={heading.backLabel} />
+          ) : null
         }
         fullWidthMain={isMapPage}
         pageFooter={
@@ -163,38 +89,7 @@ export function AuthenticatedShell({
           )
         }
         footer={
-          <div className="space-y-3">
-            <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
-                  {initials}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  <p className="truncate font-mono text-[10px] text-white/45">
-                    @{user.username}
-                  </p>
-                  <p className="truncate text-[10px] text-white/50">
-                    {levelLabel}
-                  </p>
-                </div>
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                className="h-9 w-full justify-center border border-white/12 bg-white/5 text-white normal-case tracking-normal hover:bg-white/10"
-                onClick={handleOpenLogoutModal}
-              >
-                {LL.externalPanel.nav.signOut()}
-              </Button>
-            </div>
-            <InergyFooter
-              stacked
-              className="hidden text-white/40 lg:flex [&_p]:text-white/40"
-            />
-          </div>
+          <ShellSidebarFooter user={user} onSignOut={handleOpenLogoutModal} />
         }
       >
         {children}
@@ -212,5 +107,5 @@ export function AuthenticatedShell({
         onCancel={handleCloseLogoutModal}
       />
     </>
-  );
+  )
 }

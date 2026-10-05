@@ -47,8 +47,6 @@ function CarsPage() {
   return (
     <div>
       <ResourceSection
-        title={LL.externalPanel.cars.title()}
-        subtitle={LL.externalPanel.cars.subtitle()}
         addLabel={LL.externalPanel.cars.addCar()}
         emptyLabel={
           cars.hasActiveFilters

@@ -23,6 +23,8 @@ interface PanelShellProps {
   appBarTitle?: string
   /** Optional subtitle under the app bar title (e.g. welcome line). */
   appBarSubtitle?: string
+  /** Leading control in the app bar, such as a back button. */
+  appBarBack?: ReactNode
   footer?: ReactNode
   pageFooter?: ReactNode
   background?: ReactNode
@@ -48,6 +50,7 @@ export function PanelShell({
   openMenuLabel,
   appBarTitle,
   appBarSubtitle,
+  appBarBack,
   footer,
   pageFooter,
   background,
@@ -78,6 +81,8 @@ export function PanelShell({
           >
             <Menu className="size-6" strokeWidth={2.25} aria-hidden />
           </label>
+
+          {appBarBack}
 
           {appBarTitle || appBarSubtitle ? (
             <PageHeader

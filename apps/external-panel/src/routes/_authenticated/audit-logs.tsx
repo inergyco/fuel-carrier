@@ -5,7 +5,6 @@ import { useQuery } from '@fuel-carrier/web-ui/query'
 import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
 import {
   MEDIA_QUERIES,
-  PageHeader,
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
@@ -104,12 +103,6 @@ function AuditLogsPage() {
   return (
     <div>
       <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
-        <PageHeader
-          className="mb-4"
-          title={LL.externalPanel.auditLogs.title()}
-          subtitle={LL.externalPanel.auditLogs.subtitle()}
-        />
-
         {renderBody()}
       </section>
     </div>

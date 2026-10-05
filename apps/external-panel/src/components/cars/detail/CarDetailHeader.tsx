@@ -4,14 +4,12 @@ import { KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
-  PageHeader,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
 import { CarMqttCredentialsModals } from '../CarMqttCredentialsModals'
 import { useCarMqttCredentials } from '../useCarMqttCredentials'
 import { CarCustodyActions } from '../CarCustodyActions'
 import type { CarCustodyApi } from '../useCarCustody'
-import { CarDetailBackLink } from './CarDetailBackLink'
 
 interface CarDetailHeaderProps {
   car: Car
@@ -26,8 +24,6 @@ export function CarDetailHeader({
 }: CarDetailHeaderProps) {
   const { LL } = useI18nContext()
   const mqtt = useCarMqttCredentials()
-  const title =
-    car.name?.trim() || car.licensePlate || LL.externalPanel.cars.detailTitle()
   const driverName = custody.currentDriverName(car)
 
   function handleOpenMqttCredentials() {
@@ -36,16 +32,9 @@ export function CarDetailHeader({
 
   return (
     <div className="mb-6">
-      <CarDetailBackLink />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
-          <PageHeader
-            title={title}
-            subtitle={
-              <span className="font-mono">{car.licensePlate}</span>
-            }
-          />
-          <p className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-base-content/10 bg-base-100/40 px-3 py-2 text-sm">
+          <p className="inline-flex max-w-full items-center gap-2 rounded-lg border border-base-content/10 bg-base-100/40 px-3 py-2 text-sm">
             <User
               className={iconSmClassName}
               strokeWidth={ICON_STROKE_WIDTH}
@@ -91,17 +80,6 @@ export function CarDetailHeader({
           onCloseCredentials={mqtt.closeMqttCredentials}
         />
       ) : null}
-    </div>
-  )
-}
-
-export function CarDetailLoadingHeader() {
-  const { LL } = useI18nContext()
-
-  return (
-    <div className="mb-6">
-      <CarDetailBackLink />
-      <p className="text-sm text-base-content/50">{LL.externalPanel.cars.loading()}</p>
     </div>
   )
 }

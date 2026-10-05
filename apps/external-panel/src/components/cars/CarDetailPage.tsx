@@ -6,11 +6,7 @@ import { getRouteApi } from '@tanstack/react-router'
 import { CarCustodyPickerSession } from './CarCustodyPickerSession'
 import { useCarCustody } from './useCarCustody'
 import { useCarQuery } from './useCarQuery'
-import {
-  CarDetailHeader,
-  CarDetailLoadingHeader,
-} from './detail/CarDetailHeader'
-import { CarDetailBackLink } from './detail/CarDetailBackLink'
+import { CarDetailHeader } from './detail/CarDetailHeader'
 import { CarDetailNotFound } from './detail/CarDetailNotFound'
 import { CarOverviewSection } from './detail/CarOverviewSection'
 import { CarTanksSection } from './detail/CarTanksSection'
@@ -29,7 +25,11 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
   const custody = useCarCustody()
 
   if (carQuery.isLoading) {
-    return <CarDetailLoadingHeader />
+    return (
+      <p className="text-sm text-base-content/50">
+        {LL.externalPanel.cars.loading()}
+      </p>
+    )
   }
 
   if (isNotFound) {
@@ -40,7 +40,6 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
     return (
       <div>
         <div className="mb-6">
-          <CarDetailBackLink />
           <QueryErrorState
             onRetry={() => {
               void carQuery.refetch()
