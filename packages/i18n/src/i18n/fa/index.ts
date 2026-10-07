@@ -29,6 +29,12 @@ const fa: Translation = {
       fuelLevelAll: "همه سطوح",
       fuelLevelFilterLabel: "سطح سوخت",
     },
+    dashboardMode: {
+      label: "حالت داشبورد",
+      fuelLevel: "سطح سوخت",
+      truckState: "وضعیت کامیون",
+    },
+
     fleetStats: {
       totalCars: "کل خودروها",
       fuelHigh: "سوخت ۷۵–۱۰۰٪",

@@ -2,6 +2,12 @@ export {
   CompanyDashboard,
   type CompanyDashboardProps,
 } from './CompanyDashboard'
+export {
+  DashboardModeSwitcher,
+  DASHBOARD_MODES,
+  type DashboardMode,
+  type DashboardModeSwitcherProps,
+} from './DashboardModeSwitcher'
 export type {
   CompanyDashboardDataSource,
   CompanyDashboardLabels,

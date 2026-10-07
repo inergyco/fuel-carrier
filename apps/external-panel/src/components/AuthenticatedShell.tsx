@@ -1,6 +1,7 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession } from '@fuel-carrier/shared-types'
 import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
+import { DashboardModeSwitcher } from '@fuel-carrier/web-ui/dashboard'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   CompanyBrandLogo,
@@ -78,6 +79,9 @@ export function AuthenticatedShell({
           heading?.backTo && heading.backLabel ? (
             <AppBarBackLink to={heading.backTo} label={heading.backLabel} />
           ) : null
+        }
+        appBarActions={
+          pathname === '/' ? <DashboardModeSwitcher /> : null
         }
         fullWidthMain={isMapPage}
         pageFooter={

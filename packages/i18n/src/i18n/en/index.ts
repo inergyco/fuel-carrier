@@ -29,6 +29,12 @@ const en: BaseTranslation = {
       fuelLevelAll: 'All levels',
       fuelLevelFilterLabel: 'Fuel level',
     },
+    dashboardMode: {
+      label: 'Dashboard mode',
+      fuelLevel: 'Fuel level',
+      truckState: 'Truck state',
+    },
+
     fleetStats: {
       totalCars: 'Total vehicles',
       fuelHigh: '75–100% fuel',

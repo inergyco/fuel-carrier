@@ -110,6 +110,20 @@ type RootTranslation = {
 			 */
 			fuelLevelFilterLabel: string
 		}
+		dashboardMode: {
+			/**
+			 * D​a​s​h​b​o​a​r​d​ ​m​o​d​e
+			 */
+			label: string
+			/**
+			 * F​u​e​l​ ​l​e​v​e​l
+			 */
+			fuelLevel: string
+			/**
+			 * T​r​u​c​k​ ​s​t​a​t​e
+			 */
+			truckState: string
+		}
 		fleetStats: {
 			/**
 			 * T​o​t​a​l​ ​v​e​h​i​c​l​e​s
@@ -3147,6 +3161,20 @@ export type TranslationFunctions = {
 			 * Fuel level
 			 */
 			fuelLevelFilterLabel: () => LocalizedString
+		}
+		dashboardMode: {
+			/**
+			 * Dashboard mode
+			 */
+			label: () => LocalizedString
+			/**
+			 * Fuel level
+			 */
+			fuelLevel: () => LocalizedString
+			/**
+			 * Truck state
+			 */
+			truckState: () => LocalizedString
 		}
 		fleetStats: {
 			/**

@@ -1,5 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
+import { DashboardModeSwitcher } from '@fuel-carrier/web-ui/dashboard'
 import {
   Button,
   ConfirmModal,
@@ -122,7 +123,10 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         }
         appBarActions={
           pathname === '/' || pathname === '/map' ? (
-            <CompanySwitcher />
+            <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+              <CompanySwitcher />
+              {pathname === '/' ? <DashboardModeSwitcher /> : null}
+            </div>
           ) : null
         }
         fullWidthMain={isMapPage}
