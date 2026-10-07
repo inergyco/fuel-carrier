@@ -39,7 +39,7 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
   if (carQuery.isError || !carQuery.data) {
     return (
       <div>
-        <div className="mb-6">
+        <div className="mb-6 ">
           <QueryErrorState
             onRetry={() => {
               void carQuery.refetch()
