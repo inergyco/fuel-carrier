@@ -64,6 +64,8 @@ export function CarsMap({
       center={IRAN_CENTER}
       zoom={DEFAULT_ZOOM}
       className="h-full w-full bg-base-300"
+      dragging
+      touchZoom
       scrollWheelZoom={false}
       doubleClickZoom={false}
     >

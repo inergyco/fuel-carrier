@@ -762,7 +762,7 @@ type RootTranslation = {
 			 */
 			exitFullPage: string
 			/**
-			 * Z​o​o​m​ ​w​i​t​h​ ​s​c​r​o​l​l
+			 * M​o​v​e​ ​t​h​e​ ​m​a​p
 			 */
 			enableScrollZoom: string
 			/**
@@ -2843,7 +2843,7 @@ type RootTranslation = {
 			 */
 			exitFullPage: string
 			/**
-			 * Z​o​o​m​ ​w​i​t​h​ ​s​c​r​o​l​l
+			 * M​o​v​e​ ​t​h​e​ ​m​a​p
 			 */
 			enableScrollZoom: string
 			/**
@@ -3830,7 +3830,7 @@ export type TranslationFunctions = {
 			 */
 			exitFullPage: () => LocalizedString
 			/**
-			 * Zoom with scroll
+			 * Move the map
 			 */
 			enableScrollZoom: () => LocalizedString
 			/**
@@ -5866,7 +5866,7 @@ export type TranslationFunctions = {
 			 */
 			exitFullPage: () => LocalizedString
 			/**
-			 * Zoom with scroll
+			 * Move the map
 			 */
 			enableScrollZoom: () => LocalizedString
 			/**

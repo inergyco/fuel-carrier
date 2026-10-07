@@ -9,6 +9,13 @@
   font: inherit;
   z-index: 0;
   background: var(--color-base-300);
+  /* Default: let the page scroll under a one-finger drag on phones. */
+  touch-action: pan-y !important;
+}
+
+.leaflet-container.fuel-carrier-map-gestures-active {
+  /* Activated: one-finger drag pans the map instead of the page. */
+  touch-action: none !important;
 }
 
 .leaflet-div-icon.fuel-carrier-map-marker {

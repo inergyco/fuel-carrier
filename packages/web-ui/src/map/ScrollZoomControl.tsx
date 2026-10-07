@@ -1,71 +1,80 @@
-import { useEffect, useState, type MouseEvent } from "react";
-import { createPortal } from "react-dom";
-import { useMap } from "react-leaflet";
-import { Scroll } from "../icons";
-import { MapControlButton } from "./MapControlButton";
-import { useLeafletControlPortal } from "./useLeafletControlPortal";
-import { useMapFullPage } from "./useMapFullPage";
-import { usePageCanScroll } from "./usePageCanScroll";
+import { useEffect, useState, type MouseEvent } from 'react'
+import { createPortal } from 'react-dom'
+import { useMap } from 'react-leaflet'
+import { Hand } from '../icons'
+import { MapControlButton } from './MapControlButton'
+import { useLeafletControlPortal } from './useLeafletControlPortal'
+import { useMapFullPage } from './useMapFullPage'
+import { usePageCanScroll } from './usePageCanScroll'
 
 export type ScrollZoomControlLabels = {
-  enableScrollZoom: () => string;
-  disableScrollZoom: () => string;
-};
+  enableScrollZoom: () => string
+  disableScrollZoom: () => string
+}
 
 type ScrollZoomControlProps = {
-  labels: ScrollZoomControlLabels;
-};
+  labels: ScrollZoomControlLabels
+}
 
 export function ScrollZoomControl({ labels }: ScrollZoomControlProps) {
-  const map = useMap();
+  const map = useMap()
   const container = useLeafletControlPortal({
-    position: "topright",
-    className: "fuel-carrier-scroll-zoom",
-  });
-  const isFullPage = useMapFullPage();
-  const pageCanScroll = usePageCanScroll();
-  const [isScrollZoomEnabled, setIsScrollZoomEnabled] = useState(false);
+    position: 'topright',
+    className: 'fuel-carrier-scroll-zoom',
+  })
+  const isFullPage = useMapFullPage()
+  const pageCanScroll = usePageCanScroll()
+  const [isMapGestureEnabled, setIsMapGestureEnabled] = useState(false)
+
+  const mapGesturesActive =
+    isFullPage || !pageCanScroll || isMapGestureEnabled
 
   useEffect(
-    function syncScrollWheelZoom() {
-      const scrollZoom = map.scrollWheelZoom;
-      if (scrollZoom == null) {
-        return;
+    function syncMapGestureHandlers() {
+      const mapContainer = map.getContainer()
+      const scrollZoom = map.scrollWheelZoom
+
+      if (mapGesturesActive) {
+        scrollZoom?.enable()
+        map.dragging.enable()
+        map.touchZoom?.enable()
+        mapContainer.classList.add('fuel-carrier-map-gestures-active')
+        return function restoreDefaultTouchAction() {
+          mapContainer.classList.remove('fuel-carrier-map-gestures-active')
+        }
       }
 
-      if (isFullPage || !pageCanScroll || isScrollZoomEnabled) {
-        scrollZoom.enable();
-        return;
-      }
-
-      scrollZoom.disable();
+      scrollZoom?.disable()
+      map.dragging.disable()
+      map.touchZoom?.disable()
+      mapContainer.classList.remove('fuel-carrier-map-gestures-active')
     },
-    [map, isFullPage, pageCanScroll, isScrollZoomEnabled],
-  );
+    [map, mapGesturesActive],
+  )
 
   if (container == null || isFullPage || !pageCanScroll) {
-    return null;
+    return null
   }
 
-  const label = isScrollZoomEnabled
+  const label = isMapGestureEnabled
     ? labels.disableScrollZoom()
-    : labels.enableScrollZoom();
+    : labels.enableScrollZoom()
 
-  function handleToggleScrollZoom(event: MouseEvent<HTMLButtonElement>) {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsScrollZoomEnabled((enabled) => !enabled);
+  function handleToggleMapGestures(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    event.stopPropagation()
+    setIsMapGestureEnabled((enabled) => !enabled)
   }
 
   return createPortal(
     <MapControlButton
       label={label}
-      pressed={isScrollZoomEnabled}
-      active={isScrollZoomEnabled}
-      onClick={handleToggleScrollZoom}
+      pressed={isMapGestureEnabled}
+      active={isMapGestureEnabled}
+      onClick={handleToggleMapGestures}
     >
-      <Scroll className="size-5" aria-hidden />
+      <Hand className="size-5" aria-hidden />
     </MapControlButton>,
     container,
-  );
+  )
 }
