@@ -8,6 +8,7 @@ import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
 import { FlyToMarkersControl } from './FlyToMarkersControl';
 import { FullPageMapControl } from './FullPageMapControl';
+import { ScrollZoomControl } from './ScrollZoomControl';
 import { getFuelLevelColor } from './fuel-level';
 import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
 import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
@@ -21,6 +22,8 @@ export type CarsMapLabels = {
   flyToMarkers: () => string;
   fullPage: () => string;
   exitFullPage: () => string;
+  enableScrollZoom: () => string;
+  disableScrollZoom: () => string;
   remainFuel: (params: { volume: string }) => string;
   fuelType: (params: { type: string }) => string;
   fuelTypeHighGrade: () => string;
@@ -61,7 +64,7 @@ export function CarsMap({
       center={IRAN_CENTER}
       zoom={DEFAULT_ZOOM}
       className="h-full w-full bg-base-300"
-      scrollWheelZoom
+      scrollWheelZoom={false}
       doubleClickZoom={false}
     >
       <OpenFreeMapBasemap />
@@ -71,6 +74,7 @@ export function CarsMap({
         labels={labels}
       />
       <FullPageMapControl labels={labels} />
+      <ScrollZoomControl labels={labels} />
       {pathPoints && pathPoints.length > 0 ? (
         <TrajectoryPathLayer
           pathPoints={pathPoints}

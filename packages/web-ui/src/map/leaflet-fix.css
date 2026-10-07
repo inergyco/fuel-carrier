@@ -159,8 +159,7 @@ html[dir="rtl"] .leaflet-popup-content {
   text-indent: 0;
 }
 
-.leaflet-control.fuel-carrier-fly-to-markers,
-.leaflet-control.fuel-carrier-full-page {
+.leaflet-control.fuel-carrier-map-control {
   clear: both;
   border: none;
   background: transparent;

@@ -762,6 +762,14 @@ type RootTranslation = {
 			 */
 			exitFullPage: string
 			/**
+			 * Z​o​o​m​ ​w​i​t​h​ ​s​c​r​o​l​l
+			 */
+			enableScrollZoom: string
+			/**
+			 * S​c​r​o​l​l​ ​t​h​e​ ​p​a​g​e
+			 */
+			disableScrollZoom: string
+			/**
 			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
 			 */
 			companyLegend: string
@@ -2835,6 +2843,14 @@ type RootTranslation = {
 			 */
 			exitFullPage: string
 			/**
+			 * Z​o​o​m​ ​w​i​t​h​ ​s​c​r​o​l​l
+			 */
+			enableScrollZoom: string
+			/**
+			 * S​c​r​o​l​l​ ​t​h​e​ ​p​a​g​e
+			 */
+			disableScrollZoom: string
+			/**
 			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
 			 */
 			selectVehicle: string
@@ -3813,6 +3829,14 @@ export type TranslationFunctions = {
 			 * Exit full page
 			 */
 			exitFullPage: () => LocalizedString
+			/**
+			 * Zoom with scroll
+			 */
+			enableScrollZoom: () => LocalizedString
+			/**
+			 * Scroll the page
+			 */
+			disableScrollZoom: () => LocalizedString
 			/**
 			 * Company colors
 			 */
@@ -5841,6 +5865,14 @@ export type TranslationFunctions = {
 			 * Exit full page
 			 */
 			exitFullPage: () => LocalizedString
+			/**
+			 * Zoom with scroll
+			 */
+			enableScrollZoom: () => LocalizedString
+			/**
+			 * Scroll the page
+			 */
+			disableScrollZoom: () => LocalizedString
 			/**
 			 * Select vehicle
 			 */

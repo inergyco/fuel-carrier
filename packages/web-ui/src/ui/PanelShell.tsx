@@ -121,6 +121,7 @@ export function PanelShell({
             className="pointer-events-none absolute -top-24 end-0 h-72 w-72 rounded-full bg-primary/8 blur-3xl"
           />
           <main
+            data-page-scroll
             className={cn(
               "relative z-10 min-h-0 flex-1",
               fullWidthMain
