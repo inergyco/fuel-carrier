@@ -6,8 +6,8 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { useTheme, type ThemeMode } from '../ui/theme-context';
 
 const OPENFREEMAP_STYLES: Record<ThemeMode, string> = {
-  light: 'https://tiles.openfreemap.org/styles/positron',
-  dark: 'https://tiles.openfreemap.org/styles/dark',
+  light: '/ofm/styles/positron',
+  dark: '/ofm/styles/dark',
 };
 
 export function OpenFreeMapBasemap() {

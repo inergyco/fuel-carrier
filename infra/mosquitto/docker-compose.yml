@@ -5,7 +5,7 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./config/mosquitto.conf:/etc/mosquitto/mosquitto.conf:ro
+      - ./config/mosquitto.local.conf:/etc/mosquitto/mosquitto.conf:ro
       - ./config/secrets/postgres.conf:/etc/mosquitto/secrets/postgres.conf:ro
       - mosquitto-data:/var/lib/mosquitto
     extra_hosts:
