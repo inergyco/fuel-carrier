@@ -5,7 +5,8 @@ import {
   iconMdClassName,
 } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
+import type { MouseEvent } from 'react'
 
 export type AppBarBackLinkProps =
   | {
@@ -19,6 +20,14 @@ export type AppBarBackLinkProps =
     }
 
 export function AppBarBackLink(props: AppBarBackLinkProps) {
+  const router = useRouter()
+
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!router.history.canGoBack()) return
+    event.preventDefault()
+    router.history.back()
+  }
+
   const icon = (
     <ArrowLeft
       className={cn(iconMdClassName, 'rtl:rotate-180')}
@@ -34,6 +43,7 @@ export function AppBarBackLink(props: AppBarBackLinkProps) {
         params={{ companyId: props.companyId }}
         aria-label={props.label}
         className={iconButtonClassName}
+        onClick={handleClick}
       >
         {icon}
       </Link>
@@ -45,6 +55,7 @@ export function AppBarBackLink(props: AppBarBackLinkProps) {
       to="/companies"
       aria-label={props.label}
       className={iconButtonClassName}
+      onClick={handleClick}
     >
       {icon}
     </Link>

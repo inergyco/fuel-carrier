@@ -14,7 +14,6 @@ import {
 import {
   Home,
   Building2,
-  Map,
   ScrollText,
   Settings,
 } from "@fuel-carrier/web-ui/icons";

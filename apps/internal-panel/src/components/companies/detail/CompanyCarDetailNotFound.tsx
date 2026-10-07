@@ -1,4 +1,4 @@
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useRouter } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Button } from '@fuel-carrier/web-ui/ui'
 
@@ -11,8 +11,13 @@ export function CompanyCarDetailNotFound({
 }: CompanyCarDetailNotFoundProps) {
   const { LL } = useI18nContext()
   const navigate = useNavigate()
+  const router = useRouter()
 
   function handleBackToList() {
+    if (router.history.canGoBack()) {
+      router.history.back()
+      return
+    }
     void navigate({
       to: '/companies/$companyId/cars',
       params: { companyId },
