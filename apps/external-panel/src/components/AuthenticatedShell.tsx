@@ -1,7 +1,10 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { AuthSession } from '@fuel-carrier/shared-types'
 import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
-import { DashboardModeSwitcher } from '@fuel-carrier/web-ui/dashboard'
+import {
+  DashboardModeProvider,
+  DashboardModeSwitcher,
+} from '@fuel-carrier/web-ui/dashboard'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   CompanyBrandLogo,
@@ -67,6 +70,7 @@ export function AuthenticatedShell({
 
   return (
     <>
+      <DashboardModeProvider panelId="external">
       <PanelShell
         brandTitle={LL.externalPanel.shell.brand()}
         brandSubtitle={LL.externalPanel.shell.brandSubtitle()}
@@ -112,6 +116,7 @@ export function AuthenticatedShell({
         onConfirm={handleConfirmLogout}
         onCancel={handleCloseLogoutModal}
       />
+      </DashboardModeProvider>
     </>
   )
 }

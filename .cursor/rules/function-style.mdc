@@ -18,5 +18,6 @@ alwaysApply: true
 
 ## Function declarations vs arrows
 
-- **One-liners** (Zod `.transform`, simple maps): arrow functions, e.g. `(value) => value || null`.
+- **One-liners must use arrow functions** — callbacks, predicates, simple maps/filters, and single-expression helpers: `(value) => value || null`, `(mode) => mode === value`, `() => ({ mode, setMode })`.
+- Never write `function name() { return … }` when the body is a single expression; use an arrow instead.
 - **Multi-statement helpers used in a component body**: `function` declarations, not arrows.

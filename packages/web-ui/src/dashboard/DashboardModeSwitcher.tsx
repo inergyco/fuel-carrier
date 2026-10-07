@@ -1,12 +1,13 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { ChangeEvent } from 'react'
-import { useState } from 'react'
 import { cn } from '../utils'
 import { Select } from '../ui/Select'
-
-export const DASHBOARD_MODES = ['fuelLevel', 'truckState'] as const
-
-export type DashboardMode = (typeof DASHBOARD_MODES)[number]
+import { useDashboardMode } from './DashboardModeProvider'
+import {
+  DASHBOARD_MODES,
+  isDashboardMode,
+  type DashboardMode,
+} from './dashboard-mode'
 
 export type DashboardModeSwitcherProps = {
   className?: string
@@ -16,7 +17,7 @@ export function DashboardModeSwitcher({
   className,
 }: DashboardModeSwitcherProps) {
   const { LL } = useI18nContext()
-  const [mode, setMode] = useState<DashboardMode>('fuelLevel')
+  const { mode, setMode } = useDashboardMode()
 
   function modeLabel(value: DashboardMode): string {
     if (value === 'truckState') {
@@ -27,7 +28,10 @@ export function DashboardModeSwitcher({
   }
 
   function handleChange(event: ChangeEvent<HTMLSelectElement>) {
-    setMode(event.target.value as DashboardMode)
+    const nextMode = event.target.value
+    if (isDashboardMode(nextMode)) {
+      setMode(nextMode)
+    }
   }
 
   return (
@@ -49,13 +53,11 @@ export function DashboardModeSwitcher({
             className,
           )}
         >
-          {DASHBOARD_MODES.map(function renderModeOption(option) {
-            return (
-              <option key={option} value={option}>
-                {modeLabel(option)}
-              </option>
-            )
-          })}
+          {DASHBOARD_MODES.map((option) => (
+            <option key={option} value={option}>
+              {modeLabel(option)}
+            </option>
+          ))}
         </Select>
       </div>
     </div>

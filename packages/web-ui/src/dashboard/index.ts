@@ -4,10 +4,17 @@ export {
 } from './CompanyDashboard'
 export {
   DashboardModeSwitcher,
-  DASHBOARD_MODES,
-  type DashboardMode,
   type DashboardModeSwitcherProps,
 } from './DashboardModeSwitcher'
+export {
+  DashboardModeProvider,
+  useDashboardMode,
+} from './DashboardModeProvider'
+export {
+  DASHBOARD_MODES,
+  isDashboardMode,
+  type DashboardMode,
+} from './dashboard-mode'
 export type {
   CompanyDashboardDataSource,
   CompanyDashboardLabels,

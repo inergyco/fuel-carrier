@@ -1,6 +1,9 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
-import { DashboardModeSwitcher } from '@fuel-carrier/web-ui/dashboard'
+import {
+  DashboardModeProvider,
+  DashboardModeSwitcher,
+} from '@fuel-carrier/web-ui/dashboard'
 import {
   Button,
   ConfirmModal,
@@ -101,6 +104,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
 
   return (
     <ActiveCompanyProvider>
+      <DashboardModeProvider panelId="internal">
       <PanelShell
         brandTitle={LL.internalPanel.shell.brand()}
         brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
@@ -170,6 +174,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         onConfirm={handleConfirmLogout}
         onCancel={handleCloseLogoutModal}
       />
+      </DashboardModeProvider>
     </ActiveCompanyProvider>
   )
 }
