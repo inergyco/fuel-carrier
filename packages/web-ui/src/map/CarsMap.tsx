@@ -6,7 +6,7 @@ import './leaflet-fix.css';
 import { AnimatedCarMarker } from './AnimatedCarMarker';
 import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
-import { FitMarkers } from './FitMarkers';
+import { FlyToMarkersControl } from './FlyToMarkersControl';
 import { getFuelLevelColor } from './fuel-level';
 import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
 import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
@@ -17,6 +17,7 @@ export type CarsMapLabels = {
   unnamedVehicle: () => string;
   viewVehicle: () => string;
   chooseTimeRange?: () => string;
+  flyToMarkers: () => string;
   remainFuel: (params: { volume: string }) => string;
   fuelType: (params: { type: string }) => string;
   fuelTypeHighGrade: () => string;
@@ -60,7 +61,11 @@ export function CarsMap({
       scrollWheelZoom
     >
       <OpenFreeMapBasemap />
-      <FitMarkers markers={markers} pathPoints={pathPoints} />
+      <FlyToMarkersControl
+        markers={markers}
+        pathPoints={pathPoints}
+        labels={labels}
+      />
       {pathPoints && pathPoints.length > 0 ? (
         <TrajectoryPathLayer
           pathPoints={pathPoints}

@@ -750,6 +750,10 @@ type RootTranslation = {
 			 */
 			fuelLevelUnknown: string
 			/**
+			 * S​h​o​w​ ​v​e​h​i​c​l​e​s
+			 */
+			flyToMarkers: string
+			/**
 			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
 			 */
 			companyLegend: string
@@ -2811,6 +2815,10 @@ type RootTranslation = {
 			 */
 			fuelLevelUnknown: string
 			/**
+			 * S​h​o​w​ ​v​e​h​i​c​l​e​s
+			 */
+			flyToMarkers: string
+			/**
 			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
 			 */
 			selectVehicle: string
@@ -3777,6 +3785,10 @@ export type TranslationFunctions = {
 			 * Unknown
 			 */
 			fuelLevelUnknown: () => LocalizedString
+			/**
+			 * Show vehicles
+			 */
+			flyToMarkers: () => LocalizedString
 			/**
 			 * Company colors
 			 */
@@ -5793,6 +5805,10 @@ export type TranslationFunctions = {
 			 * Unknown
 			 */
 			fuelLevelUnknown: () => LocalizedString
+			/**
+			 * Show vehicles
+			 */
+			flyToMarkers: () => LocalizedString
 			/**
 			 * Select vehicle
 			 */
