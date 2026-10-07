@@ -1,180 +1,188 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { useQueryClient } from '@fuel-carrier/web-ui/query'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   DashboardModeProvider,
   DashboardModeSwitcher,
-} from '@fuel-carrier/web-ui/dashboard'
+} from "@fuel-carrier/web-ui/dashboard";
 import {
   Button,
   ConfirmModal,
   ICON_STROKE_WIDTH,
   PanelShell,
   type PanelNavItem,
-} from '@fuel-carrier/web-ui/ui'
-import { Home, Building2, Map, ScrollText, Settings } from '@fuel-carrier/web-ui/icons'
-import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
-import { redirectToLoginPage } from '@fuel-carrier/web-ui/utils'
-import { getRouteApi, useRouterState } from '@tanstack/react-router'
-import type { ReactNode } from 'react'
-import { useMemo, useState } from 'react'
-import { authKeys, logout } from '../lib/api/auth'
+} from "@fuel-carrier/web-ui/ui";
 import {
-  ActiveCompanyProvider,
-} from './shell/ActiveCompanyProvider'
-import { AppBarBackLink } from './shell/AppBarBackLink'
-import { CompanySwitcher } from './shell/CompanySwitcher'
-import { useAppBarHeading } from './shell/useAppBarHeading'
+  Home,
+  Building2,
+  Map,
+  ScrollText,
+  Settings,
+} from "@fuel-carrier/web-ui/icons";
+import { broadcastAuthLogout } from "@fuel-carrier/web-ui/auth";
+import { redirectToLoginPage } from "@fuel-carrier/web-ui/utils";
+import { getRouteApi, useRouterState } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { useMemo, useState } from "react";
+import { authKeys, logout } from "../lib/api/auth";
+import { ActiveCompanyProvider } from "./shell/ActiveCompanyProvider";
+import { AppBarBackLink } from "./shell/AppBarBackLink";
+import { CompanySwitcher } from "./shell/CompanySwitcher";
+import { useAppBarHeading } from "./shell/useAppBarHeading";
 
-const authenticatedRoute = getRouteApi('/_authenticated')
+const authenticatedRoute = getRouteApi("/_authenticated");
 
 interface AuthenticatedShellProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
-  const { user } = authenticatedRoute.useRouteContext()
-  const { LL } = useI18nContext()
-  const queryClient = useQueryClient()
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { user } = authenticatedRoute.useRouteContext();
+  const { LL } = useI18nContext();
+  const queryClient = useQueryClient();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = useRouterState({
     select: function selectPathname(state) {
-      return state.location.pathname
+      return state.location.pathname;
     },
-  })
-  const isMapPage = pathname === '/map'
-  const heading = useAppBarHeading(pathname, user.firstName)
+  });
+  const isMapPage = pathname === "/map";
+  const heading = useAppBarHeading(pathname, user.firstName);
 
-  const navItems = useMemo(function createNavItems(): PanelNavItem[] {
-    return [
-      {
-        to: '/',
-        label: LL.internalPanel.nav.dashboard(),
-        icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-        exact: true,
-      },
-      {
-        to: '/companies',
-        label: LL.internalPanel.nav.companies(),
-        icon: <Building2 strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-      },
-      {
-        to: '/map',
-        label: LL.internalPanel.nav.map(),
-        icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-      },
-      {
-        to: '/audit-logs',
-        label: LL.internalPanel.nav.auditLogs(),
-        icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-      },
-      {
-        to: '/settings',
-        label: LL.internalPanel.nav.settings(),
-        icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
-      },
-    ]
-  }, [LL])
+  const navItems = useMemo(
+    function createNavItems(): PanelNavItem[] {
+      return [
+        {
+          to: "/",
+          label: LL.internalPanel.nav.dashboard(),
+          icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+          exact: true,
+        },
+        {
+          to: "/companies",
+          label: LL.internalPanel.nav.companies(),
+          icon: <Building2 strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
+        // {
+        //   to: '/map',
+        //   label: LL.internalPanel.nav.map(),
+        //   icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        // },
+        {
+          to: "/audit-logs",
+          label: LL.internalPanel.nav.auditLogs(),
+          icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
+        {
+          to: "/settings",
+          label: LL.internalPanel.nav.settings(),
+          icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
+      ];
+    },
+    [LL],
+  );
 
   function handleOpenLogoutModal() {
-    setIsLogoutModalOpen(true)
+    setIsLogoutModalOpen(true);
   }
 
   function handleCloseLogoutModal() {
     if (!isLoggingOut) {
-      setIsLogoutModalOpen(false)
+      setIsLogoutModalOpen(false);
     }
   }
 
   async function handleConfirmLogout() {
-    setIsLoggingOut(true)
+    setIsLoggingOut(true);
 
     try {
-      await logout()
-      queryClient.removeQueries({ queryKey: authKeys.me })
-      broadcastAuthLogout('internal')
-      setIsLogoutModalOpen(false)
-      redirectToLoginPage(location.href)
+      await logout();
+      queryClient.removeQueries({ queryKey: authKeys.me });
+      broadcastAuthLogout("internal");
+      setIsLogoutModalOpen(false);
+      redirectToLoginPage(location.href);
     } finally {
-      setIsLoggingOut(false)
+      setIsLoggingOut(false);
     }
   }
 
-  const initials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()
+  const initials =
+    `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
 
   return (
     <ActiveCompanyProvider>
       <DashboardModeProvider panelId="internal">
-      <PanelShell
-        brandTitle={LL.internalPanel.shell.brand()}
-        brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
-        brandIcon={
-          <a
-            href="https://www.inergy.ir"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
-          >
-            <img src="/inergy-logo.png" alt="Inergy" />
-          </a>
-        }
-        openMenuLabel={LL.internalPanel.nav.openMenu()}
-        navItems={navItems}
-        appBarTitle={heading?.title}
-        appBarSubtitle={heading?.subtitle}
-        appBarBack={
-          heading?.back ? <AppBarBackLink {...heading.back} /> : null
-        }
-        appBarActions={
-          pathname === '/' || pathname === '/map' ? (
-            <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
-              <CompanySwitcher />
-              <DashboardModeSwitcher />
-            </div>
-          ) : null
-        }
-        fullWidthMain={isMapPage}
-        footer={
-          <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
-            <div className="mb-3 flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
-                {initials}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">
-                  {user.firstName} {user.lastName}
-                </p>
-                <p className="truncate font-mono text-[10px] text-white/45">
-                  @{user.username}
-                </p>
-              </div>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 w-full justify-center border border-white/12 bg-white/5 text-white normal-case tracking-normal hover:bg-white/10"
-              onClick={handleOpenLogoutModal}
+        <PanelShell
+          brandTitle={LL.internalPanel.shell.brand()}
+          brandSubtitle={LL.internalPanel.shell.brandSubtitle()}
+          brandIcon={
+            <a
+              href="https://www.inergy.ir"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40"
             >
-              {LL.internalPanel.nav.signOut()}
-            </Button>
-          </div>
-        }
-      >
-        {children}
-      </PanelShell>
+              <img src="/inergy-logo.png" alt="Inergy" />
+            </a>
+          }
+          openMenuLabel={LL.internalPanel.nav.openMenu()}
+          navItems={navItems}
+          appBarTitle={heading?.title}
+          appBarSubtitle={heading?.subtitle}
+          appBarBack={
+            heading?.back ? <AppBarBackLink {...heading.back} /> : null
+          }
+          appBarActions={
+            pathname === "/" || pathname === "/map" ? (
+              <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+                <CompanySwitcher />
+                <DashboardModeSwitcher />
+              </div>
+            ) : null
+          }
+          fullWidthMain={isMapPage}
+          footer={
+            <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
+              <div className="mb-3 flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
+                  {initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="truncate font-mono text-[10px] text-white/45">
+                    @{user.username}
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-9 w-full justify-center border border-white/12 bg-white/5 text-white normal-case tracking-normal hover:bg-white/10"
+                onClick={handleOpenLogoutModal}
+              >
+                {LL.internalPanel.nav.signOut()}
+              </Button>
+            </div>
+          }
+        >
+          {children}
+        </PanelShell>
 
-      <ConfirmModal
-        open={isLogoutModalOpen}
-        title={LL.internalPanel.nav.signOutConfirmTitle()}
-        description={LL.internalPanel.nav.signOutConfirmDescription()}
-        confirmLabel={LL.internalPanel.nav.signOutConfirm()}
-        cancelLabel={LL.internalPanel.nav.cancel()}
-        loading={isLoggingOut}
-        loadingLabel={LL.internalPanel.nav.signingOut()}
-        onConfirm={handleConfirmLogout}
-        onCancel={handleCloseLogoutModal}
-      />
+        <ConfirmModal
+          open={isLogoutModalOpen}
+          title={LL.internalPanel.nav.signOutConfirmTitle()}
+          description={LL.internalPanel.nav.signOutConfirmDescription()}
+          confirmLabel={LL.internalPanel.nav.signOutConfirm()}
+          cancelLabel={LL.internalPanel.nav.cancel()}
+          loading={isLoggingOut}
+          loadingLabel={LL.internalPanel.nav.signingOut()}
+          onConfirm={handleConfirmLogout}
+          onCancel={handleCloseLogoutModal}
+        />
       </DashboardModeProvider>
     </ActiveCompanyProvider>
-  )
+  );
 }

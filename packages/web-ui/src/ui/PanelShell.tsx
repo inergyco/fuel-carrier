@@ -3,6 +3,7 @@ import { Menu } from "@fuel-carrier/web-ui/icons";
 import type { ReactNode } from "react";
 import { cn } from "../utils";
 import { IconButton } from "./IconButton";
+import { LocaleControls } from "./LocaleControls";
 import { PageHeader } from "./PageHeader";
 
 export interface PanelNavItem {
@@ -104,6 +105,10 @@ export function PanelShell({
               {appBarActions}
             </div>
           ) : null}
+
+          <div className="flex shrink-0 items-center justify-end">
+            <LocaleControls className="relative top-auto end-auto" />
+          </div>
         </header>
 
         <div className="relative flex min-h-0 flex-1 overflow-hidden">
