@@ -66,7 +66,7 @@ export function CompanyDashboard({
 
   if (!enabled) {
     return (
-      <div className="flex min-h-0 flex-col gap-6">
+      <div className="flex min-h-0 flex-col gap-6 lg:min-h-0 lg:flex-1">
         {emptyState ?? (
           <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
             —
@@ -77,7 +77,7 @@ export function CompanyDashboard({
   }
 
   return (
-    <div className="flex min-h-0 flex-col gap-6">
+    <div className="flex min-h-0 flex-col gap-6 lg:min-h-0 lg:flex-1">
       <ConnectivityBanner
         isOnline={isOnline}
         isQueryError={telemetryQuery.isError}
@@ -86,14 +86,15 @@ export function CompanyDashboard({
       />
 
       <FleetStatsSection
+        className="lg:shrink-0"
         companyId={companyId}
         dataSource={dataSource}
         enabled={enabled}
       />
 
-      <div className="flex min-h-0 flex-col gap-3 lg:flex-row lg:items-stretch">
+      <div className="flex flex-col gap-3 lg:min-h-72 lg:flex-1 lg:flex-row lg:items-stretch">
         <TrajectoryMapView
-          className="h-[40svh] min-h-56 w-full flex-1 overflow-hidden rounded-2xl border border-base-content/8 lg:h-auto lg:min-h-72"
+          className="h-[50svh] min-h-80 w-full overflow-hidden rounded-2xl border border-base-content/8 lg:h-auto lg:min-h-0 lg:flex-1"
           api={api}
           cars={mapCarsQuery.data ?? []}
           markers={scopedMarkers}
@@ -102,7 +103,7 @@ export function CompanyDashboard({
           renderVehicleLink={renderVehicleLink}
         />
         <FuelLevelRingSection
-          className="w-full shrink-0 lg:w-72 xl:w-80"
+          className="w-full lg:h-auto lg:w-72 lg:shrink-0 xl:w-80"
           companyId={companyId}
           dataSource={dataSource}
           enabled={enabled}

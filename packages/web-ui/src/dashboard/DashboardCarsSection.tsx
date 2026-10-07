@@ -95,7 +95,7 @@ export function DashboardCarsSection({
 
   if (isCarsLoading) {
     return (
-      <section className="flex-1">
+      <section className="lg:shrink-0">
         <DashboardCardsSkeleton
           label={labels.carsLoading()}
           variant="car"
@@ -109,7 +109,7 @@ export function DashboardCarsSection({
 
   if (totalItems === 0 && !hasActiveFilters) {
     return (
-      <section className="flex-1">
+      <section className="lg:shrink-0">
         <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
           {labels.carsEmpty()}
         </div>
@@ -118,7 +118,7 @@ export function DashboardCarsSection({
   }
 
   return (
-    <section className="flex-1">
+    <section className="lg:shrink-0">
       <ResourceListToolbar
         className="mb-4 justify-between"
         searchPlaceholder={labels.carsSearchPlaceholder()}

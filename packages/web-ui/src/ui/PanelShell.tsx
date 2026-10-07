@@ -125,7 +125,7 @@ export function PanelShell({
               "relative z-10 min-h-0 flex-1",
               fullWidthMain
                 ? "flex flex-col overflow-hidden"
-                : "container mx-auto w-full overflow-y-auto p-4 md:p-6 lg:p-8",
+                : "container mx-auto flex w-full flex-col overflow-y-auto p-4 md:p-6 lg:p-8",
               mainClassName,
             )}
           >

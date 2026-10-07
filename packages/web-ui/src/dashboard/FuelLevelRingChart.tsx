@@ -16,8 +16,8 @@ type RingSegment = {
   color: string
 }
 
-const RING_SIZE = 196
-const RING_STROKE = 22
+const RING_SIZE = 224
+const RING_STROKE = 26
 const RING_RADIUS = (RING_SIZE - RING_STROKE) / 2
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
 
@@ -62,68 +62,70 @@ export function FuelLevelRingChart({
   return (
     <article
       className={cn(
-        'flex h-full flex-col rounded-2xl border border-base-content/8 bg-base-100/80 p-5 shadow-sm backdrop-blur-xl',
+        'flex flex-col overflow-hidden rounded-2xl border border-base-content/8 bg-base-100/80 p-5 shadow-sm backdrop-blur-xl lg:h-full',
         className,
       )}
     >
-      <h2 className="text-sm font-semibold tracking-tight text-base-content/80">
+      <h2 className="shrink-0 text-sm font-semibold tracking-tight text-base-content/80">
         {labels.fuelRingTitle()}
       </h2>
 
-      <div className="relative mx-auto mt-5 flex size-49 shrink-0 items-center justify-center">
-        <svg
-          width={RING_SIZE}
-          height={RING_SIZE}
-          viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
-          className="-rotate-90"
-          aria-hidden
-        >
-          <circle
-            cx={RING_SIZE / 2}
-            cy={RING_SIZE / 2}
-            r={RING_RADIUS}
-            fill="none"
-            stroke="color-mix(in oklab, var(--color-base-content) 8%, transparent)"
-            strokeWidth={RING_STROKE}
-          />
-          {bandedTotal > 0
-            ? renderRingSegments(segments, bandedTotal)
-            : null}
-        </svg>
+      <div className="mt-5 flex flex-col items-center lg:min-h-0 lg:flex-1 lg:justify-center">
+        <div className="relative mx-auto aspect-square w-full max-w-56 shrink-0">
+          <svg
+            width={RING_SIZE}
+            height={RING_SIZE}
+            viewBox={`0 0 ${RING_SIZE} ${RING_SIZE}`}
+            className="size-full -rotate-90"
+            aria-hidden
+          >
+            <circle
+              cx={RING_SIZE / 2}
+              cy={RING_SIZE / 2}
+              r={RING_RADIUS}
+              fill="none"
+              stroke="color-mix(in oklab, var(--color-base-content) 8%, transparent)"
+              strokeWidth={RING_STROKE}
+            />
+            {bandedTotal > 0
+              ? renderRingSegments(segments, bandedTotal)
+              : null}
+          </svg>
 
-        <div className="absolute inset-0 flex items-center justify-center px-8">
-          <img
-            src="/truck-card.png"
-            alt=""
-            className="h-14 w-auto object-contain"
-            draggable={false}
-          />
+          <div className="absolute inset-0 flex items-center justify-center px-10">
+            <img
+              src="/truck-card.png"
+              alt=""
+              className=" w-auto object-contain h-20"
+              draggable={false}
+            />
+          </div>
         </div>
-      </div>
 
-      {bandedTotal === 0 ? (
-        <p className="mt-4 text-center text-xs text-base-content/45">
-          {labels.fuelRingEmpty()}
-        </p>
-      ) : (
-        <ul className="mt-5 flex flex-wrap justify-center gap-x-3 gap-y-2">
-          {segments.map(function renderLegendItem(segment) {
-            return (
-              <li
-                key={segment.key}
-                className="flex items-center gap-1.5 text-[11px] text-base-content/55"
-              >
-                <span
-                  className="size-2 shrink-0 rounded-full"
-                  style={{ backgroundColor: segment.color }}
-                  aria-hidden
-                />
-                {segment.label}
-              </li>
-            )
-          })}
-        </ul>
-      )}
+        {bandedTotal === 0 ? (
+          <p className="mt-4 text-center text-xs text-base-content/45">
+            {labels.fuelRingEmpty()}
+          </p>
+        ) : (
+          <ul className="mt-5 flex flex-wrap justify-center gap-x-3 gap-y-2">
+            {segments.map(function renderLegendItem(segment) {
+              return (
+                <li
+                  key={segment.key}
+                  className="flex items-center gap-1.5 text-[11px] text-base-content/55"
+                >
+                  <span
+                    className="size-2 shrink-0 rounded-full"
+                    style={{ backgroundColor: segment.color }}
+                    aria-hidden
+                  />
+                  {segment.label}
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </div>
     </article>
   )
 }
