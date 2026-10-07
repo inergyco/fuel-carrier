@@ -81,7 +81,7 @@ html[dir="rtl"] .leaflet-popup-content {
   text-shadow: none;
 }
 
-/* Zoom +/- as one glass pair; locate button is a sibling control below */
+/* Zoom +/- stay one glass pair. Full page is a separate control under them. */
 .leaflet-control-zoom.leaflet-bar,
 .leaflet-touch .leaflet-control-zoom.leaflet-bar {
   overflow: hidden;
@@ -159,9 +159,15 @@ html[dir="rtl"] .leaflet-popup-content {
   text-indent: 0;
 }
 
-.leaflet-control.fuel-carrier-fly-to-markers {
+.leaflet-control.fuel-carrier-fly-to-markers,
+.leaflet-control.fuel-carrier-full-page {
   clear: both;
   border: none;
   background: transparent;
   box-shadow: none;
+}
+
+section.fuel-carrier-map-stage:fullscreen {
+  border-radius: 0;
+  background: var(--color-base-300);
 }

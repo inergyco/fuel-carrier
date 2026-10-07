@@ -7,6 +7,7 @@ import { AnimatedCarMarker } from './AnimatedCarMarker';
 import { CarMarkerPopup } from './CarMarkerPopup';
 import { markerIconForColor } from './car-marker-icon';
 import { FlyToMarkersControl } from './FlyToMarkersControl';
+import { FullPageMapControl } from './FullPageMapControl';
 import { getFuelLevelColor } from './fuel-level';
 import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
 import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
@@ -18,6 +19,8 @@ export type CarsMapLabels = {
   viewVehicle: () => string;
   chooseTimeRange?: () => string;
   flyToMarkers: () => string;
+  fullPage: () => string;
+  exitFullPage: () => string;
   remainFuel: (params: { volume: string }) => string;
   fuelType: (params: { type: string }) => string;
   fuelTypeHighGrade: () => string;
@@ -66,6 +69,7 @@ export function CarsMap({
         pathPoints={pathPoints}
         labels={labels}
       />
+      <FullPageMapControl labels={labels} />
       {pathPoints && pathPoints.length > 0 ? (
         <TrajectoryPathLayer
           pathPoints={pathPoints}

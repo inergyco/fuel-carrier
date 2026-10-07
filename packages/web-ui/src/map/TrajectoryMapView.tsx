@@ -60,7 +60,10 @@ export function TrajectoryMapView({
 
   return (
     <section
-      className={cn('relative min-h-0 overflow-hidden', className ?? 'flex-1')}
+      className={cn(
+        'fuel-carrier-map-stage relative min-h-0 overflow-hidden',
+        className ?? 'flex-1',
+      )}
     >
       <TrajectoryControls
         labels={labels}

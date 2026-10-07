@@ -754,6 +754,14 @@ type RootTranslation = {
 			 */
 			flyToMarkers: string
 			/**
+			 * F​u​l​l​ ​p​a​g​e
+			 */
+			fullPage: string
+			/**
+			 * E​x​i​t​ ​f​u​l​l​ ​p​a​g​e
+			 */
+			exitFullPage: string
+			/**
 			 * C​o​m​p​a​n​y​ ​c​o​l​o​r​s
 			 */
 			companyLegend: string
@@ -2819,6 +2827,14 @@ type RootTranslation = {
 			 */
 			flyToMarkers: string
 			/**
+			 * F​u​l​l​ ​p​a​g​e
+			 */
+			fullPage: string
+			/**
+			 * E​x​i​t​ ​f​u​l​l​ ​p​a​g​e
+			 */
+			exitFullPage: string
+			/**
 			 * S​e​l​e​c​t​ ​v​e​h​i​c​l​e
 			 */
 			selectVehicle: string
@@ -3789,6 +3805,14 @@ export type TranslationFunctions = {
 			 * Show vehicles
 			 */
 			flyToMarkers: () => LocalizedString
+			/**
+			 * Full page
+			 */
+			fullPage: () => LocalizedString
+			/**
+			 * Exit full page
+			 */
+			exitFullPage: () => LocalizedString
 			/**
 			 * Company colors
 			 */
@@ -5809,6 +5833,14 @@ export type TranslationFunctions = {
 			 * Show vehicles
 			 */
 			flyToMarkers: () => LocalizedString
+			/**
+			 * Full page
+			 */
+			fullPage: () => LocalizedString
+			/**
+			 * Exit full page
+			 */
+			exitFullPage: () => LocalizedString
 			/**
 			 * Select vehicle
 			 */
