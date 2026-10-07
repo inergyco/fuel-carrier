@@ -143,6 +143,22 @@ type RootTranslation = {
 			 * N​o​ ​f​u​e​l​ ​r​e​a​d​i​n​g​s​ ​y​e​t
 			 */
 			fuelRingEmpty: string
+			/**
+			 * 7​5​–​1​0​0​%
+			 */
+			fuelRingHigh: string
+			/**
+			 * 5​0​–​7​5​%
+			 */
+			fuelRingMidHigh: string
+			/**
+			 * 2​5​–​5​0​%
+			 */
+			fuelRingMidLow: string
+			/**
+			 * U​n​d​e​r​ ​2​5​%
+			 */
+			fuelRingLow: string
 		}
 		connectivity: {
 			/**
@@ -3165,6 +3181,22 @@ export type TranslationFunctions = {
 			 * No fuel readings yet
 			 */
 			fuelRingEmpty: () => LocalizedString
+			/**
+			 * 75–100%
+			 */
+			fuelRingHigh: () => LocalizedString
+			/**
+			 * 50–75%
+			 */
+			fuelRingMidHigh: () => LocalizedString
+			/**
+			 * 25–50%
+			 */
+			fuelRingMidLow: () => LocalizedString
+			/**
+			 * Under 25%
+			 */
+			fuelRingLow: () => LocalizedString
 		}
 		connectivity: {
 			/**

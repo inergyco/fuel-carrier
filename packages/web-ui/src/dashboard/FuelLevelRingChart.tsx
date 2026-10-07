@@ -31,25 +31,25 @@ export function FuelLevelRingChart({
   const segments: RingSegment[] = [
     {
       key: 'high',
-      label: labels.fuelHigh(),
+      label: labels.fuelRingHigh(),
       value: stats.fuelHigh,
       color: FUEL_LEVEL_COLORS.high,
     },
     {
       key: 'midHigh',
-      label: labels.fuelMidHigh(),
+      label: labels.fuelRingMidHigh(),
       value: stats.fuelMidHigh,
       color: FUEL_LEVEL_COLORS.midHigh,
     },
     {
       key: 'midLow',
-      label: labels.fuelMidLow(),
+      label: labels.fuelRingMidLow(),
       value: stats.fuelMidLow,
       color: FUEL_LEVEL_COLORS.midLow,
     },
     {
       key: 'low',
-      label: labels.fuelLow(),
+      label: labels.fuelRingLow(),
       value: stats.fuelLow,
       color: FUEL_LEVEL_COLORS.low,
     },
