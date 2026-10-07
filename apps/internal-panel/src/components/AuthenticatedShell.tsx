@@ -125,7 +125,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
           pathname === '/' || pathname === '/map' ? (
             <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
               <CompanySwitcher />
-              {pathname === '/' ? <DashboardModeSwitcher /> : null}
+              <DashboardModeSwitcher />
             </div>
           ) : null
         }

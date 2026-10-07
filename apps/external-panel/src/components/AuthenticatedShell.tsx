@@ -81,7 +81,9 @@ export function AuthenticatedShell({
           ) : null
         }
         appBarActions={
-          pathname === '/' ? <DashboardModeSwitcher /> : null
+          pathname === '/' || pathname === '/map' ? (
+            <DashboardModeSwitcher />
+          ) : null
         }
         fullWidthMain={isMapPage}
         pageFooter={
