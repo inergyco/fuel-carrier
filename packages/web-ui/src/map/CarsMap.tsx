@@ -62,6 +62,7 @@ export function CarsMap({
       zoom={DEFAULT_ZOOM}
       className="h-full w-full bg-base-300"
       scrollWheelZoom
+      doubleClickZoom={false}
     >
       <OpenFreeMapBasemap />
       <FlyToMarkersControl
