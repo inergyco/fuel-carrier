@@ -10,10 +10,10 @@ export type { FuelLevel }
 
 /** Marker / legend colors for remaining-fuel bands. */
 export const FUEL_LEVEL_COLORS: Record<FuelLevel, string> = {
-  high: 'var(--color-success)',
-  midHigh: 'var(--color-info)',
-  midLow: 'var(--color-warning)',
-  low: 'var(--color-error)',
+  high: 'var(--fuel-level-high)',
+  midHigh: 'var(--fuel-level-mid-high)',
+  midLow: 'var(--fuel-level-mid-low)',
+  low: 'var(--fuel-level-low)',
   unknown: 'color-mix(in oklab, var(--color-base-content) 35%, transparent)',
 }
 
