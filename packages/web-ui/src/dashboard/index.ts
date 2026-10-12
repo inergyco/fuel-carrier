@@ -20,9 +20,10 @@ export type {
   CompanyDashboardLabels,
   CompanyDashboardLinkRenderers,
   CompanyDashboardListParams,
+  FleetStatCarsSearch,
 } from './CompanyDashboard.types'
 export { CarCard, type CarCardProps, type CarCardLabels } from './car-card'
-export { FleetStatsBar } from './FleetStatsBar'
+export { FleetStatsBar, fleetStatLinkClassName } from './FleetStatsBar'
 export { FleetStatsSection } from './FleetStatsSection'
 export { FuelLevelRingChart } from './FuelLevelRingChart'
 export { FuelLevelRingSection } from './FuelLevelRingSection'

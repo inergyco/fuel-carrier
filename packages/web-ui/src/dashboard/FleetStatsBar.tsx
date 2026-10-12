@@ -4,10 +4,15 @@ import { Car, Droplets, Fuel, type LucideIcon } from '../icons'
 import { FUEL_LEVEL_COLORS } from '../map'
 import { ICON_STROKE_WIDTH } from '../ui/iconClassName'
 import { cn } from '../utils'
+import type {
+  CompanyDashboardLinkRenderers,
+  FleetStatCarsSearch,
+} from './CompanyDashboard.types'
 
 type FleetStatsBarProps = {
   stats: CarFleetStats
   className?: string
+  renderFleetStatLink: CompanyDashboardLinkRenderers['renderFleetStatLink']
 }
 
 type StatTone = 'primary' | 'success' | 'info' | 'warning' | 'error' | 'accent'
@@ -18,10 +23,15 @@ type StatItem = {
   value: number
   tone: StatTone
   Icon: LucideIcon
+  search: FleetStatCarsSearch
   swatch?: string
 }
 
-export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
+export function FleetStatsBar({
+  stats,
+  className,
+  renderFleetStatLink,
+}: FleetStatsBarProps) {
   const { LL } = useI18nContext()
   const labels = LL.common.fleetStats
 
@@ -32,6 +42,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.totalCars,
       tone: 'primary',
       Icon: Car,
+      search: {},
     },
     {
       key: 'fuel-high',
@@ -40,6 +51,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       tone: 'success',
       swatch: FUEL_LEVEL_COLORS.high,
       Icon: Fuel,
+      search: { fuelLevel: 'high' },
     },
     {
       key: 'fuel-mid-high',
@@ -48,6 +60,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       tone: 'info',
       swatch: FUEL_LEVEL_COLORS.midHigh,
       Icon: Fuel,
+      search: { fuelLevel: 'midHigh' },
     },
     {
       key: 'fuel-mid-low',
@@ -56,6 +69,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       tone: 'warning',
       swatch: FUEL_LEVEL_COLORS.midLow,
       Icon: Fuel,
+      search: { fuelLevel: 'midLow' },
     },
     {
       key: 'fuel-low',
@@ -64,6 +78,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       tone: 'error',
       swatch: FUEL_LEVEL_COLORS.low,
       Icon: Fuel,
+      search: { fuelLevel: 'low' },
     },
     {
       key: 'high-grade',
@@ -71,6 +86,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       value: stats.highGrade,
       tone: 'accent',
       Icon: Droplets,
+      search: { fuelGrade: 'highGrade' },
     },
   ]
 
@@ -82,42 +98,48 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
       )}
     >
       {items.map(function renderStat(item) {
-        const Icon = item.Icon
-
         return (
           <li key={item.key}>
-            <article className="flex h-full items-center justify-between gap-3 rounded-2xl border border-base-content/8 bg-panel-card px-3.5 py-3 shadow-sm backdrop-blur-xl">
-              <div className="min-w-0">
-                <p className="truncate text-[11px] font-medium tracking-tight text-base-content/50">
-                  {item.label}
-                </p>
-                <p className="mt-1 text-2xl font-semibold tracking-tight text-base-content tabular-nums">
-                  {item.value}
-                </p>
-              </div>
-              <span
-                className={cn(
-                  'flex size-10 shrink-0 items-center justify-center rounded-full border',
-                  toneClassName(item.tone),
-                )}
-                style={
-                  item.swatch
-                    ? {
-                        color: item.swatch,
-                        borderColor: `color-mix(in oklab, ${item.swatch} 35%, transparent)`,
-                        backgroundColor: `color-mix(in oklab, ${item.swatch} 12%, transparent)`,
-                      }
-                    : undefined
-                }
-                aria-hidden
-              >
-                <Icon className="size-4" strokeWidth={ICON_STROKE_WIDTH} />
-              </span>
-            </article>
+            {renderFleetStatLink(item.search, <FleetStatCard item={item} />)}
           </li>
         )
       })}
     </ul>
+  )
+}
+
+function FleetStatCard({ item }: { item: StatItem }) {
+  const Icon = item.Icon
+
+  return (
+    <article className="flex h-full items-center justify-between gap-3 rounded-2xl border border-base-content/8 bg-panel-card px-3.5 py-3 shadow-sm backdrop-blur-xl transition-all group-hover:border-primary/25 group-hover:shadow-lg group-hover:bg-panel-card/90 group-focus-visible:border-primary/30">
+      <div className="min-w-0">
+        <p className="truncate text-[11px] font-medium tracking-tight text-base-content/50">
+          {item.label}
+        </p>
+        <p className="mt-1 text-2xl font-semibold tracking-tight text-base-content tabular-nums">
+          {item.value}
+        </p>
+      </div>
+      <span
+        className={cn(
+          'flex size-10 shrink-0 items-center justify-center rounded-full border',
+          toneClassName(item.tone),
+        )}
+        style={
+          item.swatch
+            ? {
+                color: item.swatch,
+                borderColor: `color-mix(in oklab, ${item.swatch} 35%, transparent)`,
+                backgroundColor: `color-mix(in oklab, ${item.swatch} 12%, transparent)`,
+              }
+            : undefined
+        }
+        aria-hidden
+      >
+        <Icon className="size-4" strokeWidth={ICON_STROKE_WIDTH} />
+      </span>
+    </article>
   )
 }
 
@@ -144,3 +166,7 @@ function toneClassName(tone: StatTone): string {
 
   return 'border-primary/35 bg-primary/10 text-primary'
 }
+
+/** Shared class for fleet KPI widget links (apps wrap their router Link with this). */
+export const fleetStatLinkClassName =
+  'group block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40'

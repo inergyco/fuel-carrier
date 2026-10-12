@@ -2,6 +2,8 @@ import type {
   Car,
   CarFleetStats,
   CarTelemetryMarker,
+  FuelGradeFilter,
+  FuelLevelFilter,
   PaginatedResult,
   ResourceListParams,
 } from '@fuel-carrier/shared-types'
@@ -33,7 +35,17 @@ export type CompanyDashboardLabels = CarCardLabels & {
   map: TrajectoryMapViewLabels
 }
 
+/** Cars-list search applied when a fleet KPI widget is clicked. Empty = all cars. */
+export type FleetStatCarsSearch = {
+  fuelLevel?: Exclude<FuelLevelFilter, 'all'>
+  fuelGrade?: Extract<FuelGradeFilter, 'highGrade'>
+}
+
 export type CompanyDashboardLinkRenderers = {
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode
   renderCarDetailsLink: (carId: string) => ReactNode
+  renderFleetStatLink: (
+    search: FleetStatCarsSearch,
+    children: ReactNode,
+  ) => ReactNode
 }

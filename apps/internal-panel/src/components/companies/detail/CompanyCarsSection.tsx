@@ -124,6 +124,8 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
             onSearchTextChange={cars.setDraftSearchText}
             fuelGrade={cars.fuelGrade}
             onFuelGradeChange={cars.setFuelGrade}
+            fuelLevel={cars.fuelLevel}
+            onFuelLevelChange={cars.setFuelLevel}
           />
         </div>
         <Button

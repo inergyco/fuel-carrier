@@ -1,7 +1,10 @@
 import { useQuery } from '../query'
 import { cn } from '../utils'
 import { FleetStatsBar } from './FleetStatsBar'
-import type { CompanyDashboardDataSource } from './CompanyDashboard.types'
+import type {
+  CompanyDashboardDataSource,
+  CompanyDashboardLinkRenderers,
+} from './CompanyDashboard.types'
 
 type FleetStatsSectionProps = {
   className?: string
@@ -10,6 +13,7 @@ type FleetStatsSectionProps = {
   enabled?: boolean
   /** Polling interval in ms. Defaults to 30s. Pass `false` to disable. */
   refetchInterval?: number | false
+  renderFleetStatLink: CompanyDashboardLinkRenderers['renderFleetStatLink']
 }
 
 export function FleetStatsSection({
@@ -18,6 +22,7 @@ export function FleetStatsSection({
   dataSource,
   enabled = true,
   refetchInterval = 30_000,
+  renderFleetStatLink,
 }: FleetStatsSectionProps) {
   const statsQuery = useQuery({
     queryKey: dataSource.carsStatsKey(companyId),
@@ -34,7 +39,13 @@ export function FleetStatsSection({
     return null
   }
 
-  return <FleetStatsBar stats={statsQuery.data} className={className} />
+  return (
+    <FleetStatsBar
+      stats={statsQuery.data}
+      className={className}
+      renderFleetStatLink={renderFleetStatLink}
+    />
+  )
 }
 
 function FleetStatsSkeleton({ className }: { className?: string }) {

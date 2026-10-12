@@ -25,6 +25,7 @@ export function useCompanyCars(companyId: string) {
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
+    setFuelLevel,
     handlePageChange,
     handleLimitChange,
     hasActiveFilters,
@@ -125,7 +126,9 @@ export function useCompanyCars(companyId: string) {
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
+    setFuelLevel,
     fuelGrade: listParams.fuelGrade ?? 'all',
+    fuelLevel: listParams.fuelLevel ?? 'all',
     hasActiveFilters,
   }
 }

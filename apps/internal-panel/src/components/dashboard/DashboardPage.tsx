@@ -5,13 +5,16 @@ import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
   type CompanyDashboardLabels,
+  type FleetStatCarsSearch,
   carDetailsLinkClassName,
+  fleetStatLinkClassName,
 } from '@fuel-carrier/web-ui/dashboard'
 import { Info } from '@fuel-carrier/web-ui/icons'
 import { mapPopupActionClassName } from '@fuel-carrier/web-ui/map'
 import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { Link } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import {
   carKeys,
   fetchAllCars,
@@ -93,6 +96,26 @@ export function DashboardPage() {
     )
   }
 
+  function renderFleetStatLink(
+    search: FleetStatCarsSearch,
+    children: ReactNode,
+  ) {
+    if (!companyId) {
+      return children
+    }
+
+    return (
+      <Link
+        to="/companies/$companyId/cars"
+        params={{ companyId }}
+        search={search}
+        className={fleetStatLinkClassName}
+      >
+        {children}
+      </Link>
+    )
+  }
+
   const enabled = Boolean(companyId) && hasCompanies && !isLoading
 
   return (
@@ -109,6 +132,7 @@ export function DashboardPage() {
       }}
       renderVehicleLink={renderVehicleLink}
       renderCarDetailsLink={renderCarDetailsLink}
+      renderFleetStatLink={renderFleetStatLink}
       emptyState={
         <div className="rounded-2xl border border-base-content/8 bg-panel-card px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
           {isLoading

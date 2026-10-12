@@ -5,7 +5,9 @@ import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
   type CompanyDashboardLabels,
+  type FleetStatCarsSearch,
   carDetailsLinkClassName,
+  fleetStatLinkClassName,
 } from '@fuel-carrier/web-ui/dashboard'
 import { Info } from '@fuel-carrier/web-ui/icons'
 import {
@@ -14,6 +16,7 @@ import {
 import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
 import { cn } from '@fuel-carrier/web-ui/utils'
 import { Link } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import { carKeys, fetchCarFleetStats, fetchCars } from '../../lib/api/cars'
 
 const dashboardDataSource: CompanyDashboardDataSource = {
@@ -74,6 +77,17 @@ export function DashboardPage() {
     )
   }
 
+  function renderFleetStatLink(
+    search: FleetStatCarsSearch,
+    children: ReactNode,
+  ) {
+    return (
+      <Link to="/cars" search={search} className={fleetStatLinkClassName}>
+        {children}
+      </Link>
+    )
+  }
+
   return (
     <CompanyDashboard
       api={api}
@@ -86,6 +100,7 @@ export function DashboardPage() {
       }}
       renderVehicleLink={renderVehicleLink}
       renderCarDetailsLink={renderCarDetailsLink}
+      renderFleetStatLink={renderFleetStatLink}
     />
   )
 }

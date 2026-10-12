@@ -26,6 +26,7 @@ export type CompanyDashboardProps = {
   }
   renderVehicleLink: CompanyDashboardLinkRenderers['renderVehicleLink']
   renderCarDetailsLink: CompanyDashboardLinkRenderers['renderCarDetailsLink']
+  renderFleetStatLink: CompanyDashboardLinkRenderers['renderFleetStatLink']
   /** Shown instead of the dashboard when `enabled` is false. */
   emptyState?: ReactNode
 }
@@ -39,6 +40,7 @@ export function CompanyDashboard({
   connectivityLabels,
   renderVehicleLink,
   renderCarDetailsLink,
+  renderFleetStatLink,
   emptyState,
 }: CompanyDashboardProps) {
   const queryClient = useQueryClient()
@@ -90,6 +92,7 @@ export function CompanyDashboard({
         companyId={companyId}
         dataSource={dataSource}
         enabled={enabled}
+        renderFleetStatLink={renderFleetStatLink}
       />
 
       <div className="flex flex-col gap-3 lg:min-h-72 lg:flex-1 lg:flex-row lg:items-stretch">
