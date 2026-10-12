@@ -92,9 +92,12 @@ function CompanyCardSkeleton() {
 function CarCardSkeleton() {
   return (
     <div className={DASHBOARD_CAR_CARD_SHELL_CLASS_NAME}>
-      <div className="space-y-2 px-4 pt-4">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-3 w-20" />
+      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+        <div className="min-w-0 space-y-2">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+        <Skeleton className="h-5 w-16 shrink-0 rounded-full" />
       </div>
 
       <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3">

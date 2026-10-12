@@ -1,15 +1,18 @@
+import { Badge } from '../../ui/Badge'
 import type { CarCardLiveness } from './car-card-utils'
 
 type CarCardHeaderProps = {
   licensePlate: string
   liveness: CarCardLiveness
   statusLabel: string
+  highGradeLabel?: string
 }
 
 export function CarCardHeader({
   licensePlate,
   liveness,
   statusLabel,
+  highGradeLabel,
 }: CarCardHeaderProps) {
   const isLive = liveness === 'live'
 
@@ -33,6 +36,12 @@ export function CarCardHeader({
           {statusLabel}
         </p>
       </div>
+
+      {highGradeLabel ? (
+        <Badge variant="info" size="md">
+          {highGradeLabel}
+        </Badge>
+      ) : null}
     </div>
   )
 }

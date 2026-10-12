@@ -62,6 +62,9 @@ export function DashboardCarCard({
         licensePlate={car.licensePlate}
         liveness={liveness}
         statusLabel={statusLabel}
+        highGradeLabel={
+          car.hasHighGrade ? labels.fuelType.fuelTypeHighGrade() : undefined
+        }
       />
 
       <div className="relative z-10 flex flex-1 flex-col gap-2.5 px-4 pt-3">

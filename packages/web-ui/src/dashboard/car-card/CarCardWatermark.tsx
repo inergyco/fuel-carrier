@@ -12,7 +12,7 @@ export function CarCardWatermark({
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute end-4 top-1/4 z-0 -translate-y-1/2 select-none text-[7rem] font-semibold leading-none tracking-tighter tabular-nums opacity-30"
+      className="pointer-events-none absolute end-4 top-1/3 z-0 -translate-y-1/2 select-none text-[7rem] font-semibold leading-none tracking-tighter tabular-nums opacity-30"
       style={{
         color:
           remainFuel != null
