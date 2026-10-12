@@ -4,6 +4,7 @@ import { useMap } from 'react-leaflet';
 import { carFuelTypeLabel } from '../cars/CarOverviewSection';
 import { ResistanceValue } from '../cars/ResistanceValue';
 import { Button } from '../ui';
+import { LicensePlate } from '../ui/license-plate-picker';
 import type { CarsMapLabels } from './CarsMap';
 
 export const mapPopupActionClassName =
@@ -28,10 +29,11 @@ export function CarMarkerPopup({
 
   return (
     <div className="space-y-2 text-start text-sm text-base-content">
-      <p className="font-semibold tracking-tight">{title}</p>
-      <p className="font-mono text-xs text-base-content/60">
-        {marker.licensePlate}
-      </p>
+      {marker.licensePlate.trim() ? (
+        <LicensePlate value={marker.licensePlate} size="sm" className="mb-0" />
+      ) : (
+        <p className="font-semibold tracking-tight">{title}</p>
+      )}
       <p className="text-xs text-base-content/70">
         {labels.fuelType({
           type: carFuelTypeLabel(marker.hasHighGrade ?? false, labels),

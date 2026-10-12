@@ -1,13 +1,42 @@
 import { z } from "zod";
 import { optionalTextField } from "../optional-text-field";
+import {
+  isValidIranianLicensePlate,
+  normalizeIranianLicensePlate,
+} from "./license-plate";
 
 export const CAR_LICENSE_PLATE_MAX_LENGTH = 32;
 export const CAR_NOTE_MAX_LENGTH = 2000;
 
+export {
+  IRANIAN_LICENSE_PLATE_LETTERS,
+  IRANIAN_LICENSE_PLATE_PATTERN,
+  emptyIranianLicensePlateParts,
+  hasIranianLicensePlateParts,
+  isCompleteIranianLicensePlateParts,
+  isIranianLicensePlateLetter,
+  isValidIranianLicensePlate,
+  normalizeIranianLicensePlate,
+  normalizeIranianLicensePlateLetter,
+  parseIranianLicensePlate,
+  stringifyIranianLicensePlate,
+  toLatinDigits,
+  toPersianDigits,
+} from "./license-plate";
+export type {
+  IranianLicensePlateLetter,
+  IranianLicensePlateParts,
+} from "./license-plate";
+
 const carLicensePlateField = z
   .string()
+  .trim()
   .min(1)
-  .max(CAR_LICENSE_PLATE_MAX_LENGTH);
+  .max(CAR_LICENSE_PLATE_MAX_LENGTH)
+  .transform(normalizeIranianLicensePlate)
+  .refine(isValidIranianLicensePlate, {
+    message: "Enter a valid Iranian license plate",
+  });
 /** Live custody driver — uuid only; null unassign is not allowed. */
 const carDriverIdField = z.uuid();
 /** Optimistic concurrency token — null means "expect unassigned". */

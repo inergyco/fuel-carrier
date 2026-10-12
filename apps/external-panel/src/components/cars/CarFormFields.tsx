@@ -2,7 +2,7 @@ import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   FormCheckbox,
-  FormInput,
+  FormLicensePlatePicker,
   FormSelect,
   FormTextarea,
 } from '@fuel-carrier/web-ui/ui'
@@ -23,10 +23,9 @@ export function CarFormFields({
 
   return (
     <>
-      <FormInput
+      <FormLicensePlatePicker
         name="licensePlate"
         label={LL.externalPanel.cars.licensePlate()}
-        type="text"
       />
 
       {mode === 'create' ? (

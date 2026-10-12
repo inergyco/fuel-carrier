@@ -15,7 +15,7 @@ import {
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import {
   FormCheckbox,
-  FormInput,
+  FormLicensePlatePicker,
   FormSelect,
   FormTextarea,
   Modal,
@@ -177,10 +177,9 @@ export function CarFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
-        <FormInput
+        <FormLicensePlatePicker
           name="licensePlate"
           label={detail.licensePlate()}
-          type="text"
         />
 
         {mode === 'create' ? (

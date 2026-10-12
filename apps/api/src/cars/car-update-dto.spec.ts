@@ -17,7 +17,7 @@ describe('car update DTO schemas', () => {
 
     expect(parsed).toEqual({
       companyId: COMPANY_ID,
-      licensePlate: '12ب345-67',
+      licensePlate: '۱۲ب۳۴۵-۶۷',
       driverId: DRIVER_ID,
       hasHighGrade: false,
       note: '',
@@ -27,7 +27,7 @@ describe('car update DTO schemas', () => {
   it('rejects create without driverId', () => {
     const result = createInternalCarDtoSchema.safeParse({
       companyId: COMPANY_ID,
-      licensePlate: '12ب345-67',
+      licensePlate: '۱۲ب۳۴۵-۶۷',
     });
 
     expect(result.success).toBe(false);

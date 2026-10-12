@@ -7,7 +7,7 @@ type CarCardFooterProps = {
 
 export function CarCardFooter({ detailsLink, actions }: CarCardFooterProps) {
   return (
-    <div className="relative z-10 mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
+    <div className="relative z-10 mt-auto flex items-end justify-between px-4 pb-4 pt-3">
       <div className="absolute bottom-4 -right-2.75 h-16 w-28">
         <img
           src="/truck-card.png"
@@ -16,7 +16,7 @@ export function CarCardFooter({ detailsLink, actions }: CarCardFooterProps) {
           draggable={false}
         />
       </div>
-      <div className="relative h-16 w-28 shrink-0" />
+      <div className="relative h-16 w-1 shrink-0" />
       <div className="flex min-w-0 flex-col items-end gap-4 w-full">
         {actions}
         {detailsLink}

@@ -1,4 +1,5 @@
 import type { Car } from '@fuel-carrier/shared-types'
+import { LicensePlate } from '../ui/license-plate-picker'
 
 export type CarFuelTypeLabels = {
   fuelTypeHighGrade: () => string
@@ -58,8 +59,8 @@ export function CarOverviewSection({
           <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
             {labels.licensePlate()}
           </dt>
-          <dd className="mt-1.5 font-mono text-sm font-medium">
-            {car.licensePlate}
+          <dd className="mt-1.5">
+            <LicensePlate value={car.licensePlate} size="md" />
           </dd>
         </div>
         <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
