@@ -130,8 +130,7 @@ html[dir="rtl"] .leaflet-popup-content {
   border-bottom-right-radius: 0.5rem !important;
 }
 
-.leaflet-control-zoom a:hover,
-.leaflet-control-zoom a:focus {
+.leaflet-control-zoom a:hover {
   background: color-mix(
     in oklab,
     var(--color-base-content) 6%,
@@ -139,7 +138,17 @@ html[dir="rtl"] .leaflet-popup-content {
   ) !important;
 }
 
+/* Avoid treating programmatic focus (e.g. after fullscreen) as a pressed state. */
+.leaflet-control-zoom a:focus {
+  outline: none;
+}
+
 .leaflet-control-zoom a:focus-visible {
+  background: color-mix(
+    in oklab,
+    var(--color-base-content) 6%,
+    var(--panel-card)
+  ) !important;
   outline: 2px solid
     color-mix(in oklab, var(--color-primary) 40%, transparent);
   outline-offset: -2px;
