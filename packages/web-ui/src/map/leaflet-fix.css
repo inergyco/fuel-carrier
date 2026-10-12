@@ -88,23 +88,18 @@ html[dir="rtl"] .leaflet-popup-content {
   text-shadow: none;
 }
 
-/* Zoom +/- stay one glass pair. Full page is a separate control under them. */
+/* Zoom +/- stay one pair; match MapControlButton panel-card surface. */
 .leaflet-control-zoom.leaflet-bar,
 .leaflet-touch .leaflet-control-zoom.leaflet-bar {
   overflow: hidden;
   border: 1px solid
     color-mix(in oklab, var(--color-base-content) 8%, transparent) !important;
   border-radius: 0.5rem !important;
-  background: color-mix(
-    in oklab,
-    var(--color-base-200) 70%,
-    transparent
-  ) !important;
+  background: var(--panel-card) !important;
   background-clip: padding-box;
   box-shadow:
     0 10px 15px -3px color-mix(in oklab, var(--color-base-content) 12%, transparent),
     0 4px 6px -4px color-mix(in oklab, var(--color-base-content) 10%, transparent) !important;
-  backdrop-filter: blur(24px);
 }
 
 .leaflet-control-zoom a,
@@ -139,8 +134,8 @@ html[dir="rtl"] .leaflet-popup-content {
 .leaflet-control-zoom a:focus {
   background: color-mix(
     in oklab,
-    var(--color-base-200) 90%,
-    transparent
+    var(--color-base-content) 6%,
+    var(--panel-card)
   ) !important;
 }
 
