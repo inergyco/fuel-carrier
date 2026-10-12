@@ -71,7 +71,7 @@ export function CarsCardList({
                   onMqttCredentials={onMqttCredentials}
                   renderExtraActions={renderExtraActions}
                   readOnly={readOnly}
-                  className="max-w-full flex-wrap justify-end"
+                  className="max-w-full justify-end"
                 />
               }
             />

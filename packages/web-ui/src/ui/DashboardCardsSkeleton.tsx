@@ -8,7 +8,7 @@ type DashboardCardsSkeletonProps = {
   columnsClassName?: string
   /**
    * `company` matches internal company cards (logo + meta).
-   * `car` matches external fleet cards (plate, rows, fuel bar, truck + CTA).
+   * `car` matches fleet cards (watermark, plate, meta rows, fuel bar, truck + CTA).
    */
   variant?: 'company' | 'car'
   /** Mirror the pager under the card grid (dashboard cars). */
@@ -101,18 +101,20 @@ function CompanyCardSkeleton() {
 function CarCardSkeleton({ showActions }: { showActions: boolean }) {
   return (
     <div className={CAR_CARD_SHELL_CLASS_NAME}>
-      <div className="flex items-start justify-between gap-3 px-4 pt-4">
+      <Skeleton className="pointer-events-none absolute end-4 top-1/3 z-0 h-20 w-24 -translate-y-1/2 rounded-lg opacity-30" />
+
+      <div className="relative z-10 flex items-start justify-between gap-3 px-4 pt-4">
         <div className="min-w-0 space-y-2">
-          <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-5 w-28" />
+          <Skeleton className="h-3.5 w-20" />
         </div>
         <Skeleton className="h-5 w-16 shrink-0 rounded-full" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-2.5 px-4 pt-3">
-        <Skeleton className="h-3 w-3/5" />
-        <Skeleton className="h-3 w-2/5" />
-        <Skeleton className="h-3 w-1/2" />
+      <div className="relative z-10 flex flex-1 flex-col gap-2.5 px-4 pt-3">
+        <MetaRowSkeleton widthClassName="w-3/5" />
+        <MetaRowSkeleton widthClassName="w-2/5" />
+        <MetaRowSkeleton widthClassName="w-1/2" />
 
         <div className="mt-1 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
@@ -123,9 +125,9 @@ function CarCardSkeleton({ showActions }: { showActions: boolean }) {
         </div>
       </div>
 
-      <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
-        <Skeleton className="h-16 w-28 shrink-0 rounded-lg" />
-        <div className="flex flex-col items-end gap-2">
+      <div className="relative z-10 mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
+        <div className="relative h-16 w-20 shrink-0" />
+        <div className="flex w-full min-w-0 flex-col items-end gap-4">
           {showActions ? (
             <div className="flex gap-2">
               <Skeleton className="size-11 rounded-lg" />
@@ -136,6 +138,15 @@ function CarCardSkeleton({ showActions }: { showActions: boolean }) {
           <Skeleton className="h-10 w-24 shrink-0 rounded-lg" />
         </div>
       </div>
+    </div>
+  )
+}
+
+function MetaRowSkeleton({ widthClassName }: { widthClassName: string }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <Skeleton className="size-4 shrink-0 rounded" />
+      <Skeleton className={`h-3.5 ${widthClassName}`} />
     </div>
   )
 }
