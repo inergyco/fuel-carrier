@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { CarFleetStats } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { FUEL_LEVEL_COLORS } from '../map'
@@ -9,8 +9,10 @@ type FuelLevelRingChartProps = {
   className?: string
 }
 
+type RingSegmentKey = 'high' | 'midHigh' | 'midLow' | 'low'
+
 type RingSegment = {
-  key: string
+  key: RingSegmentKey
   label: string
   value: number
   color: string
@@ -27,6 +29,9 @@ export function FuelLevelRingChart({
 }: FuelLevelRingChartProps) {
   const { LL } = useI18nContext()
   const labels = LL.common.fleetStats
+  const [hiddenKeys, setHiddenKeys] = useState<ReadonlySet<RingSegmentKey>>(
+    () => new Set(),
+  )
 
   const segments: RingSegment[] = [
     {
@@ -55,9 +60,26 @@ export function FuelLevelRingChart({
     },
   ]
 
-  const bandedTotal = segments.reduce(function sumValues(sum, segment) {
-    return sum + segment.value
-  }, 0)
+  const bandedTotal = segments.reduce((sum, segment) => sum + segment.value, 0)
+  const visibleSegments = segments.filter(
+    (segment) => !hiddenKeys.has(segment.key),
+  )
+  const visibleTotal = visibleSegments.reduce(
+    (sum, segment) => sum + segment.value,
+    0,
+  )
+
+  function handleLegendClick(key: RingSegmentKey) {
+    setHiddenKeys((current) => {
+      const next = new Set(current)
+      if (next.has(key)) {
+        next.delete(key)
+      } else {
+        next.add(key)
+      }
+      return next
+    })
+  }
 
   return (
     <article
@@ -87,8 +109,8 @@ export function FuelLevelRingChart({
               stroke="color-mix(in oklab, var(--color-base-content) 8%, transparent)"
               strokeWidth={RING_STROKE}
             />
-            {bandedTotal > 0
-              ? renderRingSegments(segments, bandedTotal)
+            {visibleTotal > 0
+              ? renderRingSegments(visibleSegments, visibleTotal)
               : null}
           </svg>
 
@@ -96,7 +118,7 @@ export function FuelLevelRingChart({
             <img
               src="/truck-card.png"
               alt=""
-              className=" w-auto object-contain h-20"
+              className="h-20 w-auto object-contain"
               draggable={false}
             />
           </div>
@@ -109,17 +131,26 @@ export function FuelLevelRingChart({
         ) : (
           <ul className="mt-5 flex flex-wrap justify-center gap-x-3 gap-y-2">
             {segments.map(function renderLegendItem(segment) {
+              const isHidden = hiddenKeys.has(segment.key)
+
               return (
-                <li
-                  key={segment.key}
-                  className="flex items-center gap-1.5 text-[11px] text-base-content/55"
-                >
-                  <span
-                    className="size-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: segment.color }}
-                    aria-hidden
-                  />
-                  {segment.label}
+                <li key={segment.key}>
+                  <button
+                    type="button"
+                    aria-pressed={isHidden}
+                    onClick={() => handleLegendClick(segment.key)}
+                    className={cn(
+                      'flex cursor-pointer items-center gap-1.5 text-[11px] text-base-content/55',
+                      isHidden && 'line-through',
+                    )}
+                  >
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: segment.color }}
+                      aria-hidden
+                    />
+                    {segment.label}
+                  </button>
                 </li>
               )
             })}
@@ -156,6 +187,7 @@ function renderRingSegments(
         strokeLinecap="butt"
         strokeDasharray={`${arcLength} ${RING_CIRCUMFERENCE - arcLength}`}
         strokeDashoffset={-dashOffset}
+        className="transition-[stroke-dasharray,stroke-dashoffset]"
       />,
     )
 
