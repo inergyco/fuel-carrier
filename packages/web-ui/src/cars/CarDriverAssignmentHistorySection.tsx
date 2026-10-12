@@ -35,7 +35,7 @@ export function CarDriverAssignmentHistorySection({
   const result = assignmentsQuery.data;
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 backdrop-blur-sm md:p-6">
+    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-5 backdrop-blur-sm md:p-6">
       <div className="mb-5 space-y-1">
         <h2 className="text-lg font-semibold tracking-tight">
           {carLabels.driverAssignmentHistoryTitle()}
@@ -81,7 +81,7 @@ export function CarDriverAssignmentHistorySection({
                       "relative z-10 mt-5 size-3.5 shrink-0 rounded-full border",
                       isCurrent
                         ? "border-primary/60 bg-primary/30 shadow-[0_0_12px] shadow-primary/20"
-                        : "border-base-content/15 bg-base-200/80",
+                        : "border-base-content/15 bg-panel-card",
                     )}
                   />
 

@@ -21,7 +21,7 @@ export function ResourceListCards<T extends { id: string }>({
       {items.map((item) => (
         <li
           key={item.id}
-          className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
+          className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
         >
           {titleColumn ? (
             <p className="mb-3 text-base font-medium tracking-tight">

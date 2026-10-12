@@ -2,7 +2,7 @@ import { Button, LocalizedDateTimeRangePicker } from '../ui'
 import type { TrajectoryMapViewLabels } from './trajectory-map.types'
 
 const overlayCardClassName =
-  'pointer-events-auto rounded-2xl border border-base-content/8 bg-base-200/70 shadow-lg backdrop-blur-xl'
+  'pointer-events-auto rounded-2xl border border-base-content/8 bg-panel-card shadow-lg backdrop-blur-xl'
 
 type TrajectoryFormCardProps = {
   labels: TrajectoryMapViewLabels

@@ -47,7 +47,7 @@ export function CarOverviewSection({
         : labels.noDriver())
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-5 backdrop-blur-sm md:p-6">
+    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-5 backdrop-blur-sm md:p-6">
       <div className="mb-5 space-y-1">
         <h2 className="text-lg font-semibold tracking-tight">
           {labels.detailTitle()}

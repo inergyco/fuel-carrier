@@ -110,7 +110,7 @@ export function DashboardPage() {
       renderVehicleLink={renderVehicleLink}
       renderCarDetailsLink={renderCarDetailsLink}
       emptyState={
-        <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
+        <div className="rounded-2xl border border-base-content/8 bg-panel-card px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
           {isLoading
             ? LL.internalPanel.home.loading()
             : LL.internalPanel.home.empty()}

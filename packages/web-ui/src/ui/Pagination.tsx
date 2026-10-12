@@ -23,6 +23,8 @@ interface PaginationProps {
   limitOptions?: readonly number[];
   /** When false, hides the per-page select (fixed page size). Default true. */
   showLimitSelect?: boolean;
+  /** When true, keep the footer visible even if there are no items. */
+  showWhenEmpty?: boolean;
   className?: string;
 }
 
@@ -36,9 +38,11 @@ export function Pagination({
   labels,
   limitOptions = LIMIT_OPTIONS,
   showLimitSelect = true,
+  showWhenEmpty = false,
   className,
 }: PaginationProps) {
   const { from, to } = getPaginationRange(page, limit, totalItems);
+  const displayTotalPages = Math.max(totalPages, 1);
   const canGoPrevious = page > 1;
   const canGoNext = page < totalPages;
 
@@ -58,7 +62,7 @@ export function Pagination({
     onLimitChange?.(Number(event.target.value));
   }
 
-  if (totalItems === 0) {
+  if (totalItems === 0 && !showWhenEmpty) {
     return null;
   }
 
@@ -105,7 +109,7 @@ export function Pagination({
         ) : null}
 
         <p className="text-xs font-medium tracking-wide text-base-content/60">
-          {labels.pageOf({ current: page, total: totalPages })}
+          {labels.pageOf({ current: page, total: displayTotalPages })}
         </p>
 
         <div className="flex items-center gap-1">

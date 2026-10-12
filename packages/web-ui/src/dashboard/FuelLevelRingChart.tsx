@@ -62,7 +62,7 @@ export function FuelLevelRingChart({
   return (
     <article
       className={cn(
-        'flex flex-col overflow-hidden rounded-2xl border border-base-content/8 bg-base-100/80 p-5 shadow-sm backdrop-blur-xl lg:h-full',
+        'flex flex-col overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card p-5 shadow-sm backdrop-blur-xl lg:h-full',
         className,
       )}
     >

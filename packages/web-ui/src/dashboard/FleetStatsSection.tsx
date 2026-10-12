@@ -49,7 +49,7 @@ function FleetStatsSkeleton({ className }: { className?: string }) {
       {Array.from({ length: 6 }, function toSkeletonItem(_, index) {
         return (
           <li key={index}>
-            <div className="h-[4.5rem] animate-pulse rounded-2xl border border-base-content/8 bg-base-200/50" />
+            <div className="h-[4.5rem] animate-pulse rounded-2xl border border-base-content/8 bg-panel-card" />
           </li>
         )
       })}

@@ -26,7 +26,7 @@ export function FuelLevelLegend({ labels }: FuelLevelLegendProps) {
     <div className="pointer-events-none absolute inset-x-0 z-1000 flex justify-end ltr:justify-start bottom-0">
       <aside
         aria-label={labels.fuelLevelLegend()}
-        className="pointer-events-auto max-w-full rounded-tr-2xl border-t border-r border-base-content/8 bg-base-200/70 px-3 py-2.5 shadow-lg backdrop-blur-xl sm:px-4"
+        className="pointer-events-auto max-w-full rounded-tr-2xl border-t border-r border-base-content/8 bg-panel-card px-3 py-2.5 shadow-lg backdrop-blur-xl sm:px-4"
       >
         <ul className="flex flex-wrap items-center justify-start gap-x-4 gap-y-2">
           {LEGEND_LEVELS.map(function renderLegendItem(level) {

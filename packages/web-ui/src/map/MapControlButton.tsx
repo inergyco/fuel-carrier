@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cn } from '../utils'
 
 const mapControlButtonClassName =
-  'inline-flex size-11 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-lg border border-base-content/8 bg-base-200/70 text-base-content shadow-lg backdrop-blur-xl transition-all hover:bg-base-200/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-40'
+  'inline-flex size-11 min-h-11 min-w-11 cursor-pointer items-center justify-center rounded-lg border border-base-content/8 bg-panel-card text-base-content shadow-lg transition-all hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:cursor-not-allowed disabled:opacity-40'
 
 type MapControlButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label: string

@@ -59,7 +59,7 @@ export function AuthPageShell({
         </div>
 
         <div className="relative rounded-2xl p-px bg-gradient-to-br from-primary/30 via-secondary/15 to-accent/25 shadow-2xl shadow-primary/5">
-          <div className="rounded-2xl border border-base-content/5 bg-base-200/60 p-6 backdrop-blur-2xl sm:p-8">
+          <div className="rounded-2xl border border-base-content/5 bg-panel-card p-6 backdrop-blur-2xl sm:p-8">
             {children}
           </div>
         </div>

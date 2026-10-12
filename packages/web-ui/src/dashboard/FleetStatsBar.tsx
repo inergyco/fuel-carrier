@@ -86,7 +86,7 @@ export function FleetStatsBar({ stats, className }: FleetStatsBarProps) {
 
         return (
           <li key={item.key}>
-            <article className="flex h-full items-center justify-between gap-3 rounded-2xl border border-base-content/8 bg-base-100/80 px-3.5 py-3 shadow-sm backdrop-blur-xl">
+            <article className="flex h-full items-center justify-between gap-3 rounded-2xl border border-base-content/8 bg-panel-card px-3.5 py-3 shadow-sm backdrop-blur-xl">
               <div className="min-w-0">
                 <p className="truncate text-[11px] font-medium tracking-tight text-base-content/50">
                   {item.label}

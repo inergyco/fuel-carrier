@@ -15,7 +15,7 @@ function CompanyDetailIndexPage() {
   }
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
+    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-6 backdrop-blur-sm">
       <CompanyDetailCard company={companyQuery.data} />
     </section>
   )

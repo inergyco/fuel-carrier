@@ -41,7 +41,7 @@ function FuelLevelRingSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex flex-col overflow-hidden rounded-2xl border border-base-content/8 bg-base-200/50 p-5 lg:h-full',
+        'flex flex-col overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card p-5 lg:h-full',
         className,
       )}
       aria-hidden

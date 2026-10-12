@@ -29,7 +29,7 @@ export function FuelTruckDiagram({
     <figure
       dir="ltr"
       className={cn(
-        "relative w-full overflow-hidden rounded-2xl border border-base-content/8 bg-base-100/20 p-2 backdrop-blur-sm sm:p-4 md:p-5",
+        "relative w-full overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card p-2 sm:p-4 md:p-5",
         className,
       )}
     >

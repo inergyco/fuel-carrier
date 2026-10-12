@@ -68,7 +68,7 @@ export function CompanyDashboard({
     return (
       <div className="flex min-h-0 flex-col gap-6 lg:min-h-0 lg:flex-1">
         {emptyState ?? (
-          <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
+          <div className="rounded-2xl border border-base-content/8 bg-panel-card px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
             —
           </div>
         )}

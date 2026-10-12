@@ -22,7 +22,7 @@ export function CompaniesCardList({
         return (
           <li
             key={company.id}
-            className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
+            className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
           >
             <div className="mb-3 flex items-center gap-3">
               <CompanyBrandLogo logoUrl={company.logoUrl} />

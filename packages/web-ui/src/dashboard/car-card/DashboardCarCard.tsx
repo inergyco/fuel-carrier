@@ -7,6 +7,7 @@ import { CarCardFooter } from "./CarCardFooter";
 import { CarCardFuelSection } from "./CarCardFuelSection";
 import { CarCardHeader } from "./CarCardHeader";
 import { CarCardWatermark } from "./CarCardWatermark";
+import { DASHBOARD_CAR_CARD_SHELL_CLASS_NAME } from "../../ui/dashboard-car-card-shell";
 import {
   CAR_CARD_TOTAL_CAPACITY_LITERS,
   getFuelFillPercent,
@@ -54,7 +55,7 @@ export function DashboardCarCard({
       : null;
 
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
+    <article className={DASHBOARD_CAR_CARD_SHELL_CLASS_NAME}>
       <CarCardWatermark fillPercent={fillPercent} remainFuel={remainFuel} />
 
       <CarCardHeader

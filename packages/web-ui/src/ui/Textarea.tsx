@@ -27,7 +27,7 @@ export function Textarea({
         aria-invalid={error ? true : undefined}
         aria-describedby={errorId}
         className={cn(
-          'textarea textarea-sm min-h-24 w-full resize-y rounded-lg border bg-base-100/60 px-3 py-2 text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
+          'textarea textarea-sm min-h-24 w-full resize-y rounded-lg border bg-panel-card px-3 py-2 text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
           error
             ? 'border-error/60 focus:ring-error/40'
             : 'border-base-content/10 focus:ring-primary/40',

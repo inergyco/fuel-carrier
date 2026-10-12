@@ -44,10 +44,10 @@
   default: true;
   prefersdark: false;
   color-scheme: light;
-  --color-base-100: oklch(98% 0.008 265);
-  --color-base-200: oklch(95% 0.012 265);
-  --color-base-300: oklch(90% 0.015 265);
-  --color-base-content: oklch(22% 0.03 265);
+  --color-base-100: oklch(98.5% 0.012 265);
+  --color-base-200: oklch(96% 0.016 265);
+  --color-base-300: oklch(92% 0.02 265);
+  --color-base-content: oklch(26% 0.035 265);
   --color-primary: oklch(28% 0.07 265);
   --color-primary-content: oklch(98% 0.005 265);
   --color-secondary: oklch(48% 0.14 295);
@@ -69,24 +69,33 @@
   --radius-box: 1rem;
 }
 
-/* Sidebar rail — same navy in light & dark (set outside theme plugins for reliability). */
+/* Sidebar rail — same navy in both themes (set outside theme plugins for reliability). */
 [data-theme="external-light"],
 [data-theme="external-dark"] {
   --panel-sidebar: oklch(21.9% 0.065 265);
   --panel-sidebar-content: oklch(92% 0.015 265);
 }
 
-/* Fuel-level indicators — deeper, grounded status bands. */
+/*
+  Card surfaces + fuel-level bands.
+  Cards: pure white on light; elevated navy slate on dark.
+*/
+[data-theme="external-light"] {
+  --panel-card: oklch(100% 0 0);
+  --fuel-level-high: oklch(42% 0.14 145);
+  --fuel-level-mid-high: oklch(42% 0.13 255);
+  --fuel-level-mid-low: oklch(55% 0.15 55);
+  --fuel-level-low: oklch(46% 0.18 28);
+}
+
 [data-theme="external-dark"] {
+  --panel-card: oklch(22% 0.035 265);
   --fuel-level-high: oklch(58% 0.16 145);
   --fuel-level-mid-high: oklch(56% 0.14 255);
   --fuel-level-mid-low: oklch(64% 0.17 55);
   --fuel-level-low: oklch(54% 0.2 28);
 }
 
-[data-theme="external-light"] {
-  --fuel-level-high: oklch(42% 0.14 145);
-  --fuel-level-mid-high: oklch(42% 0.13 255);
-  --fuel-level-mid-low: oklch(55% 0.15 55);
-  --fuel-level-low: oklch(46% 0.18 28);
+@theme {
+  --color-panel-card: var(--panel-card);
 }

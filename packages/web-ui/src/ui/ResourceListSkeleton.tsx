@@ -38,7 +38,7 @@ export function ResourceListSkeleton({
           return (
             <li
               key={index}
-              className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
+              className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
             >
               <Skeleton className="mb-3 h-5 w-2/5" />
               <div className="grid gap-2">

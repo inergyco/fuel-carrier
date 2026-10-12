@@ -1,3 +1,4 @@
+import { DASHBOARD_CAR_CARD_SHELL_CLASS_NAME } from './dashboard-car-card-shell'
 import { Skeleton } from './Skeleton'
 
 type DashboardCardsSkeletonProps = {
@@ -72,7 +73,7 @@ function PaginationSkeleton() {
 
 function CompanyCardSkeleton() {
   return (
-    <div className="flex h-full flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-xl">
+    <div className="flex h-full flex-col gap-3 rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl">
       <div className="flex items-start gap-3">
         <Skeleton className="size-10 shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1 space-y-2">
@@ -90,7 +91,7 @@ function CompanyCardSkeleton() {
 
 function CarCardSkeleton() {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-primary/15 bg-base-100 shadow-[0_8px_28px_-18px] shadow-base-content/25">
+    <div className={DASHBOARD_CAR_CARD_SHELL_CLASS_NAME}>
       <div className="space-y-2 px-4 pt-4">
         <Skeleton className="h-4 w-28" />
         <Skeleton className="h-3 w-20" />

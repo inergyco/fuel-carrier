@@ -83,7 +83,7 @@ html[dir="rtl"] .leaflet-popup-content {
 .leaflet-container a.btn-outline {
   color: var(--color-primary);
   border-color: var(--color-primary);
-  background-color: transparent;
+  background-color: var(--panel-card);
   box-shadow: none;
   text-shadow: none;
 }

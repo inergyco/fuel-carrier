@@ -35,7 +35,7 @@ function AuditLogsPage() {
 
   return (
     <div>
-      <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
+      <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
         {auditLogsQuery.isLoading && !result ? (
           <ResourceListSkeleton
             variant={isMdUp ? 'table' : 'cards'}

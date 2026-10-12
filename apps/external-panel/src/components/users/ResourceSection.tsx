@@ -107,7 +107,7 @@ export function ResourceSection<T extends { id: string }>({
   const showHeader = Boolean(toolbar) || !readOnly
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-6">
+    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
       {showHeader ? (
         <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
           {toolbar ? <div className="min-w-0 flex-1">{toolbar}</div> : null}

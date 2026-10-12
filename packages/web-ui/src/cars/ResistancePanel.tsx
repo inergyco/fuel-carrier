@@ -39,7 +39,7 @@ export function ResistancePanel({ labels, resistance }: ResistancePanelProps) {
 
   return (
     <section
-      className={`rounded-2xl border bg-base-200/40 p-5 backdrop-blur-xl transition-all sm:p-6 ${
+      className={`rounded-2xl border bg-panel-card p-5 backdrop-blur-xl transition-all sm:p-6 ${
         panelStyles == null
           ? 'border-base-content/8 shadow-[0_0_32px_-20px] shadow-primary/30'
           : `${panelStyles.border} ${panelStyles.glow}`

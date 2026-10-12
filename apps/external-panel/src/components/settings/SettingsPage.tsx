@@ -44,7 +44,7 @@ export function SettingsPage() {
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <AppearanceSettings />
       {canManageLogo ? (
-        <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-xl sm:p-6">
+        <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl sm:p-6">
           <CompanyLogoUploader
             logoUrl={meQuery.data?.companyLogoUrl}
             onUploadFile={handleUploadLogo}

@@ -39,10 +39,10 @@
   default: true;
   prefersdark: false;
   color-scheme: light;
-  --color-base-100: oklch(98% 0.008 80);
-  --color-base-200: oklch(95% 0.012 80);
-  --color-base-300: oklch(90% 0.015 80);
-  --color-base-content: oklch(22% 0.03 80);
+  --color-base-100: oklch(98.5% 0.012 185);
+  --color-base-200: oklch(96% 0.016 185);
+  --color-base-300: oklch(92% 0.02 185);
+  --color-base-content: oklch(26% 0.035 185);
   --color-primary: oklch(45% 0.11 185);
   --color-primary-content: oklch(98% 0.005 185);
   --color-secondary: oklch(48% 0.12 210);
@@ -71,17 +71,26 @@
   --panel-sidebar-content: oklch(92% 0.015 185);
 }
 
-/* Fuel-level indicators — deeper, grounded status bands. */
+/*
+  Card surfaces + fuel-level bands.
+  Cards: pure white on light; elevated teal slate on dark.
+*/
+[data-theme="internal-light"] {
+  --panel-card: oklch(100% 0 0);
+  --fuel-level-high: oklch(42% 0.14 145);
+  --fuel-level-mid-high: oklch(42% 0.13 255);
+  --fuel-level-mid-low: oklch(55% 0.15 55);
+  --fuel-level-low: oklch(46% 0.18 28);
+}
+
 [data-theme="internal-dark"] {
+  --panel-card: oklch(22% 0.032 185);
   --fuel-level-high: oklch(58% 0.16 145);
   --fuel-level-mid-high: oklch(56% 0.14 255);
   --fuel-level-mid-low: oklch(64% 0.17 55);
   --fuel-level-low: oklch(54% 0.2 28);
 }
 
-[data-theme="internal-light"] {
-  --fuel-level-high: oklch(42% 0.14 145);
-  --fuel-level-mid-high: oklch(42% 0.13 255);
-  --fuel-level-mid-low: oklch(55% 0.15 55);
-  --fuel-level-low: oklch(46% 0.18 28);
+@theme {
+  --color-panel-card: var(--panel-card);
 }

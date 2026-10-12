@@ -114,7 +114,7 @@ function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-base-content/8 bg-base-200/50 p-6 shadow-xl backdrop-blur-md">
+        <div className="rounded-2xl border border-base-content/8 bg-panel-card p-6 shadow-xl backdrop-blur-md">
           <Form
             form={form}
             onSubmit={onSubmit}

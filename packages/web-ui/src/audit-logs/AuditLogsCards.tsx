@@ -19,7 +19,7 @@ export function AuditLogsCards({ logs, locale, labels }: AuditLogsCardsProps) {
         return (
           <li
             key={log.id}
-            className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm"
+            className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
           >
             <p className="text-xs text-base-content/45">
               {formatAuditTimestamp(log, locale)}

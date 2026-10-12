@@ -42,7 +42,7 @@ export function FormCheckbox<TFieldValues extends FieldValues>({
           aria-invalid={error ? true : undefined}
           aria-describedby={errorId}
           className={cn(
-            'checkbox checkbox-sm checkbox-primary shrink-0 rounded-md border-base-content/45 bg-transparent text-primary-content checked:border-primary checked:bg-primary [[data-theme$=light]_&]:border-base-content/70 [[data-theme$=light]_&]:bg-base-100 [[data-theme$=light]_&]:checked:bg-primary',
+            'checkbox checkbox-sm checkbox-primary shrink-0 rounded-md border-base-content/45 bg-transparent text-primary-content checked:border-primary checked:bg-primary [[data-theme$=light]_&]:border-base-content/70 [[data-theme$=light]_&]:bg-panel-card [[data-theme$=light]_&]:checked:bg-primary',
             className,
           )}
           {...props}

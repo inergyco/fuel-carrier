@@ -13,6 +13,7 @@ import {
   ResourceListToolbar,
   useDebouncedValue,
 } from "../ui";
+import { DASHBOARD_CAR_CARD_SHELL_CLASS_NAME } from "../ui/dashboard-car-card-shell";
 import { DashboardCarCard } from "./car-card";
 import type {
   CompanyDashboardDataSource,
@@ -110,9 +111,19 @@ export function DashboardCarsSection({
   if (totalItems === 0 && !hasActiveFilters) {
     return (
       <section className="lg:shrink-0">
-        <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
-          {labels.carsEmpty()}
-        </div>
+        <DashboardCarsEmptyState message={labels.carsEmpty()} />
+        {carsResult ? (
+          <Pagination
+            page={carsResult.page}
+            totalPages={carsResult.totalPages}
+            totalItems={carsResult.totalItems}
+            limit={carsResult.limit}
+            onPageChange={setPage}
+            showLimitSelect={false}
+            showWhenEmpty
+            labels={LL.common.pagination}
+          />
+        ) : null}
       </section>
     );
   }
@@ -131,38 +142,87 @@ export function DashboardCarsSection({
       />
 
       {cars.length === 0 ? (
-        <div className="rounded-2xl border border-base-content/8 bg-base-200/40 px-4 py-8 text-center text-sm text-base-content/55 backdrop-blur-xl">
-          {labels.carsEmptyFiltered()}
-        </div>
+        <DashboardCarsEmptyState message={labels.carsEmptyFiltered()} />
       ) : (
-        <>
-          <ul className={`grid ${CAR_GRID_CLASS_NAME}`}>
-            {cars.map(function renderCarCard(car) {
-              return (
-                <li key={car.id}>
-                  <DashboardCarCard
-                    car={car}
-                    telemetry={telemetryByCarId.get(car.id) ?? null}
-                    labels={labels}
-                    detailsLink={renderCarDetailsLink(car.id)}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-          {carsResult ? (
-            <Pagination
-              page={carsResult.page}
-              totalPages={carsResult.totalPages}
-              totalItems={carsResult.totalItems}
-              limit={carsResult.limit}
-              onPageChange={setPage}
-              showLimitSelect={false}
-              labels={LL.common.pagination}
-            />
-          ) : null}
-        </>
+        <ul className={`grid ${CAR_GRID_CLASS_NAME}`}>
+          {cars.map(function renderCarCard(car) {
+            return (
+              <li key={car.id}>
+                <DashboardCarCard
+                  car={car}
+                  telemetry={telemetryByCarId.get(car.id) ?? null}
+                  labels={labels}
+                  detailsLink={renderCarDetailsLink(car.id)}
+                />
+              </li>
+            );
+          })}
+        </ul>
       )}
+
+      {carsResult ? (
+        <Pagination
+          page={carsResult.page}
+          totalPages={carsResult.totalPages}
+          totalItems={carsResult.totalItems}
+          limit={carsResult.limit}
+          onPageChange={setPage}
+          showLimitSelect={false}
+          showWhenEmpty
+          labels={LL.common.pagination}
+        />
+      ) : null}
     </section>
+  );
+}
+
+function DashboardCarsEmptyState({ message }: { message: string }) {
+  return (
+    <div
+      role="status"
+      className={`${DASHBOARD_CAR_CARD_SHELL_CLASS_NAME} w-full !h-auto`}
+    >
+      {/* Invisible twin of DashboardCarCard so height matches without layout shift. */}
+      <div className="invisible select-none" aria-hidden>
+        <div className="px-4 pt-4">
+          <p className="font-mono text-base font-semibold tracking-tight">
+            00الف000
+          </p>
+          <p className="mt-1 text-sm">Offline</p>
+        </div>
+
+        <div className="flex flex-col gap-2.5 px-4 pt-3 text-sm">
+          <div className="flex items-center gap-2">
+            <span className="size-4 shrink-0" />
+            <span>Driver name</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="size-4 shrink-0" />
+            <span>09000000000</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="size-4 shrink-0" />
+            <span>Fuel type</span>
+          </div>
+
+          <div className="mt-1 space-y-1.5">
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span>0 / 0 L</span>
+              <span>0%</span>
+            </div>
+            <div className="h-1.5 w-full rounded-full" />
+          </div>
+        </div>
+
+        <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
+          <div className="h-16 w-28 shrink-0" />
+          <div className="h-11 w-24 shrink-0" />
+        </div>
+      </div>
+
+      <div className="absolute inset-0 flex items-center justify-center px-4 text-center text-sm text-base-content/55">
+        {message}
+      </div>
+    </div>
   );
 }

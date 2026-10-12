@@ -39,7 +39,7 @@ export function ImageUploader({
   onRemove,
 }: ImageUploaderProps) {
   const preview = (
-    <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-base-100/60">
+    <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-panel-card">
       {imageUrl ? (
         <img
           src={imageUrl}

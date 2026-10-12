@@ -190,7 +190,7 @@ function CompaniesPage() {
 
   return (
     <div>
-      <section className="rounded-2xl border border-base-content/8 bg-base-200/40 p-4 backdrop-blur-sm md:p-0">
+      <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-0">
         <div className="mb-4 flex flex-col gap-3 p-4 pb-0 md:flex-row md:items-center md:p-6 md:pb-0">
           <div className="min-w-0 flex-1">
             <ResourceListToolbar

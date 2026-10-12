@@ -150,7 +150,7 @@ export function Modal({
         tabIndex={-1}
         onKeyDown={handlePanelKeyDown}
         className={cn(
-          'modal-box rounded-2xl border border-base-content/8 bg-base-200/80 p-0 shadow-xl backdrop-blur-xl outline-none',
+          'modal-box rounded-2xl border border-base-content/8 bg-panel-card p-0 shadow-xl backdrop-blur-xl outline-none',
           modalSizeClasses[size],
         )}
       >

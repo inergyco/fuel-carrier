@@ -11,7 +11,7 @@ export function DataTable({ children, className }: DataTableProps) {
   return (
     <div
       className={cn(
-        'overflow-x-auto rounded-xl border border-base-content/12 bg-base-100/55 shadow-sm backdrop-blur-sm',
+        'overflow-x-auto rounded-xl border border-base-content/12 bg-panel-card shadow-sm backdrop-blur-sm',
         className,
       )}
     >

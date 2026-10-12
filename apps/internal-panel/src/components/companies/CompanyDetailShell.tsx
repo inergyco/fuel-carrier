@@ -36,7 +36,7 @@ export function CompanyDetailShell({
 
   if (isNotFound) {
     return (
-      <div className="rounded-2xl border border-base-content/8 bg-base-200/40 p-6 backdrop-blur-sm">
+      <div className="rounded-2xl border border-base-content/8 bg-panel-card p-6 backdrop-blur-sm">
         <Button
           type="button"
           variant="ghost"
