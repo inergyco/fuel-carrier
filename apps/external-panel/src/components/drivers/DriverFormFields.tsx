@@ -1,4 +1,5 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { DRIVER_NATIONAL_ID_MAX_LENGTH } from '@fuel-carrier/shared-validation/driver/create'
 import { DriverImageUploader, FormInput } from '@fuel-carrier/web-ui/ui'
 
 interface DriverFormFieldsProps {
@@ -50,6 +51,8 @@ export function DriverFormFields({
         label={LL.externalPanel.drivers.nationalId()}
         type="text"
         inputMode="numeric"
+        maxLength={DRIVER_NATIONAL_ID_MAX_LENGTH}
+        autoComplete="off"
       />
 
       <FormInput

@@ -1,5 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { CompanyUserLevels } from '@fuel-carrier/shared-types'
+import { COMPANY_USER_NATIONAL_ID_MAX_LENGTH } from '@fuel-carrier/shared-validation/company-user/create'
 import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
 import { FormInput, FormSelect } from '@fuel-carrier/web-ui/ui'
 import type { CompanyUserFormModalMode } from './company-user-form.schema'
@@ -41,6 +42,8 @@ export function CompanyUserFormFields({ mode, serverError }: CompanyUserFormFiel
         label={LL.internalPanel.companies.nationalId()}
         type="text"
         inputMode="numeric"
+        maxLength={COMPANY_USER_NATIONAL_ID_MAX_LENGTH}
+        autoComplete="off"
       />
 
       <FormInput

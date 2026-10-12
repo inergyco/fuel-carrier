@@ -3,6 +3,7 @@ import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   createInternalDriverDtoSchema,
+  DRIVER_NATIONAL_ID_MAX_LENGTH,
   type CreateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
@@ -221,6 +222,8 @@ export function DriverFormModal({
           label={LL.internalPanel.companies.nationalId()}
           type="text"
           inputMode="numeric"
+          maxLength={DRIVER_NATIONAL_ID_MAX_LENGTH}
+          autoComplete="off"
         />
 
         <FormInput

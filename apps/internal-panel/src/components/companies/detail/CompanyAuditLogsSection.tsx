@@ -1,13 +1,16 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQuery } from '@fuel-carrier/web-ui/query'
-import { AuditLogsTable } from '@fuel-carrier/web-ui/audit-logs'
+import {
+  AuditLogsTable,
+  AuditLogsToolbar,
+  useAuditLogSearch,
+} from '@fuel-carrier/web-ui/audit-logs'
 import {
   MEDIA_QUERIES,
   Pagination,
   QueryErrorState,
   ResourceListSkeleton,
   useMediaQuery,
-  usePagination,
 } from '@fuel-carrier/web-ui/ui'
 import { auditLogKeys, fetchCompanyAuditLogs } from '../../../lib/api/audit-logs'
 import { getInternalAuditLogLabels } from './auditLogLabels'
@@ -22,11 +25,18 @@ export function CompanyAuditLogsSection({
   const { LL, locale } = useI18nContext()
   const labels = getInternalAuditLogLabels(LL)
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
-  const { pagination, handlePageChange, handleLimitChange } = usePagination()
+  const {
+    listParams,
+    draftRange,
+    handleRangeChange,
+    handlePageChange,
+    handleLimitChange,
+    hasActiveFilters,
+  } = useAuditLogSearch()
   const auditLogsQuery = useQuery({
-    queryKey: auditLogKeys.company(companyId, pagination),
+    queryKey: auditLogKeys.company(companyId, listParams),
     queryFn: function loadAuditLogs() {
-      return fetchCompanyAuditLogs(companyId, pagination)
+      return fetchCompanyAuditLogs(companyId, listParams)
     },
     placeholderData: (previousData) => previousData,
   })
@@ -34,6 +44,14 @@ export function CompanyAuditLogsSection({
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
+      <AuditLogsToolbar
+        value={draftRange}
+        onChange={handleRangeChange}
+        labels={{
+          dateRangeLabel: LL.common.dateRange.label(),
+          dateRangePlaceholder: LL.common.dateRange.placeholder(),
+        }}
+      />
       {auditLogsQuery.isLoading && !result ? (
         <ResourceListSkeleton
           variant={isMdUp ? 'table' : 'cards'}
@@ -52,7 +70,9 @@ export function CompanyAuditLogsSection({
         />
       ) : (result?.items.length ?? 0) === 0 ? (
         <p className="text-sm text-base-content/50">
-          {LL.internalPanel.companies.detail.auditLogsEmpty()}
+          {hasActiveFilters
+            ? LL.internalPanel.companies.detail.auditLogsEmptyFiltered()
+            : LL.internalPanel.companies.detail.auditLogsEmpty()}
         </p>
       ) : (
         <div

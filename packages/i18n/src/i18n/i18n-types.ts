@@ -110,6 +110,20 @@ type RootTranslation = {
 			 */
 			fuelLevelFilterLabel: string
 		}
+		dateRange: {
+			/**
+			 * D​a​t​e​ ​r​a​n​g​e
+			 */
+			label: string
+			/**
+			 * P​i​c​k​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d
+			 */
+			placeholder: string
+			/**
+			 * C​l​e​a​r​ ​d​a​t​e​ ​r​a​n​g​e
+			 */
+			clear: string
+		}
 		dashboardMode: {
 			/**
 			 * D​a​s​h​b​o​a​r​d​ ​m​o​d​e
@@ -871,6 +885,10 @@ type RootTranslation = {
 			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​y​e​t​.
 			 */
 			empty: string
+			/**
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+			 */
+			emptyFiltered: string
 		}
 		companies: {
 			/**
@@ -1594,6 +1612,10 @@ type RootTranslation = {
 				 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​y​e​t​ ​f​o​r​ ​t​h​i​s​ ​c​o​m​p​a​n​y​.
 				 */
 				auditLogsEmpty: string
+				/**
+				 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+				 */
+				auditLogsEmptyFiltered: string
 				/**
 				 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
 				 */
@@ -2927,6 +2949,10 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+			 */
+			emptyFiltered: string
+			/**
 			 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
 			 */
 			loading: string
@@ -3197,6 +3223,20 @@ export type TranslationFunctions = {
 			 * Fuel level
 			 */
 			fuelLevelFilterLabel: () => LocalizedString
+		}
+		dateRange: {
+			/**
+			 * Date range
+			 */
+			label: () => LocalizedString
+			/**
+			 * Pick start and end
+			 */
+			placeholder: () => LocalizedString
+			/**
+			 * Clear date range
+			 */
+			clear: () => LocalizedString
 		}
 		dashboardMode: {
 			/**
@@ -3931,6 +3971,10 @@ export type TranslationFunctions = {
 			 * No audit entries yet.
 			 */
 			empty: () => LocalizedString
+			/**
+			 * No audit entries in this date range.
+			 */
+			emptyFiltered: () => LocalizedString
 		}
 		companies: {
 			/**
@@ -4638,6 +4682,10 @@ export type TranslationFunctions = {
 				 * No audit entries yet for this company.
 				 */
 				auditLogsEmpty: () => LocalizedString
+				/**
+				 * No audit entries in this date range.
+				 */
+				auditLogsEmptyFiltered: () => LocalizedString
 				/**
 				 * Loading audit log…
 				 */
@@ -5943,6 +5991,10 @@ export type TranslationFunctions = {
 			 * No audit entries yet.
 			 */
 			empty: () => LocalizedString
+			/**
+			 * No audit entries in this date range.
+			 */
+			emptyFiltered: () => LocalizedString
 			/**
 			 * Loading audit log…
 			 */

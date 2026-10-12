@@ -13,14 +13,14 @@ describe('driver image DTO schema', () => {
       createExternalDriverDtoSchema.parse({
         firstName: 'Ada',
         lastName: 'Lovelace',
-        nationalId: '123',
+        nationalId: '0012345679',
         mobileNumber: '09120000000',
         imageUrl,
       }),
     ).toEqual({
       firstName: 'Ada',
       lastName: 'Lovelace',
-      nationalId: '123',
+      nationalId: '0012345679',
       mobileNumber: '09120000000',
       imageUrl,
     });
@@ -29,12 +29,13 @@ describe('driver image DTO schema', () => {
       createExternalDriverDtoSchema.parse({
         firstName: 'Ada',
         lastName: 'Lovelace',
-        nationalId: '123',
+        nationalId: '0012345679',
         mobileNumber: '09120000000',
         imageUrl: '',
       }).imageUrl,
     ).toBeNull();
   });
+
 
   it('rejects imageUrl on generic update; replace schema accepts uploaded paths', () => {
     const imageUrl =

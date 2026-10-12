@@ -29,6 +29,11 @@ const fa: Translation = {
       fuelLevelAll: "همه سطوح",
       fuelLevelFilterLabel: "سطح سوخت",
     },
+    dateRange: {
+      label: "بازه زمانی",
+      placeholder: "شروع و پایان را انتخاب کنید",
+      clear: "پاک کردن بازه زمانی",
+    },
     dashboardMode: {
       label: "حالت داشبورد",
       fuelLevel: "سطح سوخت",
@@ -244,6 +249,7 @@ const fa: Translation = {
       subtitle: "اقدامات انجام‌شده توسط مدیران داخلی",
       loading: "در حال بارگذاری گزارش فعالیت…",
       empty: "هنوز گزارشی ثبت نشده است.",
+      emptyFiltered: "در این بازه زمانی گزارشی یافت نشد.",
     },
     companies: {
       title: "شرکت‌ها",
@@ -439,6 +445,7 @@ const fa: Translation = {
         auditLogsTitle: "گزارش ممیزی",
         auditLogsSubtitle: "اقدامات مهم انجام‌شده برای این شرکت",
         auditLogsEmpty: "هنوز گزارشی برای این شرکت ثبت نشده است.",
+        auditLogsEmptyFiltered: "در این بازه زمانی گزارشی یافت نشد.",
         auditLogsLoading: "در حال بارگذاری گزارش ممیزی…",
         auditLogsWhen: "زمان",
         auditLogsActor: "کاربر",
@@ -807,6 +814,7 @@ const fa: Translation = {
       title: "گزارش ممیزی",
       subtitle: "اقدامات مهم انجام‌شده برای شرکت شما",
       empty: "هنوز گزارشی ثبت نشده است.",
+      emptyFiltered: "در این بازه زمانی گزارشی یافت نشد.",
       loading: "در حال بارگذاری گزارش ممیزی…",
       when: "زمان",
       actor: "کاربر",

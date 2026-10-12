@@ -29,6 +29,11 @@ const en: BaseTranslation = {
       fuelLevelAll: 'All levels',
       fuelLevelFilterLabel: 'Fuel level',
     },
+    dateRange: {
+      label: 'Date range',
+      placeholder: 'Pick start and end',
+      clear: 'Clear date range',
+    },
     dashboardMode: {
       label: 'Dashboard mode',
       fuelLevel: 'Fuel level',
@@ -244,6 +249,7 @@ const en: BaseTranslation = {
       subtitle: 'Actions performed by internal administrators',
       loading: 'Loading audit log…',
       empty: 'No audit entries yet.',
+      emptyFiltered: 'No audit entries in this date range.',
     },
     companies: {
       title: 'Companies',
@@ -438,6 +444,7 @@ const en: BaseTranslation = {
         auditLogsTitle: 'Audit log',
         auditLogsSubtitle: 'Critical actions performed for this company',
         auditLogsEmpty: 'No audit entries yet for this company.',
+        auditLogsEmptyFiltered: 'No audit entries in this date range.',
         auditLogsLoading: 'Loading audit log…',
         auditLogsWhen: 'When',
         auditLogsActor: 'Actor',
@@ -807,6 +814,7 @@ const en: BaseTranslation = {
       title: 'Audit log',
       subtitle: 'Critical actions performed for your company',
       empty: 'No audit entries yet.',
+      emptyFiltered: 'No audit entries in this date range.',
       loading: 'Loading audit log…',
       when: 'When',
       actor: 'Actor',

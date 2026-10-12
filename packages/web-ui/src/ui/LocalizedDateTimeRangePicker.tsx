@@ -3,9 +3,11 @@ import type { ReactNode } from 'react'
 import type DateObject from 'react-date-object'
 import datePickerModule from 'react-multi-date-picker'
 import timePickerModule from 'react-multi-date-picker/plugins/time_picker'
+import { X } from '../icons'
 import { cn } from '../utils'
 import { getDatePickerLocale } from './date-picker-locale'
 import { Field } from './Field'
+import { ICON_STROKE_WIDTH, iconSmClassName } from './iconClassName'
 import { useFieldIds } from './useFieldIds'
 import './localized-date-time-picker.css'
 
@@ -42,12 +44,17 @@ export function LocalizedDateTimeRangePicker({
   className,
   id: idProp,
 }: LocalizedDateTimeRangePickerProps) {
-  const { locale } = useI18nContext()
+  const { LL, locale } = useI18nContext()
   const datePickerLocale = getDatePickerLocale(locale)
   const { id, errorId } = useFieldIds({ id: idProp, error })
+  const hasValue = value.start != null || value.end != null
 
   function handleChange(nextValue: DateObject | DateObject[] | null) {
     onChange(toDateTimeRangeValue(nextValue))
+  }
+
+  function handleClear() {
+    onChange({ start: null, end: null })
   }
 
   return (
@@ -59,28 +66,47 @@ export function LocalizedDateTimeRangePicker({
       compact={compact}
       className={className}
     >
-      <DatePicker
-        id={id}
-        range
-        rangeHover
-        value={toPickerRangeValue(value)}
-        onChange={handleChange}
-        calendar={datePickerLocale.calendar}
-        locale={datePickerLocale.locale}
-        format="YYYY-MM-DD HH:mm"
-        dateSeparator=" – "
-        monthYearSeparator=" / "
-        maxDate={capMaxDate(maxDate)}
-        placeholder={placeholder}
-        disabled={disabled}
-        editable={false}
-        calendarPosition={datePickerLocale.calendarPosition}
-        containerClassName="localized-date-time-picker-container"
-        inputClass="localized-date-time-picker-input"
-        arrow={false}
-        shadow={false}
-        plugins={[<TimePicker position="bottom" hideSeconds />]}
-      />
+      <div className="relative min-w-0">
+        <DatePicker
+          id={id}
+          range
+          rangeHover
+          value={toPickerRangeValue(value)}
+          onChange={handleChange}
+          calendar={datePickerLocale.calendar}
+          locale={datePickerLocale.locale}
+          format="YYYY-MM-DD HH:mm"
+          dateSeparator=" – "
+          monthYearSeparator=" / "
+          maxDate={capMaxDate(maxDate)}
+          placeholder={placeholder}
+          disabled={disabled}
+          editable={false}
+          calendarPosition={datePickerLocale.calendarPosition}
+          containerClassName="localized-date-time-picker-container"
+          inputClass={cn(
+            'localized-date-time-picker-input',
+            hasValue && !disabled && 'localized-date-time-picker-input--clearable',
+          )}
+          arrow={false}
+          shadow={false}
+          plugins={[<TimePicker position="bottom" hideSeconds />]}
+        />
+        {hasValue && !disabled ? (
+          <button
+            type="button"
+            aria-label={LL.common.dateRange.clear()}
+            onClick={handleClear}
+            className="absolute end-1 top-1/2 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-base-content/45 transition-colors hover:bg-base-content/5 hover:text-base-content/70"
+          >
+            <X
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+          </button>
+        ) : null}
+      </div>
     </DateTimePickerChrome>
   )
 }

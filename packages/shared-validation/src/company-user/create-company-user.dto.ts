@@ -2,6 +2,10 @@ import type { CompanyUserInput } from '@fuel-carrier/shared-types';
 import { COMPANY_USER_LEVELS } from '@fuel-carrier/shared-types';
 import { z } from 'zod';
 import { optionalTextField } from '../optional-text-field';
+import {
+  IRANIAN_NATIONAL_ID_LENGTH,
+  optionalIranianNationalIdSchema,
+} from '../national-id';
 import { strongPasswordSchema } from '../password';
 import {
   USERNAME_MAX_LENGTH,
@@ -11,7 +15,7 @@ import {
 
 export const COMPANY_USER_FIRST_NAME_MAX_LENGTH = 100;
 export const COMPANY_USER_LAST_NAME_MAX_LENGTH = 100;
-export const COMPANY_USER_NATIONAL_ID_MAX_LENGTH = 32;
+export const COMPANY_USER_NATIONAL_ID_MAX_LENGTH = IRANIAN_NATIONAL_ID_LENGTH;
 export const COMPANY_USER_EMAIL_MAX_LENGTH = 254;
 
 const companyUserLevelSchema = z.enum(COMPANY_USER_LEVELS);
@@ -25,7 +29,7 @@ const companyUserBaseSchema = z.object({
     .max(USERNAME_MAX_LENGTH)
     .regex(USERNAME_PATTERN),
   level: companyUserLevelSchema,
-  nationalId: optionalTextField(COMPANY_USER_NATIONAL_ID_MAX_LENGTH).optional(),
+  nationalId: optionalIranianNationalIdSchema().optional(),
   email: optionalTextField(COMPANY_USER_EMAIL_MAX_LENGTH).optional(),
 });
 

@@ -1,5 +1,5 @@
 import { Injectable, Logger, HttpStatus } from '@nestjs/common';
-import { count, desc, eq } from 'drizzle-orm';
+import { and, count, desc, eq, gte, lte, type SQL } from 'drizzle-orm';
 import type {
   AuditAction,
   AuditActor,
@@ -23,6 +23,11 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { actorFromSession } from './audit-log.utils';
 import { AuditRequestContext } from './audit-request.context';
+
+export type AuditLogListQuery = PaginationParams & {
+  start?: Date;
+  end?: Date;
+};
 
 export type RecordAuditLogInput = {
   action: AuditAction;
@@ -99,20 +104,23 @@ export class AuditLogService {
   async listByCompany(
     context: TenantContext,
     companyId: string,
-    pagination: PaginationParams,
+    query: AuditLogListQuery,
   ): Promise<PaginatedResult<AuditLog>> {
     this._assertCompanyAccess(context, companyId);
 
-    const { page, limit } = pagination;
+    const { page, limit } = query;
     const offset = (page - 1) * limit;
-    const where = eq(auditLogs.companyId, companyId);
+    const where = and(
+      eq(auditLogs.companyId, companyId),
+      buildCreatedAtRangeFilter(query),
+    );
 
-    return this._listWhere(context, where, pagination, offset);
+    return this._listWhere(context, { where, query, offset });
   }
 
   async listInternalActions(
     context: TenantContext,
-    pagination: PaginationParams,
+    query: AuditLogListQuery,
   ): Promise<PaginatedResult<AuditLog>> {
     if (!context.isInternal) {
       throw createApiException(
@@ -122,20 +130,26 @@ export class AuditLogService {
       );
     }
 
-    const { page, limit } = pagination;
+    const { page, limit } = query;
     const offset = (page - 1) * limit;
-    const where = eq(auditLogs.actorRole, UserRole.INTERNAL_ADMIN);
+    const where = and(
+      eq(auditLogs.actorRole, UserRole.INTERNAL_ADMIN),
+      buildCreatedAtRangeFilter(query),
+    );
 
-    return this._listWhere(context, where, pagination, offset);
+    return this._listWhere(context, { where, query, offset });
   }
 
   private async _listWhere(
     context: TenantContext,
-    where: ReturnType<typeof eq>,
-    pagination: PaginationParams,
-    offset: number,
+    options: {
+      where: SQL | undefined;
+      query: PaginationParams;
+      offset: number;
+    },
   ): Promise<PaginatedResult<AuditLog>> {
-    const { page, limit } = pagination;
+    const { where, query, offset } = options;
+    const { page, limit } = query;
 
     return this.tenantDb.run(context, async (tx) => {
       const [countRow] = await tx
@@ -241,6 +255,16 @@ export class AuditLogService {
       companyId: null,
     };
   }
+}
+
+function buildCreatedAtRangeFilter(query: {
+  start?: Date;
+  end?: Date;
+}): SQL | undefined {
+  return and(
+    query.start ? gte(auditLogs.createdAt, query.start) : undefined,
+    query.end ? lte(auditLogs.createdAt, query.end) : undefined,
+  );
 }
 
 function _mapAuditLog(row: typeof auditLogs.$inferSelect): AuditLog {

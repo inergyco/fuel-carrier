@@ -12,10 +12,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe';
-import {
-  paginationQuerySchema,
-  type PaginationQueryDto,
-} from '../common/dto/pagination-query.dto';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeOkPaginatedResponse,
@@ -24,6 +20,11 @@ import {
 import { AuditLogDto } from '../swagger/dto/audit-log.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { AuditLogService } from './audit-log.service';
+import {
+  auditLogsListQuerySchema,
+  type AuditLogsListQueryDto,
+} from './audit-logs-list-query.dto';
+import { toAuditLogListQuery } from './to-audit-log-list-query';
 
 @ApiTags('audit-logs')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
@@ -38,17 +39,29 @@ export class InternalAuditLogsController {
   @ApiParam({ name: 'companyId', format: 'uuid' })
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({
+    name: 'start',
+    required: false,
+    type: String,
+    example: '2026-01-01T00:00:00.000Z',
+  })
+  @ApiQuery({
+    name: 'end',
+    required: false,
+    type: String,
+    example: '2026-01-31T23:59:59.999Z',
+  })
   @ApiEnvelopeOkPaginatedResponse(AuditLogDto)
   @ApiEnvelopeUnauthorizedResponse()
   list(
     @Param('companyId') companyId: string,
-    @Query(new ZodValidationPipe(paginationQuerySchema))
-    query: PaginationQueryDto,
+    @Query(new ZodValidationPipe(auditLogsListQuerySchema))
+    query: AuditLogsListQueryDto,
   ): Promise<PaginatedResult<AuditLog>> {
     return this.auditLogService.listByCompany(
       internalTenantContext(),
       companyId,
-      query,
+      toAuditLogListQuery(query),
     );
   }
 }

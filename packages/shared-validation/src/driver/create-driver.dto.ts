@@ -6,17 +6,22 @@ import {
   IMAGE_UPLOAD_URL_MAX_LENGTH,
   isAllowedDriverImageUrl,
 } from '../image-upload/constants';
+import {
+  IRANIAN_NATIONAL_ID_LENGTH,
+  iranianNationalIdSchema,
+} from '../national-id';
 
 export const DRIVER_FIRST_NAME_MAX_LENGTH = 100;
 export const DRIVER_LAST_NAME_MAX_LENGTH = 100;
-export const DRIVER_NATIONAL_ID_MAX_LENGTH = 32;
+export const DRIVER_NATIONAL_ID_MAX_LENGTH = IRANIAN_NATIONAL_ID_LENGTH;
 export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = 20;
 
 const driverBaseSchema = z.object({
   firstName: z.string().min(1).max(DRIVER_FIRST_NAME_MAX_LENGTH),
   lastName: z.string().min(1).max(DRIVER_LAST_NAME_MAX_LENGTH),
-  nationalId: z.string().min(1).max(DRIVER_NATIONAL_ID_MAX_LENGTH),
+  nationalId: iranianNationalIdSchema(),
   mobileNumber: z.string().min(1).max(DRIVER_MOBILE_NUMBER_MAX_LENGTH),
+
   imageUrl: optionalTextField(
     IMAGE_UPLOAD_URL_MAX_LENGTH,
     `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,

@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
+import { parseAuditLogSearch } from '@fuel-carrier/web-ui/audit-logs'
 import { CompanyAuditLogsSection } from '../../components/companies/detail/CompanyAuditLogsSection'
 
 export const Route = createFileRoute(
   '/_authenticated/companies/$companyId/audit-logs',
 )({
-  validateSearch: parsePaginationSearch,
+  validateSearch: parseAuditLogSearch,
   component: CompanyAuditLogsPage,
 })
 

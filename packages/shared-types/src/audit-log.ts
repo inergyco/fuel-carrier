@@ -1,4 +1,11 @@
+import type { PaginationParams } from './pagination';
 import type { UserRole } from './user-role';
+
+/** Pagination + optional ISO date range for audit log list APIs. */
+export type AuditLogListParams = PaginationParams & {
+  start?: string;
+  end?: string;
+};
 
 export const AuditActions = {
   COMPANY_CREATED: 'company.created',
