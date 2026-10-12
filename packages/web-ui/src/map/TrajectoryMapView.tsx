@@ -1,4 +1,8 @@
-import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import type {
+  Car,
+  CarTelemetryMarker,
+  FuelLevelFilter,
+} from '@fuel-carrier/shared-types'
 import type { ReactNode } from 'react'
 import type { KyInstance } from '../api'
 import { cn } from '../utils'
@@ -10,6 +14,7 @@ import {
 import { TrajectoryControls } from './TrajectoryControls'
 import type { TrajectoryMapViewLabels } from './trajectory-map.types'
 import { getVehicleLabel } from './trajectory-utils'
+import { useFuelLevelMapFilter } from './useFuelLevelMapFilter'
 import { useTrajectoryHistory } from './useTrajectoryHistory'
 import { useTrajectorySelection } from './useTrajectorySelection'
 
@@ -23,6 +28,8 @@ export type TrajectoryMapViewProps = {
   labels: TrajectoryMapViewLabels
   renderVehicleLink: (marker: CarTelemetryMarker) => ReactNode
   className?: string
+  fuelLevel?: FuelLevelFilter
+  onFuelLevelChange?: (fuelLevel: FuelLevelFilter) => void
 }
 
 export function TrajectoryMapView({
@@ -33,15 +40,22 @@ export function TrajectoryMapView({
   labels,
   renderVehicleLink,
   className,
+  fuelLevel,
+  onFuelLevelChange,
 }: TrajectoryMapViewProps) {
   const selection = useTrajectorySelection()
+  const fuelFilter = useFuelLevelMapFilter({
+    markers,
+    fuelLevel,
+    onFuelLevelChange,
+  })
   const selectedCar = cars.find(function matchCar(car) {
     return car.id === selection.selectedCarId
   })
   const selectedLiveMarker =
-    markers.find(function matchMarker(marker) {
-      return marker.carId === selection.selectedCarId
-    }) ?? null
+    fuelFilter.visibleMarkers.find(
+      (marker) => marker.carId === selection.selectedCarId,
+    ) ?? null
   const history = useTrajectoryHistory({
     api,
     historyRequest: selection.historyRequest,
@@ -80,7 +94,13 @@ export function TrajectoryMapView({
         onClearSelection={selection.handleClearSelection}
       />
 
-      {showFuelLegend ? <FuelLevelLegend labels={labels} /> : null}
+      {showFuelLegend ? (
+        <FuelLevelLegend
+          labels={labels}
+          selectedLevel={fuelFilter.selectedLevel}
+          onSelectLevel={fuelFilter.handleSelectLevel}
+        />
+      ) : null}
 
       {isLoading ? (
         <div className="flex h-full items-center justify-center bg-base-300/40 text-sm text-base-content/50">
@@ -93,7 +113,7 @@ export function TrajectoryMapView({
               isHistoryMode: selection.isHistoryMode,
               historyMarker: history.historyMarker,
               selectedLiveMarker,
-              liveMarkers: markers,
+              liveMarkers: fuelFilter.visibleMarkers,
             })}
             labels={labels}
             renderVehicleLink={renderVehicleLink}
