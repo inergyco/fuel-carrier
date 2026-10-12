@@ -13,6 +13,12 @@ export class CarTelemetryMarkerDto {
   @ApiProperty({ example: '2026-07-22T10:19:48.680Z' })
   updatedAt!: string;
 
+  @ApiPropertyOptional({
+    example: '2026-07-22T10:19:49.100Z',
+    description: 'Server ingest time used for online/offline.',
+  })
+  createdAt?: string;
+
   @ApiProperty({ example: '۱۲ب۳۴۵-۶۷' })
   licensePlate!: string;
 

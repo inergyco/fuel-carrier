@@ -9,6 +9,7 @@ type CarTelemetry = {
   latitude: number;
   longitude: number;
   updatedAt: string;
+  createdAt?: string;
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
@@ -23,6 +24,7 @@ type RedisCarTelemetryPayload = {
   latitude: number;
   longitude: number;
   updatedAt: string;
+  createdAt?: string;
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
@@ -34,6 +36,7 @@ export type SerializableCarTelemetry = {
   latitude: number;
   longitude: number;
   updatedAt: Date | string;
+  createdAt?: Date | string;
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
@@ -46,11 +49,12 @@ export function serializeCarTelemetry(
   const payload: RedisCarTelemetryPayload = {
     latitude: telemetry.latitude,
     longitude: telemetry.longitude,
-    updatedAt:
-      typeof telemetry.updatedAt === 'string'
-        ? telemetry.updatedAt
-        : telemetry.updatedAt.toISOString(),
+    updatedAt: toIsoTimestamp(telemetry.updatedAt),
   };
+
+  if (telemetry.createdAt != null) {
+    payload.createdAt = toIsoTimestamp(telemetry.createdAt);
+  }
 
   if (telemetry.speed != null) {
     payload.speed = telemetry.speed;
@@ -104,6 +108,9 @@ export function parseCarTelemetry(
       updatedAt,
     };
 
+    if (typeof record.createdAt === 'string') {
+      telemetry.createdAt = record.createdAt;
+    }
     if (typeof record.speed === 'number') {
       telemetry.speed = record.speed;
     }
@@ -124,6 +131,9 @@ export function parseCarTelemetry(
     return null;
   }
 }
+
+const toIsoTimestamp = (value: Date | string) =>
+  typeof value === 'string' ? value : value.toISOString();
 
 function parseResistance(value: unknown): ResistanceReadings | null {
   if (typeof value !== 'object' || value == null) {

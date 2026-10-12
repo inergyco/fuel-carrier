@@ -5,6 +5,7 @@ import { applyApiFieldErrors } from "@fuel-carrier/web-ui/api";
 import {
   zodResolver,
   useForm,
+  toCompanyUserValidationMessages,
   type SubmitHandler,
   type UseFormReturn,
 } from "@fuel-carrier/web-ui/form";
@@ -16,8 +17,7 @@ import {
   updateCompanyUser,
 } from "../../../lib/api/company-users";
 import {
-  companyUserCreateFormSchema,
-  companyUserEditFormSchema,
+  createCompanyUserFormSchemaPair,
   type CompanyUserFormInput,
   type CompanyUserFormModalMode,
   type CompanyUserFormOutput,
@@ -54,11 +54,13 @@ export function useCompanyUserFormModal({
 
   const schema = useMemo(
     function createSchema() {
-      return mode === "edit"
-        ? companyUserEditFormSchema
-        : companyUserCreateFormSchema;
+      const schemas = createCompanyUserFormSchemaPair(
+        toCompanyUserValidationMessages(LL),
+      );
+
+      return mode === "edit" ? schemas.editSchema : schemas.createSchema;
     },
-    [mode],
+    [LL, mode],
   );
 
   const form = useForm<CompanyUserFormInput, unknown, CompanyUserFormOutput>({

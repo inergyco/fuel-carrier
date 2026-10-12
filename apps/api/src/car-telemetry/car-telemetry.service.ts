@@ -85,6 +85,7 @@ export class CarTelemetryService {
     input: RecordCarTelemetryInput,
   ): Promise<CarTelemetry> {
     const recordedAt = input.recordedAt ?? new Date();
+    const ingestedAt = new Date();
 
     const markerIdentity = await this.tenantDb.run(context, async (tx) => {
       const car = await tx.query.cars.findFirst({
@@ -120,6 +121,7 @@ export class CarTelemetryService {
         resistanceTankToGround: input.resistance?.tankToGround,
         resistanceTankToNozzle: input.resistance?.tankToNozzle,
         resistanceGroundToVehicle: input.resistance?.groundToVehicle,
+        createdAt: ingestedAt,
       });
 
       return {
@@ -134,6 +136,7 @@ export class CarTelemetryService {
       latitude: input.latitude,
       longitude: input.longitude,
       updatedAt: recordedAt.toISOString(),
+      createdAt: ingestedAt.toISOString(),
       speed: input.speed,
       remainFuel: input.remainFuel,
       fuelAmount: input.fuelAmount,

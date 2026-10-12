@@ -1,9 +1,16 @@
-import { createExternalDriverDtoSchema } from '@fuel-carrier/shared-validation/driver/create'
+import {
+  createDriverBaseSchema,
+  type DriverValidationMessages,
+} from '@fuel-carrier/shared-validation/driver/create'
 import { z } from 'zod'
 
-export const driverFormSchema = createExternalDriverDtoSchema
+export function createDriverFormSchema(messages: DriverValidationMessages) {
+  return createDriverBaseSchema(messages)
+}
 
-export type DriverFormInput = z.input<typeof driverFormSchema>
-export type DriverFormOutput = z.output<typeof driverFormSchema>
+type DriverFormSchema = ReturnType<typeof createDriverFormSchema>
+
+export type DriverFormInput = z.input<DriverFormSchema>
+export type DriverFormOutput = z.output<DriverFormSchema>
 
 export type DriverFormModalMode = 'create' | 'edit'

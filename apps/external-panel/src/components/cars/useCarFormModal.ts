@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { CreateExternalCarDto } from '@fuel-carrier/shared-validation/car/create'
@@ -6,6 +6,7 @@ import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
 import {
   zodResolver,
   useForm,
+  toCarValidationMessages,
   type SubmitHandler,
   type UseFormReturn,
 } from '@fuel-carrier/web-ui/form'
@@ -13,8 +14,7 @@ import { useMutation } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
 import { carToFormValues, createCar, updateCar } from '../../lib/api/cars'
 import {
-  carCreateFormSchema,
-  carEditFormSchema,
+  createCarFormSchemaPair,
   type CarFormInput,
   type CarFormModalMode,
   type CarFormOutput,
@@ -46,7 +46,14 @@ export function useCarFormModal({
   const { LL } = useI18nContext()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
-  const schema = mode === 'create' ? carCreateFormSchema : carEditFormSchema
+  const schema = useMemo(
+    function createSchema() {
+      const schemas = createCarFormSchemaPair(toCarValidationMessages(LL))
+
+      return mode === 'create' ? schemas.createSchema : schemas.editSchema
+    },
+    [LL, mode],
+  )
   const defaults = carToFormValues(car)
 
   const form = useForm<CarFormInput, unknown, CarFormOutput>({

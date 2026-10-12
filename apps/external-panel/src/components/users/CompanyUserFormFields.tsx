@@ -41,7 +41,7 @@ export function CompanyUserFormFields({ mode, serverError }: CompanyUserFormFiel
         name="nationalId"
         label={LL.externalPanel.users.nationalId()}
         type="text"
-        inputMode="numeric"
+        digitsOnly
         maxLength={COMPANY_USER_NATIONAL_ID_MAX_LENGTH}
         autoComplete="off"
       />

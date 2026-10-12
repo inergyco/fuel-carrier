@@ -1,17 +1,20 @@
-import { createExternalCarDtoSchema } from '@fuel-carrier/shared-validation/car/create'
+import {
+  createCarFormSchemas,
+  type CarValidationMessages,
+} from '@fuel-carrier/shared-validation/car/create'
 import { z } from 'zod'
 
-export const carCreateFormSchema = createExternalCarDtoSchema
+export function createCarFormSchemaPair(messages: CarValidationMessages) {
+  return createCarFormSchemas(messages)
+}
 
-export const carEditFormSchema = createExternalCarDtoSchema.omit({
-  driverId: true,
-})
+type CarFormSchemas = ReturnType<typeof createCarFormSchemas>
 
 export type CarFormInput =
-  | z.input<typeof carCreateFormSchema>
-  | z.input<typeof carEditFormSchema>
+  | z.input<CarFormSchemas['createSchema']>
+  | z.input<CarFormSchemas['editSchema']>
 export type CarFormOutput =
-  | z.output<typeof carCreateFormSchema>
-  | z.output<typeof carEditFormSchema>
+  | z.output<CarFormSchemas['createSchema']>
+  | z.output<CarFormSchemas['editSchema']>
 
 export type CarFormModalMode = 'create' | 'edit'

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { cn } from '../utils'
 
 interface FieldProps {
   label?: string
@@ -14,7 +15,10 @@ export function Field({ label, error, htmlFor, errorId, children }: FieldProps) 
       {label ? (
         <label
           htmlFor={htmlFor}
-          className="text-xs font-medium tracking-widest text-base-content/40 uppercase"
+          className={cn(
+            'text-xs font-medium tracking-widest uppercase',
+            error ? 'text-error' : 'text-base-content/40',
+          )}
         >
           {label}
         </label>

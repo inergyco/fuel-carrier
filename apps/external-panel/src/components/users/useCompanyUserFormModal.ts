@@ -2,7 +2,13 @@ import { useMemo, useState } from 'react'
 import type { CompanyUser } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
-import { zodResolver, useForm, type SubmitHandler, type UseFormReturn } from '@fuel-carrier/web-ui/form'
+import {
+  zodResolver,
+  useForm,
+  toCompanyUserValidationMessages,
+  type SubmitHandler,
+  type UseFormReturn,
+} from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import { useToast } from '@fuel-carrier/web-ui/ui'
 import {
@@ -11,8 +17,7 @@ import {
   updateCompanyUser,
 } from '../../lib/api/company-users'
 import {
-  companyUserCreateFormSchema,
-  companyUserEditFormSchema,
+  createCompanyUserFormSchemaPair,
   type CompanyUserFormInput,
   type CompanyUserFormModalMode,
   type CompanyUserFormOutput,
@@ -47,9 +52,13 @@ export function useCompanyUserFormModal({
 
   const schema = useMemo(
     function createSchema() {
-      return mode === 'edit' ? companyUserEditFormSchema : companyUserCreateFormSchema
+      const schemas = createCompanyUserFormSchemaPair(
+        toCompanyUserValidationMessages(LL),
+      )
+
+      return mode === 'edit' ? schemas.editSchema : schemas.createSchema
     },
-    [mode],
+    [LL, mode],
   )
 
   const form = useForm<CompanyUserFormInput, unknown, CompanyUserFormOutput>({

@@ -7,6 +7,7 @@ import {
   isAllowedDriverImageUrl,
 } from '../image-upload/constants';
 import {
+  IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   IRANIAN_NATIONAL_ID_LENGTH,
   iranianNationalIdSchema,
 } from '../national-id';
@@ -16,24 +17,60 @@ export const DRIVER_LAST_NAME_MAX_LENGTH = 100;
 export const DRIVER_NATIONAL_ID_MAX_LENGTH = IRANIAN_NATIONAL_ID_LENGTH;
 export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = 20;
 
-const driverBaseSchema = z.object({
-  firstName: z.string().min(1).max(DRIVER_FIRST_NAME_MAX_LENGTH),
-  lastName: z.string().min(1).max(DRIVER_LAST_NAME_MAX_LENGTH),
-  nationalId: iranianNationalIdSchema(),
-  mobileNumber: z.string().min(1).max(DRIVER_MOBILE_NUMBER_MAX_LENGTH),
+export type DriverValidationMessages = {
+  firstNameRequired: string;
+  firstNameTooLong: string;
+  lastNameRequired: string;
+  lastNameTooLong: string;
+  nationalIdInvalid: string;
+  mobileNumberRequired: string;
+  mobileNumberTooLong: string;
+  imageUrlTooLong: string;
+  imageUrlInvalid: string;
+};
 
-  imageUrl: optionalTextField(
-    IMAGE_UPLOAD_URL_MAX_LENGTH,
-    `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
-  ).pipe(
-    z.union([
-      z.null(),
-      z
-        .string()
-        .refine(isAllowedDriverImageUrl, 'Image URL must be a valid URL'),
-    ]),
-  ),
-});
+const defaultDriverValidationMessages: DriverValidationMessages = {
+  firstNameRequired: 'First name is required',
+  firstNameTooLong: `First name must be at most ${DRIVER_FIRST_NAME_MAX_LENGTH} characters`,
+  lastNameRequired: 'Last name is required',
+  lastNameTooLong: `Last name must be at most ${DRIVER_LAST_NAME_MAX_LENGTH} characters`,
+  nationalIdInvalid: IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
+  mobileNumberRequired: 'Mobile number is required',
+  mobileNumberTooLong: `Mobile number must be at most ${DRIVER_MOBILE_NUMBER_MAX_LENGTH} characters`,
+  imageUrlTooLong: `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
+  imageUrlInvalid: 'Image URL must be a valid URL',
+};
+
+export function createDriverBaseSchema(
+  messages: DriverValidationMessages = defaultDriverValidationMessages,
+) {
+  return z.object({
+    firstName: z
+      .string()
+      .min(1, messages.firstNameRequired)
+      .max(DRIVER_FIRST_NAME_MAX_LENGTH, messages.firstNameTooLong),
+    lastName: z
+      .string()
+      .min(1, messages.lastNameRequired)
+      .max(DRIVER_LAST_NAME_MAX_LENGTH, messages.lastNameTooLong),
+    nationalId: iranianNationalIdSchema(messages.nationalIdInvalid),
+    mobileNumber: z
+      .string()
+      .min(1, messages.mobileNumberRequired)
+      .max(DRIVER_MOBILE_NUMBER_MAX_LENGTH, messages.mobileNumberTooLong),
+    imageUrl: optionalTextField(
+      IMAGE_UPLOAD_URL_MAX_LENGTH,
+      messages.imageUrlTooLong,
+    ).pipe(
+      z.union([
+        z.null(),
+        z.string().refine(isAllowedDriverImageUrl, messages.imageUrlInvalid),
+      ]),
+    ),
+  });
+}
+
+const driverBaseSchema = createDriverBaseSchema();
 
 /** Internal admin: companyId is required in the request body. */
 export const createInternalDriverDtoSchema = driverBaseSchema.extend({

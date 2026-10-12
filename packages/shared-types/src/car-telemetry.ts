@@ -10,7 +10,10 @@ export type CarTelemetry = {
   carId: string;
   latitude: number;
   longitude: number;
+  /** Device sample time (ISO). History points use this as the trail timestamp. */
   updatedAt: string;
+  /** Server ingest time (ISO). Live markers use this for online/offline. */
+  createdAt?: string;
   /** Ground speed from device telemetry (km/h when provided). */
   speed?: number;
   /** Remaining fuel volume in liters (`fuel.remainFuel` from device packet). */

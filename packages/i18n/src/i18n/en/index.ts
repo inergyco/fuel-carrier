@@ -119,6 +119,22 @@ const en: BaseTranslation = {
     companyLogoUrlInvalid: 'Logo URL must be a valid URL',
     driverImageUrlTooLong: 'Photo URL must be at most {max:number} characters',
     driverImageUrlInvalid: 'Photo URL must be a valid URL',
+    nationalIdInvalid:
+      'National ID must be a valid 10-digit Iranian national ID',
+    firstNameRequired: 'First name is required',
+    firstNameTooLong: 'First name must be at most {max:number} characters',
+    lastNameRequired: 'Last name is required',
+    lastNameTooLong: 'Last name must be at most {max:number} characters',
+    mobileNumberRequired: 'Mobile number is required',
+    mobileNumberTooLong:
+      'Mobile number must be at most {max:number} characters',
+    emailTooLong: 'Email must be at most {max:number} characters',
+    licensePlateRequired: 'License plate is required',
+    licensePlateTooLong:
+      'License plate must be at most {max:number} characters',
+    licensePlateInvalid: 'Enter a valid Iranian license plate',
+    driverRequired: 'Select a driver',
+    noteTooLong: 'Note must be at most {max:number} characters',
   },
   internalPanel: {
     login: {

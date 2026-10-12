@@ -2,9 +2,15 @@ import {
   iranianNationalIdSchema,
   isValidIranianNationalId,
   optionalIranianNationalIdSchema,
+  toDigitsOnly,
 } from '@fuel-carrier/shared-validation/national-id';
 
 describe('Iranian national ID', () => {
+  it('keeps digits and drops letters', () => {
+    expect(toDigitsOnly('ab12۳۴cd')).toBe('1234');
+    expect(toDigitsOnly('۰۰۱۲۳۴۵۶۷۹')).toBe('0012345679');
+  });
+
   it('accepts valid 10-digit codes and Persian digits', () => {
     expect(isValidIranianNationalId('0012345679')).toBe(true);
     expect(isValidIranianNationalId('۰۱۲۳۴۵۶۷۸۹')).toBe(true);

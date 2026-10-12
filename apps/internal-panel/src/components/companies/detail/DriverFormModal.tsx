@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
-  createInternalDriverDtoSchema,
+  createDriverBaseSchema,
   DRIVER_NATIONAL_ID_MAX_LENGTH,
   type CreateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
@@ -12,6 +12,7 @@ import {
   Form,
   useForm,
   useWatch,
+  toDriverValidationMessages,
   type SubmitHandler,
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
@@ -32,8 +33,8 @@ import {
   uploadDriverImage,
 } from '../../../lib/api/drivers'
 
-const driverFormSchema = createInternalDriverDtoSchema.omit({ companyId: true })
-type DriverFormInput = z.input<typeof driverFormSchema>
+type DriverFormSchema = ReturnType<typeof createDriverBaseSchema>
+type DriverFormInput = z.input<DriverFormSchema>
 
 type DriverFormModalMode = 'create' | 'edit'
 
@@ -55,6 +56,13 @@ export function DriverFormModal({
   const { LL } = useI18nContext()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
+
+  const driverFormSchema = useMemo(
+    function createSchema() {
+      return createDriverBaseSchema(toDriverValidationMessages(LL))
+    },
+    [LL],
+  )
 
   const form = useForm<DriverFormInput, unknown, CreateExternalDriverDto>({
     resolver: zodResolver(driverFormSchema),
@@ -221,7 +229,7 @@ export function DriverFormModal({
           name="nationalId"
           label={LL.internalPanel.companies.nationalId()}
           type="text"
-          inputMode="numeric"
+          digitsOnly
           maxLength={DRIVER_NATIONAL_ID_MAX_LENGTH}
           autoComplete="off"
         />

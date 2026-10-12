@@ -408,6 +408,64 @@ type RootTranslation = {
 		 * P​h​o​t​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​U​R​L
 		 */
 		driverImageUrlInvalid: string
+		/**
+		 * N​a​t​i​o​n​a​l​ ​I​D​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​1​0​-​d​i​g​i​t​ ​I​r​a​n​i​a​n​ ​n​a​t​i​o​n​a​l​ ​I​D
+		 */
+		nationalIdInvalid: string
+		/**
+		 * F​i​r​s​t​ ​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		firstNameRequired: string
+		/**
+		 * F​i​r​s​t​ ​n​a​m​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		firstNameTooLong: RequiredParams<'max'>
+		/**
+		 * L​a​s​t​ ​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		lastNameRequired: string
+		/**
+		 * L​a​s​t​ ​n​a​m​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		lastNameTooLong: RequiredParams<'max'>
+		/**
+		 * M​o​b​i​l​e​ ​n​u​m​b​e​r​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		mobileNumberRequired: string
+		/**
+		 * M​o​b​i​l​e​ ​n​u​m​b​e​r​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		mobileNumberTooLong: RequiredParams<'max'>
+		/**
+		 * E​m​a​i​l​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		emailTooLong: RequiredParams<'max'>
+		/**
+		 * L​i​c​e​n​s​e​ ​p​l​a​t​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		licensePlateRequired: string
+		/**
+		 * L​i​c​e​n​s​e​ ​p​l​a​t​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		licensePlateTooLong: RequiredParams<'max'>
+		/**
+		 * E​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​I​r​a​n​i​a​n​ ​l​i​c​e​n​s​e​ ​p​l​a​t​e
+		 */
+		licensePlateInvalid: string
+		/**
+		 * S​e​l​e​c​t​ ​a​ ​d​r​i​v​e​r
+		 */
+		driverRequired: string
+		/**
+		 * N​o​t​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		noteTooLong: RequiredParams<'max'>
 	}
 	internalPanel: {
 		login: {
@@ -3514,6 +3572,58 @@ export type TranslationFunctions = {
 		 * Photo URL must be a valid URL
 		 */
 		driverImageUrlInvalid: () => LocalizedString
+		/**
+		 * National ID must be a valid 10-digit Iranian national ID
+		 */
+		nationalIdInvalid: () => LocalizedString
+		/**
+		 * First name is required
+		 */
+		firstNameRequired: () => LocalizedString
+		/**
+		 * First name must be at most {max} characters
+		 */
+		firstNameTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Last name is required
+		 */
+		lastNameRequired: () => LocalizedString
+		/**
+		 * Last name must be at most {max} characters
+		 */
+		lastNameTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Mobile number is required
+		 */
+		mobileNumberRequired: () => LocalizedString
+		/**
+		 * Mobile number must be at most {max} characters
+		 */
+		mobileNumberTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Email must be at most {max} characters
+		 */
+		emailTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * License plate is required
+		 */
+		licensePlateRequired: () => LocalizedString
+		/**
+		 * License plate must be at most {max} characters
+		 */
+		licensePlateTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Enter a valid Iranian license plate
+		 */
+		licensePlateInvalid: () => LocalizedString
+		/**
+		 * Select a driver
+		 */
+		driverRequired: () => LocalizedString
+		/**
+		 * Note must be at most {max} characters
+		 */
+		noteTooLong: (arg: { max: number }) => LocalizedString
 	}
 	internalPanel: {
 		login: {

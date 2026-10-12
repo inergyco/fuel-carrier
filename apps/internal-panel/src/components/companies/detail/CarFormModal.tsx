@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Car, Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
-  createInternalCarDtoSchema,
+  createCarFormSchemas,
   type CreateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
@@ -10,6 +10,7 @@ import {
   zodResolver,
   Form,
   useForm,
+  toCarValidationMessages,
   type SubmitHandler,
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
@@ -29,15 +30,13 @@ import {
   updateCar,
 } from '../../../lib/api/cars'
 
-const carCreateFormSchema = createInternalCarDtoSchema.omit({ companyId: true })
-const carEditFormSchema = carCreateFormSchema.omit({ driverId: true })
-
+type CarFormSchemas = ReturnType<typeof createCarFormSchemas>
 type CarFormInput =
-  | z.input<typeof carCreateFormSchema>
-  | z.input<typeof carEditFormSchema>
+  | z.input<CarFormSchemas['createSchema']>
+  | z.input<CarFormSchemas['editSchema']>
 type CarFormOutput =
-  | z.output<typeof carCreateFormSchema>
-  | z.output<typeof carEditFormSchema>
+  | z.output<CarFormSchemas['createSchema']>
+  | z.output<CarFormSchemas['editSchema']>
 
 type CarFormModalMode = 'create' | 'edit'
 
@@ -67,7 +66,14 @@ export function CarFormModal({
   const [serverError, setServerError] = useState<string | null>(null)
   const detail = LL.internalPanel.companies.detail
   const freeDrivers = drivers.filter(isUnassignedDriver)
-  const schema = mode === 'create' ? carCreateFormSchema : carEditFormSchema
+  const schema = useMemo(
+    function createSchema() {
+      const schemas = createCarFormSchemas(toCarValidationMessages(LL))
+
+      return mode === 'create' ? schemas.createSchema : schemas.editSchema
+    },
+    [LL, mode],
+  )
   const defaults = carToFormValues(car)
 
   const form = useForm<CarFormInput, unknown, CarFormOutput>({
@@ -99,7 +105,7 @@ export function CarFormModal({
       }
 
       const payload: CreateInternalCarDto = {
-        ...(data as z.output<typeof carCreateFormSchema>),
+        ...(data as z.output<CarFormSchemas['createSchema']>),
         companyId,
       }
       return createCar(payload)

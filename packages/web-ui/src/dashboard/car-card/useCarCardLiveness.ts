@@ -6,17 +6,18 @@ import {
 } from './car-card-utils'
 
 /**
- * "Live" means telemetry `updatedAt` is less than 30s old.
- * The clock is an external store: we re-read it when that 30s window ends.
+ * "Live" means server ingest time (`createdAt`) is within
+ * TELEMETRY_LIVE_MAX_AGE_MS. The clock is an external store: we re-read
+ * it when that window ends.
  */
 export function useCarCardLiveness(
   telemetry: CarTelemetryMarker | null,
 ): CarCardLiveness {
-  const updatedAt = telemetry?.updatedAt ?? null
+  const ingestedAt = telemetry?.createdAt ?? telemetry?.updatedAt ?? null
 
   return useSyncExternalStore(
     function subscribe(onChange) {
-      const expiresAtMs = getExpiresAtMs(updatedAt)
+      const expiresAtMs = getExpiresAtMs(ingestedAt)
       if (expiresAtMs == null) {
         return function unsubscribe() {}
       }
@@ -31,7 +32,7 @@ export function useCarCardLiveness(
       }
     },
     function getSnapshot() {
-      return isLive(updatedAt) ? 'live' : 'offline'
+      return isLive(ingestedAt) ? 'live' : 'offline'
     },
     function getServerSnapshot() {
       return 'offline'

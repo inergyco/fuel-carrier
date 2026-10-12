@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
@@ -6,6 +6,7 @@ import {
   zodResolver,
   useForm,
   useWatch,
+  toDriverValidationMessages,
   type SubmitHandler,
   type UseFormReturn,
 } from '@fuel-carrier/web-ui/form'
@@ -20,7 +21,7 @@ import {
   uploadDriverImage,
 } from '../../lib/api/drivers'
 import {
-  driverFormSchema,
+  createDriverFormSchema,
   type DriverFormInput,
   type DriverFormModalMode,
   type DriverFormOutput,
@@ -56,6 +57,13 @@ export function useDriverFormModal({
   const { LL } = useI18nContext()
   const toast = useToast()
   const [serverError, setServerError] = useState<string | null>(null)
+
+  const driverFormSchema = useMemo(
+    function createSchema() {
+      return createDriverFormSchema(toDriverValidationMessages(LL))
+    },
+    [LL],
+  )
 
   const form = useForm<DriverFormInput, unknown, DriverFormOutput>({
     resolver: zodResolver(driverFormSchema),

@@ -11,6 +11,11 @@ export function normalizeIranianNationalId(value: string): string {
   return toLatinDigits(value.trim());
 }
 
+/** Latin digits only. Persian and Arabic-Indic digits are converted first. */
+export function toDigitsOnly(value: string): string {
+  return toLatinDigits(value).replace(/\D/g, '');
+}
+
 /**
  * Validates an Iranian personal national ID (کد ملی):
  * exactly 10 digits, not all identical, with a valid checksum.

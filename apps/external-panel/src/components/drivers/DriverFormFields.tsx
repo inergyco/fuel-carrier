@@ -50,7 +50,7 @@ export function DriverFormFields({
         name="nationalId"
         label={LL.externalPanel.drivers.nationalId()}
         type="text"
-        inputMode="numeric"
+        digitsOnly
         maxLength={DRIVER_NATIONAL_ID_MAX_LENGTH}
         autoComplete="off"
       />

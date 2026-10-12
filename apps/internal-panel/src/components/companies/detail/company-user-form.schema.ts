@@ -1,16 +1,20 @@
-import { createInternalCompanyUserDtoSchema } from '@fuel-carrier/shared-validation/company-user/create'
-import { strongPasswordSchema } from '@fuel-carrier/shared-validation/password'
+import {
+  createCompanyUserFormSchemas,
+  type CompanyUserValidationMessages,
+} from '@fuel-carrier/shared-validation/company-user/create'
 import { z } from 'zod'
 
-export const companyUserCreateFormSchema = createInternalCompanyUserDtoSchema.omit({
-  companyId: true,
-})
+export function createCompanyUserFormSchemaPair(
+  messages: CompanyUserValidationMessages,
+) {
+  return createCompanyUserFormSchemas(messages)
+}
 
-export const companyUserEditFormSchema = companyUserCreateFormSchema.extend({
-  password: z.union([z.literal(''), strongPasswordSchema]),
-})
+type CompanyUserFormSchemas = ReturnType<typeof createCompanyUserFormSchemas>
 
-export type CompanyUserFormInput = z.input<typeof companyUserCreateFormSchema>
-export type CompanyUserFormOutput = z.output<typeof companyUserCreateFormSchema>
+export type CompanyUserFormInput = z.input<CompanyUserFormSchemas['createSchema']>
+export type CompanyUserFormOutput = z.output<
+  CompanyUserFormSchemas['createSchema']
+>
 
 export type CompanyUserFormModalMode = 'create' | 'edit'

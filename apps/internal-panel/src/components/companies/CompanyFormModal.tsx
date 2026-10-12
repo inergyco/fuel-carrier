@@ -248,7 +248,7 @@ export function CompanyFormModal({
           name="nationalId"
           label={LL.internalPanel.companies.nationalId()}
           type="text"
-          inputMode="numeric"
+          digitsOnly
           placeholder={LL.internalPanel.companies.nationalIdPlaceholder()}
         />
 
