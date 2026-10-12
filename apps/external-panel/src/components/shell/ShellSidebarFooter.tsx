@@ -3,7 +3,7 @@ import {
   isCompanyUserAdmin,
   type AuthSession,
 } from '@fuel-carrier/shared-types'
-import { Button } from '@fuel-carrier/web-ui/ui'
+import { Avatar, Button } from '@fuel-carrier/web-ui/ui'
 import { InergyFooter } from '../InergyFooter'
 
 interface ShellSidebarFooterProps {
@@ -26,9 +26,11 @@ export function ShellSidebarFooter({
     <div className="space-y-3">
       <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
         <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
-            {initials}
-          </div>
+          <Avatar
+            size="sm"
+            fallback={initials}
+            className="border-white/20 bg-white/10 text-white"
+          />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">
               {user.firstName} {user.lastName}

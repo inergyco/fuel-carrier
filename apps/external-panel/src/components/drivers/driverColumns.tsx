@@ -1,5 +1,6 @@
 import type { Car, Driver } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
+import { Avatar } from '@fuel-carrier/web-ui/ui'
 import type { ResourceColumn } from '../users/ResourceSection'
 
 interface DriverColumnOptions {
@@ -22,19 +23,7 @@ export function getDriverColumns({
       cell: function renderName(driver) {
         return (
           <span className="inline-flex items-center gap-2.5">
-            <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-base-100/60">
-              {driver.imageUrl ? (
-                <img
-                  src={driver.imageUrl}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              ) : (
-                <span className="text-md font-medium text-base-content/40">
-                  {driver.firstName.charAt(0)}
-                </span>
-              )}
-            </span>
+            <Avatar src={driver.imageUrl} fallback={driver.firstName.charAt(0)} />
             <span>
               {driver.firstName} {driver.lastName}
             </span>

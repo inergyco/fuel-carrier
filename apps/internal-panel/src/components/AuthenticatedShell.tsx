@@ -5,6 +5,7 @@ import {
   DashboardModeSwitcher,
 } from "@fuel-carrier/web-ui/dashboard";
 import {
+  Avatar,
   Button,
   ConfirmModal,
   ICON_STROKE_WIDTH,
@@ -144,9 +145,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
           footer={
             <div className="rounded-xl border border-white/12 bg-white/5 p-3 text-white">
               <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-xs font-semibold text-white">
-                  {initials}
-                </div>
+                <Avatar
+                  size="sm"
+                  fallback={initials}
+                  className="border-white/20 bg-white/10 text-white"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">
                     {user.firstName} {user.lastName}
