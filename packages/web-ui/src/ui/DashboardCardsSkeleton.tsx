@@ -1,4 +1,4 @@
-import { DASHBOARD_CAR_CARD_SHELL_CLASS_NAME } from './dashboard-car-card-shell'
+import { CAR_CARD_SHELL_CLASS_NAME } from './car-card-shell'
 import { Skeleton } from './Skeleton'
 
 type DashboardCardsSkeletonProps = {
@@ -13,6 +13,10 @@ type DashboardCardsSkeletonProps = {
   variant?: 'company' | 'car'
   /** Mirror the pager under the card grid (dashboard cars). */
   showPagination?: boolean
+  /** Skip the toolbar placeholder when the page already renders its own. */
+  showToolbarSkeleton?: boolean
+  /** Extra action chips in the car-card footer (cars list). */
+  showCardActions?: boolean
 }
 
 const DEFAULT_COUNT = 6
@@ -26,10 +30,12 @@ export function DashboardCardsSkeleton({
   columnsClassName = 'grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3',
   variant = 'company',
   showPagination = false,
+  showToolbarSkeleton = true,
+  showCardActions = false,
 }: DashboardCardsSkeletonProps) {
   return (
     <div role="status" aria-busy="true" aria-label={label}>
-      {variant === 'car' ? (
+      {variant === 'car' && showToolbarSkeleton ? (
         <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <Skeleton className="h-11 w-full rounded-lg lg:max-w-sm" />
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end lg:w-auto lg:justify-end">
@@ -37,15 +43,18 @@ export function DashboardCardsSkeleton({
             <Skeleton className="h-11 w-full rounded-lg sm:w-40" />
           </div>
         </div>
-      ) : (
-        <Skeleton className="mb-5 h-3 w-48" />
-      )}
+      ) : null}
+      {variant === 'company' ? <Skeleton className="mb-5 h-3 w-48" /> : null}
 
       <ul className={`grid ${columnsClassName}`}>
         {Array.from({ length: count }, function renderCard(_, index) {
           return (
             <li key={index}>
-              {variant === 'car' ? <CarCardSkeleton /> : <CompanyCardSkeleton />}
+              {variant === 'car' ? (
+                <CarCardSkeleton showActions={showCardActions} />
+              ) : (
+                <CompanyCardSkeleton />
+              )}
             </li>
           )
         })}
@@ -89,9 +98,9 @@ function CompanyCardSkeleton() {
   )
 }
 
-function CarCardSkeleton() {
+function CarCardSkeleton({ showActions }: { showActions: boolean }) {
   return (
-    <div className={DASHBOARD_CAR_CARD_SHELL_CLASS_NAME}>
+    <div className={CAR_CARD_SHELL_CLASS_NAME}>
       <div className="flex items-start justify-between gap-3 px-4 pt-4">
         <div className="min-w-0 space-y-2">
           <Skeleton className="h-4 w-28" />
@@ -116,7 +125,16 @@ function CarCardSkeleton() {
 
       <div className="mt-auto flex items-end justify-between gap-3 px-4 pb-4 pt-3">
         <Skeleton className="h-16 w-28 shrink-0 rounded-lg" />
-        <Skeleton className="h-10 w-24 shrink-0 rounded-lg" />
+        <div className="flex flex-col items-end gap-2">
+          {showActions ? (
+            <div className="flex gap-2">
+              <Skeleton className="size-11 rounded-lg" />
+              <Skeleton className="size-11 rounded-lg" />
+              <Skeleton className="size-11 rounded-lg" />
+            </div>
+          ) : null}
+          <Skeleton className="h-10 w-24 shrink-0 rounded-lg" />
+        </div>
       </div>
     </div>
   )

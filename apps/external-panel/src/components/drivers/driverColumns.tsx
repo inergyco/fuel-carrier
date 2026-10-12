@@ -30,9 +30,8 @@ export function getDriverColumns({
                   className="size-full object-cover"
                 />
               ) : (
-                <span className="text-xs font-medium text-base-content/40">
+                <span className="text-md font-medium text-base-content/40">
                   {driver.firstName.charAt(0)}
-                  {driver.lastName.charAt(0)}
                 </span>
               )}
             </span>

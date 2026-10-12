@@ -5,7 +5,7 @@ import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
   type CompanyDashboardLabels,
-  dashboardCarDetailsLinkClassName,
+  carDetailsLinkClassName,
 } from '@fuel-carrier/web-ui/dashboard'
 import { Info } from '@fuel-carrier/web-ui/icons'
 import { mapPopupActionClassName } from '@fuel-carrier/web-ui/map'
@@ -81,7 +81,7 @@ export function DashboardPage() {
       <Link
         to="/companies/$companyId/cars/$carId"
         params={{ companyId, carId }}
-        className={dashboardCarDetailsLinkClassName}
+        className={carDetailsLinkClassName}
       >
         <Info
           className="size-3.5"

@@ -9,13 +9,14 @@ import { driverKeys, fetchDrivers } from '../../lib/api/drivers'
 import type { EntityModalState } from '../users/entity-modal-state'
 
 const EMPTY_CARS: Car[] = []
+export const CARS_PAGE_SIZE = 8
 
 export function useCars() {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
   const {
-    listParams,
+    listParams: searchParams,
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
@@ -26,6 +27,11 @@ export function useCars() {
   } = useResourceListSearch()
   const [carModal, setCarModal] = useState<EntityModalState<Car>>(null)
   const [deleteTarget, setDeleteTarget] = useState<Car | null>(null)
+
+  const listParams = {
+    ...searchParams,
+    limit: CARS_PAGE_SIZE,
+  }
 
   const carsQuery = useQuery({
     queryKey: carKeys.list(listParams),

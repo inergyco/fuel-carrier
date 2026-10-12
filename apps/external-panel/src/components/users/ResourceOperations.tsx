@@ -21,6 +21,7 @@ type ResourceOperationsProps<T> = {
   renderExtraActions?: (item: T) => ReactNode
   readOnly?: boolean
   stacked?: boolean
+  className?: string
 }
 
 export function ResourceOperations<T>({
@@ -33,6 +34,7 @@ export function ResourceOperations<T>({
   renderExtraActions,
   readOnly = false,
   stacked = false,
+  className,
 }: ResourceOperationsProps<T>) {
   function handleEdit() {
     onEdit(item)
@@ -51,6 +53,7 @@ export function ResourceOperations<T>({
       className={cn(
         'flex flex-nowrap items-center gap-3',
         stacked && 'flex-wrap justify-center',
+        className,
       )}
     >
       {renderViewAction?.(item)}
@@ -99,15 +102,7 @@ export function ResourceOperations<T>({
               aria-hidden
             />
           </Button>
-          {renderExtraActions ? (
-            <>
-              <span
-                aria-hidden
-                className="mx-0.5 h-5 w-px shrink-0 bg-base-content/15"
-              />
-              {renderExtraActions(item)}
-            </>
-          ) : null}
+          {renderExtraActions ? renderExtraActions(item) : null}
         </>
       ) : null}
     </div>

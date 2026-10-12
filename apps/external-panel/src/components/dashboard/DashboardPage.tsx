@@ -5,7 +5,7 @@ import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
   type CompanyDashboardLabels,
-  dashboardCarDetailsLinkClassName,
+  carDetailsLinkClassName,
 } from '@fuel-carrier/web-ui/dashboard'
 import { Info } from '@fuel-carrier/web-ui/icons'
 import {
@@ -62,7 +62,7 @@ export function DashboardPage() {
       <Link
         to="/cars/$carId"
         params={{ carId }}
-        className={dashboardCarDetailsLinkClassName}
+        className={carDetailsLinkClassName}
       >
         <Info
           className="size-3.5"

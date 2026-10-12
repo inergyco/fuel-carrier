@@ -159,9 +159,10 @@ type ResourceOperationsProps<T> = {
   renderView?: (item: T) => ReactNode;
   renderExtraActions?: (item: T) => ReactNode;
   stacked?: boolean;
+  className?: string;
 };
 
-function ResourceOperations<T>({
+export function ResourceOperations<T>({
   item,
   onEdit,
   onDelete,
@@ -169,6 +170,7 @@ function ResourceOperations<T>({
   renderView,
   renderExtraActions,
   stacked = false,
+  className,
 }: ResourceOperationsProps<T>) {
   const { LL } = useI18nContext();
 
@@ -189,6 +191,7 @@ function ResourceOperations<T>({
       className={cn(
         "flex flex-wrap items-center gap-3",
         stacked && "justify-center",
+        className,
       )}
     >
       {renderView ? renderView(item) : null}

@@ -65,7 +65,7 @@ export function getDriverColumns({
       cell: function renderFirstName(driver) {
         return (
           <span className="inline-flex items-center gap-2.5">
-            <span className="flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-base-100/60">
+            <span className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-base-content/10 bg-base-100/60">
               {driver.imageUrl ? (
                 <img
                   src={driver.imageUrl}
@@ -73,9 +73,8 @@ export function getDriverColumns({
                   className="size-full object-cover"
                 />
               ) : (
-                <span className="text-xs font-medium text-base-content/40">
+                <span className="text-md font-medium text-base-content/40">
                   {driver.firstName.charAt(0)}
-                  {driver.lastName.charAt(0)}
                 </span>
               )}
             </span>
@@ -112,38 +111,3 @@ export function getDriverColumns({
   ]
 }
 
-export function getCarColumns({
-  LL,
-  emptyCell,
-}: CompanyResourceColumnOptions): ResourceColumn<Car>[] {
-  return [
-    {
-      key: 'licensePlate',
-      header: LL.internalPanel.companies.detail.licensePlate(),
-      cell: (car) => car.licensePlate,
-      className: 'font-mono text-sm font-medium',
-    },
-    {
-      key: 'driver',
-      header: LL.internalPanel.companies.detail.driver(),
-      cell: (car) =>
-        car.driver
-          ? `${car.driver.firstName} ${car.driver.lastName}`
-          : LL.internalPanel.companies.detail.noDriver(),
-    },
-    {
-      key: 'fuelType',
-      header: LL.internalPanel.companies.detail.fuelType(),
-      cell: (car) =>
-        car.hasHighGrade
-          ? LL.internalPanel.companies.detail.fuelTypeHighGrade()
-          : LL.internalPanel.companies.detail.fuelTypeNormal(),
-    },
-    {
-      key: 'note',
-      header: LL.internalPanel.companies.note(),
-      cell: (car) => car.note ?? emptyCell,
-      className: 'max-w-56 truncate',
-    },
-  ]
-}

@@ -1,23 +1,25 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Link } from '@tanstack/react-router'
+import type { Car } from '@fuel-carrier/shared-types'
+import { api } from '@fuel-carrier/web-ui/api'
+import { Plus } from '@fuel-carrier/web-ui/icons'
+import { useCarTelemetryLive } from '@fuel-carrier/web-ui/map'
 import {
-  dataTableViewActionClassName,
+  Button,
+  DashboardCardsSkeleton,
   ICON_STROKE_WIDTH,
-  iconSmClassName,
+  iconMdClassName,
   Pagination,
+  QueryErrorState,
   ResourceListToolbar,
 } from '@fuel-carrier/web-ui/ui'
-import { Eye } from '@fuel-carrier/web-ui/icons'
-import type { Car } from '@fuel-carrier/shared-types'
-import { getCarColumns } from './companyResourceColumns.tsx'
+import { CompanyCarsCardList } from './CompanyCarsCardList'
 import { CarFormModal } from './CarFormModal'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'
 import { CarCustodyModals } from './custody/CarCustodyModals'
 import { useCompanyCarCustody } from './custody/useCompanyCarCustody'
 import { DeleteCompanyCarModal } from './DeleteCompanyCarModal'
-import { ResourceSection } from './ResourceSection'
-import { useCompanyCars } from './useCompanyCars'
+import { CARS_PAGE_SIZE, useCompanyCars } from './useCompanyCars'
 
 interface CompanyCarsSectionProps {
   companyId: string
@@ -27,84 +29,120 @@ export function CompanyCarsSection({ companyId }: CompanyCarsSectionProps) {
   const { LL } = useI18nContext()
   const cars = useCompanyCars(companyId)
   const custody = useCompanyCarCustody(companyId)
-  const emptyCell = LL.internalPanel.companies.emptyCell()
+  const telemetryQuery = useCarTelemetryLive(api)
   const result = cars.carsQuery.data
+  const isLoading = cars.carsQuery.isLoading && !result
+  const detail = LL.internalPanel.companies.detail
+  const telemetryByCarId = new Map(
+    (telemetryQuery.data ?? [])
+      .filter((marker) => marker.companyId === companyId)
+      .map((marker) => [marker.carId, marker]),
+  )
 
   function renderCustodyAction(car: Car) {
     return <CarCustodyActions car={car} custody={custody} layout="compact" />
   }
 
+  function openCreateCar() {
+    cars.setCarModal({ mode: 'create' })
+  }
+
+  function renderCars() {
+    if (isLoading) {
+      return (
+        <DashboardCardsSkeleton
+          label={LL.internalPanel.companies.loading()}
+          variant="car"
+          count={CARS_PAGE_SIZE}
+          showToolbarSkeleton={false}
+          showCardActions
+          showPagination
+          columnsClassName="grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4"
+        />
+      )
+    }
+
+    if (cars.carsQuery.isError) {
+      return (
+        <QueryErrorState
+          onRetry={() => {
+            void cars.carsQuery.refetch()
+          }}
+          labels={{
+            loadFailed: LL.common.queryError.loadFailed(),
+            retry: LL.common.queryError.retry(),
+          }}
+        />
+      )
+    }
+
+    if (cars.companyCars.length === 0) {
+      return (
+        <p className="text-sm text-base-content/50">
+          {cars.hasActiveFilters
+            ? detail.carsEmptyFiltered()
+            : detail.carsEmpty()}
+        </p>
+      )
+    }
+
+    return (
+      <>
+        <CompanyCarsCardList
+          companyId={companyId}
+          cars={cars.companyCars}
+          telemetryByCarId={telemetryByCarId}
+          onEdit={function openEditCar(car) {
+            cars.setCarModal({ mode: 'edit', item: car })
+          }}
+          onDelete={cars.setDeleteTarget}
+          onMqttCredentials={cars.openMqttCredentials}
+          renderExtraActions={renderCustodyAction}
+        />
+        {result ? (
+          <Pagination
+            page={result.page}
+            totalPages={result.totalPages}
+            totalItems={result.totalItems}
+            limit={result.limit}
+            onPageChange={cars.handlePageChange}
+            showLimitSelect={false}
+            labels={LL.common.pagination}
+          />
+        ) : null}
+      </>
+    )
+  }
+
   return (
     <>
-      <ResourceSection
-        addLabel={LL.internalPanel.companies.detail.addCar()}
-        emptyLabel={
-          cars.hasActiveFilters
-            ? LL.internalPanel.companies.detail.carsEmptyFiltered()
-            : LL.internalPanel.companies.detail.carsEmpty()
-        }
-        loading={cars.carsQuery.isLoading && !result}
-        isError={cars.carsQuery.isError}
-        onRetry={() => {
-          void cars.carsQuery.refetch()
-        }}
-        errorLabels={{
-          loadFailed: LL.common.queryError.loadFailed(),
-          retry: LL.common.queryError.retry(),
-        }}
-        items={cars.companyCars}
-        columns={getCarColumns({
-          LL,
-          emptyCell,
-        })}
-        onAdd={function openCreateCar() {
-          cars.setCarModal({ mode: 'create' })
-        }}
-        onEdit={function openEditCar(car) {
-          cars.setCarModal({ mode: 'edit', item: car })
-        }}
-        onDelete={cars.setDeleteTarget}
-        onMqttCredentials={cars.openMqttCredentials}
-        renderView={function renderCarView(car: Car) {
-          return (
-            <Link
-              to="/companies/$companyId/cars/$carId"
-              params={{ companyId, carId: car.id }}
-              className={dataTableViewActionClassName()}
-              aria-label={LL.internalPanel.companies.detail.viewCar()}
-            >
-              <Eye
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-            </Link>
-          )
-        }}
-        renderExtraActions={renderCustodyAction}
-        toolbar={
+      <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="min-w-0 flex-1">
           <ResourceListToolbar
-            searchPlaceholder={LL.internalPanel.companies.detail.carsSearchPlaceholder()}
+            searchPlaceholder={detail.carsSearchPlaceholder()}
             searchText={cars.draftSearchText}
             onSearchTextChange={cars.setDraftSearchText}
             fuelGrade={cars.fuelGrade}
             onFuelGradeChange={cars.setFuelGrade}
           />
-        }
-        footer={
-          result ? (
-            <Pagination
-              page={result.page}
-              totalPages={result.totalPages}
-              totalItems={result.totalItems}
-              limit={result.limit}
-              onPageChange={cars.handlePageChange}
-              onLimitChange={cars.handleLimitChange}
-              labels={LL.common.pagination}
+        </div>
+        <Button
+          type="button"
+          className="h-11 w-full shrink-0 sm:w-auto sm:self-start sm:px-5 lg:self-auto"
+          onClick={openCreateCar}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <Plus
+              className={iconMdClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
             />
-          ) : null
-        }
-      />
+            {detail.addCar()}
+          </span>
+        </Button>
+      </div>
+
+      {renderCars()}
 
       {cars.carModal && (
         <CarFormModal

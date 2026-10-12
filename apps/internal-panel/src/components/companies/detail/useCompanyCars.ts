@@ -14,13 +14,14 @@ import type { EntityModalState } from './entity-modal-state'
 
 const EMPTY_CARS: Car[] = []
 const EMPTY_DRIVERS: Driver[] = []
+export const CARS_PAGE_SIZE = 8
 
 export function useCompanyCars(companyId: string) {
   const { LL } = useI18nContext()
   const toast = useToast()
   const queryClient = useQueryClient()
   const {
-    listParams,
+    listParams: searchParams,
     draftSearchText,
     setDraftSearchText,
     setFuelGrade,
@@ -33,6 +34,11 @@ export function useCompanyCars(companyId: string) {
   const [mqttTarget, setMqttTarget] = useState<Car | null>(null)
   const [mqttCredentials, setMqttCredentials] =
     useState<CarMqttCredentials | null>(null)
+
+  const listParams = {
+    ...searchParams,
+    limit: CARS_PAGE_SIZE,
+  }
 
   const carsQuery = useQuery({
     queryKey: carKeys.byCompany(companyId, listParams),

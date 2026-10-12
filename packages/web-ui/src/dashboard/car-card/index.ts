@@ -1,4 +1,2 @@
-export {
-  DashboardCarCard,
-  type DashboardCarCardProps,
-} from './DashboardCarCard'
+export { CarCard, type CarCardProps } from './CarCard'
+export type { CarCardLabels } from './car-card-labels'

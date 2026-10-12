@@ -13,8 +13,8 @@ import {
   ResourceListToolbar,
   useDebouncedValue,
 } from "../ui";
-import { DASHBOARD_CAR_CARD_SHELL_CLASS_NAME } from "../ui/dashboard-car-card-shell";
-import { DashboardCarCard } from "./car-card";
+import { CAR_CARD_SHELL_CLASS_NAME } from "../ui/car-card-shell";
+import { CarCard } from "./car-card";
 import type {
   CompanyDashboardDataSource,
   CompanyDashboardLabels,
@@ -148,7 +148,7 @@ export function DashboardCarsSection({
           {cars.map(function renderCarCard(car) {
             return (
               <li key={car.id}>
-                <DashboardCarCard
+                <CarCard
                   car={car}
                   telemetry={telemetryByCarId.get(car.id) ?? null}
                   labels={labels}
@@ -180,9 +180,9 @@ function DashboardCarsEmptyState({ message }: { message: string }) {
   return (
     <div
       role="status"
-      className={`${DASHBOARD_CAR_CARD_SHELL_CLASS_NAME} w-full !h-auto`}
+      className={`${CAR_CARD_SHELL_CLASS_NAME} w-full !h-auto`}
     >
-      {/* Invisible twin of DashboardCarCard so height matches without layout shift. */}
+      {/* Invisible twin of CarCard so height matches without layout shift. */}
       <div className="invisible select-none" aria-hidden>
         <div className="px-4 pt-4">
           <p className="font-mono text-base font-semibold tracking-tight">
