@@ -14,7 +14,6 @@ export function buildCarSearchFilter(searchText: string | undefined) {
   const pattern = toIlikeContainsPattern(searchText);
   return or(
     ilike(cars.licensePlate, pattern),
-    ilike(cars.name, pattern),
     exists(
       qb
         .select({ id: drivers.id })

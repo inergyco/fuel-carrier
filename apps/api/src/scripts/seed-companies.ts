@@ -134,7 +134,6 @@ async function seedCompany(
     const [car] = await tx
       .insert(cars)
       .values({
-        name: carSeed.name,
         licensePlate: carSeed.licensePlate,
         companyId: company.id,
         driverId,

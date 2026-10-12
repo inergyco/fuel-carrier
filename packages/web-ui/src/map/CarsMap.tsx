@@ -84,8 +84,8 @@ export function CarsMap({
         />
       ) : null}
       {markers.map(function renderMarker(marker) {
-        const title = marker.name?.trim()
-          ? marker.name
+        const title = marker.licensePlate.trim()
+          ? marker.licensePlate
           : labels.unnamedVehicle();
         const isSelected = marker.carId === selectedCarId;
         const markerColor = getFuelLevelColor(marker.remainFuel);

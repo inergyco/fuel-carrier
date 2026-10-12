@@ -77,7 +77,6 @@ export function CompanyCarDetailPage({
             detailTitle: detailLabels.carDetailTitle,
             detailSubtitle: detailLabels.carDetailSubtitle,
             licensePlate: detailLabels.licensePlate,
-            name: LL.internalPanel.companies.name,
             note: LL.internalPanel.companies.note,
             driver: detailLabels.driver,
             noDriver: detailLabels.noDriver,

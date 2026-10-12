@@ -55,13 +55,8 @@ export function formatAuditDriverLabel(driver: {
 }
 
 export function formatAuditCarLabel(car: {
-  name: string | null;
   licensePlate: string;
 }): string {
-  if (car.name) {
-    return `${car.name} (${car.licensePlate})`;
-  }
-
   return car.licensePlate;
 }
 

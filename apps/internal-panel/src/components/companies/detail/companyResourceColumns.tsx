@@ -18,7 +18,7 @@ function formatLevel(
 }
 
 function formatCarLabel(car: Car): string {
-  return car.name ? `${car.name} (${car.licensePlate})` : car.licensePlate
+  return car.licensePlate
 }
 
 export function getUserColumns({
@@ -122,11 +122,6 @@ export function getCarColumns({
       header: LL.internalPanel.companies.detail.licensePlate(),
       cell: (car) => car.licensePlate,
       className: 'font-mono text-sm font-medium',
-    },
-    {
-      key: 'name',
-      header: LL.internalPanel.companies.name(),
-      cell: (car) => car.name ?? emptyCell,
     },
     {
       key: 'driver',

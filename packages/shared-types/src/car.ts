@@ -8,7 +8,6 @@ export type CarDriverSummary = {
 
 export type Car = {
   id: string;
-  name: string | null;
   licensePlate: string;
   companyId: string;
   driverId: string | null;

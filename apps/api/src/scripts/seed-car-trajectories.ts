@@ -27,7 +27,6 @@ async function seedCarTrajectories(): Promise<void> {
           id: cars.id,
           companyId: cars.companyId,
           licensePlate: cars.licensePlate,
-          name: cars.name,
         })
         .from(cars);
     });
@@ -52,9 +51,7 @@ async function seedCarTrajectories(): Promise<void> {
 
         updatedCars += 1;
         insertedPoints += pointCount;
-        console.log(
-          `  ${car.licensePlate}${car.name ? ` (${car.name})` : ''} → ${pointCount} points`,
-        );
+        console.log(`  ${car.licensePlate} → ${pointCount} points`);
       }
     });
 

@@ -57,14 +57,6 @@ export function getVehicleLabel({
   marker: CarTelemetryMarker | null;
   fallback: string;
 }): string {
-  if (car?.name?.trim()) {
-    return car.name;
-  }
-
-  if (marker?.name?.trim()) {
-    return marker.name;
-  }
-
   if (car?.licensePlate) {
     return car.licensePlate;
   }
@@ -87,7 +79,6 @@ export function toHistoryMarker({
 }): CarTelemetryMarker {
   return {
     carId: car.id,
-    name: car.name,
     licensePlate: car.licensePlate,
     companyId: car.companyId,
     companyName: liveMarker?.companyName,

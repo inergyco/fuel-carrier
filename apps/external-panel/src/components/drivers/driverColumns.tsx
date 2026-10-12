@@ -8,7 +8,7 @@ interface DriverColumnOptions {
 }
 
 function formatCarLabel(car: Car): string {
-  return car.name ? `${car.name} (${car.licensePlate})` : car.licensePlate
+  return car.licensePlate
 }
 
 export function getDriverColumns({

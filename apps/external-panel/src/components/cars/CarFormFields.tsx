@@ -29,12 +29,6 @@ export function CarFormFields({
         type="text"
       />
 
-      <FormInput
-        name="name"
-        label={LL.externalPanel.cars.name()}
-        type="text"
-      />
-
       {mode === 'create' ? (
         <FormSelect name="driverId" label={LL.externalPanel.cars.driver()}>
           <option value="">{LL.externalPanel.cars.selectDriver()}</option>

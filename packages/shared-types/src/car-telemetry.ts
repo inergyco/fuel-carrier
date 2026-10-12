@@ -23,7 +23,6 @@ export type CarTelemetry = {
 
 /** Map marker payload: latest telemetry joined with car identity. */
 export type CarTelemetryMarker = CarTelemetry & {
-  name: string | null;
   licensePlate: string;
   companyId: string;
   companyName?: string;

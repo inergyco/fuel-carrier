@@ -13,9 +13,6 @@ export class CarTelemetryMarkerDto {
   @ApiProperty({ example: '2026-07-22T10:19:48.680Z' })
   updatedAt!: string;
 
-  @ApiPropertyOptional({ example: 'تریلی ۳۶۰۰۰ لیتر', nullable: true })
-  name!: string | null;
-
   @ApiProperty({ example: '۱۲ب۳۴۵-۶۷' })
   licensePlate!: string;
 

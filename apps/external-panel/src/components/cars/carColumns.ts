@@ -24,13 +24,6 @@ export function getCarColumns({
       className: 'font-mono text-sm font-medium',
     },
     {
-      key: 'name',
-      header: cars.name(),
-      cell: function renderName(car) {
-        return car.name ?? emptyCell
-      },
-    },
-    {
       key: 'driver',
       header: cars.driver(),
       cell: function renderDriver(car) {

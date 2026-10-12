@@ -18,7 +18,6 @@ export const cars = pgTable(
   'cars',
   {
     id: uuid('id').defaultRandom().primaryKey(),
-    name: varchar('name', { length: 200 }),
     licensePlate: varchar('license_plate', { length: 32 }).notNull(),
     companyId: uuid('company_id')
       .notNull()

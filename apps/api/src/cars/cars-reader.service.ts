@@ -77,7 +77,6 @@ export function mapCarDriverSummary(
 export function mapCarRow(row: CarRow, driverRow?: DriverRow | null): Car {
   return {
     id: row.id,
-    name: row.name,
     licensePlate: row.licensePlate,
     companyId: row.companyId,
     driverId: row.driverId,

@@ -15,7 +15,6 @@ export type SeedDriver = {
 };
 
 export type SeedCar = {
-  name: string;
   licensePlate: string;
   note?: string;
   /** Index into the company's drivers array; omit for unassigned cars. */
@@ -102,7 +101,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
     ],
     cars: [
       {
-        name: 'تریلی ۳۶۰۰۰ لیتر',
         licensePlate: '۱۲ب۳۴۵-۶۷',
         note: 'حمل بنزین سوپر',
         driverIndex: 0,
@@ -110,7 +108,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.4097,
       },
       {
-        name: 'تانکر ۲۴۰۰۰ لیتر',
         licensePlate: '۴۵ج۷۸۹-۲۱',
         note: 'حمل گازوئیل',
         driverIndex: 1,
@@ -118,14 +115,12 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.3347,
       },
       {
-        name: 'تریلی ۳۲۰۰۰ لیتر',
         licensePlate: '۷۸د۱۲۳-۴۵',
         driverIndex: 2,
         latitude: 35.6892,
         longitude: 51.389,
       },
       {
-        name: 'تانکر ۱۸۰۰۰ لیتر',
         licensePlate: '۳۴س۵۶۷-۸۹',
         note: 'توزیع شهری',
         driverIndex: 3,
@@ -195,7 +190,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
     ],
     cars: [
       {
-        name: 'تریلی ۴۰۰۰۰ لیتر',
         licensePlate: '۲۳ب۴۵۶-۷۸',
         note: 'حمل نفت کوره',
         driverIndex: 0,
@@ -203,14 +197,12 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.668,
       },
       {
-        name: 'تانکر ۲۸۰۰۰ لیتر',
         licensePlate: '۵۶ج۷۸۹-۱۲',
         driverIndex: 1,
         latitude: 32.6714,
         longitude: 51.6852,
       },
       {
-        name: 'تریلی ۳۶۰۰۰ لیتر',
         licensePlate: '۸۹د۰۱۲-۳۴',
         note: 'حمل بنزین معمولی',
         driverIndex: 2,
@@ -218,7 +210,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.6552,
       },
       {
-        name: 'تانکر ۲۰۰۰۰ لیتر',
         licensePlate: '۱۱س۲۳۴-۵۶',
         driverIndex: 3,
         latitude: 32.6619,
@@ -288,7 +279,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
     ],
     cars: [
       {
-        name: 'تریلی ۴۵۰۰۰ لیتر',
         licensePlate: '۶۷ب۸۹۰-۱۲',
         note: 'حمل گازوئیل صنعتی',
         driverIndex: 0,
@@ -296,14 +286,12 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.4218,
       },
       {
-        name: 'تانکر ۳۰۰۰۰ لیتر',
         licensePlate: '۹۰ج۱۲۳-۴۵',
         driverIndex: 1,
         latitude: 35.7156,
         longitude: 51.4053,
       },
       {
-        name: 'تریلی ۳۶۰۰۰ لیتر',
         licensePlate: '۱۳د۴۵۶-۷۸',
         note: 'حمل بنزین سوپر',
         driverIndex: 2,
@@ -311,7 +299,6 @@ export const SEED_COMPANIES: SeedCompany[] = [
         longitude: 51.3519,
       },
       {
-        name: 'تانکر ۲۲۰۰۰ لیتر',
         licensePlate: '۴۶س۷۸۹-۰۱',
         driverIndex: 3,
         latitude: 35.7384,

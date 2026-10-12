@@ -27,7 +27,6 @@ export const carKeys = {
 }
 
 export type CarFormValues = {
-  name: string
   licensePlate: string
   note: string
   driverId: string
@@ -36,7 +35,6 @@ export type CarFormValues = {
 
 export function carToFormValues(car?: Car): CarFormValues {
   return {
-    name: car?.name ?? '',
     licensePlate: car?.licensePlate ?? '',
     note: car?.note ?? '',
     driverId: car?.driverId ?? '',

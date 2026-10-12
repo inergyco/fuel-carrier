@@ -76,7 +76,6 @@ export function CarFormModal({
       mode === 'create'
         ? defaults
         : {
-            name: defaults.name,
             licensePlate: defaults.licensePlate,
             note: defaults.note,
             hasHighGrade: defaults.hasHighGrade,
@@ -92,7 +91,6 @@ export function CarFormModal({
     mutationFn: async function saveCar(data: CarFormOutput) {
       if (mode === 'edit' && car) {
         return updateCar(car.id, {
-          name: data.name,
           licensePlate: data.licensePlate,
           note: data.note,
           hasHighGrade: data.hasHighGrade,
@@ -129,7 +127,7 @@ export function CarFormModal({
         applyApiFieldErrors({
           error,
           setError,
-          fields: ['name', 'licensePlate', 'note', 'driverId'],
+          fields: ['licensePlate', 'note', 'driverId'],
           messages: {
             licensePlate: () => detail.duplicateLicensePlate(),
           },
@@ -182,12 +180,6 @@ export function CarFormModal({
         <FormInput
           name="licensePlate"
           label={detail.licensePlate()}
-          type="text"
-        />
-
-        <FormInput
-          name="name"
-          label={LL.internalPanel.companies.name()}
           type="text"
         />
 

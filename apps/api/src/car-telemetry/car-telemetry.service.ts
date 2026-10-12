@@ -58,7 +58,6 @@ type ListCarTelemetryHistoryInput = {
 
 type FleetCar = {
   id: string;
-  name: string | null;
   licensePlate: string;
   companyId: string;
   hasHighGrade: boolean;
@@ -124,7 +123,6 @@ export class CarTelemetryService {
       });
 
       return {
-        name: car.name,
         licensePlate: car.licensePlate,
         hasHighGrade: car.hasHighGrade,
         companyName: car.company?.name ?? '',
@@ -157,7 +155,6 @@ export class CarTelemetryService {
 
     const marker: CarTelemetryMarker = {
       ...telemetry,
-      name: markerIdentity.name,
       licensePlate: markerIdentity.licensePlate,
       companyId: input.companyId,
       companyName: markerIdentity.companyName,
@@ -339,7 +336,6 @@ export class CarTelemetryService {
       return tx.query.cars.findMany({
         columns: {
           id: true,
-          name: true,
           licensePlate: true,
           companyId: true,
           hasHighGrade: true,
@@ -459,7 +455,6 @@ function toMarkers(
 
       markers.push({
         ...telemetry,
-        name: car.name,
         licensePlate: car.licensePlate,
         companyId: car.companyId,
         companyName: car.company?.name ?? '',

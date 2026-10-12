@@ -18,7 +18,6 @@ describe('car update DTO schemas', () => {
     expect(parsed).toEqual({
       companyId: COMPANY_ID,
       licensePlate: '12ب345-67',
-      name: '',
       driverId: DRIVER_ID,
       hasHighGrade: false,
       note: '',
@@ -34,7 +33,7 @@ describe('car update DTO schemas', () => {
     expect(result.success).toBe(false);
   });
 
-  it('does not invent driverId/name/note on partial companyId PATCH', () => {
+  it('does not invent driverId/note on partial companyId PATCH', () => {
     const parsed = updateInternalCarDtoSchema.parse({
       companyId: OTHER_COMPANY_ID,
     });
@@ -43,7 +42,6 @@ describe('car update DTO schemas', () => {
       companyId: OTHER_COMPANY_ID,
     });
     expect('driverId' in parsed).toBe(false);
-    expect('name' in parsed).toBe(false);
     expect('note' in parsed).toBe(false);
   });
 

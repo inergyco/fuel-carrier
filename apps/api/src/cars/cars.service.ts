@@ -181,7 +181,6 @@ export class CarsService {
         const [row] = await tx
           .insert(cars)
           .values({
-            name: dto.name ?? null,
             licensePlate: dto.licensePlate,
             companyId: dto.companyId,
             driverId: dto.driverId,
@@ -285,7 +284,6 @@ export class CarsService {
         const [row] = await tx
           .update(cars)
           .set({
-            ...(dto.name !== undefined ? { name: dto.name } : {}),
             ...(dto.licensePlate !== undefined
               ? { licensePlate: dto.licensePlate }
               : {}),

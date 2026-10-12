@@ -40,7 +40,6 @@ type SimulateOptions = {
 type TargetCar = {
   id: string;
   companyId: string;
-  name: string | null;
   licensePlate: string;
   hasHighGrade: boolean;
 };
@@ -66,7 +65,7 @@ async function simulateCarPath(): Promise<void> {
     );
 
     console.log(
-      `Moving ${car.licensePlate}${car.name ? ` (${car.name})` : ''} along ${path.length} points × ${options.loops} loop(s), every ${options.intervalMs}ms`,
+      `Moving ${car.licensePlate} along ${path.length} points × ${options.loops} loop(s), every ${options.intervalMs}ms`,
     );
 
     for (let loop = 0; loop < options.loops; loop += 1) {
@@ -113,7 +112,6 @@ async function resolveCar(
       .select({
         id: cars.id,
         companyId: cars.companyId,
-        name: cars.name,
         licensePlate: cars.licensePlate,
         hasHighGrade: cars.hasHighGrade,
       })
@@ -186,7 +184,6 @@ async function recordStep(
       latitude,
       longitude,
       updatedAt: recordedAt.toISOString(),
-      name: car.name,
       licensePlate: car.licensePlate,
       companyId: car.companyId,
       hasHighGrade: car.hasHighGrade,

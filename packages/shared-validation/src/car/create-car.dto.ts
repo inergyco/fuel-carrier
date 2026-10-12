@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { optionalTextField } from "../optional-text-field";
 
-export const CAR_NAME_MAX_LENGTH = 200;
 export const CAR_LICENSE_PLATE_MAX_LENGTH = 32;
 export const CAR_NOTE_MAX_LENGTH = 2000;
 
-const carNameField = optionalTextField(CAR_NAME_MAX_LENGTH);
 const carLicensePlateField = z
   .string()
   .min(1)
@@ -19,7 +17,6 @@ const carHasHighGradeField = z.boolean();
 
 /** Create body: omitted optional fields get create-time defaults. */
 const carBaseSchema = z.object({
-  name: carNameField.optional().default(""),
   licensePlate: carLicensePlateField,
   driverId: carDriverIdField,
   hasHighGrade: carHasHighGradeField.optional().default(false),
@@ -36,7 +33,6 @@ const carBaseSchema = z.object({
  */
 const carUpdateBaseSchema = z
   .object({
-    name: carNameField.optional(),
     licensePlate: carLicensePlateField.optional(),
     driverId: carDriverIdField.optional(),
     hasHighGrade: carHasHighGradeField.optional(),

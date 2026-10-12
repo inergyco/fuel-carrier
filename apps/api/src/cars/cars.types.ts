@@ -1,7 +1,6 @@
 import type { Car, FuelLevelFilter } from '@fuel-carrier/shared-types';
 
 export type CreateCarPayload = {
-  name?: string | null;
   licensePlate: string;
   companyId: string;
   driverId: string;
@@ -24,7 +23,6 @@ export type ListCarsOptions = {
 };
 
 export const CAR_AUDIT_FIELDS = [
-  'name',
   'licensePlate',
   'driverId',
   'hasHighGrade',

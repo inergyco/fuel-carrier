@@ -55,7 +55,6 @@ export function useCarFormModal({
       mode === 'create'
         ? defaults
         : {
-            name: defaults.name,
             licensePlate: defaults.licensePlate,
             note: defaults.note,
             hasHighGrade: defaults.hasHighGrade,
@@ -101,7 +100,7 @@ export function useCarFormModal({
       applyApiFieldErrors({
         error,
         setError,
-        fields: ['name', 'licensePlate', 'note', 'driverId'],
+          fields: ['licensePlate', 'note', 'driverId'],
         messages: {
           licensePlate: () => LL.externalPanel.cars.duplicateLicensePlate(),
         },

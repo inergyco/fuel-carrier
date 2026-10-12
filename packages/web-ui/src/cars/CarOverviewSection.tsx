@@ -16,7 +16,6 @@ export type CarOverviewSectionLabels = {
   detailTitle: () => string
   detailSubtitle: () => string
   licensePlate: () => string
-  name: () => string
   note: () => string
   driver: () => string
   noDriver: () => string
@@ -62,12 +61,6 @@ export function CarOverviewSection({
           <dd className="mt-1.5 font-mono text-sm font-medium">
             {car.licensePlate}
           </dd>
-        </div>
-        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
-          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-            {labels.name()}
-          </dt>
-          <dd className="mt-1.5 text-sm">{car.name ?? emptyCell}</dd>
         </div>
         <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
           <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
