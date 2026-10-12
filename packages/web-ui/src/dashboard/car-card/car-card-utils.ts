@@ -6,7 +6,7 @@ export const CAR_CARD_TOTAL_CAPACITY_LITERS =
   DEFAULT_TANK_CAPACITY_LITERS * DEFAULT_TANK_COUNT
 
 /** Telemetry older than this is treated as offline (not live). */
-export const TELEMETRY_LIVE_MAX_AGE_MS = 30_000
+export const TELEMETRY_LIVE_MAX_AGE_MS = 45_000
 
 export type CarCardLiveness = 'live' | 'offline'
 
