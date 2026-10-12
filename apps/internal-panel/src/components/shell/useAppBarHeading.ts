@@ -159,8 +159,8 @@ function getCarDetailAppBarHeading({
   }
 
   return {
-    title: car?.name?.trim() || car?.licensePlate || detail.carDetailTitle(),
-    subtitle: car?.licensePlate ?? detail.carDetailSubtitle(),
+    title: car?.licensePlate || detail.carDetailTitle(),
+    subtitle: detail.carDetailSubtitle(),
     back,
   }
 }

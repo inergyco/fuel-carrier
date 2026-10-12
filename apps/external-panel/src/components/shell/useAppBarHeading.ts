@@ -90,11 +90,8 @@ function getCarDetailAppBarHeading(
   }
 
   return {
-    title:
-      car?.name?.trim() ||
-      car?.licensePlate ||
-      LL.externalPanel.cars.detailTitle(),
-    subtitle: car?.licensePlate ?? LL.externalPanel.cars.detailSubtitle(),
+    title: car?.licensePlate || LL.externalPanel.cars.detailTitle(),
+    subtitle: LL.externalPanel.cars.detailSubtitle(),
     ...back,
   }
 }
