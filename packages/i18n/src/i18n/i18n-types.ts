@@ -110,6 +110,12 @@ type RootTranslation = {
 			 */
 			fuelLevelFilterLabel: string
 		}
+		search: {
+			/**
+			 * S​e​a​r​c​h
+			 */
+			label: string
+		}
 		dateRange: {
 			/**
 			 * D​a​t​e​ ​r​a​n​g​e
@@ -960,9 +966,13 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
-			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​d​a​t​e​ ​r​a​n​g​e​.
 			 */
 			emptyFiltered: string
+			/**
+			 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+			 */
+			searchPlaceholder: string
 		}
 		companies: {
 			/**
@@ -1687,9 +1697,13 @@ type RootTranslation = {
 				 */
 				auditLogsEmpty: string
 				/**
-				 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+				 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​d​a​t​e​ ​r​a​n​g​e​.
 				 */
 				auditLogsEmptyFiltered: string
+				/**
+				 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+				 */
+				auditLogsSearchPlaceholder: string
 				/**
 				 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
 				 */
@@ -3023,9 +3037,13 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
-			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​i​n​ ​t​h​i​s​ ​d​a​t​e​ ​r​a​n​g​e​.
+			 * N​o​ ​a​u​d​i​t​ ​e​n​t​r​i​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​ ​o​r​ ​d​a​t​e​ ​r​a​n​g​e​.
 			 */
 			emptyFiltered: string
+			/**
+			 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+			 */
+			searchPlaceholder: string
 			/**
 			 * L​o​a​d​i​n​g​ ​a​u​d​i​t​ ​l​o​g​…
 			 */
@@ -3297,6 +3315,12 @@ export type TranslationFunctions = {
 			 * Fuel level
 			 */
 			fuelLevelFilterLabel: () => LocalizedString
+		}
+		search: {
+			/**
+			 * Search
+			 */
+			label: () => LocalizedString
 		}
 		dateRange: {
 			/**
@@ -4114,9 +4138,13 @@ export type TranslationFunctions = {
 			 */
 			empty: () => LocalizedString
 			/**
-			 * No audit entries in this date range.
+			 * No audit entries match your search or date range.
 			 */
 			emptyFiltered: () => LocalizedString
+			/**
+			 * Search by username, national ID, or name
+			 */
+			searchPlaceholder: () => LocalizedString
 		}
 		companies: {
 			/**
@@ -4825,9 +4853,13 @@ export type TranslationFunctions = {
 				 */
 				auditLogsEmpty: () => LocalizedString
 				/**
-				 * No audit entries in this date range.
+				 * No audit entries match your search or date range.
 				 */
 				auditLogsEmptyFiltered: () => LocalizedString
+				/**
+				 * Search by username, national ID, or name
+				 */
+				auditLogsSearchPlaceholder: () => LocalizedString
 				/**
 				 * Loading audit log…
 				 */
@@ -6134,9 +6166,13 @@ export type TranslationFunctions = {
 			 */
 			empty: () => LocalizedString
 			/**
-			 * No audit entries in this date range.
+			 * No audit entries match your search or date range.
 			 */
 			emptyFiltered: () => LocalizedString
+			/**
+			 * Search by username, national ID, or name
+			 */
+			searchPlaceholder: () => LocalizedString
 			/**
 			 * Loading audit log…
 			 */

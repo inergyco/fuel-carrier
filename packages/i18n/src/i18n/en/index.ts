@@ -29,6 +29,9 @@ const en: BaseTranslation = {
       fuelLevelAll: 'All levels',
       fuelLevelFilterLabel: 'Fuel level',
     },
+    search: {
+      label: 'Search',
+    },
     dateRange: {
       label: 'Date range',
       placeholder: 'Pick start and end',
@@ -270,7 +273,8 @@ const en: BaseTranslation = {
       subtitle: 'Actions performed by internal administrators',
       loading: 'Loading audit log…',
       empty: 'No audit entries yet.',
-      emptyFiltered: 'No audit entries in this date range.',
+      emptyFiltered: 'No audit entries match your search or date range.',
+      searchPlaceholder: 'Search by username, national ID, or name',
     },
     companies: {
       title: 'Companies',
@@ -465,7 +469,9 @@ const en: BaseTranslation = {
         auditLogsTitle: 'Audit log',
         auditLogsSubtitle: 'Critical actions performed for this company',
         auditLogsEmpty: 'No audit entries yet for this company.',
-        auditLogsEmptyFiltered: 'No audit entries in this date range.',
+        auditLogsEmptyFiltered:
+          'No audit entries match your search or date range.',
+        auditLogsSearchPlaceholder: 'Search by username, national ID, or name',
         auditLogsLoading: 'Loading audit log…',
         auditLogsWhen: 'When',
         auditLogsActor: 'Actor',
@@ -835,7 +841,8 @@ const en: BaseTranslation = {
       title: 'Audit log',
       subtitle: 'Critical actions performed for your company',
       empty: 'No audit entries yet.',
-      emptyFiltered: 'No audit entries in this date range.',
+      emptyFiltered: 'No audit entries match your search or date range.',
+      searchPlaceholder: 'Search by username, national ID, or name',
       loading: 'Loading audit log…',
       when: 'When',
       actor: 'Actor',

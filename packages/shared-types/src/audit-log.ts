@@ -1,8 +1,10 @@
 import type { PaginationParams } from './pagination';
 import type { UserRole } from './user-role';
 
-/** Pagination + optional ISO date range for audit log list APIs. */
+/** Pagination, optional actor search, and optional ISO date range. */
 export type AuditLogListParams = PaginationParams & {
+  /** Matches actor username, national ID, first name, or last name. */
+  search?: string;
   start?: string;
   end?: string;
 };

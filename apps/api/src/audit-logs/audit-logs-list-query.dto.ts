@@ -3,6 +3,7 @@ import { paginationQuerySchema } from '../common/dto/pagination-query.dto';
 
 export const auditLogsListQuerySchema = paginationQuerySchema
   .extend({
+    search: z.string().max(64).optional(),
     start: z.iso.datetime({ offset: true }).optional(),
     end: z.iso.datetime({ offset: true }).optional(),
   })
@@ -18,6 +19,17 @@ export const auditLogsListQuerySchema = paginationQuerySchema
       message: 'Start datetime must be before end datetime',
       path: ['end'],
     },
-  );
+  )
+  .transform(function normalizeAuditLogsListQuery(query) {
+    const searchText = query.search?.trim();
 
-export type AuditLogsListQueryDto = z.infer<typeof auditLogsListQuerySchema>;
+    return {
+      page: query.page,
+      limit: query.limit,
+      search: searchText && searchText.length > 0 ? searchText : undefined,
+      start: query.start,
+      end: query.end,
+    };
+  });
+
+export type AuditLogsListQueryDto = z.output<typeof auditLogsListQuerySchema>;

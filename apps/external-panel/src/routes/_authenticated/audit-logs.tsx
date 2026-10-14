@@ -34,6 +34,8 @@ function AuditLogsPage() {
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
   const {
     listParams,
+    draftSearchText,
+    setDraftSearchText,
     draftRange,
     handleRangeChange,
     handlePageChange,
@@ -116,9 +118,13 @@ function AuditLogsPage() {
     <div>
       <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
         <AuditLogsToolbar
+          searchText={draftSearchText}
+          onSearchTextChange={setDraftSearchText}
           value={draftRange}
           onChange={handleRangeChange}
           labels={{
+            searchLabel: LL.common.search.label(),
+            searchPlaceholder: LL.externalPanel.auditLogs.searchPlaceholder(),
             dateRangeLabel: LL.common.dateRange.label(),
             dateRangePlaceholder: LL.common.dateRange.placeholder(),
           }}

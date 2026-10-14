@@ -9,6 +9,10 @@ export function toAuditLogListSearchParams(
     limit: params.limit,
   }
 
+  if (params.search) {
+    searchParams.search = params.search
+  }
+
   if (params.start) {
     searchParams.start = params.start
   }

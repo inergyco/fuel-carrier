@@ -21,10 +21,12 @@ import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { buildAuditActorSearchFilter } from './audit-logs-list-filters';
 import { actorFromSession } from './audit-log.utils';
 import { AuditRequestContext } from './audit-request.context';
 
 export type AuditLogListQuery = PaginationParams & {
+  search?: string;
   start?: Date;
   end?: Date;
 };
@@ -113,6 +115,7 @@ export class AuditLogService {
     const where = and(
       eq(auditLogs.companyId, companyId),
       buildCreatedAtRangeFilter(query),
+      buildAuditActorSearchFilter(query.search),
     );
 
     return this._listWhere(context, { where, query, offset });
@@ -135,6 +138,7 @@ export class AuditLogService {
     const where = and(
       eq(auditLogs.actorRole, UserRole.INTERNAL_ADMIN),
       buildCreatedAtRangeFilter(query),
+      buildAuditActorSearchFilter(query.search),
     );
 
     return this._listWhere(context, { where, query, offset });

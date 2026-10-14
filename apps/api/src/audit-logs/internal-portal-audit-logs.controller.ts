@@ -38,6 +38,12 @@ export class InternalPortalAuditLogsController {
   @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
   @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
   @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Actor username, national ID, first name, or last name',
+  })
+  @ApiQuery({
     name: 'start',
     required: false,
     type: String,

@@ -1,18 +1,21 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DEFAULT_LIMIT,
   MAX_LIMIT,
   type AuditLogListParams,
 } from '@fuel-carrier/shared-types'
+import type { DateTimeRangeValue } from '../ui/LocalizedDateTimeRangePicker'
+import { useDebouncedValue } from '../ui/useDebouncedValue'
 import {
   parsePaginationSearch,
   type PaginationSearch,
 } from '../ui/usePagination'
-import type { DateTimeRangeValue } from '../ui/LocalizedDateTimeRangePicker'
+import { normalizeResourceListSearchText } from '../ui/useResourceListSearch'
 
-/** Optional `?page=&limit=&start=&end=` on audit log list routes. */
+/** Optional `?page=&limit=&search=&start=&end=` on audit log list routes. */
 export type AuditLogSearch = PaginationSearch & {
+  search?: string
   start?: string
   end?: string
 }
@@ -25,6 +28,14 @@ export function parseAuditLogSearch(
   search: Record<string, unknown>,
 ): AuditLogSearch {
   const result: AuditLogSearch = { ...parsePaginationSearch(search) }
+
+  if (typeof search.search === 'string') {
+    const searchText = normalizeResourceListSearchText(search.search)
+    if (searchText) {
+      result.search = searchText
+    }
+  }
+
   const start = parseIsoSearchParam(search.start)
   const end = parseIsoSearchParam(search.end)
 
@@ -65,6 +76,7 @@ function toUrlSearch(params: AuditLogListParams): AuditLogSearch {
   return {
     page: params.page > 1 ? params.page : undefined,
     limit: params.limit !== DEFAULT_LIMIT ? params.limit : undefined,
+    search: params.search,
     start: params.start,
     end: params.end,
   }
@@ -89,16 +101,10 @@ function toDraftRange(params: AuditLogListParams): DateTimeRangeValue {
   }
 }
 
-function rangesEqual(a: DateTimeRangeValue, b: DateTimeRangeValue): boolean {
-  return (
-    (a.start?.getTime() ?? null) === (b.start?.getTime() ?? null) &&
-    (a.end?.getTime() ?? null) === (b.end?.getTime() ?? null)
-  )
-}
-
 /**
- * Syncs audit log pagination + date range with the current route URL.
- * Draft range updates the URL only when both ends are set, or when cleared.
+ * Syncs audit log pagination, actor search, and date range with the route URL.
+ * Search text is debounced. The date range updates the URL only when both
+ * ends are set, or when cleared.
  */
 export function useAuditLogSearch() {
   const routeSearch = useSearch({ strict: false })
@@ -107,18 +113,25 @@ export function useAuditLogSearch() {
   const listParams: AuditLogListParams = {
     page: parsed.page ?? 1,
     limit: parsed.limit ?? DEFAULT_LIMIT,
+    search: parsed.search,
     start: parsed.start,
     end: parsed.end,
   }
-  const urlRange = toDraftRange(listParams)
+  const urlSearchText = listParams.search ?? ''
 
-  const [draftRange, setDraftRange] = useState(urlRange)
-  const [syncedUrlRange, setSyncedUrlRange] = useState(urlRange)
+  const [draftSearchText, setDraftSearchText] = useState(urlSearchText)
+  const [draftRange, setDraftRange] = useState(() => toDraftRange(listParams))
 
-  if (!rangesEqual(urlRange, syncedUrlRange)) {
-    setSyncedUrlRange(urlRange)
-    setDraftRange(urlRange)
-  }
+  useEffect(() => {
+    setDraftSearchText(urlSearchText)
+  }, [urlSearchText])
+
+  useEffect(() => {
+    setDraftRange({
+      start: listParams.start ? new Date(listParams.start) : null,
+      end: listParams.end ? new Date(listParams.end) : null,
+    })
+  }, [listParams.start, listParams.end])
 
   function patchListParams(patch: Partial<AuditLogListParams>) {
     void navigate({
@@ -128,6 +141,42 @@ export function useAuditLogSearch() {
       replace: true,
     })
   }
+
+  const draftSearch = normalizeResourceListSearchText(draftSearchText)
+  const debouncedSearch = useDebouncedValue(draftSearch)
+
+  useEffect(() => {
+    if (draftSearch === listParams.search) {
+      return
+    }
+
+    if (debouncedSearch !== draftSearch) {
+      return
+    }
+
+    void navigate({
+      to: '.',
+      search: (previous: unknown) =>
+        mergeUrlSearch(
+          previous,
+          toUrlSearch({
+            ...listParams,
+            page: 1,
+            search: debouncedSearch,
+          }),
+        ),
+      replace: true,
+    })
+  }, [
+    draftSearch,
+    debouncedSearch,
+    listParams.page,
+    listParams.limit,
+    listParams.search,
+    listParams.start,
+    listParams.end,
+    navigate,
+  ])
 
   function handleRangeChange(nextRange: DateTimeRangeValue) {
     setDraftRange(nextRange)
@@ -162,10 +211,14 @@ export function useAuditLogSearch() {
 
   return {
     listParams,
+    draftSearchText,
+    setDraftSearchText,
     draftRange,
     handleRangeChange,
     handlePageChange,
     handleLimitChange,
-    hasActiveFilters: Boolean(listParams.start || listParams.end),
+    hasActiveFilters: Boolean(
+      listParams.search || listParams.start || listParams.end,
+    ),
   }
 }

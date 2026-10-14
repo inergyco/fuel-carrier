@@ -6,6 +6,7 @@ export const toAuditLogListQuery = (
 ): AuditLogListQuery => ({
   page: query.page,
   limit: query.limit,
+  search: query.search,
   start: query.start ? new Date(query.start) : undefined,
   end: query.end ? new Date(query.end) : undefined,
 });
