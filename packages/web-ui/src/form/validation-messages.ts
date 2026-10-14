@@ -13,7 +13,6 @@ import {
 import {
   DRIVER_FIRST_NAME_MAX_LENGTH,
   DRIVER_LAST_NAME_MAX_LENGTH,
-  DRIVER_MOBILE_NUMBER_MAX_LENGTH,
   type DriverValidationMessages,
 } from '@fuel-carrier/shared-validation/driver/create'
 import { IMAGE_UPLOAD_URL_MAX_LENGTH } from '@fuel-carrier/shared-validation/image-upload/constants'
@@ -32,9 +31,7 @@ export const toDriverValidationMessages = (
   }),
   nationalIdInvalid: LL.validation.nationalIdInvalid(),
   mobileNumberRequired: LL.validation.mobileNumberRequired(),
-  mobileNumberTooLong: LL.validation.mobileNumberTooLong({
-    max: DRIVER_MOBILE_NUMBER_MAX_LENGTH,
-  }),
+  mobileNumberInvalid: LL.validation.mobileNumberInvalid(),
   imageUrlTooLong: LL.validation.driverImageUrlTooLong({
     max: IMAGE_UPLOAD_URL_MAX_LENGTH,
   }),

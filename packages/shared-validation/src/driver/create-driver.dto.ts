@@ -7,6 +7,11 @@ import {
   isAllowedDriverImageUrl,
 } from '../image-upload/constants';
 import {
+  IRANIAN_MOBILE_NUMBER_INVALID_MESSAGE,
+  IRANIAN_MOBILE_NUMBER_LENGTH,
+  iranianMobileNumberSchema,
+} from '../mobile-number';
+import {
   IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   IRANIAN_NATIONAL_ID_LENGTH,
   iranianNationalIdSchema,
@@ -15,7 +20,7 @@ import {
 export const DRIVER_FIRST_NAME_MAX_LENGTH = 100;
 export const DRIVER_LAST_NAME_MAX_LENGTH = 100;
 export const DRIVER_NATIONAL_ID_MAX_LENGTH = IRANIAN_NATIONAL_ID_LENGTH;
-export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = 20;
+export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = IRANIAN_MOBILE_NUMBER_LENGTH;
 
 export type DriverValidationMessages = {
   firstNameRequired: string;
@@ -24,7 +29,7 @@ export type DriverValidationMessages = {
   lastNameTooLong: string;
   nationalIdInvalid: string;
   mobileNumberRequired: string;
-  mobileNumberTooLong: string;
+  mobileNumberInvalid: string;
   imageUrlTooLong: string;
   imageUrlInvalid: string;
 };
@@ -36,7 +41,7 @@ const defaultDriverValidationMessages: DriverValidationMessages = {
   lastNameTooLong: `Last name must be at most ${DRIVER_LAST_NAME_MAX_LENGTH} characters`,
   nationalIdInvalid: IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   mobileNumberRequired: 'Mobile number is required',
-  mobileNumberTooLong: `Mobile number must be at most ${DRIVER_MOBILE_NUMBER_MAX_LENGTH} characters`,
+  mobileNumberInvalid: IRANIAN_MOBILE_NUMBER_INVALID_MESSAGE,
   imageUrlTooLong: `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
   imageUrlInvalid: 'Image URL must be a valid URL',
 };
@@ -54,10 +59,10 @@ export function createDriverBaseSchema(
       .min(1, messages.lastNameRequired)
       .max(DRIVER_LAST_NAME_MAX_LENGTH, messages.lastNameTooLong),
     nationalId: iranianNationalIdSchema(messages.nationalIdInvalid),
-    mobileNumber: z
-      .string()
-      .min(1, messages.mobileNumberRequired)
-      .max(DRIVER_MOBILE_NUMBER_MAX_LENGTH, messages.mobileNumberTooLong),
+    mobileNumber: iranianMobileNumberSchema(
+      messages.mobileNumberInvalid,
+      messages.mobileNumberRequired,
+    ),
     imageUrl: optionalTextField(
       IMAGE_UPLOAD_URL_MAX_LENGTH,
       messages.imageUrlTooLong,

@@ -435,6 +435,10 @@ type RootTranslation = {
 		 */
 		mobileNumberRequired: string
 		/**
+		 * M​o​b​i​l​e​ ​n​u​m​b​e​r​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​1​1​-​d​i​g​i​t​ ​I​r​a​n​i​a​n​ ​m​o​b​i​l​e​ ​n​u​m​b​e​r
+		 */
+		mobileNumberInvalid: string
+		/**
 		 * M​o​b​i​l​e​ ​n​u​m​b​e​r​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
 		 * @param {number} max
 		 */
@@ -3596,6 +3600,10 @@ export type TranslationFunctions = {
 		 * Mobile number is required
 		 */
 		mobileNumberRequired: () => LocalizedString
+		/**
+		 * Mobile number must be a valid 11-digit Iranian mobile number
+		 */
+		mobileNumberInvalid: () => LocalizedString
 		/**
 		 * Mobile number must be at most {max} characters
 		 */

@@ -8,7 +8,7 @@ type CarCardFooterProps = {
 export function CarCardFooter({ detailsLink, actions }: CarCardFooterProps) {
   return (
     <div className="relative z-10 mt-auto flex items-end justify-between px-4 pb-4 pt-3">
-      <div className="absolute bottom-4 -right-2.75 h-16 w-28">
+      <div className="absolute bottom-4 -start-2.75 h-16 w-28 ltr:rotate-y-180">
         <img
           src="/truck-card.png"
           alt=""

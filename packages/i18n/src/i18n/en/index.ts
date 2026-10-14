@@ -126,6 +126,8 @@ const en: BaseTranslation = {
     lastNameRequired: 'Last name is required',
     lastNameTooLong: 'Last name must be at most {max:number} characters',
     mobileNumberRequired: 'Mobile number is required',
+    mobileNumberInvalid:
+      'Mobile number must be a valid 11-digit Iranian mobile number',
     mobileNumberTooLong:
       'Mobile number must be at most {max:number} characters',
     emailTooLong: 'Email must be at most {max:number} characters',

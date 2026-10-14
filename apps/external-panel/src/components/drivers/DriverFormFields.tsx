@@ -1,5 +1,8 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { DRIVER_NATIONAL_ID_MAX_LENGTH } from '@fuel-carrier/shared-validation/driver/create'
+import {
+  DRIVER_MOBILE_NUMBER_MAX_LENGTH,
+  DRIVER_NATIONAL_ID_MAX_LENGTH,
+} from '@fuel-carrier/shared-validation/driver/create'
 import { DriverImageUploader, FormInput } from '@fuel-carrier/web-ui/ui'
 
 interface DriverFormFieldsProps {
@@ -59,7 +62,8 @@ export function DriverFormFields({
         name="mobileNumber"
         label={LL.externalPanel.drivers.mobileNumber()}
         type="tel"
-        inputMode="tel"
+        digitsOnly
+        maxLength={DRIVER_MOBILE_NUMBER_MAX_LENGTH}
         autoComplete="tel"
         placeholder={LL.externalPanel.drivers.mobileNumberPlaceholder()}
       />

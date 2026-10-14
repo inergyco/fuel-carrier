@@ -3,6 +3,7 @@ import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   createDriverBaseSchema,
+  DRIVER_MOBILE_NUMBER_MAX_LENGTH,
   DRIVER_NATIONAL_ID_MAX_LENGTH,
   type CreateExternalDriverDto,
 } from '@fuel-carrier/shared-validation/driver/create'
@@ -238,7 +239,8 @@ export function DriverFormModal({
           name="mobileNumber"
           label={LL.internalPanel.companies.detail.mobileNumber()}
           type="tel"
-          inputMode="tel"
+          digitsOnly
+          maxLength={DRIVER_MOBILE_NUMBER_MAX_LENGTH}
           autoComplete="tel"
           placeholder={LL.internalPanel.companies.detail.mobileNumberPlaceholder()}
         />

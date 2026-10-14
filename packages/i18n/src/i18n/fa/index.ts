@@ -123,6 +123,7 @@ const fa: Translation = {
     lastNameRequired: "نام خانوادگی الزامی است",
     lastNameTooLong: "نام خانوادگی باید حداکثر {max} کاراکتر باشد",
     mobileNumberRequired: "شماره موبایل الزامی است",
+    mobileNumberInvalid: "شماره موبایل باید یک شماره موبایل ۱۱ رقمی معتبر ایرانی باشد",
     mobileNumberTooLong: "شماره موبایل باید حداکثر {max} کاراکتر باشد",
     emailTooLong: "ایمیل باید حداکثر {max} کاراکتر باشد",
     licensePlateRequired: "پلاک الزامی است",
