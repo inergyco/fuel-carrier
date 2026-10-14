@@ -133,6 +133,7 @@ const en: BaseTranslation = {
     mobileNumberTooLong:
       'Mobile number must be at most {max:number} characters',
     emailTooLong: 'Email must be at most {max:number} characters',
+    emailInvalid: 'Enter a valid email address',
     licensePlateRequired: 'License plate is required',
     licensePlateTooLong:
       'License plate must be at most {max:number} characters',

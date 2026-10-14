@@ -457,6 +457,10 @@ type RootTranslation = {
 		 */
 		emailTooLong: RequiredParams<'max'>
 		/**
+		 * E​n​t​e​r​ ​a​ ​v​a​l​i​d​ ​e​m​a​i​l​ ​a​d​d​r​e​s​s
+		 */
+		emailInvalid: string
+		/**
 		 * L​i​c​e​n​s​e​ ​p​l​a​t​e​ ​i​s​ ​r​e​q​u​i​r​e​d
 		 */
 		licensePlateRequired: string
@@ -3628,6 +3632,10 @@ export type TranslationFunctions = {
 		 * Email must be at most {max} characters
 		 */
 		emailTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Enter a valid email address
+		 */
+		emailInvalid: () => LocalizedString
 		/**
 		 * License plate is required
 		 */

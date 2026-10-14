@@ -128,6 +128,7 @@ const fa: Translation = {
     mobileNumberInvalid: "شماره موبایل باید یک شماره موبایل ۱۱ رقمی معتبر ایرانی باشد",
     mobileNumberTooLong: "شماره موبایل باید حداکثر {max} کاراکتر باشد",
     emailTooLong: "ایمیل باید حداکثر {max} کاراکتر باشد",
+    emailInvalid: "یک آدرس ایمیل معتبر وارد کنید",
     licensePlateRequired: "پلاک الزامی است",
     licensePlateTooLong: "پلاک باید حداکثر {max} کاراکتر باشد",
     licensePlateInvalid: "یک پلاک ایرانی معتبر وارد کنید",

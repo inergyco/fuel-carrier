@@ -5,7 +5,10 @@ import {
   createStrongPasswordSchema,
   type PasswordStrengthMessages,
 } from '../admin/login.dto';
-import { optionalTextField } from '../optional-text-field';
+import {
+  EMAIL_INVALID_MESSAGE,
+  optionalEmailSchema,
+} from '../email';
 import {
   IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   IRANIAN_NATIONAL_ID_LENGTH,
@@ -36,6 +39,7 @@ export type CompanyUserValidationMessages = {
   usernameInvalid: string;
   nationalIdInvalid: string;
   emailTooLong: string;
+  emailInvalid: string;
   passwordRequired: string;
   passwordStrength: PasswordStrengthMessages;
 };
@@ -52,6 +56,7 @@ const defaultCompanyUserValidationMessages: CompanyUserValidationMessages = {
     'Username must be 3–32 characters and contain only letters, numbers, underscores, and hyphens',
   nationalIdInvalid: IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   emailTooLong: `Email must be at most ${COMPANY_USER_EMAIL_MAX_LENGTH} characters`,
+  emailInvalid: EMAIL_INVALID_MESSAGE,
   passwordRequired: 'Password is required',
   passwordStrength: {
     minLength: `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
@@ -86,10 +91,10 @@ export function createCompanyUserBaseSchema(
     nationalId: optionalIranianNationalIdSchema(
       messages.nationalIdInvalid,
     ).optional(),
-    email: optionalTextField(
-      COMPANY_USER_EMAIL_MAX_LENGTH,
-      messages.emailTooLong,
-    ).optional(),
+    email: optionalEmailSchema(COMPANY_USER_EMAIL_MAX_LENGTH, {
+      tooLong: messages.emailTooLong,
+      invalid: messages.emailInvalid,
+    }).optional(),
   });
 }
 

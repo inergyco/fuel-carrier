@@ -59,6 +59,7 @@ export const toCompanyUserValidationMessages = (
   emailTooLong: LL.validation.emailTooLong({
     max: COMPANY_USER_EMAIL_MAX_LENGTH,
   }),
+  emailInvalid: LL.validation.emailInvalid(),
   passwordRequired: LL.validation.passwordRequired(),
   passwordStrength: {
     minLength: LL.validation.passwordMinLength({ min: PASSWORD_MIN_LENGTH }),
