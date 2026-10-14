@@ -488,6 +488,46 @@ type RootTranslation = {
 		 * @param {number} max
 		 */
 		noteTooLong: RequiredParams<'max'>
+		/**
+		 * T​i​t​l​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		notificationTitleRequired: string
+		/**
+		 * T​i​t​l​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		notificationTitleTooLong: RequiredParams<'max'>
+		/**
+		 * M​e​s​s​a​g​e​ ​i​s​ ​r​e​q​u​i​r​e​d
+		 */
+		notificationBodyRequired: string
+		/**
+		 * M​e​s​s​a​g​e​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		notificationBodyTooLong: RequiredParams<'max'>
+		/**
+		 * S​e​l​e​c​t​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​c​o​m​p​a​n​y
+		 */
+		notificationCompaniesRequired: string
+		/**
+		 * S​e​l​e​c​t​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​o​m​p​a​n​i​e​s
+		 * @param {number} max
+		 */
+		notificationCompaniesTooMany: RequiredParams<'max'>
+		/**
+		 * S​e​l​e​c​t​ ​a​t​ ​l​e​a​s​t​ ​o​n​e​ ​a​c​c​e​s​s​ ​l​e​v​e​l
+		 */
+		notificationLevelsRequired: string
+		/**
+		 * O​n​e​ ​o​r​ ​m​o​r​e​ ​s​e​l​e​c​t​e​d​ ​c​o​m​p​a​n​i​e​s​ ​a​r​e​ ​n​o​ ​l​o​n​g​e​r​ ​a​v​a​i​l​a​b​l​e
+		 */
+		notificationCompaniesNotFound: string
+		/**
+		 * N​o​ ​s​t​a​f​f​ ​a​t​ ​t​h​e​ ​c​h​o​s​e​n​ ​a​c​c​e​s​s​ ​l​e​v​e​l​:​ ​{​n​a​m​e​s​}
+		 * @param {string} names
+		 */
+		notificationNoMatchingStaff: RequiredParams<'names'>
 	}
 	internalPanel: {
 		login: {
@@ -629,6 +669,10 @@ type RootTranslation = {
 			 */
 			map: string
 			/**
+			 * N​o​t​i​f​i​c​a​t​i​o​n​s
+			 */
+			notifications: string
+			/**
 			 * A​u​d​i​t​ ​l​o​g
 			 */
 			auditLogs: string
@@ -692,6 +736,135 @@ type RootTranslation = {
 			 * L​a​n​g​u​a​g​e​ ​a​n​d​ ​t​h​e​m​e
 			 */
 			subtitle: string
+		}
+		notifications: {
+			/**
+			 * N​o​t​i​f​i​c​a​t​i​o​n​s
+			 */
+			title: string
+			/**
+			 * M​e​s​s​a​g​e​ ​c​o​m​p​a​n​y​ ​s​t​a​f​f​ ​i​n​ ​t​h​e​i​r​ ​a​p​p​l​i​c​a​t​i​o​n
+			 */
+			subtitle: string
+			/**
+			 * N​e​w​ ​n​o​t​i​f​i​c​a​t​i​o​n
+			 */
+			composeTitle: string
+			/**
+			 * C​h​o​o​s​e​ ​c​o​m​p​a​n​i​e​s​ ​a​n​d​ ​t​h​e​ ​a​c​c​e​s​s​ ​l​e​v​e​l​ ​o​f​ ​t​h​e​ ​s​t​a​f​f​ ​w​h​o​ ​s​h​o​u​l​d​ ​r​e​c​e​i​v​e​ ​i​t​.
+			 */
+			composeHint: string
+			/**
+			 * T​i​t​l​e
+			 */
+			titleLabel: string
+			/**
+			 * S​h​o​r​t​ ​h​e​a​d​i​n​g
+			 */
+			titlePlaceholder: string
+			/**
+			 * M​e​s​s​a​g​e
+			 */
+			bodyLabel: string
+			/**
+			 * W​h​a​t​ ​s​h​o​u​l​d​ ​s​t​a​f​f​ ​s​e​e​?
+			 */
+			bodyPlaceholder: string
+			/**
+			 * C​h​a​n​n​e​l
+			 */
+			channelLabel: string
+			/**
+			 * S​M​S​ ​a​n​d​ ​o​t​h​e​r​ ​c​h​a​n​n​e​l​s​ ​c​a​n​ ​b​e​ ​a​d​d​e​d​ ​l​a​t​e​r​.
+			 */
+			channelHint: string
+			/**
+			 * B​r​o​w​s​e​r
+			 */
+			channelBrowser: string
+			/**
+			 * S​h​o​w​n​ ​i​n​ ​t​h​e​ ​c​o​m​p​a​n​y​ ​a​p​p​l​i​c​a​t​i​o​n​.​ ​I​f​ ​t​h​a​t​ ​a​p​p​ ​i​s​ ​o​p​e​n​ ​a​n​d​ ​t​h​e​ ​p​e​r​s​o​n​ ​a​l​l​o​w​e​d​ ​a​l​e​r​t​s​,​ ​t​h​e​i​r​ ​b​r​o​w​s​e​r​ ​s​h​o​w​s​ ​o​n​e​ ​t​o​o​.
+			 */
+			channelBrowserDescription: string
+			/**
+			 * S​t​a​f​f​ ​a​c​c​e​s​s​ ​l​e​v​e​l
+			 */
+			levelsLabel: string
+			/**
+			 * O​n​l​y​ ​s​t​a​f​f​ ​a​t​ ​t​h​e​ ​s​e​l​e​c​t​e​d​ ​l​e​v​e​l​s​ ​r​e​c​e​i​v​e​ ​t​h​i​s​.
+			 */
+			levelsHint: string
+			/**
+			 * C​o​m​p​a​n​i​e​s
+			 */
+			companiesLabel: string
+			/**
+			 * S​e​l​e​c​t​ ​o​n​e​ ​o​r​ ​m​o​r​e​ ​c​o​m​p​a​n​i​e​s​.
+			 */
+			companiesHint: string
+			/**
+			 * S​e​a​r​c​h​ ​c​o​m​p​a​n​i​e​s
+			 */
+			companySearchPlaceholder: string
+			/**
+			 * S​e​l​e​c​t​ ​a​l​l
+			 */
+			selectAll: string
+			/**
+			 * C​l​e​a​r
+			 */
+			clearSelection: string
+			/**
+			 * {​c​o​u​n​t​}​ ​s​e​l​e​c​t​e​d
+			 * @param {number} count
+			 */
+			selectedCount: RequiredParams<'count'>
+			/**
+			 * R​e​m​o​v​e​ ​{​n​a​m​e​}
+			 * @param {string} name
+			 */
+			removeCompany: RequiredParams<'name'>
+			/**
+			 * N​o​ ​c​o​m​p​a​n​i​e​s​ ​m​a​t​c​h​ ​y​o​u​r​ ​s​e​a​r​c​h​.
+			 */
+			noCompanies: string
+			/**
+			 * S​e​n​d​ ​n​o​t​i​f​i​c​a​t​i​o​n
+			 */
+			send: string
+			/**
+			 * S​e​n​d​i​n​g​…
+			 */
+			sending: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​e​n​d​ ​t​h​e​ ​n​o​t​i​f​i​c​a​t​i​o​n​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			sendFailed: string
+			/**
+			 * S​e​n​t
+			 */
+			historyTitle: string
+			/**
+			 * M​e​s​s​a​g​e​s​ ​a​l​r​e​a​d​y​ ​d​e​l​i​v​e​r​e​d​ ​t​o​ ​c​o​m​p​a​n​y​ ​s​t​a​f​f
+			 */
+			historySubtitle: string
+			/**
+			 * N​o​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​s​e​n​t​ ​y​e​t​.
+			 */
+			historyEmpty: string
+			/**
+			 * L​o​a​d​i​n​g​ ​s​e​n​t​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​…
+			 */
+			historyLoading: string
+			/**
+			 * {​c​o​u​n​t​}​ ​r​e​c​i​p​i​e​n​t​s
+			 * @param {number} count
+			 */
+			recipients: RequiredParams<'count'>
+			/**
+			 * C​o​m​p​a​n​i​e​s​ ​n​o​ ​l​o​n​g​e​r​ ​a​v​a​i​l​a​b​l​e
+			 */
+			companiesUnavailable: string
 		}
 		toast: {
 			/**
@@ -766,6 +939,11 @@ type RootTranslation = {
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
+			/**
+			 * N​o​t​i​f​i​c​a​t​i​o​n​ ​s​e​n​t​ ​t​o​ ​{​c​o​u​n​t​}​ ​s​t​a​f​f​.
+			 * @param {number} count
+			 */
+			notificationSent: RequiredParams<'count'>
 		}
 		map: {
 			/**
@@ -1809,6 +1987,10 @@ type RootTranslation = {
 					 * P​a​s​s​w​o​r​d​ ​c​h​a​n​g​e​d
 					 */
 					authPasswordChanged: string
+					/**
+					 * N​o​t​i​f​i​c​a​t​i​o​n​ ​s​e​n​t
+					 */
+					notificationSent: string
 				}
 				auditLogsFields: {
 					/**
@@ -1875,6 +2057,22 @@ type RootTranslation = {
 					 * M​o​b​i​l​e​ ​n​u​m​b​e​r
 					 */
 					mobileNumber: string
+					/**
+					 * T​i​t​l​e
+					 */
+					title: string
+					/**
+					 * C​h​a​n​n​e​l
+					 */
+					channel: string
+					/**
+					 * R​e​c​i​p​i​e​n​t​s
+					 */
+					recipientCount: string
+					/**
+					 * C​o​m​p​a​n​i​e​s
+					 */
+					companyCount: string
 				}
 				/**
 				 * —
@@ -2119,6 +2317,53 @@ type RootTranslation = {
 			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
 			 */
 			brandSubtitle: string
+		}
+		notifications: {
+			/**
+			 * N​o​t​i​f​i​c​a​t​i​o​n​s
+			 */
+			title: string
+			/**
+			 * N​o​t​i​f​i​c​a​t​i​o​n​s
+			 */
+			bellLabel: string
+			/**
+			 * {​c​o​u​n​t​}​ ​u​n​r​e​a​d​ ​n​o​t​i​f​i​c​a​t​i​o​n​s
+			 * @param {number} count
+			 */
+			bellLabelUnread: RequiredParams<'count'>
+			/**
+			 * N​o​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​y​e​t​.
+			 */
+			empty: string
+			/**
+			 * L​o​a​d​i​n​g​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​…
+			 */
+			loading: string
+			/**
+			 * C​o​u​l​d​n​’​t​ ​l​o​a​d​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​.
+			 */
+			loadFailed: string
+			/**
+			 * M​a​r​k​ ​a​l​l​ ​a​s​ ​r​e​a​d
+			 */
+			markAllRead: string
+			/**
+			 * A​l​l​o​w​ ​b​r​o​w​s​e​r​ ​n​o​t​i​f​i​c​a​t​i​o​n​s
+			 */
+			enableBrowser: string
+			/**
+			 * B​r​o​w​s​e​r​ ​a​l​e​r​t​s​ ​a​r​e​ ​o​n​.​ ​N​e​w​ ​m​e​s​s​a​g​e​s​ ​s​t​i​l​l​ ​a​r​r​i​v​e​ ​w​h​e​n​ ​t​h​i​s​ ​a​p​p​ ​i​s​ ​c​l​o​s​e​d​.
+			 */
+			browserEnabled: string
+			/**
+			 * B​r​o​w​s​e​r​ ​a​l​e​r​t​s​ ​a​r​e​ ​b​l​o​c​k​e​d​.​ ​Y​o​u​ ​c​a​n​ ​s​t​i​l​l​ ​r​e​a​d​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​h​e​r​e​.
+			 */
+			browserDenied: string
+			/**
+			 * T​h​i​s​ ​b​r​o​w​s​e​r​ ​c​a​n​n​o​t​ ​s​h​o​w​ ​s​y​s​t​e​m​ ​a​l​e​r​t​s​.​ ​Y​o​u​ ​c​a​n​ ​s​t​i​l​l​ ​r​e​a​d​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​h​e​r​e​.
+			 */
+			browserUnsupported: string
 		}
 		footer: {
 			/**
@@ -3149,6 +3394,10 @@ type RootTranslation = {
 				 * P​a​s​s​w​o​r​d​ ​c​h​a​n​g​e​d
 				 */
 				authPasswordChanged: string
+				/**
+				 * N​o​t​i​f​i​c​a​t​i​o​n​ ​s​e​n​t
+				 */
+				notificationSent: string
 			}
 			fields: {
 				/**
@@ -3211,6 +3460,22 @@ type RootTranslation = {
 				 * M​o​b​i​l​e​ ​n​u​m​b​e​r
 				 */
 				mobileNumber: string
+				/**
+				 * T​i​t​l​e
+				 */
+				title: string
+				/**
+				 * C​h​a​n​n​e​l
+				 */
+				channel: string
+				/**
+				 * R​e​c​i​p​i​e​n​t​s
+				 */
+				recipientCount: string
+				/**
+				 * C​o​m​p​a​n​i​e​s
+				 */
+				companyCount: string
 			}
 			/**
 			 * —
@@ -3680,6 +3945,42 @@ export type TranslationFunctions = {
 		 * Note must be at most {max} characters
 		 */
 		noteTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Title is required
+		 */
+		notificationTitleRequired: () => LocalizedString
+		/**
+		 * Title must be at most {max} characters
+		 */
+		notificationTitleTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Message is required
+		 */
+		notificationBodyRequired: () => LocalizedString
+		/**
+		 * Message must be at most {max} characters
+		 */
+		notificationBodyTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Select at least one company
+		 */
+		notificationCompaniesRequired: () => LocalizedString
+		/**
+		 * Select at most {max} companies
+		 */
+		notificationCompaniesTooMany: (arg: { max: number }) => LocalizedString
+		/**
+		 * Select at least one access level
+		 */
+		notificationLevelsRequired: () => LocalizedString
+		/**
+		 * One or more selected companies are no longer available
+		 */
+		notificationCompaniesNotFound: () => LocalizedString
+		/**
+		 * No staff at the chosen access level: {names}
+		 */
+		notificationNoMatchingStaff: (arg: { names: string }) => LocalizedString
 	}
 	internalPanel: {
 		login: {
@@ -3808,6 +4109,10 @@ export type TranslationFunctions = {
 			 */
 			map: () => LocalizedString
 			/**
+			 * Notifications
+			 */
+			notifications: () => LocalizedString
+			/**
 			 * Audit log
 			 */
 			auditLogs: () => LocalizedString
@@ -3871,6 +4176,132 @@ export type TranslationFunctions = {
 			 * Language and theme
 			 */
 			subtitle: () => LocalizedString
+		}
+		notifications: {
+			/**
+			 * Notifications
+			 */
+			title: () => LocalizedString
+			/**
+			 * Message company staff in their application
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * New notification
+			 */
+			composeTitle: () => LocalizedString
+			/**
+			 * Choose companies and the access level of the staff who should receive it.
+			 */
+			composeHint: () => LocalizedString
+			/**
+			 * Title
+			 */
+			titleLabel: () => LocalizedString
+			/**
+			 * Short heading
+			 */
+			titlePlaceholder: () => LocalizedString
+			/**
+			 * Message
+			 */
+			bodyLabel: () => LocalizedString
+			/**
+			 * What should staff see?
+			 */
+			bodyPlaceholder: () => LocalizedString
+			/**
+			 * Channel
+			 */
+			channelLabel: () => LocalizedString
+			/**
+			 * SMS and other channels can be added later.
+			 */
+			channelHint: () => LocalizedString
+			/**
+			 * Browser
+			 */
+			channelBrowser: () => LocalizedString
+			/**
+			 * Shown in the company application. If that app is open and the person allowed alerts, their browser shows one too.
+			 */
+			channelBrowserDescription: () => LocalizedString
+			/**
+			 * Staff access level
+			 */
+			levelsLabel: () => LocalizedString
+			/**
+			 * Only staff at the selected levels receive this.
+			 */
+			levelsHint: () => LocalizedString
+			/**
+			 * Companies
+			 */
+			companiesLabel: () => LocalizedString
+			/**
+			 * Select one or more companies.
+			 */
+			companiesHint: () => LocalizedString
+			/**
+			 * Search companies
+			 */
+			companySearchPlaceholder: () => LocalizedString
+			/**
+			 * Select all
+			 */
+			selectAll: () => LocalizedString
+			/**
+			 * Clear
+			 */
+			clearSelection: () => LocalizedString
+			/**
+			 * {count} selected
+			 */
+			selectedCount: (arg: { count: number }) => LocalizedString
+			/**
+			 * Remove {name}
+			 */
+			removeCompany: (arg: { name: string }) => LocalizedString
+			/**
+			 * No companies match your search.
+			 */
+			noCompanies: () => LocalizedString
+			/**
+			 * Send notification
+			 */
+			send: () => LocalizedString
+			/**
+			 * Sending…
+			 */
+			sending: () => LocalizedString
+			/**
+			 * Could not send the notification. Please try again.
+			 */
+			sendFailed: () => LocalizedString
+			/**
+			 * Sent
+			 */
+			historyTitle: () => LocalizedString
+			/**
+			 * Messages already delivered to company staff
+			 */
+			historySubtitle: () => LocalizedString
+			/**
+			 * No notifications sent yet.
+			 */
+			historyEmpty: () => LocalizedString
+			/**
+			 * Loading sent notifications…
+			 */
+			historyLoading: () => LocalizedString
+			/**
+			 * {count} recipients
+			 */
+			recipients: (arg: { count: number }) => LocalizedString
+			/**
+			 * Companies no longer available
+			 */
+			companiesUnavailable: () => LocalizedString
 		}
 		toast: {
 			/**
@@ -3945,6 +4376,10 @@ export type TranslationFunctions = {
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
+			/**
+			 * Notification sent to {count} staff.
+			 */
+			notificationSent: (arg: { count: number }) => LocalizedString
 		}
 		map: {
 			/**
@@ -4965,6 +5400,10 @@ export type TranslationFunctions = {
 					 * Password changed
 					 */
 					authPasswordChanged: () => LocalizedString
+					/**
+					 * Notification sent
+					 */
+					notificationSent: () => LocalizedString
 				}
 				auditLogsFields: {
 					/**
@@ -5031,6 +5470,22 @@ export type TranslationFunctions = {
 					 * Mobile number
 					 */
 					mobileNumber: () => LocalizedString
+					/**
+					 * Title
+					 */
+					title: () => LocalizedString
+					/**
+					 * Channel
+					 */
+					channel: () => LocalizedString
+					/**
+					 * Recipients
+					 */
+					recipientCount: () => LocalizedString
+					/**
+					 * Companies
+					 */
+					companyCount: () => LocalizedString
 				}
 				/**
 				 * —
@@ -5265,6 +5720,52 @@ export type TranslationFunctions = {
 			 * Company Portal
 			 */
 			brandSubtitle: () => LocalizedString
+		}
+		notifications: {
+			/**
+			 * Notifications
+			 */
+			title: () => LocalizedString
+			/**
+			 * Notifications
+			 */
+			bellLabel: () => LocalizedString
+			/**
+			 * {count} unread notifications
+			 */
+			bellLabelUnread: (arg: { count: number }) => LocalizedString
+			/**
+			 * No notifications yet.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Loading notifications…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * Couldn’t load notifications.
+			 */
+			loadFailed: () => LocalizedString
+			/**
+			 * Mark all as read
+			 */
+			markAllRead: () => LocalizedString
+			/**
+			 * Allow browser notifications
+			 */
+			enableBrowser: () => LocalizedString
+			/**
+			 * Browser alerts are on. New messages still arrive when this app is closed.
+			 */
+			browserEnabled: () => LocalizedString
+			/**
+			 * Browser alerts are blocked. You can still read notifications here.
+			 */
+			browserDenied: () => LocalizedString
+			/**
+			 * This browser cannot show system alerts. You can still read notifications here.
+			 */
+			browserUnsupported: () => LocalizedString
 		}
 		footer: {
 			/**
@@ -6278,6 +6779,10 @@ export type TranslationFunctions = {
 				 * Password changed
 				 */
 				authPasswordChanged: () => LocalizedString
+				/**
+				 * Notification sent
+				 */
+				notificationSent: () => LocalizedString
 			}
 			fields: {
 				/**
@@ -6340,6 +6845,22 @@ export type TranslationFunctions = {
 				 * Mobile number
 				 */
 				mobileNumber: () => LocalizedString
+				/**
+				 * Title
+				 */
+				title: () => LocalizedString
+				/**
+				 * Channel
+				 */
+				channel: () => LocalizedString
+				/**
+				 * Recipients
+				 */
+				recipientCount: () => LocalizedString
+				/**
+				 * Companies
+				 */
+				companyCount: () => LocalizedString
 			}
 			/**
 			 * —

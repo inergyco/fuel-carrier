@@ -35,6 +35,10 @@ const staticHeadings: Record<
     title: LL.internalPanel.map.title(),
     subtitle: LL.internalPanel.map.subtitle(),
   }),
+  '/notifications': (LL) => ({
+    title: LL.internalPanel.notifications.title(),
+    subtitle: LL.internalPanel.notifications.subtitle(),
+  }),
   '/audit-logs': (LL) => ({
     title: LL.internalPanel.auditLogs.title(),
     subtitle: LL.internalPanel.auditLogs.subtitle(),

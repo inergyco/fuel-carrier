@@ -28,6 +28,8 @@ interface PanelShellProps {
   appBarBack?: ReactNode;
   /** Trailing controls before locale toggles (e.g. company switcher). */
   appBarActions?: ReactNode;
+  /** Compact controls kept on the same row as locale toggles. */
+  appBarInlineActions?: ReactNode;
   footer?: ReactNode;
   pageFooter?: ReactNode;
   background?: ReactNode;
@@ -55,6 +57,7 @@ export function PanelShell({
   appBarSubtitle,
   appBarBack,
   appBarActions,
+  appBarInlineActions,
   footer,
   pageFooter,
   background,
@@ -106,8 +109,9 @@ export function PanelShell({
             </div>
           ) : null}
 
-          <div className="flex shrink-0 items-center justify-end">
+          <div className="flex shrink-0 items-center justify-end gap-1">
             <LocaleControls className="relative top-auto end-auto" />
+            {appBarInlineActions}
           </div>
         </header>
 

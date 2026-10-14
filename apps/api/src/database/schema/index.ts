@@ -9,4 +9,5 @@ export * from './car-telemetry-history';
 export * from './mqtt-clients';
 export * from './mqtt-acls';
 export * from './audit-logs';
+export * from './notifications';
 export * from './relations';

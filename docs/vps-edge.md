@@ -41,6 +41,16 @@ Ensure `/var/www/fuel-carrier/api/.env` has production values, including:
 HOST=127.0.0.1
 PORT=3000
 CORS_ALLOWED_ORIGINS=https://mobile-fueling-admin.inergy.ir,https://mobile-fueling.inergy.ir
+WEB_PUSH_VAPID_PUBLIC_KEY=...
+WEB_PUSH_VAPID_PRIVATE_KEY=...
+WEB_PUSH_VAPID_SUBJECT=mailto:ops@example.com
+```
+
+Restrict the file so secrets (`JWT_SECRET`, VAPID private key, DB passwords) are not group/world readable:
+
+```bash
+sudo chmod 600 /var/www/fuel-carrier/api/.env
+sudo chown deploy:deploy /var/www/fuel-carrier/api/.env   # or whatever user runs the API unit
 ```
 
 Passwordless restart for CI is documented in [deploy-ci.md](./deploy-ci.md).

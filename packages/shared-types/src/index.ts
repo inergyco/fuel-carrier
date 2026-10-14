@@ -11,6 +11,7 @@ export * from "./company-user";
 export * from "./driver";
 export * from "./company-user-level";
 export * from "./mqtt-credentials";
+export * from "./notification";
 export * from "./pagination";
 export * from "./resource-list";
 export * from "./tenant-context";

@@ -4,7 +4,7 @@ import {
   type FieldPath,
   type FieldValues,
 } from 'react-hook-form'
-import { cn } from '../utils'
+import { Checkbox } from './Checkbox'
 import { useFieldIds } from './useFieldIds'
 
 type FormCheckboxProps<TFieldValues extends FieldValues> = Omit<
@@ -36,15 +36,11 @@ export function FormCheckbox<TFieldValues extends FieldValues>({
         htmlFor={id}
         className="inline-flex w-fit cursor-pointer items-center gap-2.5"
       >
-        <input
+        <Checkbox
           id={id}
-          type="checkbox"
           aria-invalid={error ? true : undefined}
           aria-describedby={errorId}
-          className={cn(
-            'checkbox checkbox-sm checkbox-primary shrink-0 rounded-md border-base-content/45 bg-transparent text-primary-content checked:border-primary checked:bg-primary [[data-theme$=light]_&]:border-base-content/70 [[data-theme$=light]_&]:bg-panel-card [[data-theme$=light]_&]:checked:bg-primary',
-            className,
-          )}
+          className={className}
           {...props}
           {...register(name)}
         />

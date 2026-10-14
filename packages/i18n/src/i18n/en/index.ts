@@ -143,6 +143,18 @@ const en: BaseTranslation = {
     licensePlateInvalid: 'Enter a valid Iranian license plate',
     driverRequired: 'Select a driver',
     noteTooLong: 'Note must be at most {max:number} characters',
+    notificationTitleRequired: 'Title is required',
+    notificationTitleTooLong: 'Title must be at most {max:number} characters',
+    notificationBodyRequired: 'Message is required',
+    notificationBodyTooLong: 'Message must be at most {max:number} characters',
+    notificationCompaniesRequired: 'Select at least one company',
+    notificationCompaniesTooMany:
+      'Select at most {max:number} companies',
+    notificationLevelsRequired: 'Select at least one access level',
+    notificationCompaniesNotFound:
+      'One or more selected companies are no longer available',
+    notificationNoMatchingStaff:
+      'No staff at the chosen access level: {names:string}',
   },
   internalPanel: {
     login: {
@@ -182,6 +194,7 @@ const en: BaseTranslation = {
       dashboard: 'Dashboard',
       companies: 'Companies',
       map: 'Map',
+      notifications: 'Notifications',
       auditLogs: 'Audit log',
       settings: 'Settings',
       openMenu: 'Open menu',
@@ -203,6 +216,41 @@ const en: BaseTranslation = {
       title: 'Settings',
       subtitle: 'Language and theme',
     },
+    notifications: {
+      title: 'Notifications',
+      subtitle: 'Message company staff in their application',
+      composeTitle: 'New notification',
+      composeHint:
+        'Choose companies and the access level of the staff who should receive it.',
+      titleLabel: 'Title',
+      titlePlaceholder: 'Short heading',
+      bodyLabel: 'Message',
+      bodyPlaceholder: 'What should staff see?',
+      channelLabel: 'Channel',
+      channelHint: 'SMS and other channels can be added later.',
+      channelBrowser: 'Browser',
+      channelBrowserDescription:
+        'Shown in the company application. If that app is open and the person allowed alerts, their browser shows one too.',
+      levelsLabel: 'Staff access level',
+      levelsHint: 'Only staff at the selected levels receive this.',
+      companiesLabel: 'Companies',
+      companiesHint: 'Select one or more companies.',
+      companySearchPlaceholder: 'Search companies',
+      selectAll: 'Select all',
+      clearSelection: 'Clear',
+      selectedCount: '{count:number} selected',
+      removeCompany: 'Remove {name:string}',
+      noCompanies: 'No companies match your search.',
+      send: 'Send notification',
+      sending: 'Sending…',
+      sendFailed: 'Could not send the notification. Please try again.',
+      historyTitle: 'Sent',
+      historySubtitle: 'Messages already delivered to company staff',
+      historyEmpty: 'No notifications sent yet.',
+      historyLoading: 'Loading sent notifications…',
+      recipients: '{count:number} recipients',
+      companiesUnavailable: 'Companies no longer available',
+    },
     toast: {
       companyCreated: 'Company added.',
       companyUpdated: 'Company updated.',
@@ -222,6 +270,7 @@ const en: BaseTranslation = {
       carDriverChanged: 'Driver changed.',
       carCustodyEnded: 'Custody ended.',
       signedOut: 'Signed out.',
+      notificationSent: 'Notification sent to {count:number} staff.',
     },
     map: {
       title: 'Fleet map',
@@ -500,6 +549,7 @@ const en: BaseTranslation = {
           authLoginFailed: 'Login failed',
           authLogout: 'Logout',
           authPasswordChanged: 'Password changed',
+          notificationSent: 'Notification sent',
         },
         auditLogsFields: {
           company: 'Company',
@@ -518,6 +568,10 @@ const en: BaseTranslation = {
           licensePlate: 'License plate',
           driverId: 'Assigned driver',
           mobileNumber: 'Mobile number',
+          title: 'Title',
+          channel: 'Channel',
+          recipientCount: 'Recipients',
+          companyCount: 'Companies',
         },
         auditLogsNoDetails: '—',
         auditLogsDeletedSnapshot: 'Deleted record snapshot recorded.',
@@ -592,6 +646,22 @@ const en: BaseTranslation = {
     shell: {
       brand: 'Fuel Carrier',
       brandSubtitle: 'Company Portal',
+    },
+    notifications: {
+      title: 'Notifications',
+      bellLabel: 'Notifications',
+      bellLabelUnread: '{count:number} unread notifications',
+      empty: 'No notifications yet.',
+      loading: 'Loading notifications…',
+      loadFailed: 'Couldn’t load notifications.',
+      markAllRead: 'Mark all as read',
+      enableBrowser: 'Allow browser notifications',
+      browserEnabled:
+        'Browser alerts are on. New messages still arrive when this app is closed.',
+      browserDenied:
+        'Browser alerts are blocked. You can still read notifications here.',
+      browserUnsupported:
+        'This browser cannot show system alerts. You can still read notifications here.',
     },
     footer: {
       copyright: '© {year:number} Inergy Corporation. All rights reserved.',
@@ -871,6 +941,7 @@ const en: BaseTranslation = {
         authLoginFailed: 'Login failed',
         authLogout: 'Logout',
         authPasswordChanged: 'Password changed',
+        notificationSent: 'Notification sent',
       },
       fields: {
         company: 'Company',
@@ -888,6 +959,10 @@ const en: BaseTranslation = {
         licensePlate: 'License plate',
         driverId: 'Assigned driver',
         mobileNumber: 'Mobile number',
+        title: 'Title',
+        channel: 'Channel',
+        recipientCount: 'Recipients',
+        companyCount: 'Companies',
       },
       noDetails: '—',
       deletedSnapshot: 'Deleted record snapshot recorded.',

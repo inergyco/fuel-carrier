@@ -1,6 +1,7 @@
 export { queryClient } from '../query-client'
 
 export {
+  keepPreviousData,
   QueryClient,
   useMutation,
   useQuery,

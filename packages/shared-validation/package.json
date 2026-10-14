@@ -18,6 +18,8 @@
     "./person-name": "./src/person-name.ts",
     "./email": "./src/email.ts",
     "./auth/change-password": "./src/auth/change-password.dto.ts",
+    "./notification/send": "./src/notification/send.ts",
+    "./notification/push-subscription": "./src/notification/push-subscription.ts",
     "./resource-list": "./src/resource-list/index.ts",
     "./pagination": "./src/resource-list/index.ts"
   },

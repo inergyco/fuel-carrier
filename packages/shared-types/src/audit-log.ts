@@ -28,6 +28,7 @@ export const AuditActions = {
   AUTH_LOGIN_FAILED: 'auth.login_failed',
   AUTH_LOGOUT: 'auth.logout',
   AUTH_PASSWORD_CHANGED: 'auth.password_changed',
+  NOTIFICATION_SENT: 'notification.sent',
 } as const;
 
 export type AuditAction = (typeof AuditActions)[keyof typeof AuditActions];
@@ -37,6 +38,7 @@ export const AuditEntityType = {
   COMPANY_USER: 'company_user',
   DRIVER: 'driver',
   CAR: 'car',
+  NOTIFICATION: 'notification',
 } as const;
 
 export type AuditEntityType =

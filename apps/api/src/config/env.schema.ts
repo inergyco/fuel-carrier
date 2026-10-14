@@ -70,6 +70,25 @@ export const envSchema = z.object({
     .describe(
       'Expose OpenAPI docs at /api/docs/internal and /api/docs/external. Ignored in production (always off).',
     ),
+  WEB_PUSH_VAPID_PUBLIC_KEY: z
+    .string()
+    .min(1)
+    .describe(
+      'VAPID public key used to subscribe company browsers to Web Push.',
+    ),
+  WEB_PUSH_VAPID_PRIVATE_KEY: z
+    .string()
+    .min(1)
+    .describe(
+      'VAPID private key used to sign Web Push requests. Keep this secret.',
+    ),
+  WEB_PUSH_VAPID_SUBJECT: z
+    .string()
+    .refine(
+      (value) => value.startsWith('mailto:') || value.startsWith('https://'),
+      'WEB_PUSH_VAPID_SUBJECT must be a mailto: or https:// contact',
+    )
+    .describe('Contact URI sent with Web Push (mailto: or https://).'),
   CORS_ALLOWED_ORIGINS: corsAllowedOriginsSchema().describe(
     'Comma-separated panel origins allowed for HTTP and Socket.IO CORS. Required in production.',
   ),

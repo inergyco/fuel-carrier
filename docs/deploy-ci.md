@@ -67,7 +67,7 @@ sudo visudo -cf /etc/sudoers.d/fuel-carrier-deploy
 ### 3. Confirm remote paths
 
 - App root: `/var/www/fuel-carrier/`
-- API env (not overwritten by CI): `/var/www/fuel-carrier/api/.env`
+- API env (not overwritten by CI): `/var/www/fuel-carrier/api/.env` — keep `chmod 600` (contains `JWT_SECRET`, VAPID private key, DB URLs)
 - Service: `fuel-carrier-api.service`
 
 Checked-in edge templates (systemd + nginx panel sites + MQTT stream) and install notes: [vps-edge.md](./vps-edge.md).

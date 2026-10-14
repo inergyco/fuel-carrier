@@ -8,5 +8,6 @@ export default createPanelViteConfig({
     description: 'Company portal for fuel carrier operations',
     themeColor: '#0b1838',
     backgroundColor: '#0b1838',
+    serviceWorker: 'push',
   },
 })

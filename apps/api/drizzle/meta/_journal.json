@@ -197,6 +197,34 @@
       "when": 1791800690831,
       "tag": "0027_deep_sunspot",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1791974582538,
+      "tag": "0028_notifications",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1791979395986,
+      "tag": "0029_notification_delivery_link",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1791981337996,
+      "tag": "0030_drop_notification_companies",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1791986557581,
+      "tag": "0031_notification_push_subscriptions",
+      "breakpoints": true
     }
   ]
 }

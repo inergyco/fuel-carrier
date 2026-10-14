@@ -20,6 +20,8 @@ import { InergyFooter } from './InergyFooter'
 import { AppBarBackLink } from './shell/AppBarBackLink'
 import { ShellSidebarFooter } from './shell/ShellSidebarFooter'
 import { useAppBarHeading } from './shell/useAppBarHeading'
+import { removeBrowserPushSubscription } from './notifications/browser-push-client'
+import { NotificationBell } from './notifications/NotificationBell'
 import { useExternalNavItems } from './shell/useExternalNavItems'
 
 interface AuthenticatedShellProps {
@@ -58,6 +60,11 @@ export function AuthenticatedShell({
     setIsLoggingOut(true)
 
     try {
+      try {
+        await removeBrowserPushSubscription()
+      } catch {
+        // Signing out still continues when this browser has no push subscription.
+      }
       await logout()
       queryClient.removeQueries({ queryKey: authKeys.me })
       broadcastAuthLogout('external')
@@ -89,6 +96,7 @@ export function AuthenticatedShell({
             <DashboardModeSwitcher />
           ) : null
         }
+        appBarInlineActions={<NotificationBell />}
         fullWidthMain={isMapPage}
         pageFooter={
           isMapPage ? undefined : (

@@ -15,6 +15,7 @@ import {
 import {
   Home,
   Building2,
+  Bell,
   ScrollText,
   Settings,
 } from "@fuel-carrier/web-ui/icons";
@@ -68,6 +69,11 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
         //   label: LL.internalPanel.nav.map(),
         //   icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         // },
+        {
+          to: "/notifications",
+          label: LL.internalPanel.nav.notifications(),
+          icon: <Bell strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
+        },
         {
           to: "/audit-logs",
           label: LL.internalPanel.nav.auditLogs(),

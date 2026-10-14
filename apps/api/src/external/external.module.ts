@@ -13,6 +13,8 @@ import { MqttModule } from '../mqtt/mqtt.module';
 import { ExternalDriversController } from '../drivers/external-drivers.controller';
 import { CompaniesModule } from '../companies/companies.module';
 import { ExternalCompanyController } from '../companies/external-company.controller';
+import { ExternalNotificationsController } from '../notifications/external-notifications.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { ExternalCompanyController } from '../companies/external-company.control
     DriversModule,
     CompaniesModule,
     MqttModule,
+    NotificationsModule,
   ],
   controllers: [
     ExternalAuthController,
@@ -32,6 +35,7 @@ import { ExternalCompanyController } from '../companies/external-company.control
     ExternalCarTelemetryController,
     ExternalDriversController,
     ExternalAuditLogsController,
+    ExternalNotificationsController,
   ],
 })
 export class ExternalModule {}

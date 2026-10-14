@@ -34,6 +34,7 @@ const ACTION_LABEL_KEYS: Record<string, string> = {
   [AuditActions.AUTH_LOGIN_FAILED]: 'authLoginFailed',
   [AuditActions.AUTH_LOGOUT]: 'authLogout',
   [AuditActions.AUTH_PASSWORD_CHANGED]: 'authPasswordChanged',
+  [AuditActions.NOTIFICATION_SENT]: 'notificationSent',
 }
 
 export function formatAuditValue(value: unknown): string {

@@ -11,6 +11,8 @@ import { CompaniesModule } from '../companies/companies.module';
 import { InternalDriversController } from '../drivers/internal-drivers.controller';
 import { DriversModule } from '../drivers/drivers.module';
 import { MqttModule } from '../mqtt/mqtt.module';
+import { InternalNotificationsController } from '../notifications/internal-notifications.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { MqttModule } from '../mqtt/mqtt.module';
     DriversModule,
     CompanyUsersModule,
     MqttModule,
+    NotificationsModule,
   ],
   controllers: [
     InternalAuthController,
@@ -28,6 +31,7 @@ import { MqttModule } from '../mqtt/mqtt.module';
     InternalCarsController,
     InternalCarTelemetryController,
     InternalDriversController,
+    InternalNotificationsController,
   ],
 })
 export class InternalModule {}

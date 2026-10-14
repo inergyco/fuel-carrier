@@ -9,6 +9,11 @@ import { companyUsers } from './company-users';
 import { drivers } from './drivers';
 import { mqttAcls } from './mqtt-acls';
 import { mqttClients } from './mqtt-clients';
+import {
+  notificationDeliveries,
+  notificationPushSubscriptions,
+  notifications,
+} from './notifications';
 import { users } from './users';
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -22,6 +27,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   }),
   auditLogs: many(auditLogs),
   carDriverAssignments: many(carDriverAssignments),
+  notifications: many(notifications),
 }));
 
 export const adminsRelations = relations(admins, ({ one }) => ({
@@ -38,18 +44,25 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   auditLogs: many(auditLogs),
   carDriverAssignments: many(carDriverAssignments),
   carTelemetryHistory: many(carTelemetryHistory),
+  notificationDeliveries: many(notificationDeliveries),
+  notificationPushSubscriptions: many(notificationPushSubscriptions),
 }));
 
-export const companyUsersRelations = relations(companyUsers, ({ one }) => ({
-  user: one(users, {
-    fields: [companyUsers.userId],
-    references: [users.id],
+export const companyUsersRelations = relations(
+  companyUsers,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [companyUsers.userId],
+      references: [users.id],
+    }),
+    company: one(companies, {
+      fields: [companyUsers.companyId],
+      references: [companies.id],
+    }),
+    notificationDeliveries: many(notificationDeliveries),
+    notificationPushSubscriptions: many(notificationPushSubscriptions),
   }),
-  company: one(companies, {
-    fields: [companyUsers.companyId],
-    references: [companies.id],
-  }),
-}));
+);
 
 export const driversRelations = relations(drivers, ({ one, many }) => ({
   company: one(companies, {
@@ -127,6 +140,49 @@ export const carTelemetryHistoryRelations = relations(
     company: one(companies, {
       fields: [carTelemetryHistory.companyId],
       references: [companies.id],
+    }),
+  }),
+);
+
+export const notificationsRelations = relations(
+  notifications,
+  ({ one, many }) => ({
+    createdByUser: one(users, {
+      fields: [notifications.createdByUserId],
+      references: [users.id],
+    }),
+    deliveries: many(notificationDeliveries),
+  }),
+);
+
+export const notificationDeliveriesRelations = relations(
+  notificationDeliveries,
+  ({ one }) => ({
+    notification: one(notifications, {
+      fields: [notificationDeliveries.notificationId],
+      references: [notifications.id],
+    }),
+    company: one(companies, {
+      fields: [notificationDeliveries.companyId],
+      references: [companies.id],
+    }),
+    companyUser: one(companyUsers, {
+      fields: [notificationDeliveries.companyUserId],
+      references: [companyUsers.id],
+    }),
+  }),
+);
+
+export const notificationPushSubscriptionsRelations = relations(
+  notificationPushSubscriptions,
+  ({ one }) => ({
+    company: one(companies, {
+      fields: [notificationPushSubscriptions.companyId],
+      references: [companies.id],
+    }),
+    companyUser: one(companyUsers, {
+      fields: [notificationPushSubscriptions.companyUserId],
+      references: [companyUsers.id],
     }),
   }),
 );

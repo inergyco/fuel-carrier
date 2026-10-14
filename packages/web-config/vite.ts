@@ -12,6 +12,11 @@ export type PanelPwaManifest = {
   description: string;
   themeColor: string;
   backgroundColor: string;
+  /**
+   * Company panel only. vite-plugin-pwa still generates the worker; this only
+   * loads `public/browser-push-sw.js` so closed-app Web Push can run.
+   */
+  serviceWorker?: "push";
 };
 
 export type PanelViteConfigOptions = {
@@ -114,13 +119,24 @@ function createPanelPwaOptions(pwa: PanelPwaManifest): Partial<VitePWAOptions> {
     workbox: {
       navigateFallback: "index.html",
       navigateFallbackDenylist: [/^\/api\//],
-      globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,webp,webmanifest}"],
+      globPatterns: [
+        "**/*.{js,css,html,ico,png,svg,woff2,webp,webmanifest}",
+      ],
       runtimeCaching: [
         {
           urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
           handler: "NetworkOnly",
         },
       ],
+      ...(pwa.serviceWorker === "push"
+        ? { importScripts: ["browser-push-sw.js"] }
+        : {}),
     },
+    ...(pwa.serviceWorker === "push"
+      ? {
+          // Local Web Push needs a real service worker, not only the build output.
+          devOptions: { enabled: true },
+        }
+      : {}),
   };
 }
