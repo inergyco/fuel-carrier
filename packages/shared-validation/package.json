@@ -15,6 +15,7 @@
     "./company-user/create": "./src/company-user/create-company-user.dto.ts",
     "./national-id": "./src/national-id.ts",
     "./mobile-number": "./src/mobile-number.ts",
+    "./person-name": "./src/person-name.ts",
     "./auth/change-password": "./src/auth/change-password.dto.ts",
     "./resource-list": "./src/resource-list/index.ts",
     "./pagination": "./src/resource-list/index.ts"

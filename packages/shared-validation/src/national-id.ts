@@ -16,6 +16,17 @@ export function toDigitsOnly(value: string): string {
   return toLatinDigits(value).replace(/\D/g, '');
 }
 
+/** Any Unicode decimal digit (Latin, Persian, Arabic-Indic, etc.). */
+const UNICODE_DIGIT = /\p{Nd}/u;
+
+export function containsDigit(value: string): boolean {
+  return UNICODE_DIGIT.test(value);
+}
+
+export function stripDigits(value: string): string {
+  return value.replace(/\p{Nd}/gu, '');
+}
+
 /**
  * Validates an Iranian personal national ID (کد ملی):
  * exactly 10 digits, not all identical, with a valid checksum.

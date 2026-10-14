@@ -39,12 +39,14 @@ export function DriverFormFields({
           name="firstName"
           label={LL.externalPanel.drivers.firstName()}
           type="text"
+          noDigits
           autoComplete="given-name"
         />
         <FormInput
           name="lastName"
           label={LL.externalPanel.drivers.lastName()}
           type="text"
+          noDigits
           autoComplete="family-name"
         />
       </div>

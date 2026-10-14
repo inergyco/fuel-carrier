@@ -123,8 +123,10 @@ const en: BaseTranslation = {
       'National ID must be a valid 10-digit Iranian national ID',
     firstNameRequired: 'First name is required',
     firstNameTooLong: 'First name must be at most {max:number} characters',
+    firstNameNoDigits: 'First name must not contain digits',
     lastNameRequired: 'Last name is required',
     lastNameTooLong: 'Last name must be at most {max:number} characters',
+    lastNameNoDigits: 'Last name must not contain digits',
     mobileNumberRequired: 'Mobile number is required',
     mobileNumberInvalid:
       'Mobile number must be a valid 11-digit Iranian mobile number',

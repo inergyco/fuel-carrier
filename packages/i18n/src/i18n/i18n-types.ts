@@ -422,6 +422,10 @@ type RootTranslation = {
 		 */
 		firstNameTooLong: RequiredParams<'max'>
 		/**
+		 * F​i​r​s​t​ ​n​a​m​e​ ​m​u​s​t​ ​n​o​t​ ​c​o​n​t​a​i​n​ ​d​i​g​i​t​s
+		 */
+		firstNameNoDigits: string
+		/**
 		 * L​a​s​t​ ​n​a​m​e​ ​i​s​ ​r​e​q​u​i​r​e​d
 		 */
 		lastNameRequired: string
@@ -430,6 +434,10 @@ type RootTranslation = {
 		 * @param {number} max
 		 */
 		lastNameTooLong: RequiredParams<'max'>
+		/**
+		 * L​a​s​t​ ​n​a​m​e​ ​m​u​s​t​ ​n​o​t​ ​c​o​n​t​a​i​n​ ​d​i​g​i​t​s
+		 */
+		lastNameNoDigits: string
 		/**
 		 * M​o​b​i​l​e​ ​n​u​m​b​e​r​ ​i​s​ ​r​e​q​u​i​r​e​d
 		 */
@@ -3589,6 +3597,10 @@ export type TranslationFunctions = {
 		 */
 		firstNameTooLong: (arg: { max: number }) => LocalizedString
 		/**
+		 * First name must not contain digits
+		 */
+		firstNameNoDigits: () => LocalizedString
+		/**
 		 * Last name is required
 		 */
 		lastNameRequired: () => LocalizedString
@@ -3596,6 +3608,10 @@ export type TranslationFunctions = {
 		 * Last name must be at most {max} characters
 		 */
 		lastNameTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Last name must not contain digits
+		 */
+		lastNameNoDigits: () => LocalizedString
 		/**
 		 * Mobile number is required
 		 */

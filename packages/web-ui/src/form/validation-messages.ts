@@ -25,10 +25,12 @@ export const toDriverValidationMessages = (
   firstNameTooLong: LL.validation.firstNameTooLong({
     max: DRIVER_FIRST_NAME_MAX_LENGTH,
   }),
+  firstNameNoDigits: LL.validation.firstNameNoDigits(),
   lastNameRequired: LL.validation.lastNameRequired(),
   lastNameTooLong: LL.validation.lastNameTooLong({
     max: DRIVER_LAST_NAME_MAX_LENGTH,
   }),
+  lastNameNoDigits: LL.validation.lastNameNoDigits(),
   nationalIdInvalid: LL.validation.nationalIdInvalid(),
   mobileNumberRequired: LL.validation.mobileNumberRequired(),
   mobileNumberInvalid: LL.validation.mobileNumberInvalid(),
@@ -45,10 +47,12 @@ export const toCompanyUserValidationMessages = (
   firstNameTooLong: LL.validation.firstNameTooLong({
     max: COMPANY_USER_FIRST_NAME_MAX_LENGTH,
   }),
+  firstNameNoDigits: LL.validation.firstNameNoDigits(),
   lastNameRequired: LL.validation.lastNameRequired(),
   lastNameTooLong: LL.validation.lastNameTooLong({
     max: COMPANY_USER_LAST_NAME_MAX_LENGTH,
   }),
+  lastNameNoDigits: LL.validation.lastNameNoDigits(),
   usernameRequired: LL.validation.usernameRequired(),
   usernameInvalid: LL.validation.usernameInvalid(),
   nationalIdInvalid: LL.validation.nationalIdInvalid(),

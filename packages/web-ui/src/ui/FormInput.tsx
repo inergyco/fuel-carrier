@@ -1,5 +1,9 @@
 import type { ChangeEvent, InputHTMLAttributes, KeyboardEvent } from 'react'
-import { toDigitsOnly } from '@fuel-carrier/shared-validation/national-id'
+import {
+  containsDigit,
+  stripDigits,
+  toDigitsOnly,
+} from '@fuel-carrier/shared-validation/national-id'
 import {
   useFormContext,
   type FieldPath,
@@ -15,6 +19,8 @@ type FormInputProps<TFieldValues extends FieldValues> = Omit<
   label?: string
   /** Keep Latin digits only. Persian and Arabic-Indic digits are converted. */
   digitsOnly?: boolean
+  /** Strip Unicode digits (e.g. name fields). */
+  noDigits?: boolean
 }
 
 export function FormInput<TFieldValues extends FieldValues>({
@@ -22,6 +28,7 @@ export function FormInput<TFieldValues extends FieldValues>({
   label,
   className,
   digitsOnly = false,
+  noDigits = false,
   onChange,
   onKeyDown,
   dir,
@@ -38,14 +45,16 @@ export function FormInput<TFieldValues extends FieldValues>({
 
   function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (
-      digitsOnly &&
       !event.ctrlKey &&
       !event.metaKey &&
       !event.altKey &&
-      event.key.length === 1 &&
-      toDigitsOnly(event.key).length === 0
+      event.key.length === 1
     ) {
-      event.preventDefault()
+      if (digitsOnly && toDigitsOnly(event.key).length === 0) {
+        event.preventDefault()
+      } else if (noDigits && containsDigit(event.key)) {
+        event.preventDefault()
+      }
     }
 
     onKeyDown?.(event)
@@ -57,6 +66,12 @@ export function FormInput<TFieldValues extends FieldValues>({
 
       if (event.target.value !== digits) {
         event.target.value = digits
+      }
+    } else if (noDigits) {
+      const withoutDigits = stripDigits(event.target.value)
+
+      if (event.target.value !== withoutDigits) {
+        event.target.value = withoutDigits
       }
     }
 

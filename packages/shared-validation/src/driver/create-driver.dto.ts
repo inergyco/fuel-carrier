@@ -16,6 +16,10 @@ import {
   IRANIAN_NATIONAL_ID_LENGTH,
   iranianNationalIdSchema,
 } from '../national-id';
+import {
+  PERSON_NAME_NO_DIGITS_MESSAGE,
+  personNameSchema,
+} from '../person-name';
 
 export const DRIVER_FIRST_NAME_MAX_LENGTH = 100;
 export const DRIVER_LAST_NAME_MAX_LENGTH = 100;
@@ -25,8 +29,10 @@ export const DRIVER_MOBILE_NUMBER_MAX_LENGTH = IRANIAN_MOBILE_NUMBER_LENGTH;
 export type DriverValidationMessages = {
   firstNameRequired: string;
   firstNameTooLong: string;
+  firstNameNoDigits: string;
   lastNameRequired: string;
   lastNameTooLong: string;
+  lastNameNoDigits: string;
   nationalIdInvalid: string;
   mobileNumberRequired: string;
   mobileNumberInvalid: string;
@@ -37,8 +43,10 @@ export type DriverValidationMessages = {
 const defaultDriverValidationMessages: DriverValidationMessages = {
   firstNameRequired: 'First name is required',
   firstNameTooLong: `First name must be at most ${DRIVER_FIRST_NAME_MAX_LENGTH} characters`,
+  firstNameNoDigits: PERSON_NAME_NO_DIGITS_MESSAGE,
   lastNameRequired: 'Last name is required',
   lastNameTooLong: `Last name must be at most ${DRIVER_LAST_NAME_MAX_LENGTH} characters`,
+  lastNameNoDigits: PERSON_NAME_NO_DIGITS_MESSAGE,
   nationalIdInvalid: IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   mobileNumberRequired: 'Mobile number is required',
   mobileNumberInvalid: IRANIAN_MOBILE_NUMBER_INVALID_MESSAGE,
@@ -50,14 +58,18 @@ export function createDriverBaseSchema(
   messages: DriverValidationMessages = defaultDriverValidationMessages,
 ) {
   return z.object({
-    firstName: z
-      .string()
-      .min(1, messages.firstNameRequired)
-      .max(DRIVER_FIRST_NAME_MAX_LENGTH, messages.firstNameTooLong),
-    lastName: z
-      .string()
-      .min(1, messages.lastNameRequired)
-      .max(DRIVER_LAST_NAME_MAX_LENGTH, messages.lastNameTooLong),
+    firstName: personNameSchema({
+      requiredMessage: messages.firstNameRequired,
+      tooLongMessage: messages.firstNameTooLong,
+      noDigitsMessage: messages.firstNameNoDigits,
+      maxLength: DRIVER_FIRST_NAME_MAX_LENGTH,
+    }),
+    lastName: personNameSchema({
+      requiredMessage: messages.lastNameRequired,
+      tooLongMessage: messages.lastNameTooLong,
+      noDigitsMessage: messages.lastNameNoDigits,
+      maxLength: DRIVER_LAST_NAME_MAX_LENGTH,
+    }),
     nationalId: iranianNationalIdSchema(messages.nationalIdInvalid),
     mobileNumber: iranianMobileNumberSchema(
       messages.mobileNumberInvalid,

@@ -20,12 +20,14 @@ export function CompanyUserFormFields({ mode, serverError }: CompanyUserFormFiel
           name="firstName"
           label={LL.internalPanel.companies.detail.firstName()}
           type="text"
+          noDigits
           autoComplete="given-name"
         />
         <FormInput
           name="lastName"
           label={LL.internalPanel.companies.detail.lastName()}
           type="text"
+          noDigits
           autoComplete="family-name"
         />
       </div>

@@ -12,6 +12,10 @@ import {
   optionalIranianNationalIdSchema,
 } from '../national-id';
 import { PASSWORD_MIN_LENGTH, strongPasswordSchema } from '../password';
+import {
+  PERSON_NAME_NO_DIGITS_MESSAGE,
+  personNameSchema,
+} from '../person-name';
 import { isValidUsername } from '../username';
 
 export const COMPANY_USER_FIRST_NAME_MAX_LENGTH = 100;
@@ -24,8 +28,10 @@ const companyUserLevelSchema = z.enum(COMPANY_USER_LEVELS);
 export type CompanyUserValidationMessages = {
   firstNameRequired: string;
   firstNameTooLong: string;
+  firstNameNoDigits: string;
   lastNameRequired: string;
   lastNameTooLong: string;
+  lastNameNoDigits: string;
   usernameRequired: string;
   usernameInvalid: string;
   nationalIdInvalid: string;
@@ -37,8 +43,10 @@ export type CompanyUserValidationMessages = {
 const defaultCompanyUserValidationMessages: CompanyUserValidationMessages = {
   firstNameRequired: 'First name is required',
   firstNameTooLong: `First name must be at most ${COMPANY_USER_FIRST_NAME_MAX_LENGTH} characters`,
+  firstNameNoDigits: PERSON_NAME_NO_DIGITS_MESSAGE,
   lastNameRequired: 'Last name is required',
   lastNameTooLong: `Last name must be at most ${COMPANY_USER_LAST_NAME_MAX_LENGTH} characters`,
+  lastNameNoDigits: PERSON_NAME_NO_DIGITS_MESSAGE,
   usernameRequired: 'Username is required',
   usernameInvalid:
     'Username must be 3–32 characters and contain only letters, numbers, underscores, and hyphens',
@@ -58,14 +66,18 @@ export function createCompanyUserBaseSchema(
   messages: CompanyUserValidationMessages = defaultCompanyUserValidationMessages,
 ) {
   return z.object({
-    firstName: z
-      .string()
-      .min(1, messages.firstNameRequired)
-      .max(COMPANY_USER_FIRST_NAME_MAX_LENGTH, messages.firstNameTooLong),
-    lastName: z
-      .string()
-      .min(1, messages.lastNameRequired)
-      .max(COMPANY_USER_LAST_NAME_MAX_LENGTH, messages.lastNameTooLong),
+    firstName: personNameSchema({
+      requiredMessage: messages.firstNameRequired,
+      tooLongMessage: messages.firstNameTooLong,
+      noDigitsMessage: messages.firstNameNoDigits,
+      maxLength: COMPANY_USER_FIRST_NAME_MAX_LENGTH,
+    }),
+    lastName: personNameSchema({
+      requiredMessage: messages.lastNameRequired,
+      tooLongMessage: messages.lastNameTooLong,
+      noDigitsMessage: messages.lastNameNoDigits,
+      maxLength: COMPANY_USER_LAST_NAME_MAX_LENGTH,
+    }),
     username: z
       .string()
       .min(1, messages.usernameRequired)
