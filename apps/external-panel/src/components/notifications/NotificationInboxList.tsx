@@ -150,7 +150,7 @@ function NotificationInboxItem({
             {item.body}
           </span>
           <time
-            className="mt-1 block text-[10px] text-base-content/40"
+            className="mt-1 block text-[11px] font-medium text-base-content/45"
             dateTime={item.createdAt}
           >
             {new Date(item.createdAt).toLocaleString(locale)}
