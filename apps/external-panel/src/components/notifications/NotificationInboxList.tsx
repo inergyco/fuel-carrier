@@ -146,7 +146,7 @@ function NotificationInboxItem({
         )}
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium">{item.title}</span>
-          <span className="mt-0.5 line-clamp-2 block text-xs text-base-content/60">
+          <span className="mt-0.5 line-clamp-2 block text-xs text-base-content/70">
             {item.body}
           </span>
           <time

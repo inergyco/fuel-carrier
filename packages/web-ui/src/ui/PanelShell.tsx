@@ -109,7 +109,7 @@ export function PanelShell({
             </div>
           ) : null}
 
-          <div className="flex shrink-0 items-center justify-end gap-1">
+          <div className="ms-auto flex shrink-0 items-center justify-end gap-1">
             <LocaleControls className="relative top-auto end-auto" />
             {appBarInlineActions}
           </div>
