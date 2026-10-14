@@ -59,6 +59,7 @@ export {
   dataTableViewActionClassName,
 } from './DataTable'
 export { Modal, ModalActions } from './Modal'
+export { Popover } from './Popover'
 export {
   Pagination,
   getPaginationRange,

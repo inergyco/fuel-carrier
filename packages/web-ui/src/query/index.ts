@@ -3,6 +3,7 @@ export { queryClient } from '../query-client'
 export {
   keepPreviousData,
   QueryClient,
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,

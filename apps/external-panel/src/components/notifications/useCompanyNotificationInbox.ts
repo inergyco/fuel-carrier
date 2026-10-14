@@ -1,5 +1,10 @@
 import type { CompanyNotification } from '@fuel-carrier/shared-types'
-import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@fuel-carrier/web-ui/query'
 import {
   companyNotificationKeys,
   fetchCompanyNotifications,
@@ -13,9 +18,12 @@ const EMPTY_ITEMS: CompanyNotification[] = []
 
 export function useCompanyNotificationInbox() {
   const queryClient = useQueryClient()
-  const inboxQuery = useQuery({
+  const inboxQuery = useInfiniteQuery({
     queryKey: companyNotificationKeys.inbox,
-    queryFn: fetchCompanyNotifications,
+    queryFn: ({ pageParam }) => fetchCompanyNotifications(pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     refetchInterval: NOTIFICATION_POLL_MS,
     refetchOnWindowFocus: true,
   })
@@ -57,13 +65,26 @@ export function useCompanyNotificationInbox() {
     void inboxQuery.refetch()
   }
 
+  function handleLoadMore() {
+    if (!inboxQuery.hasNextPage || inboxQuery.isFetchingNextPage) {
+      return
+    }
+
+    void inboxQuery.fetchNextPage()
+  }
+
   return {
-    items: inboxQuery.data?.items ?? EMPTY_ITEMS,
+    items:
+      inboxQuery.data?.pages.flatMap((page) => page.items) ?? EMPTY_ITEMS,
     unreadCount: unreadQuery.data?.count ?? 0,
     isLoading: inboxQuery.isLoading,
     isError: inboxQuery.isError,
+    hasNextPage: inboxQuery.hasNextPage,
+    isFetchingNextPage: inboxQuery.isFetchingNextPage,
+    isFetchNextPageError: inboxQuery.isFetchNextPageError,
     markAllPending: markAllMutation.isPending,
     retryInbox,
+    handleLoadMore,
     handleOpenItem,
     handleMarkAllRead,
   }
