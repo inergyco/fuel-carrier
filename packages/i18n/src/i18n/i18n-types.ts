@@ -970,7 +970,7 @@ type RootTranslation = {
 			 */
 			emptyFiltered: string
 			/**
-			 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+			 * S​e​a​r​c​h​ ​b​y​ ​a​c​t​i​o​n​,​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
 			 */
 			searchPlaceholder: string
 		}
@@ -1701,7 +1701,7 @@ type RootTranslation = {
 				 */
 				auditLogsEmptyFiltered: string
 				/**
-				 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+				 * S​e​a​r​c​h​ ​b​y​ ​a​c​t​i​o​n​,​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
 				 */
 				auditLogsSearchPlaceholder: string
 				/**
@@ -3041,7 +3041,7 @@ type RootTranslation = {
 			 */
 			emptyFiltered: string
 			/**
-			 * S​e​a​r​c​h​ ​b​y​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
+			 * S​e​a​r​c​h​ ​b​y​ ​a​c​t​i​o​n​,​ ​u​s​e​r​n​a​m​e​,​ ​n​a​t​i​o​n​a​l​ ​I​D​,​ ​o​r​ ​n​a​m​e
 			 */
 			searchPlaceholder: string
 			/**
@@ -4142,7 +4142,7 @@ export type TranslationFunctions = {
 			 */
 			emptyFiltered: () => LocalizedString
 			/**
-			 * Search by username, national ID, or name
+			 * Search by action, username, national ID, or name
 			 */
 			searchPlaceholder: () => LocalizedString
 		}
@@ -4857,7 +4857,7 @@ export type TranslationFunctions = {
 				 */
 				auditLogsEmptyFiltered: () => LocalizedString
 				/**
-				 * Search by username, national ID, or name
+				 * Search by action, username, national ID, or name
 				 */
 				auditLogsSearchPlaceholder: () => LocalizedString
 				/**
@@ -6170,7 +6170,7 @@ export type TranslationFunctions = {
 			 */
 			emptyFiltered: () => LocalizedString
 			/**
-			 * Search by username, national ID, or name
+			 * Search by action, username, national ID, or name
 			 */
 			searchPlaceholder: () => LocalizedString
 			/**

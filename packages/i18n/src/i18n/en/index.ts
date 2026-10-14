@@ -274,7 +274,7 @@ const en: BaseTranslation = {
       loading: 'Loading audit log…',
       empty: 'No audit entries yet.',
       emptyFiltered: 'No audit entries match your search or date range.',
-      searchPlaceholder: 'Search by username, national ID, or name',
+      searchPlaceholder: 'Search by action, username, national ID, or name',
     },
     companies: {
       title: 'Companies',
@@ -471,7 +471,8 @@ const en: BaseTranslation = {
         auditLogsEmpty: 'No audit entries yet for this company.',
         auditLogsEmptyFiltered:
           'No audit entries match your search or date range.',
-        auditLogsSearchPlaceholder: 'Search by username, national ID, or name',
+        auditLogsSearchPlaceholder:
+          'Search by action, username, national ID, or name',
         auditLogsLoading: 'Loading audit log…',
         auditLogsWhen: 'When',
         auditLogsActor: 'Actor',
@@ -842,7 +843,7 @@ const en: BaseTranslation = {
       subtitle: 'Critical actions performed for your company',
       empty: 'No audit entries yet.',
       emptyFiltered: 'No audit entries match your search or date range.',
-      searchPlaceholder: 'Search by username, national ID, or name',
+      searchPlaceholder: 'Search by action, username, national ID, or name',
       loading: 'Loading audit log…',
       when: 'When',
       actor: 'Actor',

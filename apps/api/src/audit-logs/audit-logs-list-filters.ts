@@ -8,10 +8,10 @@ import { users } from '../database/schema/users';
 const qb = new QueryBuilder();
 
 /**
- * Match actor by snapshotted username/display name, live user names,
+ * Match by action, snapshotted username/display name, live user names,
  * or company-user username/national ID.
  */
-export function buildAuditActorSearchFilter(searchText: string | undefined) {
+export function buildAuditLogSearchFilter(searchText: string | undefined) {
   if (!searchText) {
     return undefined;
   }
@@ -19,6 +19,7 @@ export function buildAuditActorSearchFilter(searchText: string | undefined) {
   const pattern = toIlikeContainsPattern(searchText);
 
   return or(
+    ilike(auditLogs.action, pattern),
     ilike(auditLogs.actorUsername, pattern),
     ilike(auditLogs.actorDisplayName, pattern),
     exists(

@@ -46,7 +46,8 @@ export class ExternalAuditLogsController {
     name: 'search',
     required: false,
     type: String,
-    description: 'Actor username, national ID, first name, or last name',
+    description:
+      'Action, actor username, national ID, first name, or last name',
   })
   @ApiQuery({
     name: 'start',
