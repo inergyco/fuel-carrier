@@ -41,7 +41,7 @@ export function LicensePlatePicker({
           dir="ltr"
           onBlur={onBlur}
           className={cn(
-            'flex h-14 overflow-hidden rounded-md border-2 border-neutral-800 bg-[#f3f3f3] text-neutral-900 shadow-sm sm:h-16',
+            'flex h-14 overflow-hidden rounded-md border-2 border-neutral-800 bg-panel-card text-neutral-900 shadow-sm sm:h-16',
             error && 'border-error',
             disabled && 'opacity-60',
           )}

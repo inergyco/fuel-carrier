@@ -6,6 +6,7 @@ import type {
 } from 'react'
 import { toPersianDigits } from '@fuel-carrier/shared-validation/car/create'
 import { cn } from '../../utils'
+import { Input } from '../Input'
 
 type PlateDigitInputProps = {
   ref: RefObject<HTMLInputElement | null>
@@ -35,7 +36,8 @@ export function PlateDigitInput({
   onPaste,
 }: PlateDigitInputProps) {
   return (
-    <input
+    <Input
+      bare
       ref={ref}
       id={id}
       type="text"
@@ -50,10 +52,7 @@ export function PlateDigitInput({
       onChange={onChange}
       onKeyDown={onKeyDown}
       onPaste={onPaste}
-      className={cn(
-        'h-9 min-w-0 w-full rounded-sm border border-neutral-400/70 bg-white text-center text-lg font-bold tracking-wider text-neutral-900 tabular-nums outline-none focus:border-neutral-700 focus:ring-1 focus:ring-neutral-400 disabled:cursor-not-allowed sm:h-12 sm:text-xl',
-        className,
-      )}
+      className={cn('min-w-0 text-center text-lg font-bold', className)}
     />
   )
 }

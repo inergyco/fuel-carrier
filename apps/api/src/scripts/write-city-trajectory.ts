@@ -8,7 +8,7 @@ import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { getCityRoute, type LatLng } from './city-routes';
 
-const SAMPLE_INTERVAL_MS = 45_000;
+const SAMPLE_INTERVAL_MS = 90_000;
 
 type WriteCityTrajectoryInput = {
   companyId: string;

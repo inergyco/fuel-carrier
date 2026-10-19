@@ -13,6 +13,8 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   ref?: Ref<HTMLInputElement>
+  /** Skip the Field wrapper when a parent already provides the label and error. */
+  bare?: boolean
 }
 
 function isUsernameField(name?: string, autoComplete?: string): boolean {
@@ -32,6 +34,7 @@ export function Input({
   name,
   autoComplete,
   id: idProp,
+  bare = false,
   ...props
 }: InputProps) {
   const { LL } = useI18nContext()
@@ -61,7 +64,7 @@ export function Input({
       aria-invalid={error ? true : undefined}
       aria-describedby={errorId}
       className={cn(
-        'input input-sm h-10 w-full rounded-lg border bg-base-100/60 text-sm tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
+        'input input-sm h-10 w-full rounded-lg border bg-base-100/60 text-sm text-base-content tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
         error
           ? 'border-error/60 focus:ring-error/40'
           : 'border-base-content/10 focus:ring-primary/40',
@@ -95,6 +98,10 @@ export function Input({
   ) : (
     input
   )
+
+  if (bare) {
+    return fieldContent
+  }
 
   return (
     <Field label={label} error={error} htmlFor={id} errorId={errorId}>
