@@ -82,6 +82,22 @@ const en: BaseTranslation = {
       tooLarge: 'Logo must be 2 MB or smaller.',
       uploadFailed: 'Could not upload the logo. Please try again.',
     },
+    companyPricing: {
+      title: 'Petrol price and fee ranges',
+      subtitle:
+        'Set the petrol price and four liter-based fee bands (0–x, x–y, y–z, above z).',
+      petrolPricePerLiter: 'Petrol price per liter',
+      feeThresholdX: 'Threshold x (liters)',
+      feeThresholdY: 'Threshold y (liters)',
+      feeThresholdZ: 'Threshold z (liters)',
+      feeUpToX: 'Fee for 0–x liters',
+      feeXToY: 'Fee for x–y liters',
+      feeYToZ: 'Fee for y–z liters',
+      feeAboveZ: 'Fee above z liters',
+      save: 'Save pricing',
+      saving: 'Saving…',
+      saveFailed: 'Could not save pricing. Please try again.',
+    },
     driverImage: {
       label: 'Photo',
       hint: 'PNG, JPG, WEBP, GIF, or SVG. Up to 2 MB.',
@@ -120,6 +136,12 @@ const en: BaseTranslation = {
     companyNoteTooLong: 'Note must be at most {max:number} characters',
     companyLogoUrlTooLong: 'Logo URL must be at most {max:number} characters',
     companyLogoUrlInvalid: 'Logo URL must be a valid URL',
+    companyPricingNumberInvalid: 'Must be a valid number',
+    companyPricingNumberNegative: 'Must be zero or greater',
+    companyPricingIncomplete:
+      'Petrol price and all fee range fields must be set together',
+    companyPricingFeeThresholdOrder:
+      'Fee thresholds must satisfy 0 < x < y < z',
     driverImageUrlTooLong: 'Photo URL must be at most {max:number} characters',
     driverImageUrlInvalid: 'Photo URL must be a valid URL',
     nationalIdInvalid:
@@ -683,6 +705,7 @@ const en: BaseTranslation = {
       carMqttCredentialsRotated: 'MQTT credentials rotated.',
       passwordChanged: 'Password updated.',
       logoUpdated: 'Logo updated.',
+      pricingUpdated: 'Pricing updated.',
       driverImageUpdated: 'Driver photo updated.',
     },
     settings: {

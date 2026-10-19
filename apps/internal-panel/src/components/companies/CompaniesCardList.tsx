@@ -5,13 +5,11 @@ import { CompanyOperations } from './CompanyOperations'
 
 interface CompaniesCardListProps {
   companies: Company[]
-  onEdit: (company: Company) => void
   onDelete: (company: Company) => void
 }
 
 export function CompaniesCardList({
   companies,
-  onEdit,
   onDelete,
 }: CompaniesCardListProps) {
   const { LL } = useI18nContext()
@@ -63,7 +61,6 @@ export function CompaniesCardList({
             <div className="mt-4 border-t border-base-content/8 pt-4">
               <CompanyOperations
                 company={company}
-                onEdit={onEdit}
                 onDelete={onDelete}
                 layout="stacked"
               />

@@ -82,6 +82,22 @@ const fa: Translation = {
       tooLarge: "حجم لوگو باید ۲ مگابایت یا کمتر باشد.",
       uploadFailed: "بارگذاری لوگو انجام نشد. لطفاً دوباره تلاش کنید.",
     },
+    companyPricing: {
+      title: "قیمت بنزین و بازه‌های کارمزد",
+      subtitle:
+        "قیمت بنزین و چهار بازه کارمزد بر اساس لیتر (۰–x، x–y، y–z و بالاتر از z) را تنظیم کنید.",
+      petrolPricePerLiter: "قیمت بنزین به ازای هر لیتر",
+      feeThresholdX: "آستانه x (لیتر)",
+      feeThresholdY: "آستانه y (لیتر)",
+      feeThresholdZ: "آستانه z (لیتر)",
+      feeUpToX: "کارمزد برای ۰ تا x لیتر",
+      feeXToY: "کارمزد برای x تا y لیتر",
+      feeYToZ: "کارمزد برای y تا z لیتر",
+      feeAboveZ: "کارمزد برای بالاتر از z لیتر",
+      save: "ذخیره قیمت‌گذاری",
+      saving: "در حال ذخیره…",
+      saveFailed: "ذخیره قیمت‌گذاری انجام نشد. لطفاً دوباره تلاش کنید.",
+    },
     driverImage: {
       label: "تصویر",
       hint: "PNG، JPG، WEBP، GIF یا SVG. حداکثر ۲ مگابایت.",
@@ -118,6 +134,12 @@ const fa: Translation = {
     companyNoteTooLong: "یادداشت باید حداکثر {max} کاراکتر باشد",
     companyLogoUrlTooLong: "آدرس لوگو باید حداکثر {max} کاراکتر باشد",
     companyLogoUrlInvalid: "آدرس لوگو باید یک URL معتبر باشد",
+    companyPricingNumberInvalid: "باید یک عدد معتبر باشد",
+    companyPricingNumberNegative: "باید صفر یا بیشتر باشد",
+    companyPricingIncomplete:
+      "قیمت بنزین و همه فیلدهای بازه کارمزد باید با هم تنظیم شوند",
+    companyPricingFeeThresholdOrder:
+      "آستانه‌های کارمزد باید شرط ۰ < x < y < z را داشته باشند",
     driverImageUrlTooLong: "آدرس تصویر باید حداکثر {max} کاراکتر باشد",
     driverImageUrlInvalid: "آدرس تصویر باید یک URL معتبر باشد",
     nationalIdInvalid: "کد ملی باید یک کد ملی ۱۰ رقمی معتبر باشد",
@@ -674,6 +696,7 @@ const fa: Translation = {
       carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد.",
       passwordChanged: "رمز عبور به‌روزرسانی شد.",
       logoUpdated: "لوگو به‌روزرسانی شد.",
+      pricingUpdated: "قیمت‌گذاری به‌روزرسانی شد.",
       driverImageUpdated: "تصویر راننده به‌روزرسانی شد.",
     },
     settings: {

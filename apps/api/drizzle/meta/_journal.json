@@ -225,6 +225,13 @@
       "when": 1791986557581,
       "tag": "0031_notification_push_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1792400000000,
+      "tag": "0032_company_pricing",
+      "breakpoints": true
     }
   ]
 }

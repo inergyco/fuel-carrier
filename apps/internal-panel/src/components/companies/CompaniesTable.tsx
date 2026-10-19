@@ -14,13 +14,11 @@ import { CompanyOperations } from "./CompanyOperations";
 
 interface CompaniesTableProps {
   companies: Company[];
-  onEdit: (company: Company) => void;
   onDelete: (company: Company) => void;
 }
 
 export function CompaniesTable({
   companies,
-  onEdit,
   onDelete,
 }: CompaniesTableProps) {
   const { LL } = useI18nContext();
@@ -60,7 +58,6 @@ export function CompaniesTable({
               <DataTableCell className="text-end">
                 <CompanyOperations
                   company={company}
-                  onEdit={onEdit}
                   onDelete={onDelete}
                 />
               </DataTableCell>

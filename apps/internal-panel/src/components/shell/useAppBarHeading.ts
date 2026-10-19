@@ -6,6 +6,11 @@ import { useCarQuery } from '../companies/detail/useCarQuery'
 export type AppBarBack =
   | { to: '/companies'; label: string }
   | {
+      to: '/companies/$companyId'
+      companyId: string
+      label: string
+    }
+  | {
       to: '/companies/$companyId/cars'
       companyId: string
       label: string
@@ -30,6 +35,14 @@ const staticHeadings: Record<
   '/companies': (LL) => ({
     title: LL.internalPanel.companies.title(),
     subtitle: LL.internalPanel.companies.subtitle(),
+  }),
+  '/companies/new': (LL) => ({
+    title: LL.internalPanel.companies.createTitle(),
+    subtitle: LL.internalPanel.companies.subtitle(),
+    back: {
+      to: '/companies',
+      label: LL.internalPanel.companies.backToList(),
+    },
   }),
   '/map': (LL) => ({
     title: LL.internalPanel.map.title(),
@@ -78,6 +91,15 @@ export function useAppBarHeading(
   }
 
   if (companyId) {
+    if (isCompanyEditPath(pathname)) {
+      return getCompanyEditAppBarHeading({
+        company: companyQuery.data,
+        companyId,
+        isNotFound: isCompanyNotFound,
+        LL,
+      })
+    }
+
     return getCompanyDetailAppBarHeading({
       company: companyQuery.data,
       isNotFound: isCompanyNotFound,
@@ -93,9 +115,13 @@ function getCompanyDetailId(pathname: string): string | undefined {
 
   const rest = pathname.slice('/companies/'.length)
   const companyId = rest.split('/')[0]
-  if (!companyId) return undefined
+  if (!companyId || companyId === 'new') return undefined
 
   return companyId
+}
+
+function isCompanyEditPath(pathname: string): boolean {
+  return /^\/companies\/[^/]+\/edit$/.test(pathname)
 }
 
 function getCompanyCarDetailRoute(
@@ -132,6 +158,41 @@ function getCompanyDetailAppBarHeading({
   return {
     title: company?.name ?? LL.internalPanel.companies.loading(),
     subtitle: LL.internalPanel.companies.subtitle(),
+    back,
+  }
+}
+
+function getCompanyEditAppBarHeading({
+  company,
+  companyId,
+  isNotFound,
+  LL,
+}: {
+  company: Company | undefined
+  companyId: string
+  isNotFound: boolean
+  LL: LL
+}): AppBarHeading {
+  const back: AppBarBack = {
+    to: '/companies/$companyId',
+    companyId,
+    label: LL.internalPanel.companies.detail.overviewTitle(),
+  }
+
+  if (isNotFound) {
+    return {
+      title: LL.internalPanel.companies.notFound(),
+      subtitle: LL.internalPanel.companies.notFoundDescription(),
+      back: {
+        to: '/companies',
+        label: LL.internalPanel.companies.backToList(),
+      },
+    }
+  }
+
+  return {
+    title: LL.internalPanel.companies.editTitle(),
+    subtitle: company?.name ?? LL.internalPanel.companies.loading(),
     back,
   }
 }

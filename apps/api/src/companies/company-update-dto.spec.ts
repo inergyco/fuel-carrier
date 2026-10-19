@@ -1,8 +1,20 @@
 import { createCompanyDtoSchema } from '@fuel-carrier/shared-validation/company/create';
+import { updateCompanyPricingDtoSchema } from '@fuel-carrier/shared-validation/company/pricing';
 import {
   replaceCompanyLogoDtoSchema,
   updateCompanyDtoSchema,
 } from '@fuel-carrier/shared-validation/company/update';
+
+const validPricing = {
+  petrolPricePerLiter: 15_000,
+  feeThresholdX: 100,
+  feeThresholdY: 500,
+  feeThresholdZ: 1000,
+  feeUpToX: 50_000,
+  feeXToY: 100_000,
+  feeYToZ: 200_000,
+  feeAboveZ: 300_000,
+};
 
 describe('company update DTO schema', () => {
   it('requires full body on create', () => {
@@ -26,6 +38,35 @@ describe('company update DTO schema', () => {
     expect('phoneNumber' in parsed).toBe(false);
     expect('address' in parsed).toBe(false);
     expect('logoUrl' in parsed).toBe(false);
+  });
+
+  it('accepts full pricing set and rejects partial or unordered thresholds', () => {
+    expect(updateCompanyPricingDtoSchema.parse(validPricing)).toEqual(
+      validPricing,
+    );
+    expect(
+      updateCompanyDtoSchema.safeParse({ petrolPricePerLiter: 1 }).success,
+    ).toBe(false);
+    expect(
+      updateCompanyPricingDtoSchema.safeParse({
+        ...validPricing,
+        feeThresholdX: 900,
+        feeThresholdY: 100,
+        feeThresholdZ: 50,
+      }).success,
+    ).toBe(false);
+  });
+
+  it('defaults missing create pricing fields to null', () => {
+    const parsed = createCompanyDtoSchema.parse({
+      name: 'Acme',
+      nationalId: '123',
+      phoneNumber: '021',
+    });
+
+    expect(parsed.petrolPricePerLiter).toBeNull();
+    expect(parsed.feeThresholdX).toBeNull();
+    expect(parsed.feeAboveZ).toBeNull();
   });
 
   it('still allows clearing optional text with null/empty', () => {

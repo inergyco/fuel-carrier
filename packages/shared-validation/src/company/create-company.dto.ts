@@ -12,6 +12,11 @@ import {
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
 } from './constants';
+import {
+  companyPricingObjectSchema,
+  refineCompanyPricing,
+  type CompanyPricingValidationMessages,
+} from './company-pricing';
 
 export type CreateCompanyValidationMessages = {
   nameRequired: string;
@@ -24,39 +29,53 @@ export type CreateCompanyValidationMessages = {
   noteTooLong: string;
   logoUrlTooLong: string;
   logoUrlInvalid: string;
-};
+} & CompanyPricingValidationMessages;
 
 export function createCreateCompanyDtoSchema(
   messages: CreateCompanyValidationMessages,
 ) {
-  return z.object({
-    name: z
-      .string()
-      .min(1, messages.nameRequired)
-      .max(COMPANY_NAME_MAX_LENGTH, messages.nameTooLong),
-    nationalId: z
-      .string()
-      .min(1, messages.nationalIdRequired)
-      .max(COMPANY_NATIONAL_ID_MAX_LENGTH, messages.nationalIdTooLong),
-    phoneNumber: z
-      .string()
-      .min(1, messages.phoneNumberRequired)
-      .max(COMPANY_PHONE_MAX_LENGTH, messages.phoneNumberTooLong),
-    address: optionalTextField(
-      COMPANY_ADDRESS_MAX_LENGTH,
-      messages.addressTooLong,
-    ),
-    note: optionalTextField(COMPANY_NOTE_MAX_LENGTH, messages.noteTooLong),
-    logoUrl: optionalTextField(
-      IMAGE_UPLOAD_URL_MAX_LENGTH,
-      messages.logoUrlTooLong,
-    ).pipe(
-      z.union([
-        z.null(),
-        z.string().refine(isAllowedCompanyLogoUrl, messages.logoUrlInvalid),
-      ]),
-    ),
-  });
+  const pricing = companyPricingObjectSchema(messages);
+
+  return z
+    .object({
+      name: z
+        .string()
+        .min(1, messages.nameRequired)
+        .max(COMPANY_NAME_MAX_LENGTH, messages.nameTooLong),
+      nationalId: z
+        .string()
+        .min(1, messages.nationalIdRequired)
+        .max(COMPANY_NATIONAL_ID_MAX_LENGTH, messages.nationalIdTooLong),
+      phoneNumber: z
+        .string()
+        .min(1, messages.phoneNumberRequired)
+        .max(COMPANY_PHONE_MAX_LENGTH, messages.phoneNumberTooLong),
+      address: optionalTextField(
+        COMPANY_ADDRESS_MAX_LENGTH,
+        messages.addressTooLong,
+      ),
+      note: optionalTextField(COMPANY_NOTE_MAX_LENGTH, messages.noteTooLong),
+      logoUrl: optionalTextField(
+        IMAGE_UPLOAD_URL_MAX_LENGTH,
+        messages.logoUrlTooLong,
+      ).pipe(
+        z.union([
+          z.null(),
+          z.string().refine(isAllowedCompanyLogoUrl, messages.logoUrlInvalid),
+        ]),
+      ),
+      petrolPricePerLiter: pricing.shape.petrolPricePerLiter,
+      feeThresholdX: pricing.shape.feeThresholdX,
+      feeThresholdY: pricing.shape.feeThresholdY,
+      feeThresholdZ: pricing.shape.feeThresholdZ,
+      feeUpToX: pricing.shape.feeUpToX,
+      feeXToY: pricing.shape.feeXToY,
+      feeYToZ: pricing.shape.feeYToZ,
+      feeAboveZ: pricing.shape.feeAboveZ,
+    })
+    .superRefine((data, ctx) => {
+      refineCompanyPricing(data, ctx, messages);
+    });
 }
 
 const defaultMessages: CreateCompanyValidationMessages = {
@@ -70,6 +89,11 @@ const defaultMessages: CreateCompanyValidationMessages = {
   noteTooLong: `Note must be at most ${COMPANY_NOTE_MAX_LENGTH} characters`,
   logoUrlTooLong: `Logo URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
   logoUrlInvalid: 'Logo URL must be a valid URL',
+  numberInvalid: 'Must be a valid number',
+  numberNegative: 'Must be zero or greater',
+  pricingIncomplete:
+    'Petrol price and all fee range fields must be set together',
+  feeThresholdOrder: 'Fee thresholds must satisfy 0 < x < y < z',
 };
 
 export const createCompanyDtoSchema =

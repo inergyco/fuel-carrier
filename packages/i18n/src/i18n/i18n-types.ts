@@ -270,6 +270,60 @@ type RootTranslation = {
 			 */
 			uploadFailed: string
 		}
+		companyPricing: {
+			/**
+			 * P​e​t​r​o​l​ ​p​r​i​c​e​ ​a​n​d​ ​f​e​e​ ​r​a​n​g​e​s
+			 */
+			title: string
+			/**
+			 * S​e​t​ ​t​h​e​ ​p​e​t​r​o​l​ ​p​r​i​c​e​ ​a​n​d​ ​f​o​u​r​ ​l​i​t​e​r​-​b​a​s​e​d​ ​f​e​e​ ​b​a​n​d​s​ ​(​0​–​x​,​ ​x​–​y​,​ ​y​–​z​,​ ​a​b​o​v​e​ ​z​)​.
+			 */
+			subtitle: string
+			/**
+			 * P​e​t​r​o​l​ ​p​r​i​c​e​ ​p​e​r​ ​l​i​t​e​r
+			 */
+			petrolPricePerLiter: string
+			/**
+			 * T​h​r​e​s​h​o​l​d​ ​x​ ​(​l​i​t​e​r​s​)
+			 */
+			feeThresholdX: string
+			/**
+			 * T​h​r​e​s​h​o​l​d​ ​y​ ​(​l​i​t​e​r​s​)
+			 */
+			feeThresholdY: string
+			/**
+			 * T​h​r​e​s​h​o​l​d​ ​z​ ​(​l​i​t​e​r​s​)
+			 */
+			feeThresholdZ: string
+			/**
+			 * F​e​e​ ​f​o​r​ ​0​–​x​ ​l​i​t​e​r​s
+			 */
+			feeUpToX: string
+			/**
+			 * F​e​e​ ​f​o​r​ ​x​–​y​ ​l​i​t​e​r​s
+			 */
+			feeXToY: string
+			/**
+			 * F​e​e​ ​f​o​r​ ​y​–​z​ ​l​i​t​e​r​s
+			 */
+			feeYToZ: string
+			/**
+			 * F​e​e​ ​a​b​o​v​e​ ​z​ ​l​i​t​e​r​s
+			 */
+			feeAboveZ: string
+			/**
+			 * S​a​v​e​ ​p​r​i​c​i​n​g
+			 */
+			save: string
+			/**
+			 * S​a​v​i​n​g​…
+			 */
+			saving: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​ ​p​r​i​c​i​n​g​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			saveFailed: string
+		}
 		driverImage: {
 			/**
 			 * P​h​o​t​o
@@ -405,6 +459,22 @@ type RootTranslation = {
 		 * L​o​g​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​U​R​L
 		 */
 		companyLogoUrlInvalid: string
+		/**
+		 * M​u​s​t​ ​b​e​ ​a​ ​v​a​l​i​d​ ​n​u​m​b​e​r
+		 */
+		companyPricingNumberInvalid: string
+		/**
+		 * M​u​s​t​ ​b​e​ ​z​e​r​o​ ​o​r​ ​g​r​e​a​t​e​r
+		 */
+		companyPricingNumberNegative: string
+		/**
+		 * P​e​t​r​o​l​ ​p​r​i​c​e​ ​a​n​d​ ​a​l​l​ ​f​e​e​ ​r​a​n​g​e​ ​f​i​e​l​d​s​ ​m​u​s​t​ ​b​e​ ​s​e​t​ ​t​o​g​e​t​h​e​r
+		 */
+		companyPricingIncomplete: string
+		/**
+		 * F​e​e​ ​t​h​r​e​s​h​o​l​d​s​ ​m​u​s​t​ ​s​a​t​i​s​f​y​ ​0​ ​<​ ​x​ ​<​ ​y​ ​<​ ​z
+		 */
+		companyPricingFeeThresholdOrder: string
 		/**
 		 * P​h​o​t​o​ ​U​R​L​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
 		 * @param {number} max
@@ -2438,6 +2508,10 @@ type RootTranslation = {
 			 */
 			logoUpdated: string
 			/**
+			 * P​r​i​c​i​n​g​ ​u​p​d​a​t​e​d​.
+			 */
+			pricingUpdated: string
+			/**
 			 * D​r​i​v​e​r​ ​p​h​o​t​o​ ​u​p​d​a​t​e​d​.
 			 */
 			driverImageUpdated: string
@@ -3741,6 +3815,60 @@ export type TranslationFunctions = {
 			 */
 			uploadFailed: () => LocalizedString
 		}
+		companyPricing: {
+			/**
+			 * Petrol price and fee ranges
+			 */
+			title: () => LocalizedString
+			/**
+			 * Set the petrol price and four liter-based fee bands (0–x, x–y, y–z, above z).
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Petrol price per liter
+			 */
+			petrolPricePerLiter: () => LocalizedString
+			/**
+			 * Threshold x (liters)
+			 */
+			feeThresholdX: () => LocalizedString
+			/**
+			 * Threshold y (liters)
+			 */
+			feeThresholdY: () => LocalizedString
+			/**
+			 * Threshold z (liters)
+			 */
+			feeThresholdZ: () => LocalizedString
+			/**
+			 * Fee for 0–x liters
+			 */
+			feeUpToX: () => LocalizedString
+			/**
+			 * Fee for x–y liters
+			 */
+			feeXToY: () => LocalizedString
+			/**
+			 * Fee for y–z liters
+			 */
+			feeYToZ: () => LocalizedString
+			/**
+			 * Fee above z liters
+			 */
+			feeAboveZ: () => LocalizedString
+			/**
+			 * Save pricing
+			 */
+			save: () => LocalizedString
+			/**
+			 * Saving…
+			 */
+			saving: () => LocalizedString
+			/**
+			 * Could not save pricing. Please try again.
+			 */
+			saveFailed: () => LocalizedString
+		}
 		driverImage: {
 			/**
 			 * Photo
@@ -3869,6 +3997,22 @@ export type TranslationFunctions = {
 		 * Logo URL must be a valid URL
 		 */
 		companyLogoUrlInvalid: () => LocalizedString
+		/**
+		 * Must be a valid number
+		 */
+		companyPricingNumberInvalid: () => LocalizedString
+		/**
+		 * Must be zero or greater
+		 */
+		companyPricingNumberNegative: () => LocalizedString
+		/**
+		 * Petrol price and all fee range fields must be set together
+		 */
+		companyPricingIncomplete: () => LocalizedString
+		/**
+		 * Fee thresholds must satisfy 0 < x < y < z
+		 */
+		companyPricingFeeThresholdOrder: () => LocalizedString
 		/**
 		 * Photo URL must be at most {max} characters
 		 */
@@ -5838,6 +5982,10 @@ export type TranslationFunctions = {
 			 * Logo updated.
 			 */
 			logoUpdated: () => LocalizedString
+			/**
+			 * Pricing updated.
+			 */
+			pricingUpdated: () => LocalizedString
 			/**
 			 * Driver photo updated.
 			 */

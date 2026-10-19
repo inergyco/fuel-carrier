@@ -45,6 +45,12 @@ export type { FileUploaderLabels, FileUploaderProps } from './FileUploader'
 export { ImageUploader } from './ImageUploader'
 export type { ImageUploaderLabels, ImageUploaderProps } from './ImageUploader'
 export { CompanyLogoUploader } from './CompanyLogoUploader'
+export {
+  CompanyPricingFields,
+  companyPricingToFormValues,
+  emptyCompanyPricingFormValues,
+} from './CompanyPricingFields'
+export type { CompanyPricingFormValues } from './CompanyPricingFields'
 export { DriverImageUploader } from './DriverImageUploader'
 export {
   DataTable,

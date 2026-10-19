@@ -1,46 +1,41 @@
-import type { Company } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Link } from '@tanstack/react-router'
+import type { Company } from "@fuel-carrier/shared-types";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { Link } from "@tanstack/react-router";
 import {
   Button,
+  buttonClassName,
   dataTableDeleteActionClassName,
   dataTableEditActionClassName,
   dataTableViewActionClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
-} from '@fuel-carrier/web-ui/ui'
-import { Eye, Pencil, Trash2 } from '@fuel-carrier/web-ui/icons'
-import { cn } from '@fuel-carrier/web-ui/utils'
+} from "@fuel-carrier/web-ui/ui";
+import { Eye, Pencil, Trash2 } from "@fuel-carrier/web-ui/icons";
+import { cn } from "@fuel-carrier/web-ui/utils";
 
 interface CompanyOperationsProps {
-  company: Company
-  onEdit: (company: Company) => void
-  onDelete: (company: Company) => void
-  layout?: 'inline' | 'stacked'
+  company: Company;
+  onDelete: (company: Company) => void;
+  layout?: "inline" | "stacked";
 }
 
 export function CompanyOperations({
   company,
-  onEdit,
   onDelete,
-  layout = 'inline',
+  layout = "inline",
 }: CompanyOperationsProps) {
-  const { LL } = useI18nContext()
-  const isStacked = layout === 'stacked'
-
-  function handleEdit() {
-    onEdit(company)
-  }
+  const { LL } = useI18nContext();
+  const isStacked = layout === "stacked";
 
   function handleDelete() {
-    onDelete(company)
+    onDelete(company);
   }
 
   return (
     <div
       className={cn(
-        'flex items-center gap-3 flex-nowrap',
-        isStacked && 'justify-center',
+        "flex items-center gap-3 flex-nowrap",
+        isStacked && "justify-center",
       )}
     >
       <Link
@@ -49,17 +44,24 @@ export function CompanyOperations({
         className={dataTableViewActionClassName()}
         aria-label={LL.internalPanel.companies.view()}
       >
-        <Eye className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+        <Eye
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
       </Link>
-      <Button
-        type="button"
-        variant="ghost"
-        className={dataTableEditActionClassName()}
-        onClick={handleEdit}
+      <Link
+        to="/companies/$companyId/edit"
+        params={{ companyId: company.id }}
+        className={cn(buttonClassName.ghost, dataTableEditActionClassName())}
         aria-label={LL.internalPanel.companies.edit()}
       >
-        <Pencil className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
-      </Button>
+        <Pencil
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+      </Link>
       <Button
         type="button"
         variant="ghost"
@@ -67,8 +69,12 @@ export function CompanyOperations({
         onClick={handleDelete}
         aria-label={LL.internalPanel.companies.delete()}
       >
-        <Trash2 className={iconSmClassName} strokeWidth={ICON_STROKE_WIDTH} aria-hidden />
+        <Trash2
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
       </Button>
     </div>
-  )
+  );
 }

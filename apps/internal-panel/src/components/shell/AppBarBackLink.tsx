@@ -14,6 +14,11 @@ export type AppBarBackLinkProps =
       label: string
     }
   | {
+      to: '/companies/$companyId'
+      companyId: string
+      label: string
+    }
+  | {
       to: '/companies/$companyId/cars'
       companyId: string
       label: string
@@ -40,6 +45,20 @@ export function AppBarBackLink(props: AppBarBackLinkProps) {
     return (
       <Link
         to="/companies/$companyId/cars"
+        params={{ companyId: props.companyId }}
+        aria-label={props.label}
+        className={iconButtonClassName}
+        onClick={handleClick}
+      >
+        {icon}
+      </Link>
+    )
+  }
+
+  if (props.to === '/companies/$companyId') {
+    return (
+      <Link
+        to="/companies/$companyId"
         params={{ companyId: props.companyId }}
         aria-label={props.label}
         className={iconButtonClassName}

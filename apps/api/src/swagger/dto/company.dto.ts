@@ -5,7 +5,33 @@ import {
   PartialType,
 } from '@nestjs/swagger';
 
-export class CompanyDto {
+export class CompanyPricingFieldsDto {
+  @ApiPropertyOptional({ example: 15000, nullable: true })
+  petrolPricePerLiter!: number | null;
+
+  @ApiPropertyOptional({ example: 100, nullable: true })
+  feeThresholdX!: number | null;
+
+  @ApiPropertyOptional({ example: 500, nullable: true })
+  feeThresholdY!: number | null;
+
+  @ApiPropertyOptional({ example: 1000, nullable: true })
+  feeThresholdZ!: number | null;
+
+  @ApiPropertyOptional({ example: 50000, nullable: true })
+  feeUpToX!: number | null;
+
+  @ApiPropertyOptional({ example: 100000, nullable: true })
+  feeXToY!: number | null;
+
+  @ApiPropertyOptional({ example: 200000, nullable: true })
+  feeYToZ!: number | null;
+
+  @ApiPropertyOptional({ example: 300000, nullable: true })
+  feeAboveZ!: number | null;
+}
+
+export class CompanyDto extends CompanyPricingFieldsDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
   id!: string;
 
@@ -30,7 +56,7 @@ export class CompanyDto {
   logoUrl!: string | null;
 }
 
-export class CreateCompanyRequestDto {
+export class CreateCompanyRequestDto extends CompanyPricingFieldsDto {
   @ApiProperty({ example: 'Acme Logistics' })
   name!: string;
 
@@ -56,6 +82,8 @@ export class CreateCompanyRequestDto {
 export class UpdateCompanyRequestDto extends PartialType(
   OmitType(CreateCompanyRequestDto, ['logoUrl'] as const),
 ) {}
+
+export class UpdateCompanyPricingRequestDto extends CompanyPricingFieldsDto {}
 
 export class CompanyLogoUploadDto {
   @ApiProperty({

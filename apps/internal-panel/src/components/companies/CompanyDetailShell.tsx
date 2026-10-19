@@ -20,7 +20,9 @@ export function CompanyDetailShell({
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   })
-  const isCarDetail = /^\/companies\/[^/]+\/cars\/[^/]+$/.test(pathname)
+  const isStandalonePage =
+    /^\/companies\/[^/]+\/cars\/[^/]+$/.test(pathname) ||
+    /^\/companies\/[^/]+\/edit$/.test(pathname)
 
   function handleBackToList() {
     void navigate({ to: '/companies' })
@@ -63,7 +65,7 @@ export function CompanyDetailShell({
     )
   }
 
-  if (isCarDetail) {
+  if (isStandalonePage) {
     return <div>{children}</div>
   }
 

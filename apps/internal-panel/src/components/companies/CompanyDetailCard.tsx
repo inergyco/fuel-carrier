@@ -13,32 +13,11 @@ interface CompanyDetailCardProps {
   company: Company
 }
 
-interface DetailFieldProps {
+interface DetailFieldItem {
+  key: string
   label: string
   value: string | null
   multiline?: boolean
-}
-
-function DetailField({ label, value, multiline = false }: DetailFieldProps) {
-  const { LL } = useI18nContext()
-  const displayValue = value ?? LL.internalPanel.companies.emptyCell()
-
-  return (
-    <div className="flex flex-col gap-1">
-      <span className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-        {label}
-      </span>
-      <div
-        className={
-          multiline
-            ? 'min-h-24 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word whitespace-pre-wrap'
-            : 'min-h-10 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word'
-        }
-      >
-        {displayValue}
-      </div>
-    </div>
-  )
 }
 
 export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
@@ -59,6 +38,89 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
     toast.success(LL.internalPanel.toast.companyUpdated())
   }
 
+  const companyFields: DetailFieldItem[] = [
+    {
+      key: 'name',
+      label: LL.internalPanel.companies.name(),
+      value: company.name,
+    },
+    {
+      key: 'nationalId',
+      label: LL.internalPanel.companies.nationalId(),
+      value: company.nationalId,
+    },
+    {
+      key: 'phoneNumber',
+      label: LL.internalPanel.companies.phoneNumber(),
+      value: company.phoneNumber,
+    },
+    {
+      key: 'address',
+      label: LL.internalPanel.companies.address(),
+      value: company.address,
+    },
+    {
+      key: 'note',
+      label: LL.internalPanel.companies.note(),
+      value: company.note,
+      multiline: true,
+    },
+  ]
+
+  const pricingFields: DetailFieldItem[] = [
+    {
+      key: 'petrolPricePerLiter',
+      label: LL.common.companyPricing.petrolPricePerLiter(),
+      value: formatPricingValue(company.petrolPricePerLiter),
+    },
+    {
+      key: 'feeThresholdX',
+      label: LL.common.companyPricing.feeThresholdX(),
+      value: formatPricingValue(company.feeThresholdX),
+    },
+    {
+      key: 'feeThresholdY',
+      label: LL.common.companyPricing.feeThresholdY(),
+      value: formatPricingValue(company.feeThresholdY),
+    },
+    {
+      key: 'feeThresholdZ',
+      label: LL.common.companyPricing.feeThresholdZ(),
+      value: formatPricingValue(company.feeThresholdZ),
+    },
+    {
+      key: 'feeUpToX',
+      label: LL.common.companyPricing.feeUpToX(),
+      value: formatPricingValue(company.feeUpToX),
+    },
+    {
+      key: 'feeXToY',
+      label: LL.common.companyPricing.feeXToY(),
+      value: formatPricingValue(company.feeXToY),
+    },
+    {
+      key: 'feeYToZ',
+      label: LL.common.companyPricing.feeYToZ(),
+      value: formatPricingValue(company.feeYToZ),
+    },
+    {
+      key: 'feeAboveZ',
+      label: LL.common.companyPricing.feeAboveZ(),
+      value: formatPricingValue(company.feeAboveZ),
+    },
+  ]
+
+  function renderDetailField(field: DetailFieldItem) {
+    return (
+      <DetailField
+        key={field.key}
+        label={field.label}
+        value={field.value}
+        multiline={field.multiline}
+      />
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <CompanyLogoUploader
@@ -66,27 +128,44 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
         onUploadFile={handleUploadLogo}
         onRemove={handleRemoveLogo}
       />
-      <DetailField
-        label={LL.internalPanel.companies.name()}
-        value={company.name}
-      />
-      <DetailField
-        label={LL.internalPanel.companies.nationalId()}
-        value={company.nationalId}
-      />
-      <DetailField
-        label={LL.internalPanel.companies.phoneNumber()}
-        value={company.phoneNumber}
-      />
-      <DetailField
-        label={LL.internalPanel.companies.address()}
-        value={company.address}
-      />
-      <DetailField
-        label={LL.internalPanel.companies.note()}
-        value={company.note}
-        multiline
-      />
+      {companyFields.map(renderDetailField)}
+      <div className="flex flex-col gap-3 border-t border-base-content/8 pt-4">
+        <span className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
+          {LL.common.companyPricing.title()}
+        </span>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {pricingFields.map(renderDetailField)}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const formatPricingValue = (value: number | null): string | null =>
+  value === null ? null : String(value)
+
+function DetailField({
+  label,
+  value,
+  multiline = false,
+}: Omit<DetailFieldItem, 'key'>) {
+  const { LL } = useI18nContext()
+  const displayValue = value ?? LL.internalPanel.companies.emptyCell()
+
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
+        {label}
+      </span>
+      <div
+        className={
+          multiline
+            ? 'min-h-24 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word whitespace-pre-wrap'
+            : 'min-h-10 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word'
+        }
+      >
+        {displayValue}
+      </div>
     </div>
   )
 }

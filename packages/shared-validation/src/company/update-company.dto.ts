@@ -12,6 +12,10 @@ import {
   COMPANY_NOTE_MAX_LENGTH,
   COMPANY_PHONE_MAX_LENGTH,
 } from './constants';
+import {
+  optionalCompanyPricingObjectSchema,
+  refineCompanyPricing,
+} from './company-pricing';
 
 /**
  * Update body: omitted keys stay undefined (leave unchanged).
@@ -23,6 +27,8 @@ import {
 export function createUpdateCompanyDtoSchema(
   messages: CreateCompanyValidationMessages,
 ) {
+  const pricing = optionalCompanyPricingObjectSchema(messages);
+
   return z
     .object({
       name: z
@@ -48,8 +54,19 @@ export function createUpdateCompanyDtoSchema(
         COMPANY_NOTE_MAX_LENGTH,
         messages.noteTooLong,
       ).optional(),
+      petrolPricePerLiter: pricing.shape.petrolPricePerLiter,
+      feeThresholdX: pricing.shape.feeThresholdX,
+      feeThresholdY: pricing.shape.feeThresholdY,
+      feeThresholdZ: pricing.shape.feeThresholdZ,
+      feeUpToX: pricing.shape.feeUpToX,
+      feeXToY: pricing.shape.feeXToY,
+      feeYToZ: pricing.shape.feeYToZ,
+      feeAboveZ: pricing.shape.feeAboveZ,
     })
-    .strict();
+    .strict()
+    .superRefine((data, ctx) => {
+      refineCompanyPricing(data, ctx, messages);
+    });
 }
 
 const defaultMessages: CreateCompanyValidationMessages = {
@@ -63,6 +80,11 @@ const defaultMessages: CreateCompanyValidationMessages = {
   noteTooLong: `Note must be at most ${COMPANY_NOTE_MAX_LENGTH} characters`,
   logoUrlTooLong: `Logo URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
   logoUrlInvalid: 'Logo URL must be a valid URL',
+  numberInvalid: 'Must be a valid number',
+  numberNegative: 'Must be zero or greater',
+  pricingIncomplete:
+    'Petrol price and all fee range fields must be set together',
+  feeThresholdOrder: 'Fee thresholds must satisfy 0 < x < y < z',
 };
 
 export const updateCompanyDtoSchema =

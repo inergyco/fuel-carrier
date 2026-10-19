@@ -9,19 +9,20 @@ import {
 import { getRouteApi } from '@tanstack/react-router'
 import { authKeys, fetchMe } from '../../lib/api/auth'
 import { removeCompanyLogo, uploadCompanyLogo } from '../../lib/api/company'
+import { CompanyPricingSettings } from './CompanyPricingSettings'
 
 const authenticatedRoute = getRouteApi('/_authenticated')
 
 export function SettingsPage() {
   const { user } = authenticatedRoute.useRouteContext()
-  const canManageLogo = isCompanyUserAdmin(user)
+  const canManageCompany = isCompanyUserAdmin(user)
   const { LL } = useI18nContext()
   const queryClient = useQueryClient()
   const toast = useToast()
   const meQuery = useQuery({
     queryKey: authKeys.me,
     queryFn: fetchMe,
-    enabled: canManageLogo,
+    enabled: canManageCompany,
   })
 
   async function refreshSession() {
@@ -43,14 +44,17 @@ export function SettingsPage() {
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <AppearanceSettings />
-      {canManageLogo ? (
-        <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl sm:p-6">
-          <CompanyLogoUploader
-            logoUrl={meQuery.data?.companyLogoUrl}
-            onUploadFile={handleUploadLogo}
-            onRemove={handleRemoveLogo}
-          />
-        </section>
+      {canManageCompany ? (
+        <>
+          <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl sm:p-6">
+            <CompanyLogoUploader
+              logoUrl={meQuery.data?.companyLogoUrl}
+              onUploadFile={handleUploadLogo}
+              onRemove={handleRemoveLogo}
+            />
+          </section>
+          <CompanyPricingSettings />
+        </>
       ) : null}
     </div>
   )

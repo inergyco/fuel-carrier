@@ -1,9 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { Company } from '@fuel-carrier/shared-types'
 import { useMutation, useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import {
-  Button,
+  buttonClassName,
   ICON_STROKE_WIDTH,
   MEDIA_QUERIES,
   Pagination,
@@ -20,7 +21,6 @@ import { Plus } from '@fuel-carrier/web-ui/icons'
 import { useState } from 'react'
 import { CompaniesCardList } from '../../components/companies/CompaniesCardList'
 import { CompaniesTable } from '../../components/companies/CompaniesTable'
-import { CompanyFormModal } from '../../components/companies/CompanyFormModal'
 import { DeleteCompanyModal } from '../../components/companies/DeleteCompanyModal'
 import {
   companyKeys,
@@ -32,11 +32,6 @@ export const Route = createFileRoute('/_authenticated/companies/')({
   validateSearch: parseResourceListSearch,
   component: CompaniesPage,
 })
-
-type FormModalState =
-  | { mode: 'create' }
-  | { mode: 'edit'; company: Company }
-  | null
 
 const EMPTY_COMPANIES: Company[] = []
 
@@ -52,7 +47,6 @@ function CompaniesPage() {
     handlePageChange,
     handleLimitChange,
   } = useResourceListSearch()
-  const [formModal, setFormModal] = useState<FormModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<Company | null>(null)
 
   const companyListParams = {
@@ -80,18 +74,6 @@ function CompaniesPage() {
     },
   })
 
-  function handleOpenCreateModal() {
-    setFormModal({ mode: 'create' })
-  }
-
-  function handleCloseFormModal() {
-    setFormModal(null)
-  }
-
-  function handleEditCompany(company: Company) {
-    setFormModal({ mode: 'edit', company })
-  }
-
   function handleDeleteCompany(company: Company) {
     setDeleteTarget(company)
   }
@@ -108,10 +90,6 @@ function CompaniesPage() {
     }
 
     await deleteMutation.mutateAsync(deleteTarget.id)
-  }
-
-  async function handleFormSuccess() {
-    await queryClient.invalidateQueries({ queryKey: companyKeys.all })
   }
 
   const result = companiesQuery.data
@@ -161,13 +139,11 @@ function CompaniesPage() {
         {isMdUp ? (
           <CompaniesTable
             companies={companies}
-            onEdit={handleEditCompany}
             onDelete={handleDeleteCompany}
           />
         ) : (
           <CompaniesCardList
             companies={companies}
-            onEdit={handleEditCompany}
             onDelete={handleDeleteCompany}
           />
         )}
@@ -199,10 +175,12 @@ function CompaniesPage() {
               onSearchTextChange={setDraftSearchText}
             />
           </div>
-          <Button
-            type="button"
-            className="h-11 w-full shrink-0 sm:w-auto sm:self-start md:self-auto sm:px-5"
-            onClick={handleOpenCreateModal}
+          <Link
+            to="/companies/new"
+            className={cn(
+              buttonClassName.primary,
+              'h-11 w-full shrink-0 sm:w-auto sm:self-start sm:px-5 md:self-auto',
+            )}
           >
             <span className="flex items-center justify-center gap-2">
               <Plus
@@ -212,24 +190,10 @@ function CompaniesPage() {
               />
               {LL.internalPanel.companies.create()}
             </span>
-          </Button>
+          </Link>
         </div>
         {renderBody()}
       </section>
-
-      {formModal && (
-        <CompanyFormModal
-          key={
-            formModal.mode === 'edit'
-              ? `edit-${formModal.company.id}`
-              : 'create'
-          }
-          mode={formModal.mode}
-          company={formModal.mode === 'edit' ? formModal.company : undefined}
-          onClose={handleCloseFormModal}
-          onSuccess={handleFormSuccess}
-        />
-      )}
 
       {deleteTarget ? (
         <DeleteCompanyModal

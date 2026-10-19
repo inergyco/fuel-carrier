@@ -8,6 +8,7 @@
     "./admin/login": "./src/admin/login.dto.ts",
     "./company/create": "./src/company/create-company.dto.ts",
     "./company/update": "./src/company/update-company.dto.ts",
+    "./company/pricing": "./src/company/company-pricing.ts",
     "./company/constants": "./src/company/constants.ts",
     "./image-upload/constants": "./src/image-upload/constants.ts",
     "./car/create": "./src/car/create-car.dto.ts",
