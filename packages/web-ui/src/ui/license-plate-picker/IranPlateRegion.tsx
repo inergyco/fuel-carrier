@@ -24,8 +24,8 @@ export function IranPlateRegion({
   onPaste,
 }: IranPlateRegionProps) {
   return (
-    <div className="flex w-14 shrink-0 flex-col border-s-2 border-neutral-800 sm:w-16">
-      <div className="flex h-5 items-center justify-center border-b border-neutral-800 text-[10px] font-bold tracking-wide sm:h-6 sm:text-xs text-base-content">
+    <div className="flex w-14 shrink-0 flex-col border-s border-base-content/10 sm:w-16">
+      <div className="flex h-5 items-center justify-center border-b border-base-content/10 text-[10px] font-bold tracking-wide sm:h-6 sm:text-xs text-base-content">
         ایران
       </div>
       <div className="flex flex-1 items-center px-1">

@@ -31,7 +31,7 @@ export function Select({
       aria-invalid={error ? true : undefined}
       aria-describedby={errorId}
       className={cn(
-        'select h-11 min-h-11 w-full rounded-lg border bg-base-100/60 text-sm tracking-wide',
+        'select h-10 min-h-10 w-full rounded-lg border bg-base-100/60 text-sm text-base-content tracking-wide',
         'border-base-content/12 text-base-content',
         'focus:outline-none focus:ring-1 focus:ring-primary/40',
         error ? 'border-error/60 focus:ring-error/40' : undefined,
