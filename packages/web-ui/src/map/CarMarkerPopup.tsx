@@ -1,14 +1,14 @@
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
-import type { ReactNode } from 'react';
-import { useMap } from 'react-leaflet';
-import { carFuelTypeLabel } from '../cars/CarOverviewSection';
-import { ResistanceValue } from '../cars/ResistanceValue';
-import { Button } from '../ui';
-import { LicensePlate } from '../ui/license-plate-picker';
-import type { CarsMapLabels } from './CarsMap';
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
+import type { ReactNode } from "react";
+import { useMap } from "react-leaflet";
+import { carFuelTypeLabel } from "../cars/CarOverviewSection";
+import { ResistanceValue } from "../cars/ResistanceValue";
+import { Button } from "../ui";
+import { LicensePlate } from "../ui/license-plate-picker";
+import type { CarsMapLabels } from "./CarsMap";
 
 export const mapPopupActionClassName =
-  'h-11 min-h-11 min-w-0 flex-1 whitespace-nowrap px-2 text-center text-xs font-semibold leading-none normal-case tracking-normal no-underline shadow-none';
+  "min-w-0 flex-1 whitespace-nowrap px-2 text-center text-xs font-semibold leading-none normal-case tracking-normal no-underline shadow-none";
 
 type CarMarkerPopupProps = {
   marker: CarTelemetryMarker;
@@ -50,17 +50,11 @@ export function CarMarkerPopup({
             {labels.resistanceTitle()}
           </p>
           <div className="flex flex-wrap items-center gap-1.5">
-            <ResistanceValue
-              value={marker.resistance.tankToGround}
-              compact
-            />
+            <ResistanceValue value={marker.resistance.tankToGround} compact />
             <span className="text-base-content/30" aria-hidden>
               /
             </span>
-            <ResistanceValue
-              value={marker.resistance.tankToNozzle}
-              compact
-            />
+            <ResistanceValue value={marker.resistance.tankToNozzle} compact />
             <span className="text-base-content/30" aria-hidden>
               /
             </span>
@@ -76,9 +70,7 @@ export function CarMarkerPopup({
         {onPlanRoute && planRouteLabel ? (
           <MarkerPlanRouteButton
             label={planRouteLabel}
-            onPlanRoute={function handlePlanRouteFromPopup() {
-              onPlanRoute(marker);
-            }}
+            onPlanRoute={() => onPlanRoute(marker)}
           />
         ) : null}
       </div>

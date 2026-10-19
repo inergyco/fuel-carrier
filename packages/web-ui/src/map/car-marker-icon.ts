@@ -2,21 +2,26 @@ import L from 'leaflet';
 
 const markerIconByColor = new Map<string, L.DivIcon>();
 
-function markerIconHtml(color: string, selected = false): string {
+type CarMarkerIconOptions = {
+  color: string;
+  selected?: boolean;
+};
+
+function markerIconHtml(color: string, selected: boolean): string {
   const size = selected ? 18 : 14;
   const ring = selected ? 6 : 4;
-  return `<span style="
-    display:block;
+  return `<span class="fuel-carrier-marker-dot" style="
     width:${size}px;
     height:${size}px;
-    border-radius:9999px;
     background:${color};
-    border:2px solid var(--color-base-100);
     box-shadow:0 0 0 ${ring}px color-mix(in oklab, ${color} ${selected ? '40%' : '25%'}, transparent);
   "></span>`;
 }
 
-export function markerIconForColor(color: string, selected = false): L.DivIcon {
+export function markerIconForColor({
+  color,
+  selected = false,
+}: CarMarkerIconOptions): L.DivIcon {
   const cacheKey = `${color}:${selected ? 'selected' : 'default'}`;
   const cached = markerIconByColor.get(cacheKey);
   if (cached) {

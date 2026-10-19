@@ -10,7 +10,7 @@ const OPENFREEMAP_STYLES: Record<ThemeMode, string> = {
   dark: '/ofm/styles/dark',
 };
 
-export function OpenFreeMapBasemap() {
+export function useOpenFreeMapBasemap() {
   const map = useMap();
   const { theme } = useTheme();
 
@@ -27,6 +27,4 @@ export function OpenFreeMapBasemap() {
     },
     [map, theme],
   );
-
-  return null;
 }

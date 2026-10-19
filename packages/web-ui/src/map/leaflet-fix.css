@@ -21,6 +21,55 @@
 .leaflet-div-icon.fuel-carrier-map-marker {
   background: transparent;
   border: none;
+  overflow: visible;
+}
+
+.fuel-carrier-marker-dot {
+  display: block;
+  border-radius: 9999px;
+  border: 2px solid var(--color-base-100);
+}
+
+/* Compact plate chips sit on the dot. Hover grows them to the legible size.
+   A popup hides every chip until it closes. */
+.fuel-carrier-plate-anchor {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  z-index: 1;
+  padding-bottom: 3px;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  user-select: none;
+  opacity: 1;
+  transition: opacity 140ms ease;
+}
+
+.fuel-carrier-plate-label {
+  display: inline-flex;
+  transform: scale(0.7);
+  transform-origin: center bottom;
+  transition: transform 180ms ease;
+}
+
+.leaflet-marker-icon.fuel-carrier-map-marker:hover {
+  z-index: 10000 !important;
+}
+
+.leaflet-marker-icon.fuel-carrier-map-marker:hover .fuel-carrier-plate-label {
+  transform: scale(1);
+}
+
+.leaflet-container.fuel-carrier-plates-hidden .fuel-carrier-plate-anchor {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fuel-carrier-plate-label,
+  .fuel-carrier-plate-anchor {
+    transition: none;
+  }
 }
 
 .leaflet-popup-content-wrapper,

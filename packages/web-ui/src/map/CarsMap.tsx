@@ -1,19 +1,20 @@
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types';
-import { useMemo, type ReactNode } from 'react';
-import { MapContainer, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import './leaflet-fix.css';
-import { AnimatedCarMarker } from './AnimatedCarMarker';
-import { CarMarkerPopup } from './CarMarkerPopup';
-import { markerIconForColor } from './car-marker-icon';
-import { FlyToMarkersControl } from './FlyToMarkersControl';
-import { FullPageMapControl } from './FullPageMapControl';
-import { ScrollZoomControl } from './ScrollZoomControl';
-import { getFuelLevelColor } from './fuel-level';
-import { DEFAULT_ZOOM, IRAN_CENTER } from './map-constants';
-import { OpenFreeMapBasemap } from './OpenFreeMapBasemap';
-import { createSmoothedPath, type PathPoint } from './path-smoothing';
-import { TrajectoryPathLayer } from './TrajectoryPathLayer';
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
+import { useMemo, type ReactNode } from "react";
+import { MapContainer, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import "./leaflet-fix.css";
+import { LicensePlate } from "../ui/license-plate-picker";
+import { AnimatedCarMarker } from "./AnimatedCarMarker";
+import { CarMarkerPopup } from "./CarMarkerPopup";
+import { FlyToMarkersControl } from "./FlyToMarkersControl";
+import { FullPageMapControl } from "./FullPageMapControl";
+import { ScrollZoomControl } from "./ScrollZoomControl";
+import { getFuelLevelColor } from "./fuel-level";
+import { DEFAULT_ZOOM, IRAN_CENTER } from "./map-constants";
+import { createSmoothedPath, type PathPoint } from "./path-smoothing";
+import { TrajectoryPathLayer } from "./TrajectoryPathLayer";
+import { useHidePlateLabelsWhilePopupOpen } from "./useHidePlateLabelsWhilePopupOpen";
+import { useOpenFreeMapBasemap } from "./useOpenFreeMapBasemap";
 
 export type CarsMapLabels = {
   unnamedVehicle: () => string;
@@ -43,22 +44,7 @@ export type CarsMapProps = {
 
 export type CarsMapPathPoint = PathPoint;
 
-export function CarsMap({
-  markers,
-  labels,
-  renderVehicleLink,
-  pathPoints,
-  instantMarkerUpdates = false,
-  selectedCarId = null,
-  onMarkerSelect,
-}: CarsMapProps) {
-  const smoothedPath = useMemo(
-    function buildSmoothedPath() {
-      return createSmoothedPath(pathPoints ?? []);
-    },
-    [pathPoints],
-  );
-
+export function CarsMap(props: CarsMapProps) {
   return (
     <MapContainer
       center={IRAN_CENTER}
@@ -69,7 +55,30 @@ export function CarsMap({
       scrollWheelZoom={false}
       doubleClickZoom={false}
     >
-      <OpenFreeMapBasemap />
+      <CarsMapLayers {...props} />
+    </MapContainer>
+  );
+}
+
+function CarsMapLayers({
+  markers,
+  labels,
+  renderVehicleLink,
+  pathPoints,
+  instantMarkerUpdates = false,
+  selectedCarId = null,
+  onMarkerSelect,
+}: CarsMapProps) {
+  useHidePlateLabelsWhilePopupOpen();
+  useOpenFreeMapBasemap();
+
+  const smoothedPath = useMemo(
+    () => createSmoothedPath(pathPoints ?? []),
+    [pathPoints],
+  );
+
+  return (
+    <>
       <FlyToMarkersControl
         markers={markers}
         pathPoints={pathPoints}
@@ -94,7 +103,17 @@ export function CarsMap({
           <AnimatedCarMarker
             key={marker.carId}
             position={[marker.latitude, marker.longitude]}
-            icon={markerIconForColor(markerColor, isSelected)}
+            color={markerColor}
+            selected={isSelected}
+            plateLabel={
+              marker.licensePlate.trim() ? (
+                <LicensePlate
+                  value={marker.licensePlate}
+                  size="sm"
+                  className="max-w-none bg-base-100"
+                />
+              ) : null
+            }
             instant={instantMarkerUpdates}
           >
             <Popup className="w-60">
@@ -109,6 +128,6 @@ export function CarsMap({
           </AnimatedCarMarker>
         );
       })}
-    </MapContainer>
+    </>
   );
 }
