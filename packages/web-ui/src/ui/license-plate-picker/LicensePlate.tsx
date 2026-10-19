@@ -49,7 +49,7 @@ export function LicensePlate({
       dir="ltr"
       title={value}
       className={cn(
-        'inline-flex max-w-full items-center overflow-hidden rounded border-2 border-neutral-800 bg-[#f3f3f3] text-neutral-900 shadow-sm',
+        'inline-flex max-w-full items-center overflow-hidden rounded border border-base-content/10 bg-base-100/60 text-base-content',
         sizeClass.shell,
         className,
       )}
@@ -70,7 +70,7 @@ export function LicensePlate({
           </div>
           <div
             className={cn(
-              'flex h-full shrink-0 items-center justify-center border-s-2 border-neutral-800 font-bold tabular-nums',
+              'flex h-full shrink-0 items-center justify-center border-s border-base-content/10 font-bold tabular-nums',
               sizeClass.region,
             )}
           >
