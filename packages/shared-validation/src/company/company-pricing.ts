@@ -168,7 +168,7 @@ export function refineCompanyPricing(
 
 export function createUpdateCompanyPricingDtoSchema(
   messages: CompanyPricingValidationMessages,
-): z.ZodType<CompanyPricingInput> {
+) {
   return companyPricingObjectSchema(messages).superRefine((data, ctx) => {
     refineCompanyPricing(data, ctx, messages);
   });
