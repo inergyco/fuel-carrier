@@ -17,12 +17,12 @@ import {
   toIsoTimestamp,
   toIsoTimestampOrNull,
 } from '../common/iso-timestamp.utils';
-import { companies } from '../database/schema/companies';
-import { companyUsers } from '../database/schema/company-users';
+import { companies } from '../database/schema/companies.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
 import {
   notificationDeliveries,
   notifications,
-} from '../database/schema/notifications';
+} from '../database/schema/notifications.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
 export type NotificationRow = typeof notifications.$inferSelect;

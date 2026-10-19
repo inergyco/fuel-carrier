@@ -4,8 +4,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as schema from '../database/schema';
-import { mqttAcls } from '../database/schema/mqtt-acls';
-import { mqttClients } from '../database/schema/mqtt-clients';
+import { mqttAcls } from '../database/schema/mqtt-acls.schema';
+import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { hashMqttSecret } from '../mqtt/mqtt-secret.utils';
 
 /** Fixed local-dev defaults — override with MQTT_SEED_* env vars for production. */

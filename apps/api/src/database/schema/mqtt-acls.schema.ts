@@ -1,5 +1,5 @@
 import { pgEnum, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { mqttClients } from './mqtt-clients';
+import { mqttClients } from './mqtt-clients.schema';
 
 /**
  * Topic ACL access for app code.

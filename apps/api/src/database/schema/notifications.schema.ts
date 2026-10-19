@@ -12,9 +12,9 @@ import {
 } from 'drizzle-orm/pg-core';
 import type { CompanyUserLevel } from '@fuel-carrier/shared-types/company-user-level';
 import type { NotificationChannel } from '@fuel-carrier/shared-types/notification';
-import { companies } from './companies';
-import { companyUsers } from './company-users';
-import { users } from './users';
+import { companies } from './companies.schema';
+import { companyUsers } from './company-users.schema';
+import { users } from './users.schema';
 
 /**
  * Keep these numeric literals local. Importing shared max-length consts into

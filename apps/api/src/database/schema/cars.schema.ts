@@ -9,9 +9,9 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { companies } from './companies';
-import { drivers } from './drivers';
-import { softDeleteColumn } from './soft-delete';
+import { companies } from './companies.schema';
+import { drivers } from './drivers.schema';
+import { softDeleteColumn } from './soft-delete.schema';
 
 /** Tenant-owned resource: every row carries company_id for RLS enforcement. */
 export const cars = pgTable(

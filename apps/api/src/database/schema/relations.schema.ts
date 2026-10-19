@@ -1,20 +1,20 @@
 import { relations } from 'drizzle-orm';
-import { admins } from './admins';
-import { auditLogs } from './audit-logs';
-import { carDriverAssignments } from './car-driver-assignments';
-import { carTelemetryHistory } from './car-telemetry-history';
-import { cars } from './cars';
-import { companies } from './companies';
-import { companyUsers } from './company-users';
-import { drivers } from './drivers';
-import { mqttAcls } from './mqtt-acls';
-import { mqttClients } from './mqtt-clients';
+import { admins } from './admins.schema';
+import { auditLogs } from './audit-logs.schema';
+import { carDriverAssignments } from './car-driver-assignments.schema';
+import { carTelemetryHistory } from './car-telemetry-history.schema';
+import { cars } from './cars.schema';
+import { companies } from './companies.schema';
+import { companyUsers } from './company-users.schema';
+import { drivers } from './drivers.schema';
+import { mqttAcls } from './mqtt-acls.schema';
+import { mqttClients } from './mqtt-clients.schema';
 import {
   notificationDeliveries,
   notificationPushSubscriptions,
   notifications,
-} from './notifications';
-import { users } from './users';
+} from './notifications.schema';
+import { users } from './users.schema';
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   admin: one(admins, {

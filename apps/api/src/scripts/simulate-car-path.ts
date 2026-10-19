@@ -12,8 +12,8 @@ import {
   serializeCarTelemetry,
 } from '../car-telemetry/car-telemetry.redis';
 import { CAR_TELEMETRY_UPDATES_CHANNEL } from '../car-telemetry/car-telemetry-realtime.service';
-import { cars } from '../database/schema/cars';
-import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
+import { cars } from '../database/schema/cars.schema';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history.schema';
 import * as schema from '../database/schema';
 
 /** Default: first Pars (Tehran) seed car. */

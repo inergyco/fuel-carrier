@@ -1,6 +1,6 @@
 import { check, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { users } from './users';
+import { users } from './users.schema';
 import { USERNAME_MAX_LENGTH } from '@fuel-carrier/shared-validation/username';
 
 export const admins = pgTable(

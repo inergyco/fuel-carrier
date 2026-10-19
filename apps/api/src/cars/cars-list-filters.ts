@@ -1,8 +1,8 @@
 import { and, eq, exists, ilike, or } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/pg-core';
 import { toIlikeContainsPattern } from '../common/sql/ilike-pattern.utils';
-import { cars } from '../database/schema/cars';
-import { drivers } from '../database/schema/drivers';
+import { cars } from '../database/schema/cars.schema';
+import { drivers } from '../database/schema/drivers.schema';
 
 const qb = new QueryBuilder();
 

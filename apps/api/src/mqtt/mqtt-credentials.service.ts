@@ -16,9 +16,9 @@ import {
   formatAuditCarLabel,
 } from '../audit-logs/audit-log.utils';
 import { createApiException } from '../common/exceptions/api.exception';
-import { cars } from '../database/schema/cars';
-import { mqttAcls } from '../database/schema/mqtt-acls';
-import { mqttClients } from '../database/schema/mqtt-clients';
+import { cars } from '../database/schema/cars.schema';
+import { mqttAcls } from '../database/schema/mqtt-acls.schema';
+import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { TenantDbService } from '../database/tenant-db.service';
 import {
   generateMqttSecret,

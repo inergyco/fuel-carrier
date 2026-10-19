@@ -26,12 +26,12 @@ import {
   toPaginatedResult,
 } from '../common/pagination.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
-import { companies } from '../database/schema/companies';
-import { companyUsers } from '../database/schema/company-users';
+import { companies } from '../database/schema/companies.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
 import {
   notificationDeliveries,
   notifications,
-} from '../database/schema/notifications';
+} from '../database/schema/notifications.schema';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { TenantDbService } from '../database/tenant-db.service';
 import { tenantContextFromSession } from '../database/tenant-context.utils';

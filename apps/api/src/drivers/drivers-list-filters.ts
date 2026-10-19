@@ -1,6 +1,6 @@
 import { ilike, or } from 'drizzle-orm';
 import { toIlikeContainsPattern } from '../common/sql/ilike-pattern.utils';
-import { drivers } from '../database/schema/drivers';
+import { drivers } from '../database/schema/drivers.schema';
 
 export function buildDriverSearchFilter(searchText: string | undefined) {
   if (!searchText) {

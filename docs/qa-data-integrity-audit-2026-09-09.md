@@ -307,7 +307,7 @@ final_cross_company         []
 | PATCH defaults (remediated) | `packages/shared-validation/src/car/create-car.dto.ts` |
 | Same-company assign (remediated) | `apps/api/src/cars/cars.service.ts`, `drizzle/0017_car_driver_same_company.sql` |
 | Driver company move while assigned (remediated) | `apps/api/src/drivers/drivers.service.ts` |
-| Open-per-car / open-per-driver unique | `apps/api/src/database/schema/car-driver-assignments.ts`, `drizzle/0019_*.sql` |
+| Open-per-car / open-per-driver unique | `apps/api/src/database/schema/car-driver-assignments.schema.ts`, `drizzle/0019_*.sql` |
 | Interval CHECK | `drizzle/0020_assignment_interval_check.sql` |
 | No-overlap EXCLUDE | `drizzle/0021_assignment_no_overlap.sql` |
 | Shared close+open timestamp | `apps/api/src/cars/car-driver-assignments.service.ts` |

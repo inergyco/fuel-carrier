@@ -6,8 +6,8 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { cars } from './cars';
-import { companies } from './companies';
+import { cars } from './cars.schema';
+import { companies } from './companies.schema';
 
 /**
  * Append-only device telemetry trail stored as a TimescaleDB hypertable

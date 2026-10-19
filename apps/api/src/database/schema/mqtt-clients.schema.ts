@@ -6,7 +6,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { cars } from './cars';
+import { cars } from './cars.schema';
 
 /**
  * MQTT broker credentials (mosquitto-go-auth → Postgres).

@@ -38,12 +38,12 @@ import {
 } from '../audit-logs/audit-log.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import type { ApiTenantContext } from '../database/tenant-context.types';
-import { carDriverAssignments } from '../database/schema/car-driver-assignments';
-import { cars } from '../database/schema/cars';
-import { companies } from '../database/schema/companies';
-import { companyUsers } from '../database/schema/company-users';
-import { drivers } from '../database/schema/drivers';
-import { mqttClients } from '../database/schema/mqtt-clients';
+import { carDriverAssignments } from '../database/schema/car-driver-assignments.schema';
+import { cars } from '../database/schema/cars.schema';
+import { companies } from '../database/schema/companies.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
+import { drivers } from '../database/schema/drivers.schema';
+import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';

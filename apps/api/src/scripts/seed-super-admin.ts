@@ -6,8 +6,8 @@ import { Pool } from 'pg';
 import { parseZodValue } from '../common/validation/zod.utils';
 import { hashPassword } from '../auth/password.utils';
 import { loginAttemptKeys } from '../auth/login-attempt.constants';
-import { admins } from '../database/schema/admins';
-import { users } from '../database/schema/users';
+import { admins } from '../database/schema/admins.schema';
+import { users } from '../database/schema/users.schema';
 import * as schema from '../database/schema';
 import {
   seedSuperAdminDtoSchema,

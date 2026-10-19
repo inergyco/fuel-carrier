@@ -1,9 +1,9 @@
 import { and, eq, exists, ilike, or } from 'drizzle-orm';
 import { QueryBuilder } from 'drizzle-orm/pg-core';
 import { toIlikeContainsPattern } from '../common/sql/ilike-pattern.utils';
-import { auditLogs } from '../database/schema/audit-logs';
-import { companyUsers } from '../database/schema/company-users';
-import { users } from '../database/schema/users';
+import { auditLogs } from '../database/schema/audit-logs.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
+import { users } from '../database/schema/users.schema';
 
 const qb = new QueryBuilder();
 

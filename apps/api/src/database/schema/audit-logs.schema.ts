@@ -7,8 +7,8 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { companies } from './companies';
-import { users } from './users';
+import { companies } from './companies.schema';
+import { users } from './users.schema';
 
 export const auditLogs = pgTable('audit_logs', {
   id: uuid('id').defaultRandom().primaryKey(),

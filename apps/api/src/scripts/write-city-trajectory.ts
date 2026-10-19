@@ -4,7 +4,7 @@ import {
   companyCarTelemetryKey,
   serializeCarTelemetry,
 } from '../car-telemetry/car-telemetry.redis';
-import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { getCityRoute, type LatLng } from './city-routes';
 

@@ -28,8 +28,8 @@ import {
   getPaginationOffset,
 } from '../common/pagination.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
-import { companyUsers } from '../database/schema/company-users';
-import { users } from '../database/schema/users';
+import { companyUsers } from '../database/schema/company-users.schema';
+import { users } from '../database/schema/users.schema';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';

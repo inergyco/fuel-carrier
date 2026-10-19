@@ -5,8 +5,8 @@ import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
-import { cars } from '../database/schema/cars';
-import { drivers } from '../database/schema/drivers';
+import { cars } from '../database/schema/cars.schema';
+import { drivers } from '../database/schema/drivers.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
 type CarRow = typeof cars.$inferSelect;

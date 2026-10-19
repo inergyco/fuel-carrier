@@ -1,7 +1,7 @@
 import { and, inArray } from 'drizzle-orm';
 import type { FuelLevelFilter } from '@fuel-carrier/shared-types';
 import { getFuelLevel } from '@fuel-carrier/shared-types/car-fleet-stats';
-import { cars } from '../database/schema/cars';
+import { cars } from '../database/schema/cars.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
 type CarListWhere = ReturnType<typeof and>;

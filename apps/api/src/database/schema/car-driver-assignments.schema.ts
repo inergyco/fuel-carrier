@@ -7,10 +7,10 @@ import {
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { cars } from './cars';
-import { companies } from './companies';
-import { drivers } from './drivers';
-import { users } from './users';
+import { cars } from './cars.schema';
+import { companies } from './companies.schema';
+import { drivers } from './drivers.schema';
+import { users } from './users.schema';
 
 /**
  * Custody intervals: when a car was assigned to a driver.

@@ -16,7 +16,7 @@ import type {
   PaginatedResult,
   PaginationParams,
 } from '../common/types/pagination';
-import { auditLogs } from '../database/schema/audit-logs';
+import { auditLogs } from '../database/schema/audit-logs.schema';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';

@@ -9,10 +9,10 @@ import type {
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
-import { carDriverAssignments } from '../database/schema/car-driver-assignments';
-import { cars } from '../database/schema/cars';
-import { drivers } from '../database/schema/drivers';
-import { users } from '../database/schema/users';
+import { carDriverAssignments } from '../database/schema/car-driver-assignments.schema';
+import { cars } from '../database/schema/cars.schema';
+import { drivers } from '../database/schema/drivers.schema';
+import { users } from '../database/schema/users.schema';
 import { createApiException } from '../common/exceptions/api.exception';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';

@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common';
 import { and, eq, isNull } from 'drizzle-orm';
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
-import { drivers } from '../database/schema/drivers';
+import { drivers } from '../database/schema/drivers.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
 /**

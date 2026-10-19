@@ -11,8 +11,8 @@ import type {
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import type { Env } from '../config/env.schema';
-import { companyUsers } from '../database/schema/company-users';
-import { notificationPushSubscriptions } from '../database/schema/notifications';
+import { companyUsers } from '../database/schema/company-users.schema';
+import { notificationPushSubscriptions } from '../database/schema/notifications.schema';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import {

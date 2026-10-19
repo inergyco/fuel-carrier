@@ -4,7 +4,7 @@ import type {
   AuditLogMetadata,
   AuthSession,
 } from '@fuel-carrier/shared-types';
-import { companies } from '../database/schema/companies';
+import { companies } from '../database/schema/companies.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
 export const AUDIT_REDACTED_VALUE = '[redacted]';

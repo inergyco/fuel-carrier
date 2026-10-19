@@ -27,8 +27,8 @@ import {
 import { createApiException } from '../common/exceptions/api.exception';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
-import { cars } from '../database/schema/cars';
-import { mqttClients } from '../database/schema/mqtt-clients';
+import { cars } from '../database/schema/cars.schema';
+import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';

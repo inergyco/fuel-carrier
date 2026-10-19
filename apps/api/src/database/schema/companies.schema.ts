@@ -8,7 +8,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { softDeleteColumn } from './soft-delete';
+import { softDeleteColumn } from './soft-delete.schema';
 
 export const companies = pgTable(
   'companies',

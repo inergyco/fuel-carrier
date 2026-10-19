@@ -8,9 +8,9 @@ import type {
 import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
-import { companies } from '../database/schema/companies';
-import { companyUsers } from '../database/schema/company-users';
-import { users } from '../database/schema/users';
+import { companies } from '../database/schema/companies.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
+import { users } from '../database/schema/users.schema';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import type { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';

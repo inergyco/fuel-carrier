@@ -14,9 +14,9 @@ import {
   ApiException,
   createApiException,
 } from '../common/exceptions/api.exception';
-import { cars } from '../database/schema/cars';
-import { companies } from '../database/schema/companies';
-import { carTelemetryHistory } from '../database/schema/car-telemetry-history';
+import { cars } from '../database/schema/cars.schema';
+import { companies } from '../database/schema/companies.schema';
+import { carTelemetryHistory } from '../database/schema/car-telemetry-history.schema';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { REDIS } from '../redis/redis.tokens';

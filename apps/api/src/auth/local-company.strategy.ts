@@ -13,7 +13,7 @@ import {
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import { DATABASE } from '../database/database.tokens';
 import type { Database } from '../database/database.types';
-import { companyUsers } from '../database/schema/company-users';
+import { companyUsers } from '../database/schema/company-users.schema';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { AuthService } from './auth.service';
 import { LoginAttemptService } from './login-attempt.service';

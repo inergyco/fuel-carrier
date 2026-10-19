@@ -12,9 +12,9 @@ import {
   CompanyUserLevels,
   type CompanyUserLevel,
 } from '@fuel-carrier/shared-types';
-import { companies } from './companies';
-import { softDeleteColumn } from './soft-delete';
-import { users } from './users';
+import { companies } from './companies.schema';
+import { softDeleteColumn } from './soft-delete.schema';
+import { users } from './users.schema';
 import { USERNAME_MAX_LENGTH } from '@fuel-carrier/shared-validation/username';
 
 /**

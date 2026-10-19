@@ -3,7 +3,7 @@ import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import Redis from 'ioredis';
 import { Pool } from 'pg';
-import { cars } from '../database/schema/cars';
+import { cars } from '../database/schema/cars.schema';
 import * as schema from '../database/schema';
 import { writeCityTrajectory } from './write-city-trajectory';
 
