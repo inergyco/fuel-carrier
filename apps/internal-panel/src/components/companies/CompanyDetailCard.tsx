@@ -67,12 +67,15 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
     },
   ]
 
-  const pricingFields: DetailFieldItem[] = [
+  const priceFields: DetailFieldItem[] = [
     {
       key: 'petrolPricePerLiter',
       label: LL.common.companyPricing.petrolPricePerLiter(),
       value: formatPricingValue(company.petrolPricePerLiter),
     },
+  ]
+
+  const thresholdFields: DetailFieldItem[] = [
     {
       key: 'feeThresholdX',
       label: LL.common.companyPricing.feeThresholdX(),
@@ -88,6 +91,9 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
       label: LL.common.companyPricing.feeThresholdZ(),
       value: formatPricingValue(company.feeThresholdZ),
     },
+  ]
+
+  const feeFields: DetailFieldItem[] = [
     {
       key: 'feeUpToX',
       label: LL.common.companyPricing.feeUpToX(),
@@ -121,6 +127,21 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
     )
   }
 
+  function renderPricingGroup(
+    title: string,
+    fields: DetailFieldItem[],
+    columnsClassName: string,
+  ) {
+    return (
+      <div className="flex flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-100/30 p-4">
+        <p className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
+          {title}
+        </p>
+        <div className={columnsClassName}>{fields.map(renderDetailField)}</div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <CompanyLogoUploader
@@ -129,13 +150,25 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
         onRemove={handleRemoveLogo}
       />
       {companyFields.map(renderDetailField)}
-      <div className="flex flex-col gap-3 border-t border-base-content/8 pt-4">
+      <div className="flex flex-col gap-4 border-t border-base-content/8 pt-4">
         <span className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
           {LL.common.companyPricing.title()}
         </span>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {pricingFields.map(renderDetailField)}
-        </div>
+        {renderPricingGroup(
+          LL.common.companyPricing.priceGroup(),
+          priceFields,
+          'max-w-56 sm:max-w-64',
+        )}
+        {renderPricingGroup(
+          LL.common.companyPricing.thresholdsGroup(),
+          thresholdFields,
+          'grid grid-cols-1 gap-4 sm:grid-cols-3',
+        )}
+        {renderPricingGroup(
+          LL.common.companyPricing.feesGroup(),
+          feeFields,
+          'grid grid-cols-1 gap-4 sm:grid-cols-2',
+        )}
       </div>
     </div>
   )

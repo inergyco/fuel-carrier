@@ -3,6 +3,9 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { CompanyBrandLogo } from '@fuel-carrier/web-ui/ui'
 import { CompanyOperations } from './CompanyOperations'
 
+const COMPANY_CARD_GRID_CLASS_NAME =
+  'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3'
+
 interface CompaniesCardListProps {
   companies: Company[]
   onDelete: (company: Company) => void
@@ -15,19 +18,21 @@ export function CompaniesCardList({
   const { LL } = useI18nContext()
 
   return (
-    <ul className="flex flex-col gap-3">
+    <ul className={COMPANY_CARD_GRID_CLASS_NAME}>
       {companies.map(function renderCompanyCard(company) {
         return (
           <li
             key={company.id}
-            className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
+            className="flex h-full flex-col rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
           >
             <div className="mb-3 flex items-center gap-3">
               <CompanyBrandLogo logoUrl={company.logoUrl} />
-              <p className="text-base font-medium tracking-tight">{company.name}</p>
+              <p className="text-base font-medium tracking-tight">
+                {company.name}
+              </p>
             </div>
 
-            <dl className="grid gap-2 text-sm text-base-content/70">
+            <dl className="grid min-h-0 flex-1 content-start gap-2 text-sm text-base-content/70">
               <div>
                 <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
                   {LL.internalPanel.companies.nationalId()}
