@@ -1,48 +1,49 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
-import { useQuery, useQueryClient } from '@fuel-carrier/web-ui/query'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { isCompanyUserAdmin } from "@fuel-carrier/shared-types";
+import { useQuery, useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   AppearanceSettings,
   CompanyLogoUploader,
   useToast,
-} from '@fuel-carrier/web-ui/ui'
-import { getRouteApi } from '@tanstack/react-router'
-import { authKeys, fetchMe } from '../../lib/api/auth'
-import { removeCompanyLogo, uploadCompanyLogo } from '../../lib/api/company'
-import { CompanyPricingSettings } from './CompanyPricingSettings'
+} from "@fuel-carrier/web-ui/ui";
+import { getRouteApi } from "@tanstack/react-router";
+import { authKeys, fetchMe } from "../../lib/api/auth";
+import { removeCompanyLogo, uploadCompanyLogo } from "../../lib/api/company";
+import { CompanyPricingSettings } from "./CompanyPricingSettings";
 
-const authenticatedRoute = getRouteApi('/_authenticated')
+const authenticatedRoute = getRouteApi("/_authenticated");
 
 export function SettingsPage() {
-  const { user } = authenticatedRoute.useRouteContext()
-  const canManageCompany = isCompanyUserAdmin(user)
-  const { LL } = useI18nContext()
-  const queryClient = useQueryClient()
-  const toast = useToast()
+  const { user } = authenticatedRoute.useRouteContext();
+  const canManageCompany = isCompanyUserAdmin(user);
+  const { LL } = useI18nContext();
+  const queryClient = useQueryClient();
+  const toast = useToast();
   const meQuery = useQuery({
     queryKey: authKeys.me,
     queryFn: fetchMe,
     enabled: canManageCompany,
-  })
+  });
 
   async function refreshSession() {
-    await queryClient.invalidateQueries({ queryKey: authKeys.me })
+    await queryClient.invalidateQueries({ queryKey: authKeys.me });
   }
 
   async function handleUploadLogo(file: File) {
-    await uploadCompanyLogo(file)
-    await refreshSession()
-    toast.success(LL.externalPanel.toast.logoUpdated())
+    await uploadCompanyLogo(file);
+    await refreshSession();
+    toast.success(LL.externalPanel.toast.logoUpdated());
   }
 
   async function handleRemoveLogo() {
-    await removeCompanyLogo()
-    await refreshSession()
-    toast.success(LL.externalPanel.toast.logoUpdated())
+    await removeCompanyLogo();
+    await refreshSession();
+    toast.success(LL.externalPanel.toast.logoUpdated());
   }
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
+      <CompanyPricingSettings />
       <AppearanceSettings />
       {canManageCompany ? (
         <>
@@ -53,9 +54,8 @@ export function SettingsPage() {
               onRemove={handleRemoveLogo}
             />
           </section>
-          <CompanyPricingSettings />
         </>
       ) : null}
     </div>
-  )
+  );
 }

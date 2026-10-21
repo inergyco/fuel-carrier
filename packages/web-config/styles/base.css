@@ -28,6 +28,17 @@
     @apply bg-base-100 text-base-content;
   }
 
+  /* Hide browser spinner controls on number fields (Chrome/Safari + Firefox). */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+  }
+
+  input[type='number'] {
+    appearance: textfield;
+  }
+
   /*
     DaisyUI 5 customizable select (`appearance: base-select`) inherits the
     closed field's background onto `::picker(select)`. Keep the popper opaque

@@ -1,17 +1,26 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import type { ReactNode } from 'react'
 import type { FieldValues } from 'react-hook-form'
 import { FieldsetLegend } from './FieldsetLegend'
 import { FormInput } from './FormInput'
 
-const PRICING_FIELDS = [
-  'petrolPricePerLiter',
+const THRESHOLD_FIELDS = [
   'feeThresholdX',
   'feeThresholdY',
   'feeThresholdZ',
+] as const
+
+const FEE_FIELDS = [
   'feeUpToX',
   'feeXToY',
   'feeYToZ',
   'feeAboveZ',
+] as const
+
+const PRICING_FIELDS = [
+  'petrolPricePerLiter',
+  ...THRESHOLD_FIELDS,
+  ...FEE_FIELDS,
 ] as const
 
 type PricingFieldName = (typeof PRICING_FIELDS)[number]
@@ -38,30 +47,60 @@ export function CompanyPricingFields({
     feeAboveZ: labels.feeAboveZ(),
   }
 
+  function renderNumberField(name: PricingFieldName) {
+    return (
+      <FormInput<FieldValues>
+        key={name}
+        name={name}
+        label={fieldLabels[name]}
+        type="number"
+        inputMode="decimal"
+        step="any"
+        min={0}
+        dir="ltr"
+      />
+    )
+  }
+
+  function renderGroup(title: string, children: ReactNode) {
+    return (
+      <div className="flex flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-100/30 p-4">
+        <p className="text-xs font-bold tracking-widest text-base-content/40 uppercase">
+          {title}
+        </p>
+        {children}
+      </div>
+    )
+  }
+
   return (
-    <fieldset className="flex flex-col gap-4">
+    <fieldset className="flex flex-col gap-5">
       {showHeading ? (
         <FieldsetLegend description={labels.subtitle()}>
           {labels.title()}
         </FieldsetLegend>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {PRICING_FIELDS.map(function renderPricingField(name) {
-          return (
-            <FormInput<FieldValues>
-              key={name}
-              name={name}
-              label={fieldLabels[name]}
-              type="number"
-              inputMode="decimal"
-              step="any"
-              min={0}
-              dir="ltr"
-            />
-          )
-        })}
-      </div>
+      {renderGroup(
+        labels.priceGroup(),
+        <div className="">
+          {renderNumberField('petrolPricePerLiter')}
+        </div>,
+      )}
+
+      {renderGroup(
+        labels.thresholdsGroup(),
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {THRESHOLD_FIELDS.map(renderNumberField)}
+        </div>,
+      )}
+
+      {renderGroup(
+        labels.feesGroup(),
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {FEE_FIELDS.map(renderNumberField)}
+        </div>,
+      )}
     </fieldset>
   )
 }

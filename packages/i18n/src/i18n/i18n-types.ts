@@ -284,6 +284,18 @@ type RootTranslation = {
 			 */
 			petrolPricePerLiter: string
 			/**
+			 * P​e​t​r​o​l​ ​p​r​i​c​e
+			 */
+			priceGroup: string
+			/**
+			 * L​i​t​e​r​ ​t​h​r​e​s​h​o​l​d​s
+			 */
+			thresholdsGroup: string
+			/**
+			 * F​e​e​ ​a​m​o​u​n​t​s
+			 */
+			feesGroup: string
+			/**
 			 * T​h​r​e​s​h​o​l​d​ ​x​ ​(​l​i​t​e​r​s​)
 			 */
 			feeThresholdX: string
@@ -3828,6 +3840,18 @@ export type TranslationFunctions = {
 			 * Petrol price per liter
 			 */
 			petrolPricePerLiter: () => LocalizedString
+			/**
+			 * Petrol price
+			 */
+			priceGroup: () => LocalizedString
+			/**
+			 * Liter thresholds
+			 */
+			thresholdsGroup: () => LocalizedString
+			/**
+			 * Fee amounts
+			 */
+			feesGroup: () => LocalizedString
 			/**
 			 * Threshold x (liters)
 			 */

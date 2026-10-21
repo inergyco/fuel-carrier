@@ -84,15 +84,19 @@ const fa: Translation = {
     },
     companyPricing: {
       title: "قیمت بنزین و بازه‌های کارمزد",
+      // Isolate each Latin range (LRI/PDI) so RTL lists ۰–x, then x–y, then y–z.
       subtitle:
-        "قیمت بنزین و چهار بازه کارمزد بر اساس لیتر (۰–x، x–y، y–z و بالاتر از z) را تنظیم کنید.",
+        "قیمت بنزین و چهار بازه کارمزد بر اساس لیتر (\u2066۰–x\u2069، \u2066x–y\u2069، \u2066y–z\u2069 و بالاتر از z) را تنظیم کنید.",
       petrolPricePerLiter: "قیمت بنزین به ازای هر لیتر",
+      priceGroup: "قیمت بنزین",
+      thresholdsGroup: "آستانه‌های لیتر",
+      feesGroup: "مبالغ کارمزد",
       feeThresholdX: "آستانه x (لیتر)",
       feeThresholdY: "آستانه y (لیتر)",
       feeThresholdZ: "آستانه z (لیتر)",
-      feeUpToX: "کارمزد برای ۰ تا x لیتر",
-      feeXToY: "کارمزد برای x تا y لیتر",
-      feeYToZ: "کارمزد برای y تا z لیتر",
+      feeUpToX: "کارمزد برای \u2066۰ تا x\u2069 لیتر",
+      feeXToY: "کارمزد برای \u2066x تا y\u2069 لیتر",
+      feeYToZ: "کارمزد برای \u2066y تا z\u2069 لیتر",
       feeAboveZ: "کارمزد برای بالاتر از z لیتر",
       save: "ذخیره قیمت‌گذاری",
       saving: "در حال ذخیره…",
@@ -139,7 +143,7 @@ const fa: Translation = {
     companyPricingIncomplete:
       "قیمت بنزین و همه فیلدهای بازه کارمزد باید با هم تنظیم شوند",
     companyPricingFeeThresholdOrder:
-      "آستانه‌های کارمزد باید شرط ۰ < x < y < z را داشته باشند",
+      "آستانه‌های کارمزد باید شرط \u2066۰ < x < y < z\u2069 را داشته باشند",
     driverImageUrlTooLong: "آدرس تصویر باید حداکثر {max} کاراکتر باشد",
     driverImageUrlInvalid: "آدرس تصویر باید یک URL معتبر باشد",
     nationalIdInvalid: "کد ملی باید یک کد ملی ۱۰ رقمی معتبر باشد",

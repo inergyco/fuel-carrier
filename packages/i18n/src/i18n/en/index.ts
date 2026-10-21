@@ -87,6 +87,9 @@ const en: BaseTranslation = {
       subtitle:
         'Set the petrol price and four liter-based fee bands (0–x, x–y, y–z, above z).',
       petrolPricePerLiter: 'Petrol price per liter',
+      priceGroup: 'Petrol price',
+      thresholdsGroup: 'Liter thresholds',
+      feesGroup: 'Fee amounts',
       feeThresholdX: 'Threshold x (liters)',
       feeThresholdY: 'Threshold y (liters)',
       feeThresholdZ: 'Threshold z (liters)',
