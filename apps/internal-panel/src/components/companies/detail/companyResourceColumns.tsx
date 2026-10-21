@@ -1,7 +1,7 @@
-import type { Car, CompanyUser, Driver } from '@fuel-carrier/shared-types'
+import type { CompanyUser, Driver } from '@fuel-carrier/shared-types'
 import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
-import { Avatar } from '@fuel-carrier/web-ui/ui'
+import { Avatar, LicensePlate } from '@fuel-carrier/web-ui/ui'
 import type { ResourceColumn } from './ResourceSection'
 
 interface CompanyResourceColumnOptions {
@@ -16,10 +16,6 @@ function formatLevel(
   return level === CompanyUserLevels.ADMIN
     ? LL.common.companyUserLevel.admin()
     : LL.common.companyUserLevel.viewer()
-}
-
-function formatCarLabel(car: Car): string {
-  return car.licensePlate
 }
 
 export function getUserColumns({
@@ -101,10 +97,13 @@ export function getDriverColumns({
     {
       key: 'car',
       header: LL.internalPanel.companies.detail.car(),
-      cell: (driver) =>
-        driver.car
-          ? formatCarLabel(driver.car)
-          : LL.internalPanel.companies.detail.noCar(),
+      cell: function renderCar(driver) {
+        if (!driver.car) {
+          return LL.internalPanel.companies.detail.noCar()
+        }
+
+        return <LicensePlate value={driver.car.licensePlate} size="sm" />
+      },
     },
   ]
 }

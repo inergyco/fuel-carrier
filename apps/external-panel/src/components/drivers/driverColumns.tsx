@@ -1,15 +1,11 @@
-import type { Car, Driver } from '@fuel-carrier/shared-types'
-import type { TranslationFunctions } from '@fuel-carrier/i18n'
-import { Avatar } from '@fuel-carrier/web-ui/ui'
-import type { ResourceColumn } from '../users/ResourceSection'
+import type { Driver } from "@fuel-carrier/shared-types";
+import type { TranslationFunctions } from "@fuel-carrier/i18n";
+import { Avatar, LicensePlate } from "@fuel-carrier/web-ui/ui";
+import type { ResourceColumn } from "../users/ResourceSection";
 
 interface DriverColumnOptions {
-  LL: TranslationFunctions
-  emptyCell?: string
-}
-
-function formatCarLabel(car: Car): string {
-  return car.licensePlate
+  LL: TranslationFunctions;
+  emptyCell?: string;
 }
 
 export function getDriverColumns({
@@ -18,43 +14,48 @@ export function getDriverColumns({
 }: DriverColumnOptions): ResourceColumn<Driver>[] {
   return [
     {
-      key: 'name',
+      key: "name",
       header: LL.externalPanel.drivers.name(),
       cell: function renderName(driver) {
         return (
           <span className="inline-flex items-center gap-2.5">
-            <Avatar src={driver.imageUrl} fallback={driver.firstName.charAt(0)} />
+            <Avatar
+              src={driver.imageUrl}
+              fallback={driver.firstName.charAt(0)}
+            />
             <span>
               {driver.firstName} {driver.lastName}
             </span>
           </span>
-        )
+        );
       },
     },
     {
-      key: 'nationalId',
+      key: "nationalId",
       header: LL.externalPanel.drivers.nationalId(),
       cell: function renderNationalId(driver) {
-        return driver.nationalId ?? emptyCell
+        return driver.nationalId ?? emptyCell;
       },
-      className: 'font-mono text-sm',
+      className: "font-mono text-sm",
     },
     {
-      key: 'mobileNumber',
+      key: "mobileNumber",
       header: LL.externalPanel.drivers.mobileNumber(),
       cell: function renderMobileNumber(driver) {
-        return driver.mobileNumber ?? emptyCell
+        return driver.mobileNumber ?? emptyCell;
       },
-      className: 'font-mono text-sm',
+      className: "font-mono text-sm",
     },
     {
-      key: 'car',
+      key: "car",
       header: LL.externalPanel.drivers.car(),
       cell: function renderCar(driver) {
-        return driver.car
-          ? formatCarLabel(driver.car)
-          : (emptyCell ?? LL.externalPanel.drivers.noCar())
+        if (!driver.car) {
+          return emptyCell ?? LL.externalPanel.drivers.noCar();
+        }
+        console.log(driver.car.licensePlate);
+        return <LicensePlate value={driver.car.licensePlate} size="sm" />;
       },
     },
-  ]
+  ];
 }
