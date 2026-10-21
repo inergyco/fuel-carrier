@@ -6,21 +6,21 @@ import {
   DataTableHeaderCell,
   DataTableHeaderRow,
   DataTableRow,
-} from './DataTable'
-import { Skeleton } from './Skeleton'
+} from "./DataTable";
+import { Skeleton } from "./Skeleton";
 
 type ResourceListSkeletonProps = {
-  variant: 'table' | 'cards'
-  rows?: number
-  columns?: number
+  variant: "table" | "cards";
+  rows?: number;
+  columns?: number;
   /** Accessible status label (e.g. localized “Loading…”). */
-  label: string
+  label: string;
   /** Card list layout classes. Stacked cards are used when this is omitted. */
-  listClassName?: string
-}
+  listClassName?: string;
+};
 
-const DEFAULT_ROWS = 5
-const DEFAULT_COLUMNS = 4
+const DEFAULT_ROWS = 5;
+const DEFAULT_COLUMNS = 4;
 
 export function ResourceListSkeleton({
   variant,
@@ -29,12 +29,12 @@ export function ResourceListSkeleton({
   label,
   listClassName,
 }: ResourceListSkeletonProps) {
-  if (variant === 'cards') {
-    const isGrid = Boolean(listClassName)
+  if (variant === "cards") {
+    const isGrid = Boolean(listClassName);
 
     return (
       <ul
-        className={listClassName ?? 'flex flex-col gap-3'}
+        className={listClassName ?? "flex flex-col gap-3"}
         role="status"
         aria-busy="true"
         aria-label={label}
@@ -45,8 +45,8 @@ export function ResourceListSkeleton({
               key={index}
               className={
                 isGrid
-                  ? 'flex h-full flex-col rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm'
-                  : 'rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm'
+                  ? "flex h-full flex-col rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
+                  : "rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
               }
             >
               <Skeleton className="mb-3 h-5 w-2/5" />
@@ -56,22 +56,16 @@ export function ResourceListSkeleton({
                 <Skeleton className="h-3 w-1/5" />
                 <Skeleton className="h-4 w-2/5" />
               </div>
-              <div
-                className={
-                  isGrid
-                    ? 'mt-auto flex gap-3 border-t border-base-content/8 pt-4'
-                    : 'mt-4 flex gap-3 border-t border-base-content/8 pt-4'
-                }
-              >
+              <div className="mt-4 flex gap-3 border-t border-base-content/8 pt-4">
                 <Skeleton className="size-11 shrink-0 rounded-lg" />
                 <Skeleton className="size-11 shrink-0 rounded-lg" />
                 <Skeleton className="size-11 shrink-0 rounded-lg" />
               </div>
             </li>
-          )
+          );
         })}
       </ul>
-    )
+    );
   }
 
   return (
@@ -84,7 +78,7 @@ export function ResourceListSkeleton({
                 <DataTableHeaderCell key={index}>
                   <Skeleton className="h-3 w-16" />
                 </DataTableHeaderCell>
-              )
+              );
             })}
           </DataTableHeaderRow>
         </DataTableHead>
@@ -98,19 +92,17 @@ export function ResourceListSkeleton({
                     return (
                       <DataTableCell key={cellIndex}>
                         <Skeleton
-                          className={
-                            cellIndex === 0 ? 'h-4 w-28' : 'h-4 w-20'
-                          }
+                          className={cellIndex === 0 ? "h-4 w-28" : "h-4 w-20"}
                         />
                       </DataTableCell>
-                    )
+                    );
                   },
                 )}
               </DataTableRow>
-            )
+            );
           })}
         </DataTableBody>
       </DataTable>
     </div>
-  )
+  );
 }

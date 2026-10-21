@@ -1,23 +1,30 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Pagination, ResourceListToolbar } from '@fuel-carrier/web-ui/ui'
-import { getDriverColumns } from './companyResourceColumns.tsx'
-import { DeleteCompanyDriverModal } from './DeleteCompanyDriverModal'
-import { DriverFormModal } from './DriverFormModal'
-import { ResourceSection } from './ResourceSection'
-import { useCompanyDrivers } from './useCompanyDrivers'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { Pagination, ResourceListToolbar } from "@fuel-carrier/web-ui/ui";
+import { getDriverColumns } from "./companyResourceColumns.tsx";
+import { DeleteCompanyDriverModal } from "./DeleteCompanyDriverModal";
+import { DriverFormModal } from "./DriverFormModal";
+import { ResourceSection } from "./ResourceSection";
+import { useCompanyDrivers } from "./useCompanyDrivers";
+
+const DRIVER_CARD_GRID_CLASS_NAME =
+  "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4";
 
 interface CompanyDriversSectionProps {
-  companyId: string
+  companyId: string;
 }
 
-export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps) {
-  const { LL } = useI18nContext()
-  const drivers = useCompanyDrivers(companyId)
-  const result = drivers.driversQuery.data
+export function CompanyDriversSection({
+  companyId,
+}: CompanyDriversSectionProps) {
+  const { LL } = useI18nContext();
+  const drivers = useCompanyDrivers(companyId);
+  const result = drivers.driversQuery.data;
 
   return (
     <>
       <ResourceSection
+        layout="cards"
+        listClassName={DRIVER_CARD_GRID_CLASS_NAME}
         addLabel={LL.internalPanel.companies.detail.addDriver()}
         emptyLabel={
           drivers.hasActiveFilters
@@ -27,7 +34,7 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         loading={drivers.driversQuery.isLoading && !result}
         isError={drivers.driversQuery.isError}
         onRetry={() => {
-          void drivers.driversQuery.refetch()
+          void drivers.driversQuery.refetch();
         }}
         errorLabels={{
           loadFailed: LL.common.queryError.loadFailed(),
@@ -35,12 +42,10 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
         }}
         items={drivers.companyDrivers}
         columns={getDriverColumns({ LL })}
-        onAdd={function openCreateDriver() {
-          drivers.setDriverModal({ mode: 'create' })
-        }}
-        onEdit={function openEditDriver(driver) {
-          drivers.setDriverModal({ mode: 'edit', item: driver })
-        }}
+        onAdd={() => drivers.setDriverModal({ mode: "create" })}
+        onEdit={(driver) =>
+          drivers.setDriverModal({ mode: "edit", item: driver })
+        }
         onDelete={drivers.setDeleteTarget}
         toolbar={
           <ResourceListToolbar
@@ -67,18 +72,18 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
       {drivers.driverModal && (
         <DriverFormModal
           key={
-            drivers.driverModal.mode === 'edit'
+            drivers.driverModal.mode === "edit"
               ? `driver-edit-${drivers.driverModal.item.id}`
-              : 'driver-create'
+              : "driver-create"
           }
           mode={drivers.driverModal.mode}
           companyId={companyId}
           driver={
-            drivers.driverModal.mode === 'edit' ? drivers.driverModal.item : undefined
+            drivers.driverModal.mode === "edit"
+              ? drivers.driverModal.item
+              : undefined
           }
-          onClose={function closeDriverModal() {
-            drivers.setDriverModal(null)
-          }}
+          onClose={() => drivers.setDriverModal(null)}
           onSuccess={drivers.handleChanged}
         />
       )}
@@ -86,10 +91,8 @@ export function CompanyDriversSection({ companyId }: CompanyDriversSectionProps)
       <DeleteCompanyDriverModal
         target={drivers.deleteTarget}
         mutation={drivers.deleteMutation}
-        onClose={function closeDeleteModal() {
-          drivers.setDeleteTarget(null)
-        }}
+        onClose={() => drivers.setDeleteTarget(null)}
       />
     </>
-  )
+  );
 }

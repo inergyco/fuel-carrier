@@ -12,6 +12,9 @@ import { getDriverColumns } from '../../components/drivers/driverColumns.tsx'
 import { useDrivers } from '../../components/drivers/useDrivers'
 import { ResourceSection } from '../../components/users/ResourceSection'
 
+const DRIVER_CARD_GRID_CLASS_NAME =
+  'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+
 export const Route = createFileRoute('/_authenticated/drivers')({
   validateSearch: parseResourceListSearch,
   component: DriversPage,
@@ -28,6 +31,8 @@ function DriversPage() {
   return (
     <div>
       <ResourceSection
+        layout="cards"
+        listClassName={DRIVER_CARD_GRID_CLASS_NAME}
         addLabel={LL.externalPanel.drivers.addDriver()}
         emptyLabel={
           drivers.hasActiveFilters

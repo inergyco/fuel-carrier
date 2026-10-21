@@ -140,12 +140,7 @@ export function ResourceList<T extends { id: string }>({
                 })}
               </dl>
             ) : null}
-            <div
-              className={cn(
-                "mt-4 border-t border-base-content/8 pt-4",
-                isGrid && "mt-auto",
-              )}
-            >
+            <div className={cn("mt-4 border-t border-base-content/8 pt-4")}>
               <ResourceOperations
                 item={item}
                 onEdit={onEdit}
