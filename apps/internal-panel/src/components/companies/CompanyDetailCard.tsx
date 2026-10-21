@@ -2,6 +2,7 @@ import type { Company } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import { CompanyLogoUploader, useToast } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import {
   companyKeys,
   removeCompanyLogo,
@@ -130,7 +131,7 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
   function renderPricingGroup(
     title: string,
     fields: DetailFieldItem[],
-    columnsClassName: string,
+    columnsClassName?: string,
   ) {
     return (
       <div className="flex flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-100/30 p-4">
@@ -157,7 +158,6 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
         {renderPricingGroup(
           LL.common.companyPricing.priceGroup(),
           priceFields,
-          'max-w-56 sm:max-w-64',
         )}
         {renderPricingGroup(
           LL.common.companyPricing.thresholdsGroup(),
@@ -191,11 +191,12 @@ function DetailField({
         {label}
       </span>
       <div
-        className={
+        className={cn(
+          'w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word',
           multiline
-            ? 'min-h-24 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word whitespace-pre-wrap'
-            : 'min-h-10 w-full rounded-lg border border-base-content/10 bg-base-100/60 px-3 py-2 text-sm tracking-wide wrap-break-word'
-        }
+            ? 'min-h-24 whitespace-pre-wrap'
+            : 'min-h-10',
+        )}
       >
         {displayValue}
       </div>
