@@ -5,6 +5,8 @@ import { defineConfig, type PluginOption, type UserConfig } from "vite";
 import { VitePWA, type VitePWAOptions } from "vite-plugin-pwa";
 
 const defaultApiProxyTarget = "http://localhost:3000";
+/** Production external panel — default OpenFreeMap reverse-proxy upstream for local Vite. */
+const defaultOfmProxyTarget = "https://mobile-fueling.inergy.ir";
 
 export type PanelPwaManifest = {
   name: string;
@@ -22,12 +24,18 @@ export type PanelPwaManifest = {
 export type PanelViteConfigOptions = {
   port?: number;
   pwa: PanelPwaManifest;
+  /**
+   * Upstream for same-origin `/ofm/*` map styles/tiles (VPS OpenFreeMap reverse
+   * proxy). Defaults to the external production panel.
+   */
+  ofmProxyTarget?: string;
   overrides?: UserConfig;
 };
 
 export function createPanelViteConfig({
   port,
   pwa,
+  ofmProxyTarget = defaultOfmProxyTarget,
   overrides = {},
 }: PanelViteConfigOptions) {
   return defineConfig({
@@ -54,6 +62,13 @@ export function createPanelViteConfig({
           target: defaultApiProxyTarget,
           changeOrigin: true,
           ws: true,
+        },
+        // Map styles use `/ofm/...` (same as production). Without this, Vite
+        // serves the SPA HTML for those paths and the basemap never loads.
+        "/ofm": {
+          target: ofmProxyTarget,
+          changeOrigin: true,
+          secure: true,
         },
       },
     },
@@ -118,13 +133,17 @@ function createPanelPwaOptions(pwa: PanelPwaManifest): Partial<VitePWAOptions> {
     },
     workbox: {
       navigateFallback: "index.html",
-      navigateFallbackDenylist: [/^\/api\//],
+      navigateFallbackDenylist: [/^\/api\//, /^\/ofm\//],
       globPatterns: [
         "**/*.{js,css,html,ico,png,svg,woff2,webp,webmanifest}",
       ],
       runtimeCaching: [
         {
           urlPattern: ({ url }) => url.pathname.startsWith("/api/"),
+          handler: "NetworkOnly",
+        },
+        {
+          urlPattern: ({ url }) => url.pathname.startsWith("/ofm/"),
           handler: "NetworkOnly",
         },
       ],

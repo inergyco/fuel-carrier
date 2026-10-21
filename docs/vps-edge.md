@@ -63,6 +63,9 @@ Templates:
 - [`infra/nginx/fuel-carrier-internal.conf`](../infra/nginx/fuel-carrier-internal.conf)
 - [`infra/nginx/fuel-carrier-default-deny.conf`](../infra/nginx/fuel-carrier-default-deny.conf)
 - [`infra/nginx/snippets/spa-security-headers.conf`](../infra/nginx/snippets/spa-security-headers.conf) — HSTS / CSP / frame denial / nosniff for SPA `location /`
+- [`infra/nginx/snippets/openfreemap-proxy.conf`](../infra/nginx/snippets/openfreemap-proxy.conf) — same-origin `/ofm/` reverse proxy for MapLibre basemaps
+
+Local Vite mirrors that path: panel `server.proxy['/ofm']` targets the matching production host so `/ofm/styles/...` works in development.
 
 ```bash
 REPO=/path/to/fuel-carrier   # or scp the conf files up
@@ -70,6 +73,8 @@ REPO=/path/to/fuel-carrier   # or scp the conf files up
 sudo mkdir -p /etc/nginx/snippets
 sudo cp "$REPO"/infra/nginx/snippets/spa-security-headers.conf \
   /etc/nginx/snippets/fuel-carrier-spa-security-headers.conf
+sudo cp "$REPO"/infra/nginx/snippets/openfreemap-proxy.conf \
+  /etc/nginx/snippets/fuel-carrier-openfreemap-proxy.conf
 sudo cp "$REPO"/infra/nginx/fuel-carrier-*.conf /etc/nginx/sites-available/
 sudo ln -sf /etc/nginx/sites-available/fuel-carrier-external \
   /etc/nginx/sites-enabled/fuel-carrier-external

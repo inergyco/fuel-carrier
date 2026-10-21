@@ -2,6 +2,7 @@ import { createPanelViteConfig } from '@fuel-carrier/web-config/vite'
 
 export default createPanelViteConfig({
   port: 5173,
+  ofmProxyTarget: 'https://mobile-fueling-admin.inergy.ir',
   pwa: {
     name: 'Fuel Carrier Admin',
     shortName: 'FC Admin',
