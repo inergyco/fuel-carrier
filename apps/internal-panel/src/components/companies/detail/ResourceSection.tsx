@@ -73,7 +73,11 @@ export function ResourceSection<T extends { id: string }>({
       return (
         <ResourceListSkeleton
           variant={listVariant}
-          columns={columns.length + 1}
+          columns={
+            listVariant === 'cards'
+              ? Math.max(columns.length - 1, 1)
+              : columns.length + 1
+          }
           label={loadingLabel}
           listClassName={listClassName}
         />

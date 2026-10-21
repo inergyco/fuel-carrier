@@ -35,7 +35,12 @@ export function ResourceListCards<T extends { id: string }>({
               </p>
             ) : null}
             {detailColumns.length > 0 ? (
-              <dl className="grid gap-2 text-sm text-base-content/70">
+              <dl
+                className={cn(
+                  'grid gap-2 text-sm text-base-content/70',
+                  isGrid && 'min-h-0 flex-1 content-start',
+                )}
+              >
                 {detailColumns.map(function renderField(column) {
                   return (
                     <div key={column.key}>
@@ -44,19 +49,19 @@ export function ResourceListCards<T extends { id: string }>({
                       </dt>
                       <dd
                         className={cn(
-                          "mt-1 wrap-break-word whitespace-pre-wrap",
+                          'mt-1 wrap-break-word whitespace-pre-wrap',
                           column.className,
                         )}
                       >
                         {column.cell(item)}
                       </dd>
                     </div>
-                  );
+                  )
                 })}
               </dl>
             ) : null}
             {showOperations ? (
-              <div className={cn("mt-4 border-t border-base-content/8 pt-4" )}>
+              <div className="mt-4 border-t border-base-content/8 pt-4">
                 <ResourceOperations
                   item={item}
                   actionLabels={actionLabels}

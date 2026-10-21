@@ -53,7 +53,6 @@ export function getDriverColumns({
         if (!driver.car) {
           return emptyCell ?? LL.externalPanel.drivers.noCar();
         }
-        console.log(driver.car.licensePlate);
         return <LicensePlate value={driver.car.licensePlate} size="sm" />;
       },
     },
