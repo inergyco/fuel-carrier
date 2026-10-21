@@ -19,4 +19,6 @@ export type ResourceListItemProps<T extends { id: string }> = {
   renderExtraActions?: (item: T) => ReactNode
   readOnly?: boolean
   showOperations: boolean
+  /** Card grid classes. Stacked cards are used when this is omitted. */
+  listClassName?: string
 }

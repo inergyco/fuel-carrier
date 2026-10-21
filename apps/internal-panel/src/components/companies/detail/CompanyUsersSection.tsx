@@ -6,6 +6,9 @@ import { DeleteCompanyUserModal } from './DeleteCompanyUserModal'
 import { ResourceSection } from './ResourceSection'
 import { useCompanyUsers } from './useCompanyUsers'
 
+const USER_CARD_GRID_CLASS_NAME =
+  'grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+
 interface CompanyUsersSectionProps {
   companyId: string
 }
@@ -19,6 +22,8 @@ export function CompanyUsersSection({ companyId }: CompanyUsersSectionProps) {
   return (
     <>
       <ResourceSection
+        layout="cards"
+        listClassName={USER_CARD_GRID_CLASS_NAME}
         addLabel={LL.internalPanel.companies.detail.addUser()}
         emptyLabel={LL.internalPanel.companies.detail.usersEmpty()}
         loading={users.usersQuery.isLoading && !result}

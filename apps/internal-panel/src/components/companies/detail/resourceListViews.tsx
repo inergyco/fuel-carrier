@@ -34,6 +34,8 @@ interface ResourceListProps<T extends { id: string }> {
   renderView?: (item: T) => ReactNode;
   renderExtraActions?: (item: T) => ReactNode;
   variant: "table" | "cards";
+  /** Card list layout classes. Stacked cards are used when this is omitted. */
+  listClassName?: string;
 }
 
 export function ResourceList<T extends { id: string }>({
@@ -45,6 +47,7 @@ export function ResourceList<T extends { id: string }>({
   renderView,
   renderExtraActions,
   variant,
+  listClassName,
 }: ResourceListProps<T>) {
   const { LL } = useI18nContext();
 
@@ -98,14 +101,18 @@ export function ResourceList<T extends { id: string }>({
   }
 
   const [titleColumn, ...detailColumns] = columns;
+  const isGrid = Boolean(listClassName);
 
   return (
-    <ul className="flex flex-col gap-3">
+    <ul className={listClassName ?? "flex flex-col gap-3"}>
       {items.map(function renderCard(item) {
         return (
           <li
             key={item.id}
-            className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
+            className={cn(
+              "rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm",
+              isGrid && "flex h-full flex-col",
+            )}
           >
             {titleColumn ? (
               <p className="mb-3 text-base font-medium tracking-tight">
@@ -133,7 +140,12 @@ export function ResourceList<T extends { id: string }>({
                 })}
               </dl>
             ) : null}
-            <div className="mt-4 border-t border-base-content/8 pt-4">
+            <div
+              className={cn(
+                "mt-4 border-t border-base-content/8 pt-4",
+                isGrid && "mt-auto",
+              )}
+            >
               <ResourceOperations
                 item={item}
                 onEdit={onEdit}

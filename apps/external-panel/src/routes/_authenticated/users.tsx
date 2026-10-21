@@ -8,6 +8,9 @@ import { ResourceSection } from "../../components/users/ResourceSection";
 import { getUserColumns } from "../../components/users/userColumns";
 import { useCompanyUsers } from "../../components/users/useCompanyUsers";
 
+const USER_CARD_GRID_CLASS_NAME =
+  "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4";
+
 export const Route = createFileRoute("/_authenticated/users")({
   validateSearch: parsePaginationSearch,
   beforeLoad: function requireCompanyAdmin({ context }) {
@@ -27,6 +30,8 @@ function CompanyUsersPage() {
   return (
     <div>
       <ResourceSection
+        layout="cards"
+        listClassName={USER_CARD_GRID_CLASS_NAME}
         addLabel={LL.externalPanel.users.addUser()}
         emptyLabel={LL.externalPanel.users.empty()}
         loading={users.usersQuery.isLoading && !result}

@@ -15,6 +15,8 @@ type ResourceListSkeletonProps = {
   columns?: number
   /** Accessible status label (e.g. localized “Loading…”). */
   label: string
+  /** Card list layout classes. Stacked cards are used when this is omitted. */
+  listClassName?: string
 }
 
 const DEFAULT_ROWS = 5
@@ -25,11 +27,14 @@ export function ResourceListSkeleton({
   rows = DEFAULT_ROWS,
   columns = DEFAULT_COLUMNS,
   label,
+  listClassName,
 }: ResourceListSkeletonProps) {
   if (variant === 'cards') {
+    const isGrid = Boolean(listClassName)
+
     return (
       <ul
-        className="flex flex-col gap-3"
+        className={listClassName ?? 'flex flex-col gap-3'}
         role="status"
         aria-busy="true"
         aria-label={label}
@@ -38,7 +43,11 @@ export function ResourceListSkeleton({
           return (
             <li
               key={index}
-              className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm"
+              className={
+                isGrid
+                  ? 'flex h-full flex-col rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm'
+                  : 'rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm'
+              }
             >
               <Skeleton className="mb-3 h-5 w-2/5" />
               <div className="grid gap-2">
@@ -47,7 +56,13 @@ export function ResourceListSkeleton({
                 <Skeleton className="h-3 w-1/5" />
                 <Skeleton className="h-4 w-2/5" />
               </div>
-              <div className="mt-4 flex gap-3 border-t border-base-content/8 pt-4">
+              <div
+                className={
+                  isGrid
+                    ? 'mt-auto flex gap-3 border-t border-base-content/8 pt-4'
+                    : 'mt-4 flex gap-3 border-t border-base-content/8 pt-4'
+                }
+              >
                 <Skeleton className="size-11 shrink-0 rounded-lg" />
                 <Skeleton className="size-11 shrink-0 rounded-lg" />
                 <Skeleton className="size-11 shrink-0 rounded-lg" />

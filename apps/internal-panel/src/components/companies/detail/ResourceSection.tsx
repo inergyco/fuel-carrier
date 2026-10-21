@@ -32,6 +32,13 @@ interface ResourceSectionProps<T extends { id: string }> {
   renderExtraActions?: (item: T) => ReactNode
   toolbar?: ReactNode
   footer?: ReactNode
+  /**
+   * `responsive` uses a table from md up and stacked cards below.
+   * `cards` always uses cards (optionally in a grid via `listClassName`).
+   */
+  layout?: 'responsive' | 'cards'
+  /** Passed to the cards list (e.g. a responsive card grid). */
+  listClassName?: string
 }
 
 export function ResourceSection<T extends { id: string }>({
@@ -51,10 +58,14 @@ export function ResourceSection<T extends { id: string }>({
   renderExtraActions,
   toolbar,
   footer,
+  layout = 'responsive',
+  listClassName,
 }: ResourceSectionProps<T>) {
   const { LL } = useI18nContext()
   const isMdUp = useMediaQuery(MEDIA_QUERIES.mdUp)
-  const listVariant = isMdUp ? 'table' : 'cards'
+  const listVariant =
+    layout === 'cards' ? 'cards' : isMdUp ? 'table' : 'cards'
+  const isCardGrid = layout === 'cards'
   const loadingLabel = LL.internalPanel.companies.loading()
 
   function renderBody() {
@@ -64,6 +75,7 @@ export function ResourceSection<T extends { id: string }>({
           variant={listVariant}
           columns={columns.length + 1}
           label={loadingLabel}
+          listClassName={listClassName}
         />
       )
     }
@@ -87,6 +99,7 @@ export function ResourceSection<T extends { id: string }>({
           renderView={renderView}
           renderExtraActions={renderExtraActions}
           variant={listVariant}
+          listClassName={listClassName}
         />
         {footer}
       </>
@@ -94,13 +107,19 @@ export function ResourceSection<T extends { id: string }>({
   }
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
+    <section
+      className={
+        isCardGrid
+          ? undefined
+          : 'rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6'
+      }
+    >
       <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
         {toolbar ? <div className="min-w-0 flex-1">{toolbar}</div> : null}
 
         <Button
           type="button"
-          className="h-11 w-full shrink-0 sm:w-auto sm:self-start lg:self-auto sm:px-5"
+          className="ms-auto h-11 w-full shrink-0 sm:w-auto sm:self-start lg:self-auto sm:px-5"
           onClick={onAdd}
         >
           <span className="flex items-center justify-center gap-2">
