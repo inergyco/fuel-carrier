@@ -35,6 +35,7 @@ export const companyUsers = pgTable(
     username: varchar('username', { length: USERNAME_MAX_LENGTH }).notNull(),
     nationalId: varchar('national_id', { length: 32 }),
     email: varchar('email', { length: 254 }),
+    imageUrl: varchar('image_url', { length: 2048 }),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     level: varchar('level', { length: 16 })
       .notNull()

@@ -30,9 +30,11 @@ import {
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { companyUsers } from '../database/schema/company-users.schema';
 import { users } from '../database/schema/users.schema';
+import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
+import { companyUserImageStorage } from '../uploads/image-storages';
 import {
   assertCompanyAccess,
   assertCompanyExists,
@@ -151,6 +153,7 @@ export class CompanyUsersService {
             username: dto.username,
             nationalId: dto.nationalId ?? null,
             email: dto.email ?? null,
+            imageUrl: dto.imageUrl ?? null,
             passwordHash,
             level: dto.level,
           })
@@ -245,6 +248,7 @@ export class CompanyUsersService {
               ? { nationalId: dto.nationalId }
               : {}),
             ...(dto.email !== undefined ? { email: dto.email } : {}),
+            ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
             ...(dto.level !== undefined ? { level: dto.level } : {}),
             ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
           })
@@ -285,6 +289,50 @@ export class CompanyUsersService {
     } catch (error) {
       rethrowPostgresError(error, COMPANY_USER_POSTGRES_MAPPINGS);
     }
+  }
+
+  /**
+   * Explicit image replace/clear. File cleanup stays here — not on generic
+   * `update` — so a normal company-user PATCH never touches the filesystem.
+   */
+  async replaceImage(
+    context: TenantContext,
+    id: string,
+    imageUrl: string | null,
+  ): Promise<CompanyUser> {
+    const existing = await this.getById(context, id);
+    if (existing.imageUrl === imageUrl) {
+      return existing;
+    }
+
+    const companyUser = await this.update(context, id, { imageUrl });
+    await companyUserImageStorage.removeStored(existing.imageUrl);
+    return companyUser;
+  }
+
+  /**
+   * Deletes an upload that was never saved on a company user.
+   * Referenced files stay until replace/remove updates the row.
+   */
+  async discardUploadedImage(imageUrl: string): Promise<void> {
+    const referenced = await this.tenantDb.run(
+      internalTenantContext(),
+      async (tx) => {
+        const [row] = await tx
+          .select({ id: companyUsers.id })
+          .from(companyUsers)
+          .where(eq(companyUsers.imageUrl, imageUrl))
+          .limit(1);
+
+        return row != null;
+      },
+    );
+
+    if (referenced) {
+      return;
+    }
+
+    await companyUserImageStorage.removeStored(imageUrl);
   }
 
   /** Soft-delete: set deletedAt, keep user profile and login row. */
@@ -348,7 +396,9 @@ export class CompanyUsersService {
     tx: TenantTransaction,
     context: TenantContext,
     options: {
-      action: typeof AuditActions.COMPANY_USER_CREATED | typeof AuditActions.COMPANY_USER_UPDATED;
+      action:
+        | typeof AuditActions.COMPANY_USER_CREATED
+        | typeof AuditActions.COMPANY_USER_UPDATED;
       companyUser: CompanyUser;
       changes: ReturnType<typeof createAuditChanges>;
     },

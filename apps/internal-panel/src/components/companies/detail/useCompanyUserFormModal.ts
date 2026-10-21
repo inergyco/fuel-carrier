@@ -5,6 +5,7 @@ import { applyApiFieldErrors } from "@fuel-carrier/web-ui/api";
 import {
   zodResolver,
   useForm,
+  useWatch,
   toCompanyUserValidationMessages,
   type SubmitHandler,
   type UseFormReturn,
@@ -14,7 +15,11 @@ import { useToast } from "@fuel-carrier/web-ui/ui";
 import {
   companyUserToFormValues,
   createCompanyUser,
+  discardCompanyUserImage,
+  removeCompanyUserImage,
+  replaceCompanyUserImage,
   updateCompanyUser,
+  uploadCompanyUserImage,
 } from "../../../lib/api/company-users";
 import {
   createCompanyUserFormSchemaPair,
@@ -37,6 +42,10 @@ interface UseCompanyUserFormModalResult {
   isSaving: boolean;
   title: string;
   confirmLabel: string;
+  imageUrl: string | null;
+  imageError?: string;
+  onUploadImage: (file: File) => Promise<void>;
+  onRemoveImage: () => Promise<void>;
   onSubmit: SubmitHandler<CompanyUserFormOutput>;
   handleClose: () => void;
 }
@@ -70,14 +79,22 @@ export function useCompanyUserFormModal({
 
   const {
     setError,
-    formState: { isSubmitting },
+    control,
+    setValue,
+    formState: { isSubmitting, errors },
   } = form;
+  const imageUrlValue = useWatch({ control, name: "imageUrl" });
+  const imageUrl =
+    typeof imageUrlValue === "string" && imageUrlValue.length > 0
+      ? imageUrlValue
+      : null;
 
   const saveMutation = useMutation({
     mutationFn: async function saveCompanyUser({
       nationalId,
       email,
       password,
+      imageUrl: nextImageUrl,
       ...restOfData
     }: CompanyUserFormOutput) {
       const payload = {
@@ -87,6 +104,8 @@ export function useCompanyUserFormModal({
       };
 
       if (mode === "edit" && user) {
+        await syncCompanyUserImage(user, nextImageUrl ?? null);
+
         return updateCompanyUser(user.id, {
           ...payload,
           ...(password ? { password } : {}),
@@ -97,6 +116,7 @@ export function useCompanyUserFormModal({
         ...payload,
         companyId,
         password,
+        imageUrl: nextImageUrl ?? null,
       });
     },
     onSuccess: function handleSaveSuccess() {
@@ -121,6 +141,21 @@ export function useCompanyUserFormModal({
       }
     };
 
+  async function onUploadImage(file: File) {
+    const uploaded = await uploadCompanyUserImage(file);
+    const previousImageUrl = imageUrl;
+    setValue("imageUrl", uploaded.imageUrl, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    await discardUnsavedImage(previousImageUrl, user?.imageUrl);
+  }
+
+  async function onRemoveImage() {
+    await discardUnsavedImage(imageUrl, user?.imageUrl);
+    setValue("imageUrl", "", { shouldDirty: true, shouldValidate: true });
+  }
+
   function handleFormError(error: unknown) {
     setServerError(
       applyApiFieldErrors({
@@ -133,6 +168,7 @@ export function useCompanyUserFormModal({
           "password",
           "nationalId",
           "email",
+          "imageUrl",
           "level",
         ],
         messages: {
@@ -146,10 +182,13 @@ export function useCompanyUserFormModal({
     );
   }
 
-  function handleClose() {
-    if (!isSubmitting && !saveMutation.isPending) {
-      onClose();
+  async function handleClose() {
+    if (isSubmitting || saveMutation.isPending) {
+      return;
     }
+
+    await discardUnsavedImage(imageUrl, user?.imageUrl);
+    onClose();
   }
 
   const isSaving = isSubmitting || saveMutation.isPending;
@@ -169,7 +208,39 @@ export function useCompanyUserFormModal({
     isSaving,
     title,
     confirmLabel,
+    imageUrl,
+    imageError: errors.imageUrl?.message?.toString(),
+    onUploadImage,
+    onRemoveImage,
     onSubmit,
     handleClose,
   };
+}
+
+async function discardUnsavedImage(
+  imageUrl: string | null,
+  savedImageUrl: string | null | undefined,
+) {
+  if (!imageUrl || imageUrl === (savedImageUrl ?? null)) {
+    return;
+  }
+
+  await discardCompanyUserImage(imageUrl);
+}
+
+async function syncCompanyUserImage(
+  user: CompanyUser,
+  nextImageUrl: string | null,
+) {
+  const previousImageUrl = user.imageUrl ?? null;
+  if (nextImageUrl === previousImageUrl) {
+    return;
+  }
+
+  if (nextImageUrl === null) {
+    await removeCompanyUserImage(user.id);
+    return;
+  }
+
+  await replaceCompanyUserImage(user.id, nextImageUrl);
 }

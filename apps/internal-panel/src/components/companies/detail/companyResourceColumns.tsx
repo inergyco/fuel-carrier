@@ -30,7 +30,16 @@ export function getUserColumns({
     {
       key: 'name',
       header: LL.internalPanel.companies.name(),
-      cell: (user) => `${user.firstName} ${user.lastName}`,
+      cell: function renderName(user) {
+        return (
+          <span className="inline-flex items-center gap-2.5">
+            <Avatar src={user.imageUrl} fallback={user.firstName.charAt(0)} />
+            <span>
+              {user.firstName} {user.lastName}
+            </span>
+          </span>
+        )
+      },
     },
     {
       key: 'username',

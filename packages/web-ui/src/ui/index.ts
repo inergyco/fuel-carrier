@@ -51,7 +51,7 @@ export {
   emptyCompanyPricingFormValues,
 } from './CompanyPricingFields'
 export type { CompanyPricingFormValues } from './CompanyPricingFields'
-export { DriverImageUploader } from './DriverImageUploader'
+export { ProfileImageUploader } from './ProfileImageUploader'
 export {
   DataTable,
   DataTableBody,

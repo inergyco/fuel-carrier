@@ -22,14 +22,25 @@ export function CompanyUserFormModal({
   onSuccess,
 }: CompanyUserFormModalProps) {
   const { LL } = useI18nContext()
-  const { form, serverError, isSaving, title, confirmLabel, onSubmit, handleClose } =
-    useCompanyUserFormModal({
-      mode,
-      companyId,
-      user,
-      onClose,
-      onSuccess,
-    })
+  const {
+    form,
+    serverError,
+    isSaving,
+    title,
+    confirmLabel,
+    imageUrl,
+    imageError,
+    onUploadImage,
+    onRemoveImage,
+    onSubmit,
+    handleClose,
+  } = useCompanyUserFormModal({
+    mode,
+    companyId,
+    user,
+    onClose,
+    onSuccess,
+  })
 
   return (
     <Modal
@@ -57,7 +68,15 @@ export function CompanyUserFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
-        <CompanyUserFormFields mode={mode} serverError={serverError} />
+        <CompanyUserFormFields
+          mode={mode}
+          serverError={serverError}
+          imageUrl={imageUrl}
+          imageError={imageError}
+          disabled={isSaving}
+          onUploadImage={onUploadImage}
+          onRemoveImage={onRemoveImage}
+        />
       </Form>
     </Modal>
   )

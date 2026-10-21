@@ -10,6 +10,8 @@ export const IMAGE_UPLOAD_MIME_TYPES = [
 ] as const;
 
 export const COMPANY_LOGO_PUBLIC_PREFIX = '/api/uploads/company-logos';
+export const COMPANY_USER_IMAGE_PUBLIC_PREFIX =
+  '/api/uploads/company-user-images';
 export const DRIVER_IMAGE_PUBLIC_PREFIX = '/api/uploads/driver-images';
 
 export function normalizeImageUploadMimeType(mimeType: string): string {
@@ -48,6 +50,11 @@ export function createIsAllowedImageUploadUrl(publicPrefix: string) {
 /** Absolute http(s) URLs, or a path produced by the logo upload endpoint. */
 export const isAllowedCompanyLogoUrl = createIsAllowedImageUploadUrl(
   COMPANY_LOGO_PUBLIC_PREFIX,
+);
+
+/** Absolute http(s) URLs, or a path produced by the company-user image upload endpoint. */
+export const isAllowedCompanyUserImageUrl = createIsAllowedImageUploadUrl(
+  COMPANY_USER_IMAGE_PUBLIC_PREFIX,
 );
 
 /** Absolute http(s) URLs, or a path produced by the driver image upload endpoint. */

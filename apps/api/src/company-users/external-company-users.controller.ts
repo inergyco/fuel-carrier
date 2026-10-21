@@ -3,10 +3,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,6 +28,7 @@ import {
   updateExternalCompanyUserDtoSchema,
   type UpdateExternalCompanyUserDto,
 } from '@fuel-carrier/shared-validation/company-user/create';
+import type { FastifyRequest } from 'fastify';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
@@ -44,9 +48,17 @@ import {
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeOkResponse,
   ApiEnvelopeUnauthorizedResponse,
+  ApiMultipartFileBody,
 } from '../swagger/decorators/api-envelope.decorator';
+import { CompanyUserImageDto } from '../swagger/dto/company-user.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { companyUserImageStorage } from '../uploads/image-storages';
+import { readImageUpload } from '../uploads/read-image-upload';
 import { CompanyUsersService } from './company-users.service';
+import {
+  replaceCompanyUserImageDtoSchema,
+  type ReplaceCompanyUserImageDto,
+} from './replace-company-user-image.dto';
 
 @ApiTags('company-users')
 @ApiCookieAuth(AUTH_COOKIE_SCHEME)
@@ -92,6 +104,45 @@ export class ExternalCompanyUsersController {
     return this.companyUsersService.getById(tenantContextFromSession(user), id);
   }
 
+  @Post('image')
+  @UseGuards(CompanyUserAdminGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Upload a company user image and return its public path',
+  })
+  @ApiMultipartFileBody()
+  @ApiEnvelopeOkResponse(CompanyUserImageDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  async uploadImage(
+    @Req() request: FastifyRequest,
+  ): Promise<CompanyUserImageDto> {
+    const imageUrl = await readImageUpload(
+      request,
+      companyUserImageStorage,
+      'Image must be 2 MB or smaller',
+    );
+    return { imageUrl };
+  }
+
+  @Post('image/discard')
+  @UseGuards(CompanyUserAdminGuard)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Delete an uploaded company user image that was never saved',
+  })
+  @ApiBody({ type: CompanyUserImageDto })
+  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  async discardImage(
+    @Body(new ZodValidationPipe(replaceCompanyUserImageDtoSchema))
+    body: ReplaceCompanyUserImageDto,
+  ): Promise<null> {
+    await this.companyUsersService.discardUploadedImage(body.imageUrl);
+    return null;
+  }
+
   @Post()
   @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
@@ -110,6 +161,52 @@ export class ExternalCompanyUsersController {
       ...dto,
       companyId: user.companyId!,
     });
+  }
+
+  @Patch(':id/image')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary:
+      'Replace a company user image belonging to the authenticated company',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: CompanyUserImageDto })
+  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  replaceImage(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(replaceCompanyUserImageDtoSchema))
+    body: ReplaceCompanyUserImageDto,
+  ): Promise<CompanyUser> {
+    return this.companyUsersService.replaceImage(
+      tenantContextFromSession(user),
+      id,
+      body.imageUrl,
+    );
+  }
+
+  @Delete(':id/image')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary:
+      'Remove a company user image belonging to the authenticated company',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  removeImage(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+  ): Promise<CompanyUser> {
+    return this.companyUsersService.replaceImage(
+      tenantContextFromSession(user),
+      id,
+      null,
+    );
   }
 
   @Patch(':id')

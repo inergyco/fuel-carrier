@@ -2,19 +2,40 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import { COMPANY_USER_NATIONAL_ID_MAX_LENGTH } from '@fuel-carrier/shared-validation/company-user/create'
 import { PASSWORD_MIN_LENGTH } from '@fuel-carrier/shared-validation/password'
-import { FormInput, FormSelect } from '@fuel-carrier/web-ui/ui'
+import { FormInput, FormSelect, ProfileImageUploader } from '@fuel-carrier/web-ui/ui'
 import type { CompanyUserFormModalMode } from './company-user-form.schema'
 
 interface CompanyUserFormFieldsProps {
   mode: CompanyUserFormModalMode
   serverError: string | null
+  imageUrl: string | null
+  imageError?: string
+  disabled?: boolean
+  onUploadImage: (file: File) => Promise<void>
+  onRemoveImage: () => Promise<void>
 }
 
-export function CompanyUserFormFields({ mode, serverError }: CompanyUserFormFieldsProps) {
+export function CompanyUserFormFields({
+  mode,
+  serverError,
+  imageUrl,
+  imageError,
+  disabled = false,
+  onUploadImage,
+  onRemoveImage,
+}: CompanyUserFormFieldsProps) {
   const { LL } = useI18nContext()
 
   return (
     <>
+      <ProfileImageUploader
+        imageUrl={imageUrl}
+        error={imageError}
+        disabled={disabled}
+        onUploadFile={onUploadImage}
+        onRemove={onRemoveImage}
+      />
+
       <div className="grid gap-4 sm:grid-cols-2">
         <FormInput
           name="firstName"

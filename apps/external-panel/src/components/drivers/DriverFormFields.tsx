@@ -3,7 +3,7 @@ import {
   DRIVER_MOBILE_NUMBER_MAX_LENGTH,
   DRIVER_NATIONAL_ID_MAX_LENGTH,
 } from '@fuel-carrier/shared-validation/driver/create'
-import { DriverImageUploader, FormInput } from '@fuel-carrier/web-ui/ui'
+import { FormInput, ProfileImageUploader } from '@fuel-carrier/web-ui/ui'
 
 interface DriverFormFieldsProps {
   serverError: string | null
@@ -26,7 +26,7 @@ export function DriverFormFields({
 
   return (
     <>
-      <DriverImageUploader
+      <ProfileImageUploader
         imageUrl={imageUrl}
         error={imageError}
         disabled={disabled}

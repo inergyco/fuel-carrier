@@ -1,6 +1,7 @@
 import type { CompanyUser } from '@fuel-carrier/shared-types'
 import { CompanyUserLevels } from '@fuel-carrier/shared-types'
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
+import { Avatar } from '@fuel-carrier/web-ui/ui'
 import type { ResourceColumn } from './ResourceSection'
 
 interface UserColumnOptions {
@@ -26,7 +27,14 @@ export function getUserColumns({
       key: 'name',
       header: LL.externalPanel.users.name(),
       cell: function renderName(user) {
-        return `${user.firstName} ${user.lastName}`
+        return (
+          <span className="inline-flex items-center gap-2.5">
+            <Avatar src={user.imageUrl} fallback={user.firstName.charAt(0)} />
+            <span>
+              {user.firstName} {user.lastName}
+            </span>
+          </span>
+        )
       },
     },
     {

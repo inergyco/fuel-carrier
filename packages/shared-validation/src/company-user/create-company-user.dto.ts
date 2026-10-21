@@ -1,6 +1,12 @@
 import type { CompanyUserInput } from '@fuel-carrier/shared-types';
 import { COMPANY_USER_LEVELS } from '@fuel-carrier/shared-types';
 import { z } from 'zod';
+import { optionalTextField } from '../optional-text-field';
+import {
+  COMPANY_USER_IMAGE_PUBLIC_PREFIX,
+  IMAGE_UPLOAD_URL_MAX_LENGTH,
+  isAllowedCompanyUserImageUrl,
+} from '../image-upload/constants';
 import {
   createStrongPasswordSchema,
   type PasswordStrengthMessages,
@@ -40,6 +46,8 @@ export type CompanyUserValidationMessages = {
   nationalIdInvalid: string;
   emailTooLong: string;
   emailInvalid: string;
+  imageUrlTooLong: string;
+  imageUrlInvalid: string;
   passwordRequired: string;
   passwordStrength: PasswordStrengthMessages;
 };
@@ -57,6 +65,8 @@ const defaultCompanyUserValidationMessages: CompanyUserValidationMessages = {
   nationalIdInvalid: IRANIAN_NATIONAL_ID_INVALID_MESSAGE,
   emailTooLong: `Email must be at most ${COMPANY_USER_EMAIL_MAX_LENGTH} characters`,
   emailInvalid: EMAIL_INVALID_MESSAGE,
+  imageUrlTooLong: `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
+  imageUrlInvalid: 'Image URL must be a valid URL',
   passwordRequired: 'Password is required',
   passwordStrength: {
     minLength: `Password must be at least ${PASSWORD_MIN_LENGTH} characters`,
@@ -95,6 +105,17 @@ export function createCompanyUserBaseSchema(
       tooLong: messages.emailTooLong,
       invalid: messages.emailInvalid,
     }).optional(),
+    imageUrl: optionalTextField(
+      IMAGE_UPLOAD_URL_MAX_LENGTH,
+      messages.imageUrlTooLong,
+    ).pipe(
+      z.union([
+        z.null(),
+        z
+          .string()
+          .refine(isAllowedCompanyUserImageUrl, messages.imageUrlInvalid),
+      ]),
+    ),
   });
 }
 
@@ -136,20 +157,47 @@ export const createExternalCompanyUserDtoSchema = companyUserBaseSchema.extend({
   password: strongPasswordSchema,
 });
 
+/**
+ * Image changes go through `replaceCompanyUserImageDtoSchema` / replaceImage only —
+ * generic PATCH must not touch the filesystem.
+ */
 export const updateInternalCompanyUserDtoSchema =
-  createInternalCompanyUserDtoSchema.partial();
+  createInternalCompanyUserDtoSchema
+    .omit({ imageUrl: true })
+    .partial()
+    .strict();
 export const updateExternalCompanyUserDtoSchema =
-  createExternalCompanyUserDtoSchema.partial();
+  createExternalCompanyUserDtoSchema
+    .omit({ imageUrl: true })
+    .partial()
+    .strict();
+
+/** Explicit image replace — clear via DELETE …/image. */
+export const replaceCompanyUserImageDtoSchema = z.object({
+  imageUrl: z
+    .string()
+    .max(
+      IMAGE_UPLOAD_URL_MAX_LENGTH,
+      `Image URL must be at most ${IMAGE_UPLOAD_URL_MAX_LENGTH} characters`,
+    )
+    .refine(isAllowedCompanyUserImageUrl, 'Image URL must be a valid URL'),
+});
 
 export type CreateInternalCompanyUserDto = CompanyUserInput;
 export type CreateExternalCompanyUserDto = Omit<CompanyUserInput, 'companyId'>;
 export type UpdateInternalCompanyUserDto = Partial<
-  Omit<CompanyUserInput, 'companyId' | 'password'>
+  Omit<CompanyUserInput, 'companyId' | 'password' | 'imageUrl'>
 > & {
   password?: string;
 };
 export type UpdateExternalCompanyUserDto = Partial<
-  Omit<CreateExternalCompanyUserDto, 'password'>
+  Omit<CreateExternalCompanyUserDto, 'password' | 'imageUrl'>
 > & {
   password?: string;
 };
+export type ReplaceCompanyUserImageDto = z.infer<
+  typeof replaceCompanyUserImageDtoSchema
+>;
+
+/** Example uploaded path for docs / tests. */
+export const COMPANY_USER_IMAGE_UPLOAD_EXAMPLE = `${COMPANY_USER_IMAGE_PUBLIC_PREFIX}/550e8400-e29b-41d4-a716-446655440000.png`;

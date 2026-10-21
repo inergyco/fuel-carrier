@@ -3,10 +3,15 @@ import fastifyStatic from '@fastify/static';
 import type { NestFastifyApplication } from '@nestjs/platform-fastify';
 import {
   COMPANY_LOGO_PUBLIC_PREFIX,
+  COMPANY_USER_IMAGE_PUBLIC_PREFIX,
   DRIVER_IMAGE_PUBLIC_PREFIX,
   IMAGE_UPLOAD_MAX_BYTES,
 } from './image-upload.constants';
-import { companyLogoStorage, driverImageStorage } from './image-storages';
+import {
+  companyLogoStorage,
+  companyUserImageStorage,
+  driverImageStorage,
+} from './image-storages';
 
 export { IMAGE_UPLOAD_MULTIPART_BODY_LIMIT } from './image-upload.constants';
 
@@ -14,6 +19,7 @@ export async function setupImageUploads(
   app: NestFastifyApplication,
 ): Promise<void> {
   await companyLogoStorage.ensureDirectory();
+  await companyUserImageStorage.ensureDirectory();
   await driverImageStorage.ensureDirectory();
 
   await app.register(fastifyMultipart, {
@@ -26,6 +32,11 @@ export async function setupImageUploads(
   await registerStaticRoot(app, {
     directory: companyLogoStorage.getDirectory(),
     prefix: `${COMPANY_LOGO_PUBLIC_PREFIX}/`,
+  });
+
+  await registerStaticRoot(app, {
+    directory: companyUserImageStorage.getDirectory(),
+    prefix: `${COMPANY_USER_IMAGE_PUBLIC_PREFIX}/`,
   });
 
   await registerStaticRoot(app, {

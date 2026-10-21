@@ -28,6 +28,7 @@ export type CompanyUserFormValues = {
   password: string
   nationalId: string
   email: string
+  imageUrl: string
   level: CompanyUser['level']
 }
 
@@ -41,6 +42,7 @@ export function companyUserToFormValues(
     password: '',
     nationalId: user?.nationalId ?? '',
     email: user?.email ?? '',
+    imageUrl: user?.imageUrl ?? '',
     level: user?.level ?? CompanyUserLevels.VIEWER,
   }
 }
@@ -51,6 +53,31 @@ export async function fetchCompanyUsers(
   return api
     .get('company-users', { searchParams: params })
     .json<PaginatedResult<CompanyUser>>()
+}
+
+export async function uploadCompanyUserImage(
+  file: File,
+): Promise<{ imageUrl: string }> {
+  const body = new FormData()
+  body.append('file', file)
+  return api.post('company-users/image', { body }).json<{ imageUrl: string }>()
+}
+
+export async function replaceCompanyUserImage(
+  id: string,
+  imageUrl: string,
+): Promise<CompanyUser> {
+  return api
+    .patch(`company-users/${id}/image`, { json: { imageUrl } })
+    .json<CompanyUser>()
+}
+
+export async function removeCompanyUserImage(id: string): Promise<CompanyUser> {
+  return api.delete(`company-users/${id}/image`).json<CompanyUser>()
+}
+
+export async function discardCompanyUserImage(imageUrl: string): Promise<void> {
+  await api.post('company-users/image/discard', { json: { imageUrl } })
 }
 
 export async function createCompanyUser(

@@ -60,6 +60,10 @@ export const toCompanyUserValidationMessages = (
     max: COMPANY_USER_EMAIL_MAX_LENGTH,
   }),
   emailInvalid: LL.validation.emailInvalid(),
+  imageUrlTooLong: LL.validation.driverImageUrlTooLong({
+    max: IMAGE_UPLOAD_URL_MAX_LENGTH,
+  }),
+  imageUrlInvalid: LL.validation.driverImageUrlInvalid(),
   passwordRequired: LL.validation.passwordRequired(),
   passwordStrength: {
     minLength: LL.validation.passwordMinLength({ min: PASSWORD_MIN_LENGTH }),

@@ -6,9 +6,11 @@
  * Declared locally so the API ESLint project service can type-check these
  * values; it does not resolve that package export reliably.
  */
-export const IMAGE_UPLOAD_MAX_BYTES = 2 * 1024 * 1024;
+export const IMAGE_UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
 export const IMAGE_UPLOAD_URL_MAX_LENGTH = 2048;
 export const COMPANY_LOGO_PUBLIC_PREFIX = '/api/uploads/company-logos';
+export const COMPANY_USER_IMAGE_PUBLIC_PREFIX =
+  '/api/uploads/company-user-images';
 export const DRIVER_IMAGE_PUBLIC_PREFIX = '/api/uploads/driver-images';
 
 /** Fastify body limit: image file size plus multipart overhead. */

@@ -8,7 +8,7 @@ import { User } from '../icons'
 import { ICON_STROKE_WIDTH } from './iconClassName'
 import { ImageUploader } from './ImageUploader'
 
-interface DriverImageUploaderProps {
+interface ProfileImageUploaderProps {
   imageUrl?: string | null
   error?: string
   disabled?: boolean
@@ -16,13 +16,13 @@ interface DriverImageUploaderProps {
   onRemove: () => Promise<void>
 }
 
-export function DriverImageUploader({
+export function ProfileImageUploader({
   imageUrl,
   error,
   disabled = false,
   onUploadFile,
   onRemove,
-}: DriverImageUploaderProps) {
+}: ProfileImageUploaderProps) {
   const { LL } = useI18nContext()
 
   return (

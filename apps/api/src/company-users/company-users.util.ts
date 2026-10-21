@@ -24,12 +24,14 @@ export type CreateCompanyUserPayload = {
   level: CompanyUserLevel;
   nationalId?: string | null;
   email?: string | null;
+  imageUrl?: string | null;
 };
 
 export type UpdateCompanyUserPayload = Partial<
-  Omit<CreateCompanyUserPayload, 'companyId' | 'password'>
+  Omit<CreateCompanyUserPayload, 'companyId' | 'password' | 'imageUrl'>
 > & {
   password?: string;
+  imageUrl?: string | null;
 };
 
 export type CompanyUserWithUser = typeof companyUsers.$inferSelect & {
@@ -42,6 +44,7 @@ export const COMPANY_USER_AUDIT_FIELDS = [
   'username',
   'nationalId',
   'email',
+  'imageUrl',
   'level',
   'password',
 ] as const;
@@ -56,6 +59,7 @@ export function mapCompanyUser(row: CompanyUserWithUser): CompanyUser {
     lastName: row.user.lastName,
     nationalId: row.nationalId,
     email: row.email,
+    imageUrl: row.imageUrl ?? null,
     level: row.level,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
   };
@@ -71,6 +75,7 @@ export function companyUserAuditRecord(
     username: user.username,
     nationalId: user.nationalId,
     email: user.email,
+    imageUrl: user.imageUrl,
     level: user.level,
     password: passwordChanged ? 'changed' : null,
   };

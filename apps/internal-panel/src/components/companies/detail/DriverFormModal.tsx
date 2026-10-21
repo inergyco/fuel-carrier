@@ -18,7 +18,7 @@ import {
 } from '@fuel-carrier/web-ui/form'
 import { useMutation } from '@fuel-carrier/web-ui/query'
 import {
-  DriverImageUploader,
+  ProfileImageUploader,
   FormInput,
   Modal,
   ModalActions,
@@ -203,7 +203,7 @@ export function DriverFormModal({
         noValidate
         className="flex flex-col gap-4"
       >
-        <DriverImageUploader
+        <ProfileImageUploader
           imageUrl={imageUrl}
           error={errors.imageUrl?.message?.toString()}
           disabled={isSaving}
