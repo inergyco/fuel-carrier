@@ -18,11 +18,11 @@ import {
 import { auditLogKeys, fetchAuditLogs } from '../../lib/api/audit-logs'
 import { getExternalAuditLogLabels } from '../../components/audit-logs/auditLogLabels'
 
-export const Route = createFileRoute('/_authenticated/audit-logs')({
+export const Route = createFileRoute('/panel/audit-logs')({
   validateSearch: parseAuditLogSearch,
   beforeLoad: function requireCompanyAdmin({ context }) {
     if (!isCompanyUserAdmin(context.user)) {
-      throw redirect({ to: '/' })
+      throw redirect({ to: '/panel' })
     }
   },
   component: AuditLogsPage,

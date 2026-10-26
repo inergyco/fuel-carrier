@@ -51,7 +51,7 @@ export function DashboardPage() {
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
-        to="/cars/$carId"
+        to="/panel/cars/$carId"
         params={{ carId: marker.carId }}
         className={cn(buttonClassName.outline, mapPopupActionClassName)}
       >
@@ -63,7 +63,7 @@ export function DashboardPage() {
   function renderCarDetailsLink(carId: string) {
     return (
       <Link
-        to="/cars/$carId"
+        to="/panel/cars/$carId"
         params={{ carId }}
         className={carDetailsLinkClassName}
       >
@@ -82,7 +82,7 @@ export function DashboardPage() {
     children: ReactNode,
   ) {
     return (
-      <Link to="/cars" search={search} className={fleetStatLinkClassName}>
+      <Link to="/panel/cars" search={search} className={fleetStatLinkClassName}>
         {children}
       </Link>
     )

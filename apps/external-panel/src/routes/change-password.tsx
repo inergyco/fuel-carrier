@@ -24,7 +24,7 @@ export const Route = createFileRoute('/change-password')({
       })
 
       if (!user.mustChangePassword) {
-        throw redirect({ to: '/' })
+        throw redirect({ to: '/panel' })
       }
 
       return { user }
@@ -83,7 +83,7 @@ function ChangePasswordPage() {
       const user = await changePassword(data)
       queryClient.setQueryData(authKeys.me, user)
       toast.success(LL.externalPanel.toast.passwordChanged())
-      await navigate({ to: '/' })
+      await navigate({ to: '/panel' })
     } catch (error) {
       if (
         isApiClientError(error) &&

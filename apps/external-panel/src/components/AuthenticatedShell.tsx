@@ -42,7 +42,7 @@ export function AuthenticatedShell({
       return state.location.pathname
     },
   })
-  const isMapPage = pathname === '/map'
+  const isMapPage = pathname === '/panel/map'
   const heading = useAppBarHeading(pathname, user.firstName)
   const navItems = useExternalNavItems(user)
 
@@ -92,7 +92,7 @@ export function AuthenticatedShell({
           ) : null
         }
         appBarActions={
-          pathname === '/' || pathname === '/map' ? (
+          pathname === '/panel' || pathname === '/panel/map' ? (
             <DashboardModeSwitcher />
           ) : null
         }

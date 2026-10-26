@@ -9,7 +9,7 @@ import { Link, useRouter } from '@tanstack/react-router'
 import type { MouseEvent } from 'react'
 
 interface AppBarBackLinkProps {
-  to: '/cars'
+  to: '/panel/cars'
   label: string
 }
 

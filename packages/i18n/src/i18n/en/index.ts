@@ -604,6 +604,15 @@ const en: BaseTranslation = {
     },
   },
   externalPanel: {
+    landing: {
+      brand: 'Fuel Carrier',
+      brandSubtitle: 'Company Portal',
+      headline: 'Fleet operations, simplified.',
+      description:
+        'Monitor vehicles, drivers, and fuel in one place — built for carrier partners.',
+      signIn: 'Sign in',
+      openPanel: 'Open panel',
+    },
     login: {
       title: 'Company Portal',
       subtitle: 'Secure access for carrier partners',
@@ -614,6 +623,7 @@ const en: BaseTranslation = {
       tooManyAttempts: 'Too many sign-in attempts. Try again later.',
       signingIn: 'Signing in',
       signIn: 'Sign in',
+      backToLanding: 'Back to home',
     },
     changePassword: {
       title: 'Set your password',

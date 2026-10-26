@@ -598,6 +598,15 @@ const fa: Translation = {
     },
   },
   externalPanel: {
+    landing: {
+      brand: "سوخت رسان",
+      brandSubtitle: "پرتال شرکت",
+      headline: "عملیات ناوگان، ساده‌تر.",
+      description:
+        "نظارت بر خودروها، رانندگان و سوخت در یک جا — ساخته‌شده برای شرکای حمل‌ونقل.",
+      signIn: "ورود",
+      openPanel: "ورود به پنل",
+    },
     login: {
       title: "پرتال شرکت",
       subtitle: "دسترسی امن برای شرکای حمل‌ونقل",
@@ -608,6 +617,7 @@ const fa: Translation = {
       tooManyAttempts: "تعداد تلاش برای ورود بیش از حد است. کمی بعد دوباره امتحان کنید.",
       signingIn: "در حال ورود",
       signIn: "ورود",
+      backToLanding: "بازگشت به خانه",
     },
     changePassword: {
       title: "رمز عبور خود را تنظیم کنید",

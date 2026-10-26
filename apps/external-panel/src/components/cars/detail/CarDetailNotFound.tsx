@@ -12,7 +12,7 @@ export function CarDetailNotFound() {
       router.history.back()
       return
     }
-    void navigate({ to: '/cars' })
+    void navigate({ to: '/panel/cars' })
   }
 
   return (

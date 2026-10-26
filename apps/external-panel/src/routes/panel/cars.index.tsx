@@ -25,7 +25,7 @@ import { useCarCustody } from '../../components/cars/useCarCustody'
 import { useCarMqttCredentials } from '../../components/cars/useCarMqttCredentials'
 import { CARS_PAGE_SIZE, useCars } from '../../components/cars/useCars'
 
-export const Route = createFileRoute('/_authenticated/cars/')({
+export const Route = createFileRoute('/panel/cars/')({
   validateSearch: parseResourceListSearch,
   component: CarsPage,
 })

@@ -1,5 +1,6 @@
 import {
   createFileRoute,
+  Link,
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
@@ -11,7 +12,14 @@ import {
 } from "@fuel-carrier/shared-validation/admin/login";
 import { zodResolver, Form, useForm } from "@fuel-carrier/web-ui/form";
 import { isApiClientError } from "@fuel-carrier/web-ui/api";
-import { Button, FormInput } from "@fuel-carrier/web-ui/ui";
+import { ArrowLeft } from "@fuel-carrier/web-ui/icons";
+import {
+  Button,
+  FormInput,
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+} from "@fuel-carrier/web-ui/ui";
+import { cn } from "@fuel-carrier/web-ui/utils";
 import { useMemo, useState } from "react";
 import { AuthPageShell } from "../components/AuthPageShell";
 import { login } from "../lib/api/auth";
@@ -58,7 +66,7 @@ function LoginPage() {
         await navigate({ to: "/change-password" });
         return;
       }
-      await navigate({ to: sanitizeRedirectPath(redirect) });
+      await navigate({ to: sanitizeRedirectPath(redirect, "/panel") });
     } catch (error) {
       if (
         isApiClientError(error) &&
@@ -127,6 +135,33 @@ function LoginPage() {
         >
           {LL.externalPanel.login.signIn()}
         </Button>
+
+        <div className="relative mt-2 flex items-center gap-3">
+          <div
+            aria-hidden
+            className="h-px flex-1 bg-gradient-to-r from-transparent to-base-content/10"
+          />
+          <Link
+            to="/"
+            className={cn(
+              "inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 py-2",
+              "text-xs font-medium tracking-wide text-base-content/50",
+              "transition-all hover:bg-base-content/5 hover:text-base-content/80",
+              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary/40",
+            )}
+          >
+            <ArrowLeft
+              className={cn(iconSmClassName, "rtl:rotate-180")}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {LL.externalPanel.login.backToLanding()}
+          </Link>
+          <div
+            aria-hidden
+            className="h-px flex-1 bg-gradient-to-l from-transparent to-base-content/10"
+          />
+        </div>
       </Form>
     </AuthPageShell>
   );

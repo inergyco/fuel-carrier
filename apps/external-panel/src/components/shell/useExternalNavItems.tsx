@@ -21,7 +21,7 @@ export function useExternalNavItems(user: AuthSession): PanelNavItem[] {
     function createNavItems() {
       const items: PanelNavItem[] = [
         {
-          to: "/",
+          to: "/panel",
           label: LL.externalPanel.nav.dashboard(),
           icon: <Home strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
           exact: true,
@@ -30,7 +30,7 @@ export function useExternalNavItems(user: AuthSession): PanelNavItem[] {
 
       if (isCompanyUserAdmin(user)) {
         items.push({
-          to: "/users",
+          to: "/panel/users",
           label: LL.externalPanel.nav.users(),
           icon: <Users strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         });
@@ -38,17 +38,17 @@ export function useExternalNavItems(user: AuthSession): PanelNavItem[] {
 
       items.push(
         {
-          to: "/drivers",
+          to: "/panel/drivers",
           label: LL.externalPanel.nav.drivers(),
           icon: <Truck strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         {
-          to: "/cars",
+          to: "/panel/cars",
           label: LL.externalPanel.nav.cars(),
           icon: <Car strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         },
         // {
-        //   to: '/map',
+        //   to: '/panel/map',
         //   label: LL.externalPanel.nav.map(),
         //   icon: <Map strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         // },
@@ -56,14 +56,14 @@ export function useExternalNavItems(user: AuthSession): PanelNavItem[] {
 
       if (isCompanyUserAdmin(user)) {
         items.push({
-          to: "/audit-logs",
+          to: "/panel/audit-logs",
           label: LL.externalPanel.nav.auditLogs(),
           icon: <ScrollText strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
         });
       }
 
       items.push({
-        to: "/settings",
+        to: "/panel/settings",
         label: LL.externalPanel.nav.settings(),
         icon: <Settings strokeWidth={ICON_STROKE_WIDTH} aria-hidden />,
       });

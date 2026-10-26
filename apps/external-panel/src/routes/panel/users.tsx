@@ -11,11 +11,11 @@ import { useCompanyUsers } from "../../components/users/useCompanyUsers";
 const USER_CARD_GRID_CLASS_NAME =
   "grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4";
 
-export const Route = createFileRoute("/_authenticated/users")({
+export const Route = createFileRoute("/panel/users")({
   validateSearch: parsePaginationSearch,
   beforeLoad: function requireCompanyAdmin({ context }) {
     if (!isCompanyUserAdmin(context.user)) {
-      throw redirect({ to: "/" });
+      throw redirect({ to: "/panel" });
     }
   },
   component: CompanyUsersPage,

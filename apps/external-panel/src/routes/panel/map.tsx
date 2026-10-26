@@ -16,7 +16,7 @@ import { cn } from '@fuel-carrier/web-ui/utils'
 import { useQuery } from '@fuel-carrier/web-ui/query'
 import { carKeys, fetchCars } from '../../lib/api/cars'
 
-export const Route = createFileRoute('/_authenticated/map')({
+export const Route = createFileRoute('/panel/map')({
   component: MapPage,
 })
 
@@ -32,7 +32,7 @@ function MapPage() {
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
-        to="/cars/$carId"
+        to="/panel/cars/$carId"
         params={{ carId: marker.carId }}
         className={cn(buttonClassName.outline, mapPopupActionClassName)}
       >

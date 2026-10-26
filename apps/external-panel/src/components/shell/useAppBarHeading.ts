@@ -5,7 +5,7 @@ import { useCarQuery } from '../cars/useCarQuery'
 export type AppBarHeading = {
   title: string
   subtitle?: string
-  backTo?: '/cars'
+  backTo?: '/panel/cars'
   backLabel?: string
 }
 
@@ -15,31 +15,31 @@ const staticHeadings: Record<
   string,
   (LL: LL, firstName: string) => AppBarHeading
 > = {
-  '/': (LL, firstName) => ({
+  '/panel': (LL, firstName) => ({
     title: LL.externalPanel.home.title(),
     subtitle: LL.externalPanel.home.welcome({ firstName }),
   }),
-  '/users': (LL) => ({
+  '/panel/users': (LL) => ({
     title: LL.externalPanel.users.title(),
     subtitle: LL.externalPanel.users.subtitle(),
   }),
-  '/drivers': (LL) => ({
+  '/panel/drivers': (LL) => ({
     title: LL.externalPanel.drivers.title(),
     subtitle: LL.externalPanel.drivers.subtitle(),
   }),
-  '/cars': (LL) => ({
+  '/panel/cars': (LL) => ({
     title: LL.externalPanel.cars.title(),
     subtitle: LL.externalPanel.cars.subtitle(),
   }),
-  '/map': (LL) => ({
+  '/panel/map': (LL) => ({
     title: LL.externalPanel.map.title(),
     subtitle: LL.externalPanel.map.subtitle(),
   }),
-  '/audit-logs': (LL) => ({
+  '/panel/audit-logs': (LL) => ({
     title: LL.externalPanel.auditLogs.title(),
     subtitle: LL.externalPanel.auditLogs.subtitle(),
   }),
-  '/settings': (LL) => ({
+  '/panel/settings': (LL) => ({
     title: LL.externalPanel.settings.title(),
     subtitle: LL.externalPanel.settings.subtitle(),
   }),
@@ -63,9 +63,9 @@ export function useAppBarHeading(
 }
 
 function getCarDetailId(pathname: string): string | undefined {
-  if (!pathname.startsWith('/cars/')) return undefined
+  if (!pathname.startsWith('/panel/cars/')) return undefined
 
-  const carId = pathname.slice('/cars/'.length)
+  const carId = pathname.slice('/panel/cars/'.length)
   if (!carId || carId.includes('/')) return undefined
 
   return carId
@@ -77,7 +77,7 @@ function getCarDetailAppBarHeading(
   LL: LL,
 ): AppBarHeading {
   const back = {
-    backTo: '/cars' as const,
+    backTo: '/panel/cars' as const,
     backLabel: LL.externalPanel.cars.backToList(),
   }
 

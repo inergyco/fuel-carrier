@@ -9,19 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PanelRouteImport } from './routes/panel'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedMapRouteImport } from './routes/_authenticated/map'
-import { Route as AuthenticatedDriversRouteImport } from './routes/_authenticated/drivers'
-import { Route as AuthenticatedCarsRouteImport } from './routes/_authenticated/cars'
-import { Route as AuthenticatedAuditLogsRouteImport } from './routes/_authenticated/audit-logs'
-import { Route as AuthenticatedCarsIndexRouteImport } from './routes/_authenticated/cars.index'
-import { Route as AuthenticatedCarsCarIdRouteImport } from './routes/_authenticated/cars.$carId'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as PanelIndexRouteImport } from './routes/panel/index'
+import { Route as PanelUsersRouteImport } from './routes/panel/users'
+import { Route as PanelSettingsRouteImport } from './routes/panel/settings'
+import { Route as PanelMapRouteImport } from './routes/panel/map'
+import { Route as PanelDriversRouteImport } from './routes/panel/drivers'
+import { Route as PanelCarsRouteImport } from './routes/panel/cars'
+import { Route as PanelAuditLogsRouteImport } from './routes/panel/audit-logs'
+import { Route as PanelCarsIndexRouteImport } from './routes/panel/cars.index'
+import { Route as PanelCarsCarIdRouteImport } from './routes/panel/cars.$carId'
 
+const PanelRoute = PanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -32,95 +38,100 @@ const ChangePasswordRoute = ChangePasswordRouteImport.update({
   path: '/change-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+const PanelIndexRoute = PanelIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
+const PanelUsersRoute = PanelUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+const PanelSettingsRoute = PanelSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedMapRoute = AuthenticatedMapRouteImport.update({
+const PanelMapRoute = PanelMapRouteImport.update({
   id: '/map',
   path: '/map',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedDriversRoute = AuthenticatedDriversRouteImport.update({
+const PanelDriversRoute = PanelDriversRouteImport.update({
   id: '/drivers',
   path: '/drivers',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedCarsRoute = AuthenticatedCarsRouteImport.update({
+const PanelCarsRoute = PanelCarsRouteImport.update({
   id: '/cars',
   path: '/cars',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedAuditLogsRoute = AuthenticatedAuditLogsRouteImport.update({
+const PanelAuditLogsRoute = PanelAuditLogsRouteImport.update({
   id: '/audit-logs',
   path: '/audit-logs',
-  getParentRoute: () => AuthenticatedRoute,
+  getParentRoute: () => PanelRoute,
 } as any)
-const AuthenticatedCarsIndexRoute = AuthenticatedCarsIndexRouteImport.update({
+const PanelCarsIndexRoute = PanelCarsIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthenticatedCarsRoute,
+  getParentRoute: () => PanelCarsRoute,
 } as any)
-const AuthenticatedCarsCarIdRoute = AuthenticatedCarsCarIdRouteImport.update({
+const PanelCarsCarIdRoute = PanelCarsCarIdRouteImport.update({
   id: '/$carId',
   path: '/$carId',
-  getParentRoute: () => AuthenticatedCarsRoute,
+  getParentRoute: () => PanelCarsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
-  '/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/cars': typeof AuthenticatedCarsRouteWithChildren
-  '/drivers': typeof AuthenticatedDriversRoute
-  '/map': typeof AuthenticatedMapRoute
-  '/settings': typeof AuthenticatedSettingsRoute
-  '/users': typeof AuthenticatedUsersRoute
-  '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
-  '/cars/': typeof AuthenticatedCarsIndexRoute
+  '/panel': typeof PanelRouteWithChildren
+  '/panel/audit-logs': typeof PanelAuditLogsRoute
+  '/panel/cars': typeof PanelCarsRouteWithChildren
+  '/panel/drivers': typeof PanelDriversRoute
+  '/panel/map': typeof PanelMapRoute
+  '/panel/settings': typeof PanelSettingsRoute
+  '/panel/users': typeof PanelUsersRoute
+  '/panel/': typeof PanelIndexRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
+  '/panel/cars/': typeof PanelCarsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
-  '/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/drivers': typeof AuthenticatedDriversRoute
-  '/map': typeof AuthenticatedMapRoute
-  '/settings': typeof AuthenticatedSettingsRoute
-  '/users': typeof AuthenticatedUsersRoute
-  '/': typeof AuthenticatedIndexRoute
-  '/cars/$carId': typeof AuthenticatedCarsCarIdRoute
-  '/cars': typeof AuthenticatedCarsIndexRoute
+  '/panel/audit-logs': typeof PanelAuditLogsRoute
+  '/panel/drivers': typeof PanelDriversRoute
+  '/panel/map': typeof PanelMapRoute
+  '/panel/settings': typeof PanelSettingsRoute
+  '/panel/users': typeof PanelUsersRoute
+  '/panel': typeof PanelIndexRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
+  '/panel/cars': typeof PanelCarsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
-  '/_authenticated/audit-logs': typeof AuthenticatedAuditLogsRoute
-  '/_authenticated/cars': typeof AuthenticatedCarsRouteWithChildren
-  '/_authenticated/drivers': typeof AuthenticatedDriversRoute
-  '/_authenticated/map': typeof AuthenticatedMapRoute
-  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
-  '/_authenticated/users': typeof AuthenticatedUsersRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/cars/$carId': typeof AuthenticatedCarsCarIdRoute
-  '/_authenticated/cars/': typeof AuthenticatedCarsIndexRoute
+  '/panel': typeof PanelRouteWithChildren
+  '/panel/audit-logs': typeof PanelAuditLogsRoute
+  '/panel/cars': typeof PanelCarsRouteWithChildren
+  '/panel/drivers': typeof PanelDriversRoute
+  '/panel/map': typeof PanelMapRoute
+  '/panel/settings': typeof PanelSettingsRoute
+  '/panel/users': typeof PanelUsersRoute
+  '/panel/': typeof PanelIndexRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
+  '/panel/cars/': typeof PanelCarsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,50 +139,62 @@ export interface FileRouteTypes {
     | '/'
     | '/change-password'
     | '/login'
-    | '/audit-logs'
-    | '/cars'
-    | '/drivers'
-    | '/map'
-    | '/settings'
-    | '/users'
-    | '/cars/$carId'
-    | '/cars/'
+    | '/panel'
+    | '/panel/audit-logs'
+    | '/panel/cars'
+    | '/panel/drivers'
+    | '/panel/map'
+    | '/panel/settings'
+    | '/panel/users'
+    | '/panel/'
+    | '/panel/cars/$carId'
+    | '/panel/cars/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/change-password'
     | '/login'
-    | '/audit-logs'
-    | '/drivers'
-    | '/map'
-    | '/settings'
-    | '/users'
-    | '/'
-    | '/cars/$carId'
-    | '/cars'
+    | '/panel/audit-logs'
+    | '/panel/drivers'
+    | '/panel/map'
+    | '/panel/settings'
+    | '/panel/users'
+    | '/panel'
+    | '/panel/cars/$carId'
+    | '/panel/cars'
   id:
     | '__root__'
-    | '/_authenticated'
+    | '/'
     | '/change-password'
     | '/login'
-    | '/_authenticated/audit-logs'
-    | '/_authenticated/cars'
-    | '/_authenticated/drivers'
-    | '/_authenticated/map'
-    | '/_authenticated/settings'
-    | '/_authenticated/users'
-    | '/_authenticated/'
-    | '/_authenticated/cars/$carId'
-    | '/_authenticated/cars/'
+    | '/panel'
+    | '/panel/audit-logs'
+    | '/panel/cars'
+    | '/panel/drivers'
+    | '/panel/map'
+    | '/panel/settings'
+    | '/panel/users'
+    | '/panel/'
+    | '/panel/cars/$carId'
+    | '/panel/cars/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  IndexRoute: typeof IndexRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
   LoginRoute: typeof LoginRoute
+  PanelRoute: typeof PanelRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/panel': {
+      id: '/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof PanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -186,120 +209,120 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChangePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
+    '/': {
+      id: '/'
+      path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/': {
-      id: '/_authenticated/'
+    '/panel/': {
+      id: '/panel/'
       path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/'
+      preLoaderRoute: typeof PanelIndexRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/users': {
-      id: '/_authenticated/users'
+    '/panel/users': {
+      id: '/panel/users'
       path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthenticatedUsersRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/users'
+      preLoaderRoute: typeof PanelUsersRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
+    '/panel/settings': {
+      id: '/panel/settings'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/settings'
+      preLoaderRoute: typeof PanelSettingsRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/map': {
-      id: '/_authenticated/map'
+    '/panel/map': {
+      id: '/panel/map'
       path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof AuthenticatedMapRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/map'
+      preLoaderRoute: typeof PanelMapRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/drivers': {
-      id: '/_authenticated/drivers'
+    '/panel/drivers': {
+      id: '/panel/drivers'
       path: '/drivers'
-      fullPath: '/drivers'
-      preLoaderRoute: typeof AuthenticatedDriversRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/drivers'
+      preLoaderRoute: typeof PanelDriversRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/cars': {
-      id: '/_authenticated/cars'
+    '/panel/cars': {
+      id: '/panel/cars'
       path: '/cars'
-      fullPath: '/cars'
-      preLoaderRoute: typeof AuthenticatedCarsRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/cars'
+      preLoaderRoute: typeof PanelCarsRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/audit-logs': {
-      id: '/_authenticated/audit-logs'
+    '/panel/audit-logs': {
+      id: '/panel/audit-logs'
       path: '/audit-logs'
-      fullPath: '/audit-logs'
-      preLoaderRoute: typeof AuthenticatedAuditLogsRouteImport
-      parentRoute: typeof AuthenticatedRoute
+      fullPath: '/panel/audit-logs'
+      preLoaderRoute: typeof PanelAuditLogsRouteImport
+      parentRoute: typeof PanelRoute
     }
-    '/_authenticated/cars/': {
-      id: '/_authenticated/cars/'
+    '/panel/cars/': {
+      id: '/panel/cars/'
       path: '/'
-      fullPath: '/cars/'
-      preLoaderRoute: typeof AuthenticatedCarsIndexRouteImport
-      parentRoute: typeof AuthenticatedCarsRoute
+      fullPath: '/panel/cars/'
+      preLoaderRoute: typeof PanelCarsIndexRouteImport
+      parentRoute: typeof PanelCarsRoute
     }
-    '/_authenticated/cars/$carId': {
-      id: '/_authenticated/cars/$carId'
+    '/panel/cars/$carId': {
+      id: '/panel/cars/$carId'
       path: '/$carId'
-      fullPath: '/cars/$carId'
-      preLoaderRoute: typeof AuthenticatedCarsCarIdRouteImport
-      parentRoute: typeof AuthenticatedCarsRoute
+      fullPath: '/panel/cars/$carId'
+      preLoaderRoute: typeof PanelCarsCarIdRouteImport
+      parentRoute: typeof PanelCarsRoute
     }
   }
 }
 
-interface AuthenticatedCarsRouteChildren {
-  AuthenticatedCarsCarIdRoute: typeof AuthenticatedCarsCarIdRoute
-  AuthenticatedCarsIndexRoute: typeof AuthenticatedCarsIndexRoute
+interface PanelCarsRouteChildren {
+  PanelCarsCarIdRoute: typeof PanelCarsCarIdRoute
+  PanelCarsIndexRoute: typeof PanelCarsIndexRoute
 }
 
-const AuthenticatedCarsRouteChildren: AuthenticatedCarsRouteChildren = {
-  AuthenticatedCarsCarIdRoute: AuthenticatedCarsCarIdRoute,
-  AuthenticatedCarsIndexRoute: AuthenticatedCarsIndexRoute,
+const PanelCarsRouteChildren: PanelCarsRouteChildren = {
+  PanelCarsCarIdRoute: PanelCarsCarIdRoute,
+  PanelCarsIndexRoute: PanelCarsIndexRoute,
 }
 
-const AuthenticatedCarsRouteWithChildren =
-  AuthenticatedCarsRoute._addFileChildren(AuthenticatedCarsRouteChildren)
-
-interface AuthenticatedRouteChildren {
-  AuthenticatedAuditLogsRoute: typeof AuthenticatedAuditLogsRoute
-  AuthenticatedCarsRoute: typeof AuthenticatedCarsRouteWithChildren
-  AuthenticatedDriversRoute: typeof AuthenticatedDriversRoute
-  AuthenticatedMapRoute: typeof AuthenticatedMapRoute
-  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
-  AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-}
-
-const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAuditLogsRoute: AuthenticatedAuditLogsRoute,
-  AuthenticatedCarsRoute: AuthenticatedCarsRouteWithChildren,
-  AuthenticatedDriversRoute: AuthenticatedDriversRoute,
-  AuthenticatedMapRoute: AuthenticatedMapRoute,
-  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
-  AuthenticatedUsersRoute: AuthenticatedUsersRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-}
-
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
+const PanelCarsRouteWithChildren = PanelCarsRoute._addFileChildren(
+  PanelCarsRouteChildren,
 )
 
+interface PanelRouteChildren {
+  PanelAuditLogsRoute: typeof PanelAuditLogsRoute
+  PanelCarsRoute: typeof PanelCarsRouteWithChildren
+  PanelDriversRoute: typeof PanelDriversRoute
+  PanelMapRoute: typeof PanelMapRoute
+  PanelSettingsRoute: typeof PanelSettingsRoute
+  PanelUsersRoute: typeof PanelUsersRoute
+  PanelIndexRoute: typeof PanelIndexRoute
+}
+
+const PanelRouteChildren: PanelRouteChildren = {
+  PanelAuditLogsRoute: PanelAuditLogsRoute,
+  PanelCarsRoute: PanelCarsRouteWithChildren,
+  PanelDriversRoute: PanelDriversRoute,
+  PanelMapRoute: PanelMapRoute,
+  PanelSettingsRoute: PanelSettingsRoute,
+  PanelUsersRoute: PanelUsersRoute,
+  PanelIndexRoute: PanelIndexRoute,
+}
+
+const PanelRouteWithChildren = PanelRoute._addFileChildren(PanelRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  IndexRoute: IndexRoute,
   ChangePasswordRoute: ChangePasswordRoute,
   LoginRoute: LoginRoute,
+  PanelRoute: PanelRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

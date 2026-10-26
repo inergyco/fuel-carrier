@@ -2168,6 +2168,32 @@ type RootTranslation = {
 		}
 	}
 	externalPanel: {
+		landing: {
+			/**
+			 * F​u​e​l​ ​C​a​r​r​i​e​r
+			 */
+			brand: string
+			/**
+			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
+			 */
+			brandSubtitle: string
+			/**
+			 * F​l​e​e​t​ ​o​p​e​r​a​t​i​o​n​s​,​ ​s​i​m​p​l​i​f​i​e​d​.
+			 */
+			headline: string
+			/**
+			 * M​o​n​i​t​o​r​ ​v​e​h​i​c​l​e​s​,​ ​d​r​i​v​e​r​s​,​ ​a​n​d​ ​f​u​e​l​ ​i​n​ ​o​n​e​ ​p​l​a​c​e​ ​—​ ​b​u​i​l​t​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s​.
+			 */
+			description: string
+			/**
+			 * S​i​g​n​ ​i​n
+			 */
+			signIn: string
+			/**
+			 * O​p​e​n​ ​p​a​n​e​l
+			 */
+			openPanel: string
+		}
 		login: {
 			/**
 			 * C​o​m​p​a​n​y​ ​P​o​r​t​a​l
@@ -2205,6 +2231,10 @@ type RootTranslation = {
 			 * S​i​g​n​ ​i​n
 			 */
 			signIn: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​h​o​m​e
+			 */
+			backToLanding: string
 		}
 		changePassword: {
 			/**
@@ -5667,6 +5697,32 @@ export type TranslationFunctions = {
 		}
 	}
 	externalPanel: {
+		landing: {
+			/**
+			 * Fuel Carrier
+			 */
+			brand: () => LocalizedString
+			/**
+			 * Company Portal
+			 */
+			brandSubtitle: () => LocalizedString
+			/**
+			 * Fleet operations, simplified.
+			 */
+			headline: () => LocalizedString
+			/**
+			 * Monitor vehicles, drivers, and fuel in one place — built for carrier partners.
+			 */
+			description: () => LocalizedString
+			/**
+			 * Sign in
+			 */
+			signIn: () => LocalizedString
+			/**
+			 * Open panel
+			 */
+			openPanel: () => LocalizedString
+		}
 		login: {
 			/**
 			 * Company Portal
@@ -5704,6 +5760,10 @@ export type TranslationFunctions = {
 			 * Sign in
 			 */
 			signIn: () => LocalizedString
+			/**
+			 * Back to home
+			 */
+			backToLanding: () => LocalizedString
 		}
 		changePassword: {
 			/**

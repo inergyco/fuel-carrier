@@ -1,31 +1,34 @@
 const AUTH_ONLY_PATH_PREFIXES = ['/login', '/change-password'] as const
 
-export function sanitizeRedirectPath(redirect: string | undefined): string {
+export function sanitizeRedirectPath(
+  redirect: string | undefined,
+  fallback = '/',
+): string {
   if (!redirect) {
-    return '/'
+    return fallback
   }
 
   if (redirect.startsWith('http://') || redirect.startsWith('https://')) {
     try {
       const url = new URL(redirect)
       if (url.origin !== window.location.origin) {
-        return '/'
+        return fallback
       }
 
-      return `${url.pathname}${url.search}${url.hash}` || '/'
+      return `${url.pathname}${url.search}${url.hash}` || fallback
     } catch {
-      return '/'
+      return fallback
     }
   }
 
   if (!redirect.startsWith('/')) {
-    return '/'
+    return fallback
   }
 
   if (
     AUTH_ONLY_PATH_PREFIXES.some((prefix) => redirect.startsWith(prefix))
   ) {
-    return '/'
+    return fallback
   }
 
   return redirect
@@ -37,6 +40,7 @@ export function redirectToLoginPage(redirect?: string) {
   }
 
   const path = sanitizeRedirectPath(redirect)
-  const search = path === '/' ? '' : `?redirect=${encodeURIComponent(path)}`
+  const search =
+    path === '/' || path === '/panel' ? '' : `?redirect=${encodeURIComponent(path)}`
   window.location.assign(`/login${search}`)
 }

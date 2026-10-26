@@ -4,7 +4,7 @@ import { AuthenticatedShell } from "../components/AuthenticatedShell";
 import { authKeys, fetchMe } from "../lib/api/auth";
 import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
 
-export const Route = createFileRoute("/_authenticated")({
+export const Route = createFileRoute("/panel")({
   beforeLoad: async ({ context, location }) => {
     try {
       const user = await context.queryClient.fetchQuery({
@@ -25,7 +25,9 @@ export const Route = createFileRoute("/_authenticated")({
 
       throw redirect({
         to: "/login",
-        search: { redirect: sanitizeRedirectPath(location.href) },
+        search: {
+          redirect: sanitizeRedirectPath(location.href, "/panel"),
+        },
       });
     }
   },

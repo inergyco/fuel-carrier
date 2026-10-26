@@ -50,7 +50,7 @@ export function CarsCardList({
               labels={labels}
               detailsLink={
                 <Link
-                  to="/cars/$carId"
+                  to="/panel/cars/$carId"
                   params={{ carId: car.id }}
                   className={carDetailsLinkClassName}
                 >
