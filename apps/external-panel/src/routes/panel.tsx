@@ -1,28 +1,18 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
-import { useQuery } from "@fuel-carrier/web-ui/query";
 import { AuthenticatedShell } from "../components/AuthenticatedShell";
 import { authKeys, fetchMe } from "../lib/api/auth";
 import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
 
 export const Route = createFileRoute("/panel")({
   beforeLoad: async ({ context, location }) => {
+    let user;
     try {
-      const user = await context.queryClient.fetchQuery({
+      user = await context.queryClient.fetchQuery({
         queryKey: authKeys.me,
         queryFn: fetchMe,
         staleTime: 60_000,
       });
-
-      if (user.mustChangePassword) {
-        throw redirect({ to: "/change-password" });
-      }
-
-      return { user };
-    } catch (error) {
-      if (error && typeof error === "object" && "isRedirect" in error) {
-        throw error;
-      }
-
+    } catch {
       throw redirect({
         to: "/login",
         search: {
@@ -30,20 +20,21 @@ export const Route = createFileRoute("/panel")({
         },
       });
     }
+
+    if (user.mustChangePassword) {
+      throw redirect({ to: "/change-password" });
+    }
+
+    return { user };
   },
   component: AuthenticatedLayout,
 });
 
 function AuthenticatedLayout() {
   const { user } = Route.useRouteContext();
-  const meQuery = useQuery({
-    queryKey: authKeys.me,
-    queryFn: fetchMe,
-    staleTime: 60_000,
-  });
 
   return (
-    <AuthenticatedShell user={meQuery.data ?? user}>
+    <AuthenticatedShell user={user}>
       <Outlet />
     </AuthenticatedShell>
   );

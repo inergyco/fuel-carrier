@@ -1,6 +1,7 @@
 import {
   createFileRoute,
   Link,
+  redirect,
   useNavigate,
   useSearch,
 } from "@tanstack/react-router";
@@ -19,16 +20,35 @@ import {
   ICON_STROKE_WIDTH,
   iconSmClassName,
 } from "@fuel-carrier/web-ui/ui";
-import { cn } from "@fuel-carrier/web-ui/utils";
+import { cn, sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
 import { useMemo, useState } from "react";
 import { AuthPageShell } from "../components/AuthPageShell";
-import { login } from "../lib/api/auth";
-import { sanitizeRedirectPath } from "@fuel-carrier/web-ui/utils";
+import { authKeys, fetchMe, login } from "../lib/api/auth";
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
   }),
+  beforeLoad: async ({ context, search }) => {
+    let user;
+    try {
+      user = await context.queryClient.fetchQuery({
+        queryKey: authKeys.me,
+        queryFn: fetchMe,
+        staleTime: 60_000,
+      });
+    } catch {
+      return;
+    }
+
+    if (user.mustChangePassword) {
+      throw redirect({ to: "/change-password" });
+    }
+
+    throw redirect({
+      to: sanitizeRedirectPath(search.redirect, "/panel"),
+    });
+  },
   component: LoginPage,
 });
 

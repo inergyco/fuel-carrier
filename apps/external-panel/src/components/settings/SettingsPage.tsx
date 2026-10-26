@@ -6,18 +6,19 @@ import {
   CompanyLogoUploader,
   useToast,
 } from "@fuel-carrier/web-ui/ui";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useRouter } from "@tanstack/react-router";
 import { authKeys, fetchMe } from "../../lib/api/auth";
 import { removeCompanyLogo, uploadCompanyLogo } from "../../lib/api/company";
 import { CompanyPricingSettings } from "./CompanyPricingSettings";
 
-const authenticatedRoute = getRouteApi("/_authenticated");
+const panelRoute = getRouteApi("/panel");
 
 export function SettingsPage() {
-  const { user } = authenticatedRoute.useRouteContext();
+  const { user } = panelRoute.useRouteContext();
   const canManageCompany = isCompanyUserAdmin(user);
   const { LL } = useI18nContext();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const toast = useToast();
   const meQuery = useQuery({
     queryKey: authKeys.me,
@@ -27,6 +28,7 @@ export function SettingsPage() {
 
   async function refreshSession() {
     await queryClient.invalidateQueries({ queryKey: authKeys.me });
+    await router.invalidate();
   }
 
   async function handleUploadLogo(file: File) {

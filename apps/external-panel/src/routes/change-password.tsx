@@ -16,25 +16,22 @@ import { authKeys, changePassword, fetchMe } from '../lib/api/auth'
 
 export const Route = createFileRoute('/change-password')({
   beforeLoad: async ({ context }) => {
+    let user
     try {
-      const user = await context.queryClient.fetchQuery({
+      user = await context.queryClient.fetchQuery({
         queryKey: authKeys.me,
         queryFn: fetchMe,
         staleTime: 0,
       })
-
-      if (!user.mustChangePassword) {
-        throw redirect({ to: '/panel' })
-      }
-
-      return { user }
-    } catch (error) {
-      if (error && typeof error === 'object' && 'isRedirect' in error) {
-        throw error
-      }
-
+    } catch {
       throw redirect({ to: '/login', search: { redirect: undefined } })
     }
+
+    if (!user.mustChangePassword) {
+      throw redirect({ to: '/panel' })
+    }
+
+    return { user }
   },
   component: ChangePasswordPage,
 })

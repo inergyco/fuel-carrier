@@ -11,7 +11,7 @@ import { CarDetailNotFound } from './detail/CarDetailNotFound'
 import { CarOverviewSection } from './detail/CarOverviewSection'
 import { CarTanksSection } from './detail/CarTanksSection'
 
-const authenticatedRouteApi = getRouteApi('/_authenticated')
+const panelRouteApi = getRouteApi('/panel')
 
 interface CarDetailPageProps {
   carId: string
@@ -19,7 +19,7 @@ interface CarDetailPageProps {
 
 export function CarDetailPage({ carId }: CarDetailPageProps) {
   const { LL } = useI18nContext()
-  const { user } = authenticatedRouteApi.useRouteContext()
+  const { user } = panelRouteApi.useRouteContext()
   const canManage = isCompanyUserAdmin(user)
   const { carQuery, isNotFound } = useCarQuery(carId)
   const custody = useCarCustody()

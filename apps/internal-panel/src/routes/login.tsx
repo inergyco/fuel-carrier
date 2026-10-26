@@ -1,12 +1,12 @@
-import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate, useSearch } from '@tanstack/react-router'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { ApiErrorCode } from '@fuel-carrier/shared-types'
 import { zodResolver, Form, useForm } from '@fuel-carrier/web-ui/form'
 import { isApiClientError } from '@fuel-carrier/web-ui/api'
 import { Button, FormInput, LocaleControls } from '@fuel-carrier/web-ui/ui'
-import { useMemo, useState } from 'react'
-import { login } from '../lib/api/auth'
 import { sanitizeRedirectPath } from '@fuel-carrier/web-ui/utils'
+import { useMemo, useState } from 'react'
+import { authKeys, fetchMe, login } from '../lib/api/auth'
 import {
   createLoginDtoSchema,
   type LoginDto,
@@ -16,6 +16,21 @@ export const Route = createFileRoute('/login')({
   validateSearch: (search: Record<string, unknown>) => ({
     redirect: typeof search.redirect === 'string' ? search.redirect : undefined,
   }),
+  beforeLoad: async ({ context, search }) => {
+    try {
+      await context.queryClient.fetchQuery({
+        queryKey: authKeys.me,
+        queryFn: fetchMe,
+        staleTime: 60_000,
+      })
+    } catch {
+      return
+    }
+
+    throw redirect({
+      to: sanitizeRedirectPath(search.redirect),
+    })
+  },
   component: LoginPage,
 })
 
