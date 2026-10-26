@@ -17,6 +17,9 @@ const storageKeys = getPanelStorageKeys(panelId);
 
 setApiUnauthorizedHandler(() => {
   broadcastAuthLogout(panelId);
+  const { pathname } = window.location;
+  // Guests on landing/login stay put — don't force /login.
+  if (pathname === "/" || pathname.startsWith("/login")) return false;
   redirectToLoginPage(window.location.href);
 });
 

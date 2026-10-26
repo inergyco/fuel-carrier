@@ -1,4 +1,5 @@
-type UnauthorizedHandler = () => void
+/** Return `false` to skip arming the one-shot redirect (e.g. public landing). */
+type UnauthorizedHandler = () => boolean | void
 
 let unauthorizedHandler: UnauthorizedHandler | null = null
 let unauthorizedRedirectScheduled = false
@@ -19,8 +20,11 @@ export function notifyApiUnauthorized(): void {
     return
   }
 
+  if (unauthorizedHandler() === false) {
+    return
+  }
+
   unauthorizedRedirectScheduled = true
-  unauthorizedHandler()
 }
 
 /** Login 401s are expected (bad credentials) — do not treat as session expiry. */
