@@ -2178,21 +2178,179 @@ type RootTranslation = {
 			 */
 			brandSubtitle: string
 			/**
-			 * F​l​e​e​t​ ​o​p​e​r​a​t​i​o​n​s​,​ ​s​i​m​p​l​i​f​i​e​d​.
+			 * F​l​e​e​t​ ​o​p​e​r​a​t​i​o​n​s​,​ ​s​i​m​p​l​i​f​i​e​d​ ​f​o​r​ ​t​h​e​ ​t​e​a​m​s​ ​t​h​a​t​ ​k​e​e​p​ ​f​u​e​l​ ​m​o​v​i​n​g​.
 			 */
 			headline: string
 			/**
-			 * M​o​n​i​t​o​r​ ​v​e​h​i​c​l​e​s​,​ ​d​r​i​v​e​r​s​,​ ​a​n​d​ ​f​u​e​l​ ​i​n​ ​o​n​e​ ​p​l​a​c​e​ ​—​ ​b​u​i​l​t​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s​.
+			 * M​o​n​i​t​o​r​ ​v​e​h​i​c​l​e​s​,​ ​d​r​i​v​e​r​s​,​ ​t​a​n​k​ ​l​e​v​e​l​s​,​ ​a​n​d​ ​c​u​s​t​o​d​y​ ​i​n​ ​o​n​e​ ​c​a​l​m​ ​w​o​r​k​s​p​a​c​e​ ​—​ ​b​u​i​l​t​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s​ ​w​h​o​ ​n​e​e​d​ ​c​l​a​r​i​t​y​ ​o​n​ ​t​h​e​ ​d​e​p​o​t​ ​f​l​o​o​r​ ​a​n​d​ ​o​n​ ​t​h​e​ ​r​o​a​d​.
 			 */
 			description: string
 			/**
-			 * S​i​g​n​ ​i​n
+			 * E​n​t​e​r​ ​t​h​e​ ​p​o​r​t​a​l
 			 */
 			signIn: string
 			/**
 			 * O​p​e​n​ ​p​a​n​e​l
 			 */
 			openPanel: string
+			chapters: {
+				/**
+				 * Y​o​u​r​ ​f​l​e​e​t​,​ ​a​t​ ​a​ ​g​l​a​n​c​e
+				 */
+				fleetTitle: string
+				/**
+				 * E​v​e​r​y​ ​t​r​u​c​k​,​ ​t​a​n​k​,​ ​a​n​d​ ​a​s​s​i​g​n​m​e​n​t​ ​—​ ​w​i​t​h​o​u​t​ ​t​h​e​ ​n​o​i​s​e​.
+				 */
+				fleetHelper: string
+				/**
+				 * O​p​e​n​ ​a​ ​s​i​n​g​l​e​ ​o​p​e​r​a​t​i​n​g​ ​v​i​e​w​ ​o​f​ ​y​o​u​r​ ​c​a​r​r​i​e​r​ ​f​l​e​e​t​:​ ​v​e​h​i​c​l​e​ ​s​t​a​t​u​s​,​ ​f​u​e​l​ ​v​o​l​u​m​e​,​ ​c​u​s​t​o​d​y​,​ ​a​n​d​ ​w​h​o​ ​i​s​ ​r​e​s​p​o​n​s​i​b​l​e​ ​r​i​g​h​t​ ​n​o​w​.​ ​S​p​o​t​ ​w​h​a​t​ ​n​e​e​d​s​ ​a​t​t​e​n​t​i​o​n​ ​b​e​f​o​r​e​ ​i​t​ ​b​e​c​o​m​e​s​ ​a​ ​c​a​l​l​ ​f​r​o​m​ ​t​h​e​ ​y​a​r​d​.
+				 */
+				fleetBody: string
+				/**
+				 * L​i​v​e​ ​o​n​ ​t​h​e​ ​r​o​a​d
+				 */
+				liveTitle: string
+				/**
+				 * K​n​o​w​ ​w​h​e​r​e​ ​m​o​b​i​l​e​ ​u​n​i​t​s​ ​a​r​e​ ​—​ ​a​n​d​ ​w​h​a​t​ ​t​h​e​y​ ​a​r​e​ ​d​o​i​n​g​.
+				 */
+				liveHelper: string
+				/**
+				 * F​o​l​l​o​w​ ​f​u​e​l​i​n​g​ ​u​n​i​t​s​ ​a​s​ ​t​h​e​y​ ​m​o​v​e​ ​b​e​t​w​e​e​n​ ​s​i​t​e​s​.​ ​L​i​v​e​ ​s​t​a​t​u​s​ ​a​n​d​ ​l​o​c​a​t​i​o​n​ ​h​e​l​p​ ​d​i​s​p​a​t​c​h​e​r​s​ ​a​n​s​w​e​r​ ​“​w​h​e​r​e​ ​i​s​ ​i​t​?​”​ ​i​n​ ​s​e​c​o​n​d​s​,​ ​a​n​d​ ​k​e​e​p​ ​f​i​e​l​d​ ​t​e​a​m​s​ ​a​l​i​g​n​e​d​ ​w​i​t​h​ ​t​h​e​ ​p​l​a​n​ ​y​o​u​ ​a​l​r​e​a​d​y​ ​a​p​p​r​o​v​e​d​.
+				 */
+				liveBody: string
+				/**
+				 * C​o​n​t​r​o​l​ ​t​h​a​t​ ​s​c​a​l​e​s
+				 */
+				controlTitle: string
+				/**
+				 * D​r​i​v​e​r​s​,​ ​c​u​s​t​o​d​y​,​ ​a​n​d​ ​p​r​i​c​i​n​g​ ​s​t​a​y​ ​i​n​ ​s​y​n​c​ ​w​i​t​h​ ​t​h​e​ ​d​e​p​o​t​.
+				 */
+				controlHelper: string
+				/**
+				 * A​s​ ​y​o​u​r​ ​n​e​t​w​o​r​k​ ​g​r​o​w​s​,​ ​k​e​e​p​ ​p​e​o​p​l​e​,​ ​v​e​h​i​c​l​e​s​,​ ​a​n​d​ ​c​o​m​p​a​n​y​ ​p​r​i​c​i​n​g​ ​a​l​i​g​n​e​d​ ​w​i​t​h​ ​h​o​w​ ​y​o​u​ ​a​c​t​u​a​l​l​y​ ​o​p​e​r​a​t​e​.​ ​L​e​s​s​ ​s​p​r​e​a​d​s​h​e​e​t​ ​c​h​a​s​e​,​ ​m​o​r​e​ ​c​o​n​f​i​d​e​n​t​ ​d​e​c​i​s​i​o​n​s​ ​f​r​o​m​ ​a​ ​p​o​r​t​a​l​ ​y​o​u​r​ ​p​a​r​t​n​e​r​s​ ​a​l​r​e​a​d​y​ ​t​r​u​s​t​.
+				 */
+				controlBody: string
+			}
+			cta: {
+				/**
+				 * Y​o​u​r​ ​f​l​e​e​t​ ​i​s​ ​w​a​i​t​i​n​g​.
+				 */
+				title: string
+				/**
+				 * S​t​e​p​ ​i​n​t​o​ ​t​h​e​ ​c​o​m​p​a​n​y​ ​p​o​r​t​a​l​ ​a​n​d​ ​c​o​n​t​i​n​u​e​ ​w​h​e​r​e​ ​o​p​e​r​a​t​i​o​n​s​ ​l​e​f​t​ ​o​f​f​ ​—​ ​l​i​v​e​ ​s​t​a​t​u​s​,​ ​c​u​s​t​o​d​y​,​ ​a​n​d​ ​p​r​i​c​i​n​g​ ​i​n​ ​o​n​e​ ​p​l​a​c​e​.
+				 */
+				body: string
+				/**
+				 * S​t​a​r​t​ ​o​p​e​r​a​t​i​n​g
+				 */
+				signIn: string
+				/**
+				 * O​p​e​n​ ​p​a​n​e​l
+				 */
+				openPanel: string
+			}
+			header: {
+				/**
+				 * F​l​e​e​t
+				 */
+				fleet: string
+				/**
+				 * L​i​v​e
+				 */
+				live: string
+				/**
+				 * C​o​n​t​r​o​l
+				 */
+				control: string
+				/**
+				 * E​n​t​e​r​ ​p​o​r​t​a​l
+				 */
+				signIn: string
+				/**
+				 * L​o​g​i​n
+				 */
+				signInShort: string
+			}
+			bridges: {
+				/**
+				 * B​u​i​l​t​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s​ ​w​h​o​ ​m​o​v​e​ ​f​u​e​l​ ​e​v​e​r​y​ ​d​a​y​ ​—​ ​a​n​d​ ​n​e​e​d​ ​t​h​e​ ​p​a​n​e​l​ ​t​o​ ​s​t​a​y​ ​o​u​t​ ​o​f​ ​t​h​e​ ​w​a​y​.
+				 */
+				afterHero: string
+				/**
+				 * O​n​e​ ​v​i​e​w​.​ ​E​v​e​r​y​ ​v​e​h​i​c​l​e​.​ ​Z​e​r​o​ ​g​u​e​s​s​w​o​r​k​ ​w​h​e​n​ ​t​h​e​ ​y​a​r​d​ ​g​e​t​s​ ​b​u​s​y​.
+				 */
+				afterFleet: string
+				/**
+				 * T​e​l​e​m​e​t​r​y​ ​t​h​a​t​ ​k​e​e​p​s​ ​t​h​e​ ​r​o​u​t​e​ ​u​n​d​e​r​ ​c​o​n​t​r​o​l​,​ ​n​o​t​ ​b​u​r​i​e​d​ ​i​n​ ​a​n​o​t​h​e​r​ ​a​p​p​.
+				 */
+				afterLive: string
+				/**
+				 * C​u​s​t​o​d​y​,​ ​d​r​i​v​e​r​s​,​ ​a​n​d​ ​p​r​i​c​i​n​g​ ​—​ ​a​l​i​g​n​e​d​ ​w​i​t​h​ ​h​o​w​ ​y​o​u​r​ ​d​e​p​o​t​ ​a​c​t​u​a​l​l​y​ ​r​u​n​s​.
+				 */
+				afterControl: string
+			}
+			footer: {
+				/**
+				 * P​r​e​c​i​s​i​o​n​ ​f​u​e​l​ ​l​o​g​i​s​t​i​c​s​ ​f​o​r​ ​c​a​r​r​i​e​r​ ​p​a​r​t​n​e​r​s​.
+				 */
+				tagline: string
+				/**
+				 * D​e​s​i​g​n​e​d​ ​a​n​d​ ​o​p​e​r​a​t​e​d​ ​b​y​ ​I​n​e​r​g​y​ ​—​ ​t​h​e​ ​p​l​a​t​f​o​r​m​ ​b​e​h​i​n​d​ ​y​o​u​r​ ​c​o​m​p​a​n​y​ ​p​o​r​t​a​l​.
+				 */
+				note: string
+				/**
+				 * S​i​g​n​ ​i​n​ ​t​o​ ​o​p​e​r​a​t​e
+				 */
+				signIn: string
+				/**
+				 * E​x​p​l​o​r​e
+				 */
+				exploreTitle: string
+				/**
+				 * P​o​r​t​a​l
+				 */
+				portalTitle: string
+				/**
+				 * C​o​m​p​a​n​y
+				 */
+				companyTitle: string
+				/**
+				 * F​l​e​e​t​ ​o​v​e​r​v​i​e​w
+				 */
+				exploreFleet: string
+				/**
+				 * L​i​v​e​ ​o​p​e​r​a​t​i​o​n​s
+				 */
+				exploreLive: string
+				/**
+				 * C​o​n​t​r​o​l​ ​&​ ​c​u​s​t​o​d​y
+				 */
+				exploreControl: string
+				/**
+				 * P​a​r​t​n​e​r​ ​a​c​c​e​s​s
+				 */
+				portalAccess: string
+				/**
+				 * S​e​c​u​r​e​ ​c​o​m​p​a​n​y​ ​s​i​g​n​-​i​n
+				 */
+				portalSecure: string
+				/**
+				 * B​u​i​l​t​ ​f​o​r​ ​d​e​p​o​t​ ​a​n​d​ ​d​i​s​p​a​t​c​h​ ​t​e​a​m​s
+				 */
+				portalSupport: string
+				/**
+				 * A​b​o​u​t​ ​I​n​e​r​g​y
+				 */
+				companyAbout: string
+				/**
+				 * i​n​e​r​g​y​.​i​r
+				 */
+				companySite: string
+				/**
+				 * F​u​e​l​ ​C​a​r​r​i​e​r​ ​p​l​a​t​f​o​r​m
+				 */
+				companyProduct: string
+			}
 		}
 		login: {
 			/**
@@ -5707,21 +5865,179 @@ export type TranslationFunctions = {
 			 */
 			brandSubtitle: () => LocalizedString
 			/**
-			 * Fleet operations, simplified.
+			 * Fleet operations, simplified for the teams that keep fuel moving.
 			 */
 			headline: () => LocalizedString
 			/**
-			 * Monitor vehicles, drivers, and fuel in one place — built for carrier partners.
+			 * Monitor vehicles, drivers, tank levels, and custody in one calm workspace — built for carrier partners who need clarity on the depot floor and on the road.
 			 */
 			description: () => LocalizedString
 			/**
-			 * Sign in
+			 * Enter the portal
 			 */
 			signIn: () => LocalizedString
 			/**
 			 * Open panel
 			 */
 			openPanel: () => LocalizedString
+			chapters: {
+				/**
+				 * Your fleet, at a glance
+				 */
+				fleetTitle: () => LocalizedString
+				/**
+				 * Every truck, tank, and assignment — without the noise.
+				 */
+				fleetHelper: () => LocalizedString
+				/**
+				 * Open a single operating view of your carrier fleet: vehicle status, fuel volume, custody, and who is responsible right now. Spot what needs attention before it becomes a call from the yard.
+				 */
+				fleetBody: () => LocalizedString
+				/**
+				 * Live on the road
+				 */
+				liveTitle: () => LocalizedString
+				/**
+				 * Know where mobile units are — and what they are doing.
+				 */
+				liveHelper: () => LocalizedString
+				/**
+				 * Follow fueling units as they move between sites. Live status and location help dispatchers answer “where is it?” in seconds, and keep field teams aligned with the plan you already approved.
+				 */
+				liveBody: () => LocalizedString
+				/**
+				 * Control that scales
+				 */
+				controlTitle: () => LocalizedString
+				/**
+				 * Drivers, custody, and pricing stay in sync with the depot.
+				 */
+				controlHelper: () => LocalizedString
+				/**
+				 * As your network grows, keep people, vehicles, and company pricing aligned with how you actually operate. Less spreadsheet chase, more confident decisions from a portal your partners already trust.
+				 */
+				controlBody: () => LocalizedString
+			}
+			cta: {
+				/**
+				 * Your fleet is waiting.
+				 */
+				title: () => LocalizedString
+				/**
+				 * Step into the company portal and continue where operations left off — live status, custody, and pricing in one place.
+				 */
+				body: () => LocalizedString
+				/**
+				 * Start operating
+				 */
+				signIn: () => LocalizedString
+				/**
+				 * Open panel
+				 */
+				openPanel: () => LocalizedString
+			}
+			header: {
+				/**
+				 * Fleet
+				 */
+				fleet: () => LocalizedString
+				/**
+				 * Live
+				 */
+				live: () => LocalizedString
+				/**
+				 * Control
+				 */
+				control: () => LocalizedString
+				/**
+				 * Enter portal
+				 */
+				signIn: () => LocalizedString
+				/**
+				 * Login
+				 */
+				signInShort: () => LocalizedString
+			}
+			bridges: {
+				/**
+				 * Built for carrier partners who move fuel every day — and need the panel to stay out of the way.
+				 */
+				afterHero: () => LocalizedString
+				/**
+				 * One view. Every vehicle. Zero guesswork when the yard gets busy.
+				 */
+				afterFleet: () => LocalizedString
+				/**
+				 * Telemetry that keeps the route under control, not buried in another app.
+				 */
+				afterLive: () => LocalizedString
+				/**
+				 * Custody, drivers, and pricing — aligned with how your depot actually runs.
+				 */
+				afterControl: () => LocalizedString
+			}
+			footer: {
+				/**
+				 * Precision fuel logistics for carrier partners.
+				 */
+				tagline: () => LocalizedString
+				/**
+				 * Designed and operated by Inergy — the platform behind your company portal.
+				 */
+				note: () => LocalizedString
+				/**
+				 * Sign in to operate
+				 */
+				signIn: () => LocalizedString
+				/**
+				 * Explore
+				 */
+				exploreTitle: () => LocalizedString
+				/**
+				 * Portal
+				 */
+				portalTitle: () => LocalizedString
+				/**
+				 * Company
+				 */
+				companyTitle: () => LocalizedString
+				/**
+				 * Fleet overview
+				 */
+				exploreFleet: () => LocalizedString
+				/**
+				 * Live operations
+				 */
+				exploreLive: () => LocalizedString
+				/**
+				 * Control & custody
+				 */
+				exploreControl: () => LocalizedString
+				/**
+				 * Partner access
+				 */
+				portalAccess: () => LocalizedString
+				/**
+				 * Secure company sign-in
+				 */
+				portalSecure: () => LocalizedString
+				/**
+				 * Built for depot and dispatch teams
+				 */
+				portalSupport: () => LocalizedString
+				/**
+				 * About Inergy
+				 */
+				companyAbout: () => LocalizedString
+				/**
+				 * inergy.ir
+				 */
+				companySite: () => LocalizedString
+				/**
+				 * Fuel Carrier platform
+				 */
+				companyProduct: () => LocalizedString
+			}
 		}
 		login: {
 			/**

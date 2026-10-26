@@ -6,6 +6,15 @@ settings:
 
 catalogs:
   default:
+    '@tanstack/react-query':
+      specifier: ^5.90.12
+      version: 5.101.0
+    leaflet:
+      specifier: ^1.9.4
+      version: 1.9.4
+    react-leaflet:
+      specifier: ^5.0.0
+      version: 5.0.0
     zod:
       specifier: ^4.4.3
       version: 4.4.3
@@ -224,6 +233,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.157.16
         version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      gsap:
+        specifier: ^3.15.0
+        version: 3.15.0
       react:
         specifier: ^19.2.6
         version: 19.2.7
@@ -4357,6 +4369,9 @@ packages:
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+
+  gsap@3.15.0:
+    resolution: {integrity: sha512-dMW4CWBTUK1AEEDeZc1g4xpPGIrSf9fJF960qbTZmN/QwZIWY5wgliS6JWl9/25fpTGJrMRtSjGtOmPnfjZB+A==}
 
   handlebars@4.7.9:
     resolution: {integrity: sha512-4E71E0rpOaQuJR2A3xDZ+GM1HyWYv1clR58tC8emQNeQe3RH7MAzSbat+V0wG78LQBo6m6bzSG/L4pBuCsgnUQ==}
@@ -10801,6 +10816,8 @@ snapshots:
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
+
+  gsap@3.15.0: {}
 
   handlebars@4.7.9:
     dependencies:

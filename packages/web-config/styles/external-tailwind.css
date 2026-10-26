@@ -44,12 +44,13 @@
   default: true;
   prefersdark: false;
   color-scheme: light;
-  --color-base-100: oklch(98.5% 0.012 265);
-  --color-base-200: oklch(96% 0.016 265);
-  --color-base-300: oklch(92% 0.02 265);
-  --color-base-content: oklch(26% 0.035 265);
-  --color-primary: oklch(28% 0.07 265);
-  --color-primary-content: oklch(98% 0.005 265);
+  /* Soft navy mist — not pure white */
+  --color-base-100: oklch(93.5% 0.022 265);
+  --color-base-200: oklch(89.5% 0.028 265);
+  --color-base-300: oklch(84% 0.032 265);
+  --color-base-content: oklch(22% 0.045 265);
+  --color-primary: oklch(32% 0.095 265);
+  --color-primary-content: oklch(96% 0.015 265);
   --color-secondary: oklch(48% 0.14 295);
   --color-secondary-content: oklch(98% 0.005 295);
   --color-accent: oklch(52% 0.14 165);
@@ -78,10 +79,10 @@
 
 /*
   Card surfaces + fuel-level bands.
-  Cards: pure white on light; elevated navy slate on dark.
+  Cards: lifted navy mist on light (not white); elevated slate on dark.
 */
 [data-theme="external-light"] {
-  --panel-card: oklch(100% 0 0);
+  --panel-card: oklch(96% 0.018 265);
   --fuel-level-high: oklch(42% 0.14 145);
   --fuel-level-mid-high: oklch(42% 0.13 255);
   --fuel-level-mid-low: oklch(55% 0.15 55);

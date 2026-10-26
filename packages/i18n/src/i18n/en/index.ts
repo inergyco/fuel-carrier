@@ -607,11 +607,63 @@ const en: BaseTranslation = {
     landing: {
       brand: 'Fuel Carrier',
       brandSubtitle: 'Company Portal',
-      headline: 'Fleet operations, simplified.',
+      headline: 'Fleet operations, simplified for the teams that keep fuel moving.',
       description:
-        'Monitor vehicles, drivers, and fuel in one place — built for carrier partners.',
-      signIn: 'Sign in',
+        'Monitor vehicles, drivers, tank levels, and custody in one calm workspace — built for carrier partners who need clarity on the depot floor and on the road.',
+      signIn: 'Enter the portal',
       openPanel: 'Open panel',
+      chapters: {
+        fleetTitle: 'Your fleet, at a glance',
+        fleetHelper: 'Every truck, tank, and assignment — without the noise.',
+        fleetBody:
+          'Open a single operating view of your carrier fleet: vehicle status, fuel volume, custody, and who is responsible right now. Spot what needs attention before it becomes a call from the yard.',
+        liveTitle: 'Live on the road',
+        liveHelper: 'Know where mobile units are — and what they are doing.',
+        liveBody:
+          'Follow fueling units as they move between sites. Live status and location help dispatchers answer “where is it?” in seconds, and keep field teams aligned with the plan you already approved.',
+        controlTitle: 'Control that scales',
+        controlHelper: 'Drivers, custody, and pricing stay in sync with the depot.',
+        controlBody:
+          'As your network grows, keep people, vehicles, and company pricing aligned with how you actually operate. Less spreadsheet chase, more confident decisions from a portal your partners already trust.',
+      },
+      cta: {
+        title: 'Your fleet is waiting.',
+        body: 'Step into the company portal and continue where operations left off — live status, custody, and pricing in one place.',
+        signIn: 'Start operating',
+        openPanel: 'Open panel',
+      },
+      header: {
+        fleet: 'Fleet',
+        live: 'Live',
+        control: 'Control',
+        signIn: 'Enter portal',
+        signInShort: 'Login',
+      },
+      bridges: {
+        afterHero:
+          'Built for carrier partners who move fuel every day — and need the panel to stay out of the way.',
+        afterFleet: 'One view. Every vehicle. Zero guesswork when the yard gets busy.',
+        afterLive: 'Telemetry that keeps the route under control, not buried in another app.',
+        afterControl:
+          'Custody, drivers, and pricing — aligned with how your depot actually runs.',
+      },
+      footer: {
+        tagline: 'Precision fuel logistics for carrier partners.',
+        note: 'Designed and operated by Inergy — the platform behind your company portal.',
+        signIn: 'Sign in to operate',
+        exploreTitle: 'Explore',
+        portalTitle: 'Portal',
+        companyTitle: 'Company',
+        exploreFleet: 'Fleet overview',
+        exploreLive: 'Live operations',
+        exploreControl: 'Control & custody',
+        portalAccess: 'Partner access',
+        portalSecure: 'Secure company sign-in',
+        portalSupport: 'Built for depot and dispatch teams',
+        companyAbout: 'About Inergy',
+        companySite: 'inergy.ir',
+        companyProduct: 'Fuel Carrier platform',
+      },
     },
     login: {
       title: 'Company Portal',

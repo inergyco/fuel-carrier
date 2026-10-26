@@ -13,14 +13,14 @@ export type { ButtonVariant }
 
 export const buttonClassName: Record<ButtonVariant, string> = {
   primary:
-    'btn btn-primary btn-sm h-11 min-h-11 w-full rounded-lg border-primary text-xs font-semibold tracking-widest uppercase shadow-none',
+    'btn btn-primary btn-sm w-full rounded-lg border-primary text-xs font-semibold tracking-widest uppercase shadow-none',
   outline:
-    'btn btn-outline btn-primary btn-sm h-11 min-h-11 w-full rounded-lg border-primary bg-panel-card! text-primary shadow-none text-xs font-semibold tracking-widest uppercase',
+    'btn btn-outline btn-primary btn-sm w-full rounded-lg border-primary bg-panel-card! text-primary shadow-none text-xs font-semibold tracking-widest uppercase',
   ghost:
-    'btn btn-ghost btn-sm h-11 min-h-11 w-auto px-2 text-xs normal-case tracking-normal',
-  icon: 'btn btn-ghost btn-sm btn-circle size-11 min-h-11 min-w-11',
+    'btn btn-ghost btn-sm w-auto px-2 text-xs normal-case tracking-normal',
+  icon: 'btn btn-ghost btn-sm btn-circle size-11',
   danger:
-    'btn btn-error btn-sm h-11 min-h-11 w-full rounded-lg text-xs font-semibold tracking-widest uppercase',
+    'btn btn-error btn-sm w-full rounded-lg text-xs font-semibold tracking-widest uppercase',
 }
 
 export function Button({
@@ -37,7 +37,7 @@ export function Button({
       disabled={disabled ?? loading}
       className={cn(
         buttonClassName[variant],
-        'cursor-pointer transition-all disabled:cursor-not-allowed',
+        'cursor-pointer transition-all disabled:cursor-not-allowed min-h-11 h-11',
         loading && 'opacity-60',
         className,
       )}

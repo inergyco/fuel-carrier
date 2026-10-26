@@ -12,6 +12,7 @@ export function LanguageToggle() {
     <Button
       type="button"
       variant="ghost"
+      className="w-11"
       onClick={toggleLocale}
       aria-label={locale === 'en' ? LL.common.switchToPersian() : LL.common.switchToEnglish()}
     >
