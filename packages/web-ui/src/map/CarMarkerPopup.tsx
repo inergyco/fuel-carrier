@@ -99,6 +99,7 @@ function MarkerPlanRouteButton({
       type="button"
       onClick={handleClick}
       className={mapPopupActionClassName}
+      size="sm"
     >
       {label}
     </Button>

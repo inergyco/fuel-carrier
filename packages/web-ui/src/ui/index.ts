@@ -13,8 +13,13 @@ export { Select } from './Select'
 export { FormSelect } from './FormSelect'
 export { Textarea } from './Textarea'
 export { FormTextarea } from './FormTextarea'
-export { Button, buttonClassName } from './Button'
-export type { ButtonVariant } from './Button'
+export {
+  Button,
+  buttonClassName,
+  buttonIconSizeClassName,
+  buttonSizeClassName,
+} from './Button'
+export type { ButtonSize, ButtonVariant } from './Button'
 export { Badge, badgeClassName, badgeSizeClassName } from './Badge'
 export type { BadgeVariant, BadgeSize } from './Badge'
 export { Avatar, avatarSizeClassName } from './Avatar'

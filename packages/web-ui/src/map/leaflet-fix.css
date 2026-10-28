@@ -25,9 +25,38 @@
 }
 
 .fuel-carrier-marker-dot {
+  position: relative;
   display: block;
   border-radius: 9999px;
   border: 2px solid var(--color-base-100);
+}
+
+.fuel-carrier-marker-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 0 var(--marker-ring, 4px)
+    color-mix(in oklab, var(--marker-color, currentColor) 45%, transparent);
+}
+
+@keyframes fuel-carrier-marker-live {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.fuel-carrier-marker-dot.is-live .fuel-carrier-marker-ring {
+  animation-name: fuel-carrier-marker-live;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
 }
 
 /* Compact plate chips sit on the dot. Hover grows them to the legible size.
@@ -69,6 +98,11 @@
   .fuel-carrier-plate-label,
   .fuel-carrier-plate-anchor {
     transition: none;
+  }
+
+  .fuel-carrier-marker-dot.is-live .fuel-carrier-marker-ring {
+    animation: none;
+    opacity: 1;
   }
 }
 

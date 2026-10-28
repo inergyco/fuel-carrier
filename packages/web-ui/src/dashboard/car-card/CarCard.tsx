@@ -1,6 +1,7 @@
 import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
 import type { ReactNode } from 'react'
 import { carFuelTypeLabel, formatVolume } from '../../cars'
+import { useTelemetryLiveness } from '../../map/telemetry-liveness'
 import { CAR_CARD_SHELL_CLASS_NAME } from '../../ui/car-card-shell'
 import { CarCardDetails } from './CarCardDetails'
 import { CarCardFooter } from './CarCardFooter'
@@ -13,7 +14,6 @@ import {
   getFuelFillPercent,
   getRemainFuelLiters,
 } from './car-card-utils'
-import { useCarCardLiveness } from './useCarCardLiveness'
 
 export type CarCardProps = {
   car: Car
@@ -30,7 +30,9 @@ export function CarCard({
   detailsLink,
   actions,
 }: CarCardProps) {
-  const liveness = useCarCardLiveness(telemetry)
+  const liveness = useTelemetryLiveness(
+    telemetry?.createdAt ?? telemetry?.updatedAt ?? null,
+  )
   const isLive = liveness === 'live'
 
   const remainFuel = getRemainFuelLiters(telemetry)

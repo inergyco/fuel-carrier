@@ -105,6 +105,7 @@ function CarsMapLayers({
             position={[marker.latitude, marker.longitude]}
             color={markerColor}
             selected={isSelected}
+            ingestedAt={marker.createdAt ?? null}
             plateLabel={
               marker.licensePlate.trim() ? (
                 <LicensePlate

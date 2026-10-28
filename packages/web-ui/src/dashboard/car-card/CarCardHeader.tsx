@@ -1,10 +1,10 @@
 import { Badge } from "../../ui/Badge";
 import { LicensePlate } from "../../ui/license-plate-picker";
-import type { CarCardLiveness } from "./car-card-utils";
+import type { TelemetryLiveness } from "../../map/telemetry-liveness";
 
 type CarCardHeaderProps = {
   licensePlate: string;
-  liveness: CarCardLiveness;
+  liveness: TelemetryLiveness;
   statusLabel: string;
   highGradeLabel?: string;
 };

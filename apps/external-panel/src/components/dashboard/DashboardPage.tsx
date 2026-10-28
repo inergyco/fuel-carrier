@@ -1,6 +1,6 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { api, fetchAllPaginated } from '@fuel-carrier/web-ui/api'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
+import { api, fetchAllPaginated } from "@fuel-carrier/web-ui/api";
 import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
@@ -8,28 +8,30 @@ import {
   type FleetStatCarsSearch,
   carDetailsLinkClassName,
   fleetStatLinkClassName,
-} from '@fuel-carrier/web-ui/dashboard'
-import { Info } from '@fuel-carrier/web-ui/icons'
+} from "@fuel-carrier/web-ui/dashboard";
+import { Info } from "@fuel-carrier/web-ui/icons";
+import { mapPopupActionClassName } from "@fuel-carrier/web-ui/map";
 import {
-  mapPopupActionClassName,
-} from '@fuel-carrier/web-ui/map'
-import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
-import { cn } from '@fuel-carrier/web-ui/utils'
-import { Link } from '@tanstack/react-router'
-import type { ReactNode } from 'react'
-import { carKeys, fetchCarFleetStats, fetchCars } from '../../lib/api/cars'
+  buttonClassName,
+  buttonSizeClassName,
+  ICON_STROKE_WIDTH,
+} from "@fuel-carrier/web-ui/ui";
+import { cn } from "@fuel-carrier/web-ui/utils";
+import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { carKeys, fetchCarFleetStats, fetchCars } from "../../lib/api/cars";
 
 const dashboardDataSource: CompanyDashboardDataSource = {
   fetchCars,
   fetchAllCars: () => fetchAllPaginated(fetchCars),
   fetchFleetStats: () => fetchCarFleetStats(),
   carsListKey: carKeys.list,
-  carsAllKey: () => [...carKeys.all, 'all'] as const,
+  carsAllKey: () => [...carKeys.all, "all"] as const,
   carsStatsKey: () => carKeys.stats,
-}
+};
 
 export function DashboardPage() {
-  const { LL } = useI18nContext()
+  const { LL } = useI18nContext();
 
   const labels: CompanyDashboardLabels = {
     carsLoading: LL.externalPanel.cars.loading,
@@ -46,18 +48,22 @@ export function DashboardPage() {
     viewDetails: LL.externalPanel.auditLogs.details,
     fuelType: LL.externalPanel.cars,
     map: LL.externalPanel.map,
-  }
+  };
 
   function renderVehicleLink(marker: CarTelemetryMarker) {
     return (
       <Link
         to="/panel/cars/$carId"
         params={{ carId: marker.carId }}
-        className={cn(buttonClassName.outline, mapPopupActionClassName)}
+        className={cn(
+          buttonClassName.outline,
+          buttonSizeClassName.sm,
+          mapPopupActionClassName,
+        )}
       >
         {LL.externalPanel.map.viewVehicle()}
       </Link>
-    )
+    );
   }
 
   function renderCarDetailsLink(carId: string) {
@@ -74,7 +80,7 @@ export function DashboardPage() {
         />
         {labels.viewDetails()}
       </Link>
-    )
+    );
   }
 
   function renderFleetStatLink(
@@ -85,7 +91,7 @@ export function DashboardPage() {
       <Link to="/panel/cars" search={search} className={fleetStatLinkClassName}>
         {children}
       </Link>
-    )
+    );
   }
 
   return (
@@ -102,5 +108,5 @@ export function DashboardPage() {
       renderCarDetailsLink={renderCarDetailsLink}
       renderFleetStatLink={renderFleetStatLink}
     />
-  )
+  );
 }
