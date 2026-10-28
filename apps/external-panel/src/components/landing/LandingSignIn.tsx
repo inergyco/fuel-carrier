@@ -78,6 +78,7 @@ export function LandingSignIn({
         search={{ redirect: undefined }}
         className={cn(
           'relative z-10 inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-primary font-semibold tracking-wide text-primary-content shadow-md shadow-primary/30 will-change-transform',
+          'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-base-content',
           sizeClass[size],
         )}
       >
@@ -96,15 +97,16 @@ export function LandingSignIn({
             label
           )}
         </span>
-        <ArrowRight
-          ref={arrowRef}
-          aria-hidden
-          className={cn(
-            'relative size-4',
-            'rtl:rotate-180',
-            shortLabel && 'hidden sm:block',
-          )}
-        />
+        <span className="inline-flex rtl:-scale-x-100">
+          <ArrowRight
+            ref={arrowRef}
+            aria-hidden
+            className={cn(
+              'relative size-4',
+              shortLabel && 'hidden sm:block',
+            )}
+          />
+        </span>
       </Link>
     </span>
   )

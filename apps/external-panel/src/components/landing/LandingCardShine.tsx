@@ -1,6 +1,6 @@
 import { useId } from 'react'
 
-/** Soft-blurred rim that fades into the photo — no distortion. */
+/** Even rim glow with a highlight that travels the full perimeter. */
 export function LandingCardShine({
   hidden = false,
   width,
@@ -12,10 +12,11 @@ export function LandingCardShine({
 }) {
   const uid = useId().replace(/:/g, '')
   const rimFilterId = `card-rim-fade-${uid}`
-  const glowId = `card-rim-glow-${uid}`
-  const inset = 4
+  const glowFilterId = `card-rim-glow-${uid}`
+  const inset = 5
   const rw = Math.max(0, width - inset * 2)
   const rh = Math.max(0, height - inset * 2)
+  const rim = 'color-mix(in oklab, var(--color-primary) 55%, transparent)'
 
   return (
     <svg
@@ -28,51 +29,66 @@ export function LandingCardShine({
     >
       <defs>
         <filter
-          id={rimFilterId}
-          x="-35%"
-          y="-35%"
-          width="170%"
-          height="170%"
+          id={glowFilterId}
+          x="-40%"
+          y="-40%"
+          width="180%"
+          height="180%"
           colorInterpolationFilters="sRGB"
         >
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" />
         </filter>
-        <linearGradient id={glowId} x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="transparent" />
-          <stop
-            offset="50%"
-            stopColor="color-mix(in oklab, var(--color-primary) 28%, transparent)"
-          />
-          <stop offset="100%" stopColor="transparent" />
-        </linearGradient>
+        <filter
+          id={rimFilterId}
+          x="-20%"
+          y="-20%"
+          width="140%"
+          height="140%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.45" />
+        </filter>
       </defs>
       <rect
         x={inset}
         y={inset}
         width={rw}
         height={rh}
-        rx={26}
-        ry={26}
+        rx={24}
+        ry={24}
         fill="none"
-        stroke="color-mix(in oklab, var(--color-primary) 12%, transparent)"
+        stroke={rim}
         strokeWidth="3"
-        filter={`url(#${rimFilterId})`}
-        opacity={0.7}
+        filter={`url(#${glowFilterId})`}
+        opacity={0.28}
       />
       <rect
         x={inset}
         y={inset}
         width={rw}
         height={rh}
-        rx={26}
-        ry={26}
+        rx={24}
+        ry={24}
         fill="none"
-        stroke={`url(#${glowId})`}
-        strokeWidth="2.5"
+        stroke={rim}
+        strokeWidth="1.15"
+        filter={`url(#${rimFilterId})`}
+        opacity={0.48}
+      />
+      <rect
+        x={inset}
+        y={inset}
+        width={rw}
+        height={rh}
+        rx={24}
+        ry={24}
+        fill="none"
+        stroke="color-mix(in oklab, var(--color-primary) 65%, white)"
+        strokeWidth="1.4"
         pathLength={100}
         strokeDasharray="16 84"
         strokeLinecap="round"
-        filter={`url(#${rimFilterId})`}
+        opacity={0.38}
         className="motion-safe:animate-[landing-card-shine_9s_linear_infinite]"
       />
       <style>{`

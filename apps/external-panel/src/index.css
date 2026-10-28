@@ -1,2 +1,14 @@
 @import "@fuel-carrier/web-config/styles/external-entry.css";
 @source "./**/*.{ts,tsx}";
+
+@keyframes landing-route-dash {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .landing-route-dash {
+    animation: landing-route-dash 12s linear infinite;
+  }
+}

@@ -14,7 +14,11 @@ import { useCardMotion } from './useCardMotion'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
 type LandingCardProps = {
-  align?: 'start' | 'end'
+  align?: 'start' | 'end' | 'center'
+  wide?: boolean
+  className?: string
+  /** Replaces the default glass fill when the card sits on a flat field. */
+  surfaceClassName?: string
   children: ReactNode
 }
 
@@ -43,7 +47,13 @@ function isNearControl(
   return false
 }
 
-export function LandingCard({ align = 'start', children }: LandingCardProps) {
+export function LandingCard({
+  align = 'start',
+  wide = false,
+  className,
+  surfaceClassName,
+  children,
+}: LandingCardProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const holeCircleRef = useRef<SVGCircleElement>(null)
   const ripplesRef = useRef<HTMLDivElement>(null)
@@ -182,8 +192,10 @@ export function LandingCard({ align = 'start', children }: LandingCardProps) {
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       className={cn(
-        'relative w-full max-w-xl will-change-transform',
-        align === 'start' ? 'me-auto' : 'ms-auto',
+        'relative w-full will-change-transform',
+        wide ? 'max-w-2xl' : 'max-w-xl',
+        align === 'center' ? 'mx-auto' : align === 'end' ? 'ms-auto' : 'me-auto',
+        className,
       )}
     >
       <svg
@@ -261,16 +273,19 @@ export function LandingCard({ align = 'start', children }: LandingCardProps) {
         </defs>
       </svg>
 
+      <LandingCardShine
+        hidden={shineHidden}
+        width={size.w}
+        height={size.h}
+      />
       <div className="relative" style={silhouetteMask}>
-        <LandingCardShine
-          hidden={shineHidden}
-          width={size.w}
-          height={size.h}
-        />
         <article className="relative overflow-hidden rounded-[1.5rem] border-0 shadow-[0_24px_70px_-32px_rgba(11,24,56,0.4)] sm:p-0">
           <div
             aria-hidden
-            className="absolute inset-0 bg-base-100/94 backdrop-blur-2xl"
+            className={cn(
+              'absolute inset-0 backdrop-blur-2xl',
+              surfaceClassName ?? 'bg-base-100/94',
+            )}
             style={glassHoleMask}
           >
             <div className={LANDING_CARD_PATTERN} />

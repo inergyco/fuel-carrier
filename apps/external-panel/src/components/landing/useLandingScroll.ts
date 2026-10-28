@@ -20,11 +20,22 @@ export function useLandingScroll(
           .querySelectorAll<HTMLElement>('[data-reveal="start"], [data-reveal="end"]')
           .forEach(function revealCard(node) {
             const fromEnd = node.dataset.reveal === 'end'
+            const stage = node.closest('[data-stage]') ?? node
             const card =
               node.querySelector<HTMLElement>('[data-card]') ??
               node.querySelector<HTMLElement>('article') ??
               node
             const lines = card.querySelectorAll<HTMLElement>('[data-line]')
+
+            function revealTrigger() {
+              return {
+                trigger: node,
+                start: 'top 92%',
+                endTrigger: stage,
+                end: 'bottom 18%',
+                toggleActions: 'play reverse play reverse',
+              }
+            }
 
             gsap.fromTo(
               card,
@@ -39,12 +50,7 @@ export function useLandingScroll(
                 filter: 'blur(0px)',
                 duration: 1.25,
                 ease,
-                scrollTrigger: {
-                  trigger: node,
-                  start: 'top 86%',
-                  end: 'top 28%',
-                  toggleActions: 'play reverse play reverse',
-                },
+                scrollTrigger: revealTrigger(),
               },
             )
 
@@ -64,12 +70,7 @@ export function useLandingScroll(
                   stagger: 0.08,
                   ease,
                   delay: 0.12,
-                  scrollTrigger: {
-                    trigger: node,
-                    start: 'top 86%',
-                    end: 'top 28%',
-                    toggleActions: 'play reverse play reverse',
-                  },
+                  scrollTrigger: revealTrigger(),
                 },
               )
             }

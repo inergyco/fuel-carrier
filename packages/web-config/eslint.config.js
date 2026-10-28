@@ -9,7 +9,7 @@ export function createReactViteEslintConfig(options = {}) {
   const { tsconfigRootDir = import.meta.dirname } = options
 
   return defineConfig([
-    globalIgnores(['dist', 'src/routeTree.gen.ts']),
+    globalIgnores(['dist', 'dev-dist', 'src/routeTree.gen.ts']),
     {
       files: ['**/*.{ts,tsx}'],
       extends: [
