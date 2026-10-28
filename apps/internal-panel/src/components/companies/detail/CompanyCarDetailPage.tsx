@@ -74,9 +74,6 @@ export function CompanyCarDetailPage({
           car={car}
           currentDriverName={overviewDriverName}
           labels={{
-            detailTitle: detailLabels.carDetailTitle,
-            detailSubtitle: detailLabels.carDetailSubtitle,
-            licensePlate: detailLabels.licensePlate,
             note: LL.internalPanel.companies.note,
             driver: detailLabels.driver,
             noDriver: detailLabels.noDriver,

@@ -1,5 +1,6 @@
 import type { Car } from '@fuel-carrier/shared-types'
-import { LicensePlate } from '../ui/license-plate-picker'
+import { Fuel, User } from '../icons'
+import { ICON_STROKE_WIDTH, iconSmClassName } from '../ui/iconClassName'
 
 export type CarFuelTypeLabels = {
   fuelTypeHighGrade: () => string
@@ -14,9 +15,6 @@ export function carFuelTypeLabel(
 }
 
 export type CarOverviewSectionLabels = {
-  detailTitle: () => string
-  detailSubtitle: () => string
-  licensePlate: () => string
   note: () => string
   driver: () => string
   noDriver: () => string
@@ -45,44 +43,45 @@ export function CarOverviewSection({
       : car.driverId
         ? emptyCell
         : labels.noDriver())
+  const note = car.note?.trim() || emptyCell
 
   return (
-    <section className="rounded-2xl border border-base-content/8 bg-panel-card p-5 backdrop-blur-sm md:p-6">
-      <div className="mb-5 space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight">
-          {labels.detailTitle()}
-        </h2>
-        <p className="text-sm text-base-content/50">{labels.detailSubtitle()}</p>
-      </div>
-      <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
-          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-            {labels.licensePlate()}
-          </dt>
-          <dd className="mt-1.5">
-            <LicensePlate value={car.licensePlate} size="md" />
-          </dd>
+    <section className="overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card backdrop-blur-sm">
+      <dl>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="flex items-center gap-3 border-b border-base-content/8 px-4 py-3 sm:border-e sm:border-b-0">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-base-content/8 bg-base-100/40 text-primary">
+              <User
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+            </span>
+            <div className="min-w-0">
+              <dt className="text-xs text-base-content/45">{labels.driver()}</dt>
+              <dd className="truncate text-sm font-medium">{driverDisplay}</dd>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 px-4 py-3">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-base-content/8 bg-base-100/40 text-primary">
+              <Fuel
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+            </span>
+            <div className="min-w-0">
+              <dt className="text-xs text-base-content/45">{labels.fuelType()}</dt>
+              <dd className="truncate text-sm font-medium">
+                {carFuelTypeLabel(car.hasHighGrade, labels)}
+              </dd>
+            </div>
+          </div>
         </div>
-        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
-          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-            {labels.driver()}
-          </dt>
-          <dd className="mt-1.5 text-sm">{driverDisplay}</dd>
-        </div>
-        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:px-5 sm:py-4">
-          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-            {labels.fuelType()}
-          </dt>
-          <dd className="mt-1.5 text-sm">
-            {carFuelTypeLabel(car.hasHighGrade, labels)}
-          </dd>
-        </div>
-        <div className="rounded-xl border border-base-content/6 bg-base-100/20 px-4 py-3.5 sm:col-span-2 sm:px-5 sm:py-4">
-          <dt className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-            {labels.note()}
-          </dt>
-          <dd className="mt-1.5 text-sm whitespace-pre-wrap">
-            {car.note ?? emptyCell}
+        <div className="border-t border-base-content/8 px-4 py-3">
+          <dt className="text-xs text-base-content/45">{labels.note()}</dt>
+          <dd className="mt-1 text-sm whitespace-pre-wrap text-base-content/80">
+            {note}
           </dd>
         </div>
       </dl>
