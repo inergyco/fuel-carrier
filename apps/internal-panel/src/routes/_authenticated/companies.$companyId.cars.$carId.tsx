@@ -1,16 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { parsePaginationSearch } from '@fuel-carrier/web-ui/ui'
-import { CompanyCarDetailPage } from '../../components/companies/detail/CompanyCarDetailPage'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute(
   '/_authenticated/companies/$companyId/cars/$carId',
 )({
-  validateSearch: parsePaginationSearch,
-  component: CompanyCarDetailRoute,
+  component: CompanyCarDetailLayout,
 })
 
-function CompanyCarDetailRoute() {
-  const { companyId, carId } = Route.useParams()
-
-  return <CompanyCarDetailPage companyId={companyId} carId={carId} />
+function CompanyCarDetailLayout() {
+  return <Outlet />
 }

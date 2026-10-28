@@ -16,8 +16,28 @@ alwaysApply: true
 - Prefer **imperative** verb phrases for functions (`getPaginationOffset`, `fetchCars`, `handlePageChange`).
 - Exception: **type/construction** helpers may use `to*` / `as*` / `from*` (`toPaginatedResult`, `toIsoTimestamp`).
 
+## File order
+
+- Put the file’s **main exported function** first, after imports, types, and constants.
+- Helpers and other functions go **beneath** it, including secondary exports that support the main function.
+- Do not declare helpers above the main export.
+
+```ts
+export function fetchCars(options: FetchCarsOptions) {
+  return toCarList(loadCarRows(options))
+}
+
+function loadCarRows(options: FetchCarsOptions) {
+  // ...
+}
+
+function toCarList(rows: CarRow[]) {
+  // ...
+}
+```
+
 ## Function declarations vs arrows
 
-- **One-liners must use arrow functions** — callbacks, predicates, simple maps/filters, and single-expression helpers: `(value) => value || null`, `(mode) => mode === value`, `() => ({ mode, setMode })`.
-- Never write `function name() { return … }` when the body is a single expression; use an arrow instead.
-- **Multi-statement helpers used in a component body**: `function` declarations, not arrows.
+- **One-liners always use arrow functions**, including callbacks, predicates, maps/filters, and named helpers. A body that only returns one expression is a one-liner: `(value) => value || null`, `(mode) => mode === value`, `const toId = (row: Row) => row.id`.
+- Never write `function name() { return … }` for a single expression.
+- **Multi-statement** helpers used in a component body use `function` declarations, not arrows. This exception does not cover one-liners.

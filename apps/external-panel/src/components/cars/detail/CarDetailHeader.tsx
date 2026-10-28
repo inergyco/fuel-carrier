@@ -1,11 +1,12 @@
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import { Activity, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
+import { Link } from '@tanstack/react-router'
 import { CarMqttCredentialsModals } from '../CarMqttCredentialsModals'
 import { useCarMqttCredentials } from '../useCarMqttCredentials'
 import { CarCustodyActions } from '../CarCustodyActions'
@@ -49,26 +50,40 @@ export function CarDetailHeader({
           </p>
         </div>
 
-        {canManage ? (
-          <div className="flex w-full flex-nowrap items-center justify-end gap-2 lg:w-auto">
-            <CarCustodyActions car={car} custody={custody} />
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-11 w-auto shrink-0 border border-base-content/12 bg-base-100/45 px-4"
-              onClick={handleOpenMqttCredentials}
-            >
-              <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-                <KeyRound
-                  className={iconSmClassName}
-                  strokeWidth={ICON_STROKE_WIDTH}
-                  aria-hidden
-                />
-                {LL.externalPanel.cars.mqttCredentialsAction()}
-              </span>
-            </Button>
-          </div>
-        ) : null}
+        <div className="flex w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:flex-nowrap">
+          {canManage ? (
+            <>
+              <CarCustodyActions car={car} custody={custody} />
+              <Button
+                type="button"
+                variant="ghost"
+                className="h-11 w-auto shrink-0 border border-base-content/12 bg-base-100/45 px-4"
+                onClick={handleOpenMqttCredentials}
+              >
+                <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+                  <KeyRound
+                    className={iconSmClassName}
+                    strokeWidth={ICON_STROKE_WIDTH}
+                    aria-hidden
+                  />
+                  {LL.externalPanel.cars.mqttCredentialsAction()}
+                </span>
+              </Button>
+            </>
+          ) : null}
+          <Link
+            to="/panel/cars/$carId/telemetry"
+            params={{ carId: car.id }}
+            className="btn btn-ghost inline-flex h-11 min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg border border-base-content/12 bg-base-100/45 px-4 font-normal normal-case tracking-normal whitespace-nowrap sm:w-auto"
+          >
+            <Activity
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {LL.common.carTelemetry.action()}
+          </Link>
+        </div>
       </div>
 
       {canManage ? (

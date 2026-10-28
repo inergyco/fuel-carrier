@@ -15,12 +15,20 @@ export type AppBarBack =
       companyId: string
       label: string
     }
+  | {
+      to: '/companies/$companyId/cars/$carId'
+      companyId: string
+      carId: string
+      label: string
+    }
 
 export type AppBarHeading = {
   title: string
   subtitle?: string
   /** When set, the app bar shows this plate instead of `title`. */
   licensePlate?: string
+  /** Keep `title` visible and show `licensePlate` with the plate component. */
+  showTitleWithPlate?: boolean
   back?: AppBarBack
 }
 
@@ -84,6 +92,8 @@ export function useAppBarHeading(
     return getCarDetailAppBarHeading({
       car: carQuery.data,
       companyId: carRoute.companyId,
+      carId: carRoute.carId,
+      isTelemetry: carRoute.telemetry,
       isNotFound:
         isCarNotFound ||
         (carQuery.data != null &&
@@ -126,13 +136,19 @@ function isCompanyEditPath(pathname: string): boolean {
   return /^\/companies\/[^/]+\/edit$/.test(pathname)
 }
 
-function getCompanyCarDetailRoute(
-  pathname: string,
-): { companyId: string; carId: string } | undefined {
-  const match = pathname.match(/^\/companies\/([^/]+)\/cars\/([^/]+)$/)
-  if (!match) return undefined
+function getCompanyCarDetailRoute(pathname: string):
+  | { companyId: string; carId: string; telemetry: boolean }
+  | undefined {
+  const match = pathname.match(
+    /^\/companies\/([^/]+)\/cars\/([^/]+)(\/telemetry)?$/,
+  )
+  if (!match?.[1] || !match[2]) return undefined
 
-  return { companyId: match[1], carId: match[2] }
+  return {
+    companyId: match[1],
+    carId: match[2],
+    telemetry: Boolean(match[3]),
+  }
 }
 
 function getCompanyDetailAppBarHeading({
@@ -202,16 +218,20 @@ function getCompanyEditAppBarHeading({
 function getCarDetailAppBarHeading({
   car,
   companyId,
+  carId,
+  isTelemetry,
   isNotFound,
   LL,
 }: {
   car: Car | undefined
   companyId: string
+  carId: string
+  isTelemetry: boolean
   isNotFound: boolean
   LL: LL
 }): AppBarHeading {
   const detail = LL.internalPanel.companies.detail
-  const back: AppBarBack = {
+  const backToCars: AppBarBack = {
     to: '/companies/$companyId/cars',
     companyId,
     label: detail.backToCars(),
@@ -221,16 +241,31 @@ function getCarDetailAppBarHeading({
     return {
       title: detail.carNotFound(),
       subtitle: detail.carNotFoundDescription(),
-      back,
+      back: backToCars,
     }
   }
 
   const licensePlate = car?.licensePlate.trim()
 
+  if (isTelemetry) {
+    return {
+      title: LL.common.carTelemetry.title(),
+      subtitle: LL.common.carTelemetry.subtitle(),
+      licensePlate: licensePlate || undefined,
+      showTitleWithPlate: Boolean(licensePlate),
+      back: {
+        to: '/companies/$companyId/cars/$carId',
+        companyId,
+        carId,
+        label: LL.common.carTelemetry.backToVehicle(),
+      },
+    }
+  }
+
   return {
     title: licensePlate || detail.carDetailTitle(),
     licensePlate: licensePlate || undefined,
     subtitle: detail.carDetailSubtitle(),
-    back,
+    back: backToCars,
   }
 }

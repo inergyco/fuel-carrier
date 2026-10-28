@@ -20,7 +20,10 @@ import { authKeys, logout } from '../lib/api/auth'
 import { InergyFooter } from './InergyFooter'
 import { AppBarBackLink } from './shell/AppBarBackLink'
 import { ShellSidebarFooter } from './shell/ShellSidebarFooter'
-import { useAppBarHeading } from './shell/useAppBarHeading'
+import {
+  useAppBarHeading,
+  type AppBarHeading,
+} from './shell/useAppBarHeading'
 import { removeBrowserPushSubscription } from './notifications/browser-push-client'
 import { NotificationBell } from './notifications/NotificationBell'
 import { useExternalNavItems } from './shell/useExternalNavItems'
@@ -46,6 +49,49 @@ export function AuthenticatedShell({
   const isMapPage = pathname === '/panel/map'
   const heading = useAppBarHeading(pathname, user.firstName)
   const navItems = useExternalNavItems(user)
+
+  function renderAppBarTitle(current: AppBarHeading) {
+    if (current.licensePlate && current.showTitleWithPlate) {
+      return (
+        <span className="inline-flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="truncate">{current.title}</span>
+          <LicensePlate
+            value={current.licensePlate}
+            size="md"
+            className="shrink-0"
+          />
+        </span>
+      )
+    }
+
+    if (current.licensePlate) {
+      return <LicensePlate value={current.licensePlate} size="md" />
+    }
+
+    return current.title
+  }
+
+  function renderAppBarBack(current: AppBarHeading) {
+    if (!current.backTo || !current.backLabel) {
+      return null
+    }
+
+    if (current.backTo === '/panel/cars/$carId') {
+      if (!current.backCarId) {
+        return null
+      }
+
+      return (
+        <AppBarBackLink
+          to="/panel/cars/$carId"
+          carId={current.backCarId}
+          label={current.backLabel}
+        />
+      )
+    }
+
+    return <AppBarBackLink to="/panel/cars" label={current.backLabel} />
+  }
 
   function handleOpenLogoutModal() {
     setIsLogoutModalOpen(true)
@@ -85,19 +131,9 @@ export function AuthenticatedShell({
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
-        appBarTitle={
-          heading?.licensePlate ? (
-            <LicensePlate value={heading.licensePlate} size="md" />
-          ) : (
-            heading?.title
-          )
-        }
+        appBarTitle={heading ? renderAppBarTitle(heading) : undefined}
         appBarSubtitle={heading?.subtitle}
-        appBarBack={
-          heading?.backTo && heading.backLabel ? (
-            <AppBarBackLink to={heading.backTo} label={heading.backLabel} />
-          ) : null
-        }
+        appBarBack={heading ? renderAppBarBack(heading) : null}
         appBarActions={
           pathname === '/panel' || pathname === '/panel/map' ? (
             <DashboardModeSwitcher />

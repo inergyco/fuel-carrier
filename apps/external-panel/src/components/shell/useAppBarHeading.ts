@@ -7,7 +7,10 @@ export type AppBarHeading = {
   subtitle?: string
   /** When set, the app bar shows this plate instead of `title`. */
   licensePlate?: string
-  backTo?: '/panel/cars'
+  /** Keep `title` visible and show `licensePlate` with the plate component. */
+  showTitleWithPlate?: boolean
+  backTo?: '/panel/cars' | '/panel/cars/$carId'
+  backCarId?: string
   backLabel?: string
 }
 
@@ -52,33 +55,47 @@ export function useAppBarHeading(
   firstName: string,
 ): AppBarHeading | undefined {
   const { LL } = useI18nContext()
-  const carId = getCarDetailId(pathname)
-  const { carQuery, isNotFound } = useCarQuery(carId ?? '', {
-    enabled: Boolean(carId),
+  const carRoute = getCarRoute(pathname)
+  const { carQuery, isNotFound } = useCarQuery(carRoute?.carId ?? '', {
+    enabled: Boolean(carRoute),
   })
 
-  if (carId) {
-    return getCarDetailAppBarHeading(carQuery.data, isNotFound, LL)
+  if (carRoute) {
+    return getCarDetailAppBarHeading({
+      car: carQuery.data,
+      carId: carRoute.carId,
+      isTelemetry: carRoute.telemetry,
+      isNotFound,
+      LL,
+    })
   }
 
   return staticHeadings[pathname]?.(LL, firstName)
 }
 
-function getCarDetailId(pathname: string): string | undefined {
-  if (!pathname.startsWith('/panel/cars/')) return undefined
+function getCarRoute(
+  pathname: string,
+): { carId: string; telemetry: boolean } | undefined {
+  const match = pathname.match(/^\/panel\/cars\/([^/]+)(\/telemetry)?$/)
+  if (!match?.[1]) return undefined
 
-  const carId = pathname.slice('/panel/cars/'.length)
-  if (!carId || carId.includes('/')) return undefined
-
-  return carId
+  return { carId: match[1], telemetry: Boolean(match[2]) }
 }
 
-function getCarDetailAppBarHeading(
-  car: Car | undefined,
-  isNotFound: boolean,
-  LL: LL,
-): AppBarHeading {
-  const back = {
+function getCarDetailAppBarHeading({
+  car,
+  carId,
+  isTelemetry,
+  isNotFound,
+  LL,
+}: {
+  car: Car | undefined
+  carId: string
+  isTelemetry: boolean
+  isNotFound: boolean
+  LL: LL
+}): AppBarHeading {
+  const backToList = {
     backTo: '/panel/cars' as const,
     backLabel: LL.externalPanel.cars.backToList(),
   }
@@ -87,16 +104,28 @@ function getCarDetailAppBarHeading(
     return {
       title: LL.externalPanel.cars.notFound(),
       subtitle: LL.externalPanel.cars.notFoundDescription(),
-      ...back,
+      ...backToList,
     }
   }
 
   const licensePlate = car?.licensePlate.trim()
 
+  if (isTelemetry) {
+    return {
+      title: LL.common.carTelemetry.title(),
+      subtitle: LL.common.carTelemetry.subtitle(),
+      licensePlate: licensePlate || undefined,
+      showTitleWithPlate: Boolean(licensePlate),
+      backTo: '/panel/cars/$carId',
+      backCarId: carId,
+      backLabel: LL.common.carTelemetry.backToVehicle(),
+    }
+  }
+
   return {
     title: licensePlate || LL.externalPanel.cars.detailTitle(),
     licensePlate: licensePlate || undefined,
     subtitle: LL.externalPanel.cars.detailSubtitle(),
-    ...back,
+    ...backToList,
   }
 }

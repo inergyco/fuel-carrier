@@ -29,7 +29,10 @@ import { authKeys, logout } from "../lib/api/auth";
 import { ActiveCompanyProvider } from "./shell/ActiveCompanyProvider";
 import { AppBarBackLink } from "./shell/AppBarBackLink";
 import { CompanySwitcher } from "./shell/CompanySwitcher";
-import { useAppBarHeading } from "./shell/useAppBarHeading";
+import {
+  useAppBarHeading,
+  type AppBarHeading,
+} from "./shell/useAppBarHeading";
 
 const authenticatedRoute = getRouteApi("/_authenticated");
 
@@ -90,6 +93,27 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
     [LL],
   );
 
+  function renderAppBarTitle(current: AppBarHeading) {
+    if (current.licensePlate && current.showTitleWithPlate) {
+      return (
+        <span className="inline-flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+          <span className="truncate">{current.title}</span>
+          <LicensePlate
+            value={current.licensePlate}
+            size="md"
+            className="shrink-0"
+          />
+        </span>
+      );
+    }
+
+    if (current.licensePlate) {
+      return <LicensePlate value={current.licensePlate} size="md" />;
+    }
+
+    return current.title;
+  }
+
   function handleOpenLogoutModal() {
     setIsLogoutModalOpen(true);
   }
@@ -135,13 +159,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
           }
           openMenuLabel={LL.internalPanel.nav.openMenu()}
           navItems={navItems}
-          appBarTitle={
-            heading?.licensePlate ? (
-              <LicensePlate value={heading.licensePlate} size="md" />
-            ) : (
-              heading?.title
-            )
-          }
+          appBarTitle={heading ? renderAppBarTitle(heading) : undefined}
           appBarSubtitle={heading?.subtitle}
           appBarBack={
             heading?.back ? <AppBarBackLink {...heading.back} /> : null

@@ -28,6 +28,11 @@ export {
   type CarDriverAssignmentHistoryLabelScope,
   type CarDriverAssignmentHistorySectionProps,
 } from './CarDriverAssignmentHistorySection'
+export { CarTelemetryRecordsPage } from './telemetry-records/CarTelemetryRecordsPage'
+export {
+  parseCarTelemetryRecordsSearch,
+  type CarTelemetryRecordsSearch,
+} from './telemetry-records/useCarTelemetryRecordsSearch'
 export { ResistancePanel, type ResistancePanelLabels, type ResistancePanelProps } from './ResistancePanel'
 export { ResistanceValue } from './ResistanceValue'
 export {

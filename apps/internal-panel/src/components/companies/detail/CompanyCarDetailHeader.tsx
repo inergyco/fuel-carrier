@@ -1,11 +1,12 @@
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import { Activity, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
+import { Link } from '@tanstack/react-router'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'
 import type { CompanyCarCustodyApi } from './custody/useCompanyCarCustody'
@@ -46,7 +47,7 @@ export function CompanyCarDetailHeader({
           </p>
         </div>
 
-        <div className="flex w-full flex-nowrap items-center justify-end gap-2 lg:w-auto">
+        <div className="flex w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:flex-nowrap">
           <CarCustodyActions car={car} custody={custody} />
           <Button
             type="button"
@@ -63,6 +64,18 @@ export function CompanyCarDetailHeader({
               {detail.mqttCredentialsAction()}
             </span>
           </Button>
+          <Link
+            to="/companies/$companyId/cars/$carId/telemetry"
+            params={{ companyId: car.companyId, carId: car.id }}
+            className="btn btn-ghost inline-flex h-11 min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg border border-base-content/12 bg-base-100/45 px-4 font-normal normal-case tracking-normal whitespace-nowrap sm:w-auto"
+          >
+            <Activity
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {LL.common.carTelemetry.action()}
+          </Link>
         </div>
       </div>
 

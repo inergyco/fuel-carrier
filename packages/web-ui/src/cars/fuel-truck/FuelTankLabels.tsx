@@ -24,7 +24,7 @@ export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
       {slots.map(function renderLabel(slot) {
         const leftPercent = ((slot.cx - VIEWBOX_X) / VIEWBOX_WIDTH) * 100;
         const topPercent =
-          ((slot.cy - slot.r - VIEWBOX_Y) / VIEWBOX_HEIGHT) * 100 - 2.5;
+          ((slot.cy - slot.r - VIEWBOX_Y) / VIEWBOX_HEIGHT) * 100 - 2;
         const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ""}`;
 
         return (

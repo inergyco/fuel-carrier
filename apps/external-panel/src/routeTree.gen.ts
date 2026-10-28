@@ -22,6 +22,8 @@ import { Route as PanelCarsRouteImport } from './routes/panel/cars'
 import { Route as PanelAuditLogsRouteImport } from './routes/panel/audit-logs'
 import { Route as PanelCarsIndexRouteImport } from './routes/panel/cars.index'
 import { Route as PanelCarsCarIdRouteImport } from './routes/panel/cars.$carId'
+import { Route as PanelCarsCarIdIndexRouteImport } from './routes/panel/cars.$carId.index'
+import { Route as PanelCarsCarIdTelemetryRouteImport } from './routes/panel/cars.$carId.telemetry'
 
 const PanelRoute = PanelRouteImport.update({
   id: '/panel',
@@ -88,6 +90,16 @@ const PanelCarsCarIdRoute = PanelCarsCarIdRouteImport.update({
   path: '/$carId',
   getParentRoute: () => PanelCarsRoute,
 } as any)
+const PanelCarsCarIdIndexRoute = PanelCarsCarIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PanelCarsCarIdRoute,
+} as any)
+const PanelCarsCarIdTelemetryRoute = PanelCarsCarIdTelemetryRouteImport.update({
+  id: '/telemetry',
+  path: '/telemetry',
+  getParentRoute: () => PanelCarsCarIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,8 +113,10 @@ export interface FileRoutesByFullPath {
   '/panel/settings': typeof PanelSettingsRoute
   '/panel/users': typeof PanelUsersRoute
   '/panel/': typeof PanelIndexRoute
-  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdRouteWithChildren
   '/panel/cars/': typeof PanelCarsIndexRoute
+  '/panel/cars/$carId/telemetry': typeof PanelCarsCarIdTelemetryRoute
+  '/panel/cars/$carId/': typeof PanelCarsCarIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -114,8 +128,9 @@ export interface FileRoutesByTo {
   '/panel/settings': typeof PanelSettingsRoute
   '/panel/users': typeof PanelUsersRoute
   '/panel': typeof PanelIndexRoute
-  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
   '/panel/cars': typeof PanelCarsIndexRoute
+  '/panel/cars/$carId/telemetry': typeof PanelCarsCarIdTelemetryRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -130,8 +145,10 @@ export interface FileRoutesById {
   '/panel/settings': typeof PanelSettingsRoute
   '/panel/users': typeof PanelUsersRoute
   '/panel/': typeof PanelIndexRoute
-  '/panel/cars/$carId': typeof PanelCarsCarIdRoute
+  '/panel/cars/$carId': typeof PanelCarsCarIdRouteWithChildren
   '/panel/cars/': typeof PanelCarsIndexRoute
+  '/panel/cars/$carId/telemetry': typeof PanelCarsCarIdTelemetryRoute
+  '/panel/cars/$carId/': typeof PanelCarsCarIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,6 +166,8 @@ export interface FileRouteTypes {
     | '/panel/'
     | '/panel/cars/$carId'
     | '/panel/cars/'
+    | '/panel/cars/$carId/telemetry'
+    | '/panel/cars/$carId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -160,8 +179,9 @@ export interface FileRouteTypes {
     | '/panel/settings'
     | '/panel/users'
     | '/panel'
-    | '/panel/cars/$carId'
     | '/panel/cars'
+    | '/panel/cars/$carId/telemetry'
+    | '/panel/cars/$carId'
   id:
     | '__root__'
     | '/'
@@ -177,6 +197,8 @@ export interface FileRouteTypes {
     | '/panel/'
     | '/panel/cars/$carId'
     | '/panel/cars/'
+    | '/panel/cars/$carId/telemetry'
+    | '/panel/cars/$carId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -279,16 +301,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PanelCarsCarIdRouteImport
       parentRoute: typeof PanelCarsRoute
     }
+    '/panel/cars/$carId/': {
+      id: '/panel/cars/$carId/'
+      path: '/'
+      fullPath: '/panel/cars/$carId/'
+      preLoaderRoute: typeof PanelCarsCarIdIndexRouteImport
+      parentRoute: typeof PanelCarsCarIdRoute
+    }
+    '/panel/cars/$carId/telemetry': {
+      id: '/panel/cars/$carId/telemetry'
+      path: '/telemetry'
+      fullPath: '/panel/cars/$carId/telemetry'
+      preLoaderRoute: typeof PanelCarsCarIdTelemetryRouteImport
+      parentRoute: typeof PanelCarsCarIdRoute
+    }
   }
 }
 
+interface PanelCarsCarIdRouteChildren {
+  PanelCarsCarIdTelemetryRoute: typeof PanelCarsCarIdTelemetryRoute
+  PanelCarsCarIdIndexRoute: typeof PanelCarsCarIdIndexRoute
+}
+
+const PanelCarsCarIdRouteChildren: PanelCarsCarIdRouteChildren = {
+  PanelCarsCarIdTelemetryRoute: PanelCarsCarIdTelemetryRoute,
+  PanelCarsCarIdIndexRoute: PanelCarsCarIdIndexRoute,
+}
+
+const PanelCarsCarIdRouteWithChildren = PanelCarsCarIdRoute._addFileChildren(
+  PanelCarsCarIdRouteChildren,
+)
+
 interface PanelCarsRouteChildren {
-  PanelCarsCarIdRoute: typeof PanelCarsCarIdRoute
+  PanelCarsCarIdRoute: typeof PanelCarsCarIdRouteWithChildren
   PanelCarsIndexRoute: typeof PanelCarsIndexRoute
 }
 
 const PanelCarsRouteChildren: PanelCarsRouteChildren = {
-  PanelCarsCarIdRoute: PanelCarsCarIdRoute,
+  PanelCarsCarIdRoute: PanelCarsCarIdRouteWithChildren,
   PanelCarsIndexRoute: PanelCarsIndexRoute,
 }
 

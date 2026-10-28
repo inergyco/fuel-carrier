@@ -130,6 +130,88 @@ type RootTranslation = {
 			 */
 			clear: string
 		}
+		carTelemetry: {
+			/**
+			 * T​e​l​e​m​e​t​r​y​ ​r​e​c​o​r​d​s
+			 */
+			action: string
+			/**
+			 * T​e​l​e​m​e​t​r​y​ ​r​e​c​o​r​d​s
+			 */
+			title: string
+			/**
+			 * S​a​m​p​l​e​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e
+			 */
+			subtitle: string
+			/**
+			 * B​a​c​k​ ​t​o​ ​v​e​h​i​c​l​e
+			 */
+			backToVehicle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​t​e​l​e​m​e​t​r​y​ ​r​e​c​o​r​d​s​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​t​e​l​e​m​e​t​r​y​ ​w​a​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​i​n​ ​t​h​e​ ​s​e​l​e​c​t​e​d​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 */
+			empty: string
+			/**
+			 * C​h​o​o​s​e​ ​a​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​ ​t​o​ ​l​o​a​d​ ​r​e​c​o​r​d​s​.
+			 */
+			chooseRange: string
+			/**
+			 * R​e​c​o​r​d​e​d​ ​a​t
+			 */
+			recordedAt: string
+			/**
+			 * S​p​e​e​d
+			 */
+			speed: string
+			/**
+			 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l
+			 */
+			remainFuel: string
+			/**
+			 * D​i​s​p​e​n​s​e​d
+			 */
+			fuelAmount: string
+			/**
+			 * L​a​t​i​t​u​d​e
+			 */
+			latitude: string
+			/**
+			 * L​o​n​g​i​t​u​d​e
+			 */
+			longitude: string
+			/**
+			 * T​a​n​k​ ​t​o​ ​g​r​o​u​n​d
+			 */
+			resistanceTankToGround: string
+			/**
+			 * T​a​n​k​ ​t​o​ ​n​o​z​z​l​e
+			 */
+			resistanceTankToNozzle: string
+			/**
+			 * G​r​o​u​n​d​ ​t​o​ ​v​e​h​i​c​l​e
+			 */
+			resistanceGroundToVehicle: string
+			/**
+			 * k​m​/​h
+			 */
+			speedUnit: string
+			/**
+			 * L
+			 */
+			volumeUnit: string
+			/**
+			 * Ω
+			 */
+			resistanceUnit: string
+			/**
+			 * —
+			 */
+			emptyCell: string
+		}
 		dashboardMode: {
 			/**
 			 * D​a​s​h​b​o​a​r​d​ ​m​o​d​e
@@ -3994,6 +4076,88 @@ export type TranslationFunctions = {
 			 * Clear date range
 			 */
 			clear: () => LocalizedString
+		}
+		carTelemetry: {
+			/**
+			 * Telemetry records
+			 */
+			action: () => LocalizedString
+			/**
+			 * Telemetry records
+			 */
+			title: () => LocalizedString
+			/**
+			 * Samples recorded for this vehicle
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Back to vehicle
+			 */
+			backToVehicle: () => LocalizedString
+			/**
+			 * Loading telemetry records…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No telemetry was recorded for this vehicle in the selected time range.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * Choose a start and end time to load records.
+			 */
+			chooseRange: () => LocalizedString
+			/**
+			 * Recorded at
+			 */
+			recordedAt: () => LocalizedString
+			/**
+			 * Speed
+			 */
+			speed: () => LocalizedString
+			/**
+			 * Remaining fuel
+			 */
+			remainFuel: () => LocalizedString
+			/**
+			 * Dispensed
+			 */
+			fuelAmount: () => LocalizedString
+			/**
+			 * Latitude
+			 */
+			latitude: () => LocalizedString
+			/**
+			 * Longitude
+			 */
+			longitude: () => LocalizedString
+			/**
+			 * Tank to ground
+			 */
+			resistanceTankToGround: () => LocalizedString
+			/**
+			 * Tank to nozzle
+			 */
+			resistanceTankToNozzle: () => LocalizedString
+			/**
+			 * Ground to vehicle
+			 */
+			resistanceGroundToVehicle: () => LocalizedString
+			/**
+			 * km/h
+			 */
+			speedUnit: () => LocalizedString
+			/**
+			 * L
+			 */
+			volumeUnit: () => LocalizedString
+			/**
+			 * Ω
+			 */
+			resistanceUnit: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
 		}
 		dashboardMode: {
 			/**

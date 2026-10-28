@@ -23,6 +23,12 @@ export type AppBarBackLinkProps =
       companyId: string
       label: string
     }
+  | {
+      to: '/companies/$companyId/cars/$carId'
+      companyId: string
+      carId: string
+      label: string
+    }
 
 export function AppBarBackLink(props: AppBarBackLinkProps) {
   const router = useRouter()
@@ -40,6 +46,20 @@ export function AppBarBackLink(props: AppBarBackLinkProps) {
       aria-hidden
     />
   )
+
+  if (props.to === '/companies/$companyId/cars/$carId') {
+    return (
+      <Link
+        to="/companies/$companyId/cars/$carId"
+        params={{ companyId: props.companyId, carId: props.carId }}
+        aria-label={props.label}
+        className={iconButtonClassName}
+        onClick={handleClick}
+      >
+        {icon}
+      </Link>
+    )
+  }
 
   if (props.to === '/companies/$companyId/cars') {
     return (
