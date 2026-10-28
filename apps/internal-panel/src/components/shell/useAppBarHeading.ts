@@ -19,6 +19,8 @@ export type AppBarBack =
 export type AppBarHeading = {
   title: string
   subtitle?: string
+  /** When set, the app bar shows this plate instead of `title`. */
+  licensePlate?: string
   back?: AppBarBack
 }
 
@@ -223,8 +225,11 @@ function getCarDetailAppBarHeading({
     }
   }
 
+  const licensePlate = car?.licensePlate.trim()
+
   return {
-    title: car?.licensePlate || detail.carDetailTitle(),
+    title: licensePlate || detail.carDetailTitle(),
+    licensePlate: licensePlate || undefined,
     subtitle: detail.carDetailSubtitle(),
     back,
   }

@@ -9,6 +9,7 @@ import {
   Button,
   ConfirmModal,
   ICON_STROKE_WIDTH,
+  LicensePlate,
   PanelShell,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
@@ -134,7 +135,13 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
           }
           openMenuLabel={LL.internalPanel.nav.openMenu()}
           navItems={navItems}
-          appBarTitle={heading?.title}
+          appBarTitle={
+            heading?.licensePlate ? (
+              <LicensePlate value={heading.licensePlate} size="md" />
+            ) : (
+              heading?.title
+            )
+          }
           appBarSubtitle={heading?.subtitle}
           appBarBack={
             heading?.back ? <AppBarBackLink {...heading.back} /> : null

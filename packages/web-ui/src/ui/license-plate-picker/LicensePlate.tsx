@@ -45,7 +45,7 @@ export function LicensePlate({
   const sizeClass = SIZE_CLASS[size]
 
   return (
-    <div
+    <span
       dir="ltr"
       title={value}
       className={cn(
@@ -58,7 +58,7 @@ export function LicensePlate({
 
       {complete ? (
         <>
-          <div
+          <span
             className={cn(
               'flex min-w-0 flex-1 items-center justify-center whitespace-nowrap font-bold tracking-wider tabular-nums',
               sizeClass.text,
@@ -67,26 +67,26 @@ export function LicensePlate({
             <span>{toPersianDigits(parts.left)}</span>
             <span className="tracking-normal">{parts.letter}</span>
             <span>{toPersianDigits(parts.middle)}</span>
-          </div>
-          <div
+          </span>
+          <span
             className={cn(
               'flex h-full shrink-0 items-center justify-center border-s border-base-content/10 font-bold tabular-nums',
               sizeClass.region,
             )}
           >
             {toPersianDigits(parts.region)}
-          </div>
+          </span>
         </>
       ) : (
-        <div
+        <span
           className={cn(
             'flex min-w-0 flex-1 items-center justify-center truncate whitespace-nowrap px-1.5 font-bold tracking-wide',
             sizeClass.text,
           )}
         >
           {value || '—'}
-        </div>
+        </span>
       )}
-    </div>
+    </span>
   )
 }

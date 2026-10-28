@@ -27,7 +27,12 @@ export function PageHeader({
     >
       <div className="min-w-0">
         {title ? (
-          <TitleTag className="truncate text-lg font-semibold tracking-tight">
+          <TitleTag
+            className={cn(
+              'min-w-0 text-lg font-semibold tracking-tight',
+              typeof title === 'string' ? 'truncate' : 'flex items-center',
+            )}
+          >
             {title}
           </TitleTag>
         ) : null}

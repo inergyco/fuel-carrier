@@ -21,7 +21,7 @@ interface PanelShellProps {
   drawerId?: string;
   openMenuLabel: string;
   /** Page title shown in the top app bar (start side). */
-  appBarTitle?: string;
+  appBarTitle?: ReactNode;
   /** Optional subtitle under the app bar title (e.g. welcome line). */
   appBarSubtitle?: string;
   /** Leading control in the app bar, such as a back button. */

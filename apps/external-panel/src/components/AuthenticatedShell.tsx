@@ -9,6 +9,7 @@ import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   CompanyBrandLogo,
   ConfirmModal,
+  LicensePlate,
   PanelShell,
 } from '@fuel-carrier/web-ui/ui'
 import { redirectToLoginPage } from '@fuel-carrier/web-ui/utils'
@@ -84,7 +85,13 @@ export function AuthenticatedShell({
         brandIcon={<CompanyBrandLogo logoUrl={user.companyLogoUrl} />}
         openMenuLabel={LL.externalPanel.nav.openMenu()}
         navItems={navItems}
-        appBarTitle={heading?.title}
+        appBarTitle={
+          heading?.licensePlate ? (
+            <LicensePlate value={heading.licensePlate} size="md" />
+          ) : (
+            heading?.title
+          )
+        }
         appBarSubtitle={heading?.subtitle}
         appBarBack={
           heading?.backTo && heading.backLabel ? (

@@ -5,6 +5,8 @@ import { useCarQuery } from '../cars/useCarQuery'
 export type AppBarHeading = {
   title: string
   subtitle?: string
+  /** When set, the app bar shows this plate instead of `title`. */
+  licensePlate?: string
   backTo?: '/panel/cars'
   backLabel?: string
 }
@@ -89,8 +91,11 @@ function getCarDetailAppBarHeading(
     }
   }
 
+  const licensePlate = car?.licensePlate.trim()
+
   return {
-    title: car?.licensePlate || LL.externalPanel.cars.detailTitle(),
+    title: licensePlate || LL.externalPanel.cars.detailTitle(),
+    licensePlate: licensePlate || undefined,
     subtitle: LL.externalPanel.cars.detailSubtitle(),
     ...back,
   }
