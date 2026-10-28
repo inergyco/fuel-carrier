@@ -50,15 +50,15 @@ export function CarDetailHeader({
         </div>
 
         {canManage ? (
-          <div className="flex w-full flex-col gap-2 sm:items-stretch lg:w-auto lg:items-end">
+          <div className="flex w-full flex-nowrap items-center justify-end gap-2 lg:w-auto">
             <CarCustodyActions car={car} custody={custody} />
             <Button
               type="button"
               variant="ghost"
-              className="h-11 w-full border border-base-content/12 bg-base-100/45 sm:w-auto sm:px-4"
+              className="h-11 w-auto shrink-0 border border-base-content/12 bg-base-100/45 px-4"
               onClick={handleOpenMqttCredentials}
             >
-              <span className="flex items-center justify-center gap-2">
+              <span className="flex items-center justify-center gap-2 whitespace-nowrap">
                 <KeyRound
                   className={iconSmClassName}
                   strokeWidth={ICON_STROKE_WIDTH}

@@ -3,6 +3,8 @@ import {
   getVisibleTankSlots,
   VIEWBOX_HEIGHT,
   VIEWBOX_WIDTH,
+  VIEWBOX_X,
+  VIEWBOX_Y,
 } from "./layout";
 
 export type FuelTankLabelsProps = {
@@ -20,8 +22,9 @@ export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
   return (
     <ul className="pointer-events-none absolute inset-0">
       {slots.map(function renderLabel(slot) {
-        const leftPercent = (slot.cx / VIEWBOX_WIDTH) * 100;
-        const topPercent = ((slot.cy - slot.r) / VIEWBOX_HEIGHT) * 100;
+        const leftPercent = ((slot.cx - VIEWBOX_X) / VIEWBOX_WIDTH) * 100;
+        const topPercent =
+          ((slot.cy - slot.r - VIEWBOX_Y) / VIEWBOX_HEIGHT) * 100 - 2.5;
         const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ""}`;
 
         return (

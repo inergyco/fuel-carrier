@@ -69,11 +69,11 @@ export function CarCustodyActions({
   }
 
   return (
-    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-end">
+    <div className="flex shrink-0">
       {hasDriver ? (
         <Button
           type="button"
-          className="h-11 w-full sm:w-auto sm:px-5"
+          className="h-11 w-auto whitespace-nowrap px-5"
           onClick={handleChange}
         >
           {detail.changeDriver()}
@@ -81,7 +81,7 @@ export function CarCustodyActions({
       ) : (
         <Button
           type="button"
-          className="h-11 w-full sm:w-auto sm:px-5"
+          className="h-11 w-auto whitespace-nowrap px-5"
           onClick={handleAssign}
         >
           {detail.assignDriver()}

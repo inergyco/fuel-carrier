@@ -1,7 +1,15 @@
-/** Shared layout for the BONIZ 500 schematic (viewBox matches the source art). */
+/** Source art size. Tank coordinates are in this space. */
+export const ART_WIDTH = 1024
+export const ART_HEIGHT = 582
 
-export const VIEWBOX_WIDTH = 1024
-export const VIEWBOX_HEIGHT = 582
+/**
+ * Visible frame. The PNG has a large empty margin above and below the truck,
+ * so the viewBox crops to the drawing.
+ */
+export const VIEWBOX_X = 18
+export const VIEWBOX_Y = 107
+export const VIEWBOX_WIDTH = 1006
+export const VIEWBOX_HEIGHT = 392
 
 export const MAX_TANKS = 3
 

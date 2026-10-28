@@ -1,9 +1,6 @@
-import { Gauge } from '../icons/index'
-import { ResistanceStat } from './ResistanceStat'
-import {
-  getResistanceStatusStyles,
-  getWorstResistanceStatus,
-} from './resistance-status'
+import { ArrowRight } from '../icons/index'
+import { MetricCell, MetricColumn } from './MetricColumn'
+import { ResistanceValue } from './ResistanceValue'
 
 export type ResistancePanelLabels = {
   resistanceTitle: () => string
@@ -24,110 +21,66 @@ export type ResistancePanelProps = {
   }
 }
 
+type ResistanceReading = {
+  fromLabel: string
+  toLabel: string
+  value: number
+}
+
 export function ResistancePanel({ labels, resistance }: ResistancePanelProps) {
-  const unit = labels.resistanceUnit()
-  const panelStatus =
-    resistance == null
-      ? null
-      : getWorstResistanceStatus([
-          resistance.tankToGround,
-          resistance.tankToNozzle,
-          resistance.groundToVehicle,
-        ])
-  const panelStyles =
-    panelStatus == null ? null : getResistanceStatusStyles(panelStatus)
-
-  return (
-    <section
-      className={`rounded-2xl border bg-panel-card p-5 backdrop-blur-xl transition-all sm:p-6 ${
-        panelStyles == null
-          ? 'border-base-content/8 shadow-[0_0_32px_-20px] shadow-primary/30'
-          : `${panelStyles.border} ${panelStyles.glow}`
-      }`}
-    >
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <span
-            className={`flex size-8 items-center justify-center rounded-lg ${
-              panelStyles == null
-                ? 'bg-primary/15 text-primary'
-                : `${panelStyles.bg} ${panelStyles.icon}`
-            }`}
-          >
-            <Gauge className="size-4" aria-hidden />
-          </span>
-          <h3 className="text-sm font-semibold tracking-tight">
-            {labels.resistanceTitle()}
-          </h3>
-        </div>
-        {resistance != null ? (
-          <ResistanceThresholdLegend unit={unit} />
-        ) : null}
+  if (resistance == null) {
+    return (
+      <div className="flex min-h-16 items-center justify-center rounded-lg border border-base-content/8 bg-base-100/30 px-3 py-3 text-center text-sm text-base-content/65">
+        {labels.resistanceUnknown()}
       </div>
+    )
+  }
 
-      {resistance == null ? (
-        <p className="text-sm text-base-content/50">
-          {labels.resistanceUnknown()}
-        </p>
-      ) : (
-        <dl className="grid gap-3 sm:grid-cols-3 sm:gap-4">
-          <ResistanceStat
-            fromLabel={labels.resistanceTank()}
-            toLabel={labels.resistanceGround()}
-            value={resistance.tankToGround}
-            unit={unit}
-          />
-          <ResistanceStat
-            fromLabel={labels.resistanceTank()}
-            toLabel={labels.resistanceNozzle()}
-            value={resistance.tankToNozzle}
-            unit={unit}
-          />
-          <ResistanceStat
-            fromLabel={labels.resistanceGround()}
-            toLabel={labels.resistanceVehicle()}
-            value={resistance.groundToVehicle}
-            unit={unit}
-          />
-        </dl>
-      )}
-    </section>
-  )
-}
-
-type ResistanceThresholdLegendProps = {
-  unit: string
-}
-
-function ResistanceThresholdLegend({ unit }: ResistanceThresholdLegendProps) {
-  return (
-    <div
-      className="flex flex-wrap items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-base-content/45"
-      aria-hidden
-    >
-      <ThresholdChip label={`<5${unit}`} status="success" />
-      <ThresholdChip label={`5–10${unit}`} status="warning" />
-      <ThresholdChip label={`>10${unit}`} status="error" />
-    </div>
-  )
-}
-
-type ThresholdChipProps = {
-  label: string
-  status: 'success' | 'warning' | 'error'
-}
-
-function ThresholdChip({ label, status }: ThresholdChipProps) {
-  const styles = getResistanceStatusStyles(status)
+  const unit = labels.resistanceUnit()
+  const readings: ResistanceReading[] = [
+    {
+      fromLabel: labels.resistanceTank(),
+      toLabel: labels.resistanceGround(),
+      value: resistance.tankToGround,
+    },
+    {
+      fromLabel: labels.resistanceTank(),
+      toLabel: labels.resistanceNozzle(),
+      value: resistance.tankToNozzle,
+    },
+    {
+      fromLabel: labels.resistanceGround(),
+      toLabel: labels.resistanceVehicle(),
+      value: resistance.groundToVehicle,
+    },
+  ]
 
   return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 ${styles.badge}`}
-    >
-      <span
-        className={`size-1.5 rounded-full bg-current ${styles.text} ${styles.pulse}`}
-      />
-      <span className={`tabular-nums ${styles.text}`}>{label}</span>
-    </span>
+    <MetricColumn>
+      {readings.map(function renderReading(reading) {
+        return (
+          <MetricCell
+            key={`${reading.fromLabel}-${reading.toLabel}`}
+            label={
+              <span dir="ltr" className="inline-flex items-center gap-1">
+                <span>{reading.fromLabel}</span>
+                <ArrowRight
+                  className="size-3.5 shrink-0 text-base-content/35"
+                  aria-hidden
+                />
+                <span>{reading.toLabel}</span>
+              </span>
+            }
+            value={
+              <ResistanceValue
+                value={reading.value}
+                unit={unit}
+                className="text-base"
+              />
+            }
+          />
+        )
+      })}
+    </MetricColumn>
   )
 }

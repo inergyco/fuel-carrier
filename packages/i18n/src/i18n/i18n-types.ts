@@ -1889,6 +1889,10 @@ type RootTranslation = {
 				 */
 				remainFuelUnknown: string
 				/**
+				 * F​i​l​l​e​d
+				 */
+				fillLevel: string
+				/**
 				 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 				 */
 				resistanceTitle: string
@@ -3462,6 +3466,10 @@ type RootTranslation = {
 			 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​ ​u​n​k​n​o​w​n
 			 */
 			remainFuelUnknown: string
+			/**
+			 * F​i​l​l​e​d
+			 */
+			fillLevel: string
 			/**
 			 * T​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
 			 */
@@ -5688,6 +5696,10 @@ export type TranslationFunctions = {
 				 */
 				remainFuelUnknown: () => LocalizedString
 				/**
+				 * Filled
+				 */
+				fillLevel: () => LocalizedString
+				/**
 				 * Tank resistance
 				 */
 				resistanceTitle: () => LocalizedString
@@ -7238,6 +7250,10 @@ export type TranslationFunctions = {
 			 * Remaining fuel unknown
 			 */
 			remainFuelUnknown: () => LocalizedString
+			/**
+			 * Filled
+			 */
+			fillLevel: () => LocalizedString
 			/**
 			 * Tank resistance
 			 */

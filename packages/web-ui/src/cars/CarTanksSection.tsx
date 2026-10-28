@@ -1,5 +1,4 @@
 import { api } from '../api/index'
-import { Droplets, Gauge } from '../icons/index'
 import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
@@ -8,6 +7,7 @@ import {
   formatVolume,
   FuelTruckDiagram,
 } from './fuel-truck'
+import { MetricCell, MetricColumn } from './MetricColumn'
 import { ResistancePanel } from './ResistancePanel'
 
 export type CarTanksSectionLabels = {
@@ -15,6 +15,7 @@ export type CarTanksSectionLabels = {
   tankCapacity: (params: { volume: string }) => string
   remainFuel: (params: { volume: string }) => string
   remainFuelUnknown: () => string
+  fillLevel: () => string
   resistanceTitle: () => string
   resistanceUnknown: () => string
   resistanceTank: () => string
@@ -29,6 +30,12 @@ export type CarTanksSectionProps = {
   labels: CarTanksSectionLabels
 }
 
+function captionBeforeColon(text: string) {
+  const separator = text.lastIndexOf(':')
+  if (separator === -1) return text
+  return text.slice(0, separator).trim()
+}
+
 export function CarTanksSection({ carId, labels }: CarTanksSectionProps) {
   const telemetryQuery = useCarTelemetryLive(api)
   const telemetry = (telemetryQuery.data ?? []).find(function matchCar(marker) {
@@ -41,7 +48,6 @@ export function CarTanksSection({ carId, labels }: CarTanksSectionProps) {
     telemetry?.remainFuel != null
       ? distributeRemainFuel(telemetry.remainFuel)
       : [0, 0, 0]
-  const volumeText = `${formatVolume(capacity)} ${unitLabel}`
   const totalCapacity = capacity * DEFAULT_TANK_COUNT
   const remainFuel = telemetry?.remainFuel ?? 0
   const fillPercent =
@@ -50,33 +56,34 @@ export function CarTanksSection({ carId, labels }: CarTanksSectionProps) {
       : null
 
   return (
-    <div className="flex flex-col gap-4">
-      <FuelTruckDiagram
-        capacity={capacity}
-        filled={filled}
-        unitLabel={unitLabel}
-        capacityLabel={labels.tankCapacity({ volume: volumeText })}
-        className="border-primary/10 bg-linear-to-b from-primary/8 via-base-200/50 to-base-200/20 shadow-[0_0_40px_-18px] shadow-primary/40"
-      />
-
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium tabular-nums text-primary backdrop-blur-xl">
-          <Droplets className="size-4 shrink-0" aria-hidden />
-          {telemetry?.remainFuel != null
-            ? labels.remainFuel({
-                volume: `${formatVolume(telemetry.remainFuel)} ${unitLabel}`,
-              })
-            : labels.remainFuelUnknown()}
-        </div>
-        {fillPercent != null ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-base-content/10 bg-base-200/60 px-3 py-2 text-xs tabular-nums text-base-content/55 backdrop-blur-xl">
-            <Gauge className="size-3.5 shrink-0 text-primary/80" aria-hidden />
-            {fillPercent}%
-          </div>
-        ) : null}
-      </div>
-
-      <ResistancePanel labels={labels} resistance={telemetry?.resistance} />
-    </div>
+    <FuelTruckDiagram
+      capacity={capacity}
+      filled={filled}
+      unitLabel={unitLabel}
+      className="border-primary/10 bg-linear-to-b from-primary/8 via-base-200/50 to-base-200/20 shadow-[0_0_40px_-18px] shadow-primary/40"
+      leading={
+        <MetricColumn>
+          <MetricCell
+            label={captionBeforeColon(labels.tankCapacity({ volume: '' }))}
+            value={`${formatVolume(capacity)} ${unitLabel}`}
+          />
+          <MetricCell
+            label={captionBeforeColon(labels.remainFuel({ volume: '' }))}
+            value={
+              telemetry?.remainFuel != null
+                ? `${formatVolume(telemetry.remainFuel)} ${unitLabel}`
+                : labels.remainFuelUnknown()
+            }
+          />
+          <MetricCell
+            label={labels.fillLevel()}
+            value={fillPercent != null ? `${fillPercent}%` : '—'}
+          />
+        </MetricColumn>
+      }
+      trailing={
+        <ResistancePanel labels={labels} resistance={telemetry?.resistance} />
+      }
+    />
   )
 }
