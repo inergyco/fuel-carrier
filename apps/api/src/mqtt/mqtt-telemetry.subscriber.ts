@@ -122,7 +122,7 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     const body = JSON.stringify(ack);
 
     await new Promise<void>((resolve) => {
-      this.client?.publish(ackTopic, body, { qos: 1 }, (error) => {
+      this.client?.publish(ackTopic, body, { qos: 2 }, (error) => {
         if (error) {
           this.logger.error(
             `Failed to publish ACK on ${ackTopic}`,
