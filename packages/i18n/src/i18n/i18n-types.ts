@@ -2182,7 +2182,7 @@ type RootTranslation = {
 			 */
 			eyebrow: string
 			/**
-			 * F​l​e​e​t​ ​o​p​e​r​a​t​i​o​n​s​,​ ​s​i​m​p​l​i​f​i​e​d​ ​f​o​r​ ​t​h​e​ ​t​e​a​m​s​ ​t​h​a​t​ ​k​e​e​p​ ​f​u​e​l​ ​m​o​v​i​n​g​.
+			 * F​l​e​e​t​ ​o​p​e​r​a​t​i​o​n​s​,​ ​s​i​m​p​l​i​f​i​e​d​.
 			 */
 			headline: string
 			/**
@@ -2277,7 +2277,7 @@ type RootTranslation = {
 			}
 			chapters: {
 				/**
-				 * Y​o​u​r​ ​f​l​e​e​t​,​ ​a​t​ ​a​ ​g​l​a​n​c​e​.
+				 * F​l​e​e​t​,​ ​a​t​ ​a​ ​g​l​a​n​c​e​.
 				 */
 				fleetTitle: string
 				/**
@@ -2427,7 +2427,7 @@ type RootTranslation = {
 				 */
 				companyTitle: string
 				/**
-				 * Y​o​u​r​ ​f​l​e​e​t​,​ ​a​t​ ​a​ ​g​l​a​n​c​e
+				 * F​l​e​e​t​,​ ​a​t​ ​a​ ​g​l​a​n​c​e
 				 */
 				exploreFleet: string
 				/**
@@ -2447,7 +2447,7 @@ type RootTranslation = {
 				 */
 				portalSecure: string
 				/**
-				 * F​o​r​ ​t​h​e​ ​p​e​o​p​l​e​ ​w​h​o​ ​r​u​n​ ​t​h​e​ ​c​o​m​p​a​n​y
+				 * F​o​r​ ​l​e​a​d​s​ ​a​n​d​ ​c​o​l​l​e​a​g​u​e​s
 				 */
 				portalSupport: string
 				/**
@@ -5981,7 +5981,7 @@ export type TranslationFunctions = {
 			 */
 			eyebrow: () => LocalizedString
 			/**
-			 * Fleet operations, simplified for the teams that keep fuel moving.
+			 * Fleet operations, simplified.
 			 */
 			headline: () => LocalizedString
 			/**
@@ -6076,7 +6076,7 @@ export type TranslationFunctions = {
 			}
 			chapters: {
 				/**
-				 * Your fleet, at a glance.
+				 * Fleet, at a glance.
 				 */
 				fleetTitle: () => LocalizedString
 				/**
@@ -6226,7 +6226,7 @@ export type TranslationFunctions = {
 				 */
 				companyTitle: () => LocalizedString
 				/**
-				 * Your fleet, at a glance
+				 * Fleet, at a glance
 				 */
 				exploreFleet: () => LocalizedString
 				/**
@@ -6246,7 +6246,7 @@ export type TranslationFunctions = {
 				 */
 				portalSecure: () => LocalizedString
 				/**
-				 * For the people who run the company
+				 * For leads and colleagues
 				 */
 				portalSupport: () => LocalizedString
 				/**

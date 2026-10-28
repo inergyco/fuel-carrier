@@ -608,8 +608,7 @@ const en: BaseTranslation = {
       brand: 'Fuel Carrier',
       brandSubtitle: 'Company Portal',
       eyebrow: 'Mobile fueling platform',
-      headline:
-        'Fleet operations, simplified for the teams that keep fuel moving.',
+      headline: 'Fleet operations, simplified.',
       description:
         'Real-time visibility. Smarter dispatch. Safer fueling. Everything your fleet needs, in one platform.',
       signIn: 'Enter the portal',
@@ -640,7 +639,7 @@ const en: BaseTranslation = {
         safety: 'Safer fueling',
       },
       chapters: {
-        fleetTitle: 'Your fleet, at a glance.',
+        fleetTitle: 'Fleet, at a glance.',
         fleetHelper:
           'Vehicle status, fuel volume, custody, and responsibility in one operating view.',
         fleetBody:
@@ -693,12 +692,12 @@ const en: BaseTranslation = {
         exploreTitle: 'Sections',
         portalTitle: 'Portal',
         companyTitle: 'Inergy',
-        exploreFleet: 'Your fleet, at a glance',
+        exploreFleet: 'Fleet, at a glance',
         exploreLive: 'Live on the road',
         exploreControl: 'Control that scales',
         portalAccess: 'A separate account for each company',
         portalSecure: 'Sign in with username and password',
-        portalSupport: 'For the people who run the company',
+        portalSupport: 'For leads and colleagues',
         companyAbout: 'About Inergy',
         companySite: 'inergy.ir',
         companyProduct: 'Fuel Carrier platform',
