@@ -559,6 +559,10 @@ const fa: Translation = {
         duplicateDriverMobileNumber:
           "راننده‌ای با این شماره موبایل از قبل وجود دارد.",
         duplicateLicensePlate: "خودرویی با این پلاک از قبل وجود دارد.",
+        notificationsTitle: "اعلان‌ها",
+        notificationsSubtitle: "اعلان‌های مرورگر ارسال‌شده به کارکنان این شرکت",
+        notificationsEmpty: "هنوز اعلانی برای این شرکت ارسال نشده است.",
+        notificationsLoading: "در حال بارگذاری اعلان‌ها…",
         auditLogsTitle: "گزارش ممیزی",
         auditLogsSubtitle: "اقدامات مهم انجام‌شده برای این شرکت",
         auditLogsEmpty: "هنوز گزارشی برای این شرکت ثبت نشده است.",

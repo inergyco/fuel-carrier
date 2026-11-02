@@ -18,6 +18,10 @@ export const notificationKeys = {
   all: ['notifications'] as const,
   list: (params: NotificationListParams = DEFAULT_LIST_PARAMS) =>
     ['notifications', 'list', params] as const,
+  company: (
+    companyId: string,
+    params: NotificationListParams = DEFAULT_LIST_PARAMS,
+  ) => ['notifications', 'company', companyId, params] as const,
 }
 
 export async function fetchNotifications(
@@ -25,6 +29,20 @@ export async function fetchNotifications(
 ): Promise<PaginatedResult<NotificationBroadcast>> {
   return api
     .get('notifications', {
+      searchParams: {
+        page: params.page,
+        limit: params.limit,
+      },
+    })
+    .json<PaginatedResult<NotificationBroadcast>>()
+}
+
+export async function fetchCompanyNotifications(
+  companyId: string,
+  params: NotificationListParams = DEFAULT_LIST_PARAMS,
+): Promise<PaginatedResult<NotificationBroadcast>> {
+  return api
+    .get(`companies/${companyId}/notifications`, {
       searchParams: {
         page: params.page,
         limit: params.limit,

@@ -563,6 +563,11 @@ const en: BaseTranslation = {
         duplicateDriverMobileNumber:
           'A driver with this mobile number already exists.',
         duplicateLicensePlate: 'A vehicle with this license plate already exists.',
+        notificationsTitle: 'Notifications',
+        notificationsSubtitle:
+          'Browser notifications delivered to this company’s staff',
+        notificationsEmpty: 'No notifications have been delivered to this company yet.',
+        notificationsLoading: 'Loading notifications…',
         auditLogsTitle: 'Audit log',
         auditLogsSubtitle: 'Critical actions performed for this company',
         auditLogsEmpty: 'No audit entries yet for this company.',

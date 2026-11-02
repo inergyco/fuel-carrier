@@ -2031,6 +2031,22 @@ type RootTranslation = {
 				 */
 				duplicateLicensePlate: string
 				/**
+				 * N​o​t​i​f​i​c​a​t​i​o​n​s
+				 */
+				notificationsTitle: string
+				/**
+				 * B​r​o​w​s​e​r​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​d​e​l​i​v​e​r​e​d​ ​t​o​ ​t​h​i​s​ ​c​o​m​p​a​n​y​’​s​ ​s​t​a​f​f
+				 */
+				notificationsSubtitle: string
+				/**
+				 * N​o​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​ ​h​a​v​e​ ​b​e​e​n​ ​d​e​l​i​v​e​r​e​d​ ​t​o​ ​t​h​i​s​ ​c​o​m​p​a​n​y​ ​y​e​t​.
+				 */
+				notificationsEmpty: string
+				/**
+				 * L​o​a​d​i​n​g​ ​n​o​t​i​f​i​c​a​t​i​o​n​s​…
+				 */
+				notificationsLoading: string
+				/**
 				 * A​u​d​i​t​ ​l​o​g
 				 */
 				auditLogsTitle: string
@@ -5919,6 +5935,22 @@ export type TranslationFunctions = {
 				 * A vehicle with this license plate already exists.
 				 */
 				duplicateLicensePlate: () => LocalizedString
+				/**
+				 * Notifications
+				 */
+				notificationsTitle: () => LocalizedString
+				/**
+				 * Browser notifications delivered to this company’s staff
+				 */
+				notificationsSubtitle: () => LocalizedString
+				/**
+				 * No notifications have been delivered to this company yet.
+				 */
+				notificationsEmpty: () => LocalizedString
+				/**
+				 * Loading notifications…
+				 */
+				notificationsLoading: () => LocalizedString
 				/**
 				 * Audit log
 				 */

@@ -301,17 +301,46 @@ export class NotificationsService {
     context: ApiTenantContext,
     query: PaginationParams,
   ): Promise<PaginatedResult<NotificationBroadcast>> {
+    return this.listBroadcasts(context, query);
+  }
+
+  async listByCompany(
+    context: ApiTenantContext,
+    companyId: string,
+    query: PaginationParams,
+  ): Promise<PaginatedResult<NotificationBroadcast>> {
+    assertUuidParam(companyId, 'companyId');
+    return this.listBroadcasts(context, query, companyId);
+  }
+
+  private async listBroadcasts(
+    context: ApiTenantContext,
+    query: PaginationParams,
+    companyId?: string,
+  ): Promise<PaginatedResult<NotificationBroadcast>> {
     const { page, limit } = query;
     const offset = getPaginationOffset(query);
 
     return this.tenantDb.run(context, async (tx) => {
+      const deliveredToCompany =
+        companyId == null
+          ? undefined
+          : inArray(
+              notifications.id,
+              tx
+                .select({ id: notificationDeliveries.notificationId })
+                .from(notificationDeliveries)
+                .where(eq(notificationDeliveries.companyId, companyId)),
+            );
       const [countRow] = await tx
         .select({ value: count() })
-        .from(notifications);
+        .from(notifications)
+        .where(deliveredToCompany);
 
       const rows = await tx
         .select()
         .from(notifications)
+        .where(deliveredToCompany)
         .orderBy(desc(notifications.createdAt))
         .limit(limit)
         .offset(offset);

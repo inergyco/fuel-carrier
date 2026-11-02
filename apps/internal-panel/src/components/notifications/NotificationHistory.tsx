@@ -17,19 +17,43 @@ import {
 } from '@fuel-carrier/web-ui/ui'
 import { useState } from 'react'
 import {
+  fetchCompanyNotifications,
   fetchNotifications,
   notificationKeys,
 } from '../../lib/api/notifications'
 
-export function NotificationHistory() {
+type NotificationHistoryProps = {
+  companyId?: string
+  title?: string
+  subtitle?: string
+  empty?: string
+  loading?: string
+  /** Hide the multi-company audience line (company-scoped views). */
+  hideCompanies?: boolean
+}
+
+export function NotificationHistory({
+  companyId,
+  title,
+  subtitle,
+  empty,
+  loading,
+  hideCompanies = false,
+}: NotificationHistoryProps = {}) {
   const { LL, locale } = useI18nContext()
   const copy = LL.internalPanel.notifications
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(DEFAULT_LIMIT)
   const listParams = { page, limit }
   const historyQuery = useQuery({
-    queryKey: notificationKeys.list(listParams),
-    queryFn: () => fetchNotifications(listParams),
+    queryKey: companyId
+      ? notificationKeys.company(companyId, listParams)
+      : notificationKeys.list(listParams),
+    queryFn: function loadHistory() {
+      return companyId
+        ? fetchCompanyNotifications(companyId, listParams)
+        : fetchNotifications(listParams)
+    },
     placeholderData: keepPreviousData,
   })
   const result = historyQuery.data
@@ -62,12 +86,19 @@ export function NotificationHistory() {
 
   return (
     <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-sm md:p-6">
-      <h2 className="text-base font-medium tracking-tight">{copy.historyTitle()}</h2>
-      <p className="mt-1 text-sm text-base-content/50">{copy.historySubtitle()}</p>
+      <h2 className="text-base font-medium tracking-tight">
+        {title ?? copy.historyTitle()}
+      </h2>
+      <p className="mt-1 text-sm text-base-content/50">
+        {subtitle ?? copy.historySubtitle()}
+      </p>
 
       <div className="mt-5">
         {historyQuery.isLoading && !result ? (
-          <NotificationHistorySkeleton label={copy.historyLoading()} />
+          <NotificationHistorySkeleton
+            label={loading ?? copy.historyLoading()}
+            hideCompanies={hideCompanies}
+          />
         ) : historyQuery.isError ? (
           <QueryErrorState
             onRetry={() => void historyQuery.refetch()}
@@ -77,7 +108,9 @@ export function NotificationHistory() {
             }}
           />
         ) : (result?.items.length ?? 0) === 0 ? (
-          <p className="text-sm text-base-content/50">{copy.historyEmpty()}</p>
+          <p className="text-sm text-base-content/50">
+            {empty ?? copy.historyEmpty()}
+          </p>
         ) : (
           <ul className="flex flex-col gap-3">
             {result?.items.map((item) => {
@@ -120,9 +153,11 @@ export function NotificationHistory() {
                       {copy.recipients({ count: item.recipientCount })}
                     </Badge>
                   </div>
-                  <p className="mt-2 text-xs text-base-content/50">
-                    {formatCompanies(item)}
-                  </p>
+                  {hideCompanies ? null : (
+                    <p className="mt-2 text-xs text-base-content/50">
+                      {formatCompanies(item)}
+                    </p>
+                  )}
                 </li>
               )
             })}
@@ -155,7 +190,13 @@ export function NotificationHistory() {
   )
 }
 
-function NotificationHistorySkeleton({ label }: { label: string }) {
+function NotificationHistorySkeleton({
+  label,
+  hideCompanies,
+}: {
+  label: string
+  hideCompanies: boolean
+}) {
   return (
     <ul
       className="flex flex-col gap-3"
@@ -180,7 +221,7 @@ function NotificationHistorySkeleton({ label }: { label: string }) {
               <Skeleton className="h-5 w-16 rounded-full" />
               <Skeleton className="h-5 w-24 rounded-full" />
             </div>
-            <Skeleton className="mt-3 h-3 w-1/2" />
+            {hideCompanies ? null : <Skeleton className="mt-3 h-3 w-1/2" />}
           </li>
         )
       })}

@@ -22,6 +22,7 @@ import { Route as AuthenticatedCompaniesNewRouteImport } from './routes/_authent
 import { Route as AuthenticatedCompaniesCompanyIdRouteImport } from './routes/_authenticated/companies.$companyId'
 import { Route as AuthenticatedCompaniesCompanyIdIndexRouteImport } from './routes/_authenticated/companies.$companyId.index'
 import { Route as AuthenticatedCompaniesCompanyIdUsersRouteImport } from './routes/_authenticated/companies.$companyId.users'
+import { Route as AuthenticatedCompaniesCompanyIdNotificationsRouteImport } from './routes/_authenticated/companies.$companyId.notifications'
 import { Route as AuthenticatedCompaniesCompanyIdEditRouteImport } from './routes/_authenticated/companies.$companyId.edit'
 import { Route as AuthenticatedCompaniesCompanyIdDriversRouteImport } from './routes/_authenticated/companies.$companyId.drivers'
 import { Route as AuthenticatedCompaniesCompanyIdCarsRouteImport } from './routes/_authenticated/companies.$companyId.cars'
@@ -101,6 +102,12 @@ const AuthenticatedCompaniesCompanyIdUsersRoute =
     path: '/users',
     getParentRoute: () => AuthenticatedCompaniesCompanyIdRoute,
   } as any)
+const AuthenticatedCompaniesCompanyIdNotificationsRoute =
+  AuthenticatedCompaniesCompanyIdNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedCompaniesCompanyIdRoute,
+  } as any)
 const AuthenticatedCompaniesCompanyIdEditRoute =
   AuthenticatedCompaniesCompanyIdEditRouteImport.update({
     id: '/edit',
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/companies/$companyId/cars': typeof AuthenticatedCompaniesCompanyIdCarsRouteWithChildren
   '/companies/$companyId/drivers': typeof AuthenticatedCompaniesCompanyIdDriversRoute
   '/companies/$companyId/edit': typeof AuthenticatedCompaniesCompanyIdEditRoute
+  '/companies/$companyId/notifications': typeof AuthenticatedCompaniesCompanyIdNotificationsRoute
   '/companies/$companyId/users': typeof AuthenticatedCompaniesCompanyIdUsersRoute
   '/companies/$companyId/': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/companies/$companyId/cars/$carId': typeof AuthenticatedCompaniesCompanyIdCarsCarIdRouteWithChildren
@@ -184,6 +192,7 @@ export interface FileRoutesByTo {
   '/companies/$companyId/audit-logs': typeof AuthenticatedCompaniesCompanyIdAuditLogsRoute
   '/companies/$companyId/drivers': typeof AuthenticatedCompaniesCompanyIdDriversRoute
   '/companies/$companyId/edit': typeof AuthenticatedCompaniesCompanyIdEditRoute
+  '/companies/$companyId/notifications': typeof AuthenticatedCompaniesCompanyIdNotificationsRoute
   '/companies/$companyId/users': typeof AuthenticatedCompaniesCompanyIdUsersRoute
   '/companies/$companyId': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/companies/$companyId/cars': typeof AuthenticatedCompaniesCompanyIdCarsIndexRoute
@@ -207,6 +216,7 @@ export interface FileRoutesById {
   '/_authenticated/companies/$companyId/cars': typeof AuthenticatedCompaniesCompanyIdCarsRouteWithChildren
   '/_authenticated/companies/$companyId/drivers': typeof AuthenticatedCompaniesCompanyIdDriversRoute
   '/_authenticated/companies/$companyId/edit': typeof AuthenticatedCompaniesCompanyIdEditRoute
+  '/_authenticated/companies/$companyId/notifications': typeof AuthenticatedCompaniesCompanyIdNotificationsRoute
   '/_authenticated/companies/$companyId/users': typeof AuthenticatedCompaniesCompanyIdUsersRoute
   '/_authenticated/companies/$companyId/': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/_authenticated/companies/$companyId/cars/$carId': typeof AuthenticatedCompaniesCompanyIdCarsCarIdRouteWithChildren
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/companies/$companyId/cars'
     | '/companies/$companyId/drivers'
     | '/companies/$companyId/edit'
+    | '/companies/$companyId/notifications'
     | '/companies/$companyId/users'
     | '/companies/$companyId/'
     | '/companies/$companyId/cars/$carId'
@@ -250,6 +261,7 @@ export interface FileRouteTypes {
     | '/companies/$companyId/audit-logs'
     | '/companies/$companyId/drivers'
     | '/companies/$companyId/edit'
+    | '/companies/$companyId/notifications'
     | '/companies/$companyId/users'
     | '/companies/$companyId'
     | '/companies/$companyId/cars'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
     | '/_authenticated/companies/$companyId/cars'
     | '/_authenticated/companies/$companyId/drivers'
     | '/_authenticated/companies/$companyId/edit'
+    | '/_authenticated/companies/$companyId/notifications'
     | '/_authenticated/companies/$companyId/users'
     | '/_authenticated/companies/$companyId/'
     | '/_authenticated/companies/$companyId/cars/$carId'
@@ -378,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompaniesCompanyIdUsersRouteImport
       parentRoute: typeof AuthenticatedCompaniesCompanyIdRoute
     }
+    '/_authenticated/companies/$companyId/notifications': {
+      id: '/_authenticated/companies/$companyId/notifications'
+      path: '/notifications'
+      fullPath: '/companies/$companyId/notifications'
+      preLoaderRoute: typeof AuthenticatedCompaniesCompanyIdNotificationsRouteImport
+      parentRoute: typeof AuthenticatedCompaniesCompanyIdRoute
+    }
     '/_authenticated/companies/$companyId/edit': {
       id: '/_authenticated/companies/$companyId/edit'
       path: '/edit'
@@ -478,6 +498,7 @@ interface AuthenticatedCompaniesCompanyIdRouteChildren {
   AuthenticatedCompaniesCompanyIdCarsRoute: typeof AuthenticatedCompaniesCompanyIdCarsRouteWithChildren
   AuthenticatedCompaniesCompanyIdDriversRoute: typeof AuthenticatedCompaniesCompanyIdDriversRoute
   AuthenticatedCompaniesCompanyIdEditRoute: typeof AuthenticatedCompaniesCompanyIdEditRoute
+  AuthenticatedCompaniesCompanyIdNotificationsRoute: typeof AuthenticatedCompaniesCompanyIdNotificationsRoute
   AuthenticatedCompaniesCompanyIdUsersRoute: typeof AuthenticatedCompaniesCompanyIdUsersRoute
   AuthenticatedCompaniesCompanyIdIndexRoute: typeof AuthenticatedCompaniesCompanyIdIndexRoute
 }
@@ -492,6 +513,8 @@ const AuthenticatedCompaniesCompanyIdRouteChildren: AuthenticatedCompaniesCompan
       AuthenticatedCompaniesCompanyIdDriversRoute,
     AuthenticatedCompaniesCompanyIdEditRoute:
       AuthenticatedCompaniesCompanyIdEditRoute,
+    AuthenticatedCompaniesCompanyIdNotificationsRoute:
+      AuthenticatedCompaniesCompanyIdNotificationsRoute,
     AuthenticatedCompaniesCompanyIdUsersRoute:
       AuthenticatedCompaniesCompanyIdUsersRoute,
     AuthenticatedCompaniesCompanyIdIndexRoute:
