@@ -2,7 +2,7 @@ import { useI18nContext } from "@fuel-carrier/i18n/react";
 import { useQueryClient } from "@fuel-carrier/web-ui/query";
 import {
   DashboardModeProvider,
-  DashboardModeSwitcher,
+  // DashboardModeSwitcher,
 } from "@fuel-carrier/web-ui/dashboard";
 import {
   Avatar,
@@ -29,10 +29,7 @@ import { authKeys, logout } from "../lib/api/auth";
 import { ActiveCompanyProvider } from "./shell/ActiveCompanyProvider";
 import { AppBarBackLink } from "./shell/AppBarBackLink";
 import { CompanySwitcher } from "./shell/CompanySwitcher";
-import {
-  useAppBarHeading,
-  type AppBarHeading,
-} from "./shell/useAppBarHeading";
+import { useAppBarHeading, type AppBarHeading } from "./shell/useAppBarHeading";
 
 const authenticatedRoute = getRouteApi("/_authenticated");
 
@@ -168,7 +165,7 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
             pathname === "/" || pathname === "/map" ? (
               <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
                 <CompanySwitcher />
-                <DashboardModeSwitcher />
+                {/* <DashboardModeSwitcher /> */}
               </div>
             ) : null
           }
