@@ -1,36 +1,36 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   CompanyUserLevels,
   NotificationChannels,
   type CompanyUserLevel,
   type NotificationBroadcast,
   type NotificationChannel,
-} from '@fuel-carrier/shared-types'
-import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
-import { keepPreviousData, useQuery } from '@fuel-carrier/web-ui/query'
+} from "@fuel-carrier/shared-types";
+import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
+import { keepPreviousData, useQuery } from "@fuel-carrier/web-ui/query";
 import {
   Badge,
   LicensePlate,
   Pagination,
   QueryErrorState,
   Skeleton,
-} from '@fuel-carrier/web-ui/ui'
-import { useState } from 'react'
+} from "@fuel-carrier/web-ui/ui";
+import { useState } from "react";
 import {
   fetchCompanyNotifications,
   fetchNotifications,
   notificationKeys,
-} from '../../lib/api/notifications'
+} from "../../lib/api/notifications";
 
 type NotificationHistoryProps = {
-  companyId?: string
-  title?: string
-  subtitle?: string
-  empty?: string
-  loading?: string
+  companyId?: string;
+  title?: string;
+  subtitle?: string;
+  empty?: string;
+  loading?: string;
   /** Hide the multi-company audience line (company-scoped views). */
-  hideCompanies?: boolean
-}
+  hideCompanies?: boolean;
+};
 
 export function NotificationHistory({
   companyId,
@@ -40,11 +40,11 @@ export function NotificationHistory({
   loading,
   hideCompanies = false,
 }: NotificationHistoryProps = {}) {
-  const { LL, locale } = useI18nContext()
-  const copy = LL.internalPanel.notifications
-  const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(DEFAULT_LIMIT)
-  const listParams = { page, limit }
+  const { LL, locale } = useI18nContext();
+  const copy = LL.internalPanel.notifications;
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(DEFAULT_LIMIT);
+  const listParams = { page, limit };
   const historyQuery = useQuery({
     queryKey: companyId
       ? notificationKeys.company(companyId, listParams)
@@ -52,36 +52,36 @@ export function NotificationHistory({
     queryFn: function loadHistory() {
       return companyId
         ? fetchCompanyNotifications(companyId, listParams)
-        : fetchNotifications(listParams)
+        : fetchNotifications(listParams);
     },
     placeholderData: keepPreviousData,
-  })
-  const result = historyQuery.data
+  });
+  const result = historyQuery.data;
 
   function formatWhen(value: string): string {
-    return new Date(value).toLocaleString(locale)
+    return new Date(value).toLocaleString(locale);
   }
 
   function formatLevel(level: CompanyUserLevel): string {
     return level === CompanyUserLevels.ADMIN
       ? LL.common.companyUserLevel.admin()
-      : LL.common.companyUserLevel.viewer()
+      : LL.common.companyUserLevel.viewer();
   }
 
   function formatChannel(channel: NotificationChannel): string {
     switch (channel) {
       case NotificationChannels.BROWSER:
-        return copy.channelBrowser()
+        return copy.channelBrowser();
     }
   }
 
   function formatCompanies(item: NotificationBroadcast): string {
     if (item.companies.length === 0) {
-      return copy.companiesUnavailable()
+      return copy.companiesUnavailable();
     }
 
-    const separator = locale === 'fa' ? '، ' : ', '
-    return item.companies.map((company) => company.name).join(separator)
+    const separator = locale === "fa" ? "، " : ", ";
+    return item.companies.map((company) => company.name).join(separator);
   }
 
   return (
@@ -147,7 +147,7 @@ export function NotificationHistory({
                         <Badge key={level} size="sm">
                           {formatLevel(level)}
                         </Badge>
-                      )
+                      );
                     })}
                     <Badge size="sm" variant="secondary">
                       {copy.recipients({ count: item.recipientCount })}
@@ -159,7 +159,7 @@ export function NotificationHistory({
                     </p>
                   )}
                 </li>
-              )
+              );
             })}
           </ul>
         )}
@@ -174,8 +174,8 @@ export function NotificationHistory({
           limit={result.limit}
           onPageChange={setPage}
           onLimitChange={function changeLimit(nextLimit) {
-            setLimit(nextLimit)
-            setPage(1)
+            setLimit(nextLimit);
+            setPage(1);
           }}
           labels={{
             previous: LL.common.pagination.previous,
@@ -187,15 +187,15 @@ export function NotificationHistory({
         />
       ) : null}
     </section>
-  )
+  );
 }
 
 function NotificationHistorySkeleton({
   label,
   hideCompanies,
 }: {
-  label: string
-  hideCompanies: boolean
+  label: string;
+  hideCompanies: boolean;
 }) {
   return (
     <ul
@@ -223,8 +223,8 @@ function NotificationHistorySkeleton({
             </div>
             {hideCompanies ? null : <Skeleton className="mt-3 h-3 w-1/2" />}
           </li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }
