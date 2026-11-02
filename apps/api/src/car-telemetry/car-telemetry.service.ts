@@ -175,6 +175,8 @@ export class CarTelemetryService {
       carId: input.carId,
       companyId: input.companyId,
       licensePlate: carIdentity.licensePlate,
+      recordedAt,
+      ingestedAt,
       resistance: input.resistance,
       remainFuel: input.remainFuel,
     });

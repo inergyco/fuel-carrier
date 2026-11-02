@@ -9,7 +9,7 @@ CREATE TABLE "car_condition_alerts" (
 	"notification_id" uuid NOT NULL,
 	"kind" varchar(32) NOT NULL,
 	"opened_at" timestamp with time zone DEFAULT now() NOT NULL,
-	CONSTRAINT "car_condition_alerts_kind_check" CHECK ("kind" IN ('high_resistance', 'low_fuel'))
+	CONSTRAINT "car_condition_alerts_kind_check" CHECK ("kind" IN ('high_resistance', 'low_fuel', 'stale_telemetry'))
 );
 --> statement-breakpoint
 ALTER TABLE "car_condition_alerts" ADD CONSTRAINT "car_condition_alerts_car_id_cars_id_fk" FOREIGN KEY ("car_id") REFERENCES "public"."cars"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

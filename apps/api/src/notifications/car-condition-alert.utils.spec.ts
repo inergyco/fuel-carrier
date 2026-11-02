@@ -1,5 +1,9 @@
 import { FLEET_TOTAL_CAPACITY_LITERS } from '@fuel-carrier/shared-types';
 import { isLowFuel, listHighResistanceProbes } from './car-condition-alert.utils';
+import {
+  STALE_TELEMETRY_THRESHOLD_MS,
+  isStaleTelemetry,
+} from './stale-telemetry-alert';
 
 describe('car-condition-alert.utils', () => {
   it('lists only probes above the alert threshold', () => {
@@ -18,5 +22,27 @@ describe('car-condition-alert.utils', () => {
     expect(isLowFuel(quarter)).toBe(false);
     expect(isLowFuel(quarter - 0.1)).toBe(true);
     expect(isLowFuel(0)).toBe(true);
+  });
+
+  it('flags device samples older than 30 minutes at ingest', () => {
+    const ingestedAt = new Date('2026-11-02T12:00:00.000Z');
+
+    expect(
+      isStaleTelemetry({
+        recordedAt: new Date(
+          ingestedAt.getTime() - STALE_TELEMETRY_THRESHOLD_MS,
+        ),
+        ingestedAt,
+      }),
+    ).toBe(false);
+
+    expect(
+      isStaleTelemetry({
+        recordedAt: new Date(
+          ingestedAt.getTime() - STALE_TELEMETRY_THRESHOLD_MS - 1,
+        ),
+        ingestedAt,
+      }),
+    ).toBe(true);
   });
 });

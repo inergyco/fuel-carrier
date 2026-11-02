@@ -23,10 +23,14 @@ import {
 } from './car-condition-alert.utils';
 import { NotificationsService } from './notifications.service';
 
+const STALE_TELEMETRY_THRESHOLD_MS = 30 * 60 * 1000;
+
 export type EvaluateCarConditionAlertsInput = {
   carId: string;
   companyId: string;
   licensePlate: string;
+  recordedAt: Date;
+  ingestedAt: Date;
   resistance?: TankResistanceReadings;
   remainFuel?: number;
 };
@@ -49,7 +53,7 @@ export class CarConditionAlertService {
     input: EvaluateCarConditionAlertsInput,
   ): Promise<void> {
     try {
-      await this.evaluate(input);
+      await this._evaluate(input);
     } catch (error) {
       this.logger.error(
         `Failed condition alert evaluation for car ${input.carId}`,
@@ -58,12 +62,12 @@ export class CarConditionAlertService {
     }
   }
 
-  private async evaluate(
+  private async _evaluate(
     input: EvaluateCarConditionAlertsInput,
   ): Promise<void> {
     if (input.resistance != null) {
       const probes = listHighResistanceProbes(input.resistance);
-      await this.syncEpisode({
+      await this._syncEpisode({
         carId: input.carId,
         companyId: input.companyId,
         licensePlate: input.licensePlate,
@@ -81,7 +85,7 @@ export class CarConditionAlertService {
 
     if (input.remainFuel != null && Number.isFinite(input.remainFuel)) {
       const isLow = isLowFuel(input.remainFuel);
-      await this.syncEpisode({
+      await this._syncEpisode({
         carId: input.carId,
         companyId: input.companyId,
         licensePlate: input.licensePlate,
@@ -95,12 +99,30 @@ export class CarConditionAlertService {
           : null,
       });
     }
+
+    const staleAgeMs = input.ingestedAt.getTime() - input.recordedAt.getTime();
+    const isStale = staleAgeMs > STALE_TELEMETRY_THRESHOLD_MS;
+    const staleKind = 'stale_telemetry' as const;
+    await this._syncEpisode({
+      carId: input.carId,
+      companyId: input.companyId,
+      licensePlate: input.licensePlate,
+      kind: staleKind,
+      active: isStale,
+      message: isStale
+        ? {
+            title: 'Stale telemetry',
+            pushTitle: `Stale telemetry — ${input.licensePlate}`,
+            body: `The device sample is about ${Math.round(staleAgeMs / 60_000)} minutes old (limit ${STALE_TELEMETRY_THRESHOLD_MS / 60_000} minutes).`,
+          }
+        : null,
+    });
   }
 
-  private async syncEpisode(input: SyncEpisodeInput): Promise<void> {
+  private async _syncEpisode(input: SyncEpisodeInput): Promise<void> {
     try {
       if (!input.active) {
-        await this.deleteEpisode(input.carId, input.kind);
+        await this._deleteEpisode(input.carId, input.kind);
         return;
       }
 
@@ -161,7 +183,7 @@ export class CarConditionAlertService {
     }
   }
 
-  private async deleteEpisode(
+  private async _deleteEpisode(
     carId: string,
     kind: CarConditionAlertKind,
   ): Promise<void> {

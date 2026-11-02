@@ -2,6 +2,7 @@
 export const CarConditionAlertKinds = {
   HIGH_RESISTANCE: 'high_resistance',
   LOW_FUEL: 'low_fuel',
+  STALE_TELEMETRY: 'stale_telemetry',
 } as const;
 
 export type CarConditionAlertKind =

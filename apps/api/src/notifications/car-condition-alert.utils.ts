@@ -11,14 +11,10 @@ import {
   type TankResistanceReadings,
 } from '@fuel-carrier/shared-types/car-telemetry';
 import { truncate } from '../common/string.utils';
-
-/**
- * Keep max lengths local. Importing NOTIFICATION_*_MAX_LENGTH from
- * shared-types into modules that the type-aware linter pairs with the
- * notifications schema can resolve exports as `error`.
- */
-const NOTIFICATION_TITLE_MAX_LENGTH = 120;
-const NOTIFICATION_BODY_MAX_LENGTH = 2000;
+import {
+  NOTIFICATION_BODY_MAX_LENGTH,
+  NOTIFICATION_TITLE_MAX_LENGTH,
+} from '../database/schema/notification-limits';
 
 const PROBE_LABELS: Record<ResistanceProbeKey, string> = {
   [ResistanceProbeKeys.TANK_TO_GROUND]: 'Tank to ground',

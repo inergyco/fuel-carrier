@@ -15,14 +15,14 @@ import type { NotificationChannel } from '@fuel-carrier/shared-types/notificatio
 import { cars } from './cars.schema';
 import { companies } from './companies.schema';
 import { companyUsers } from './company-users.schema';
+import {
+  NOTIFICATION_BODY_MAX_LENGTH,
+  NOTIFICATION_LICENSE_PLATE_MAX_LENGTH,
+  NOTIFICATION_TITLE_MAX_LENGTH,
+} from './notification-limits';
 import { users } from './users.schema';
 
-/** Local literals — importing shared max-length consts poisons Drizzle types here. */
-const NOTIFICATION_TITLE_MAX_LENGTH = 120;
-const NOTIFICATION_BODY_MAX_LENGTH = 2000;
-const NOTIFICATION_LICENSE_PLATE_MAX_LENGTH = 32;
-
-type CarConditionAlertKind = 'high_resistance' | 'low_fuel';
+type CarConditionAlertKind = 'high_resistance' | 'low_fuel' | 'stale_telemetry';
 
 export const notifications = pgTable(
   'notifications',
@@ -31,7 +31,9 @@ export const notifications = pgTable(
     channel: varchar('channel', { length: 16 })
       .notNull()
       .$type<NotificationChannel>(),
-    title: varchar('title', { length: 120 }).notNull(),
+    title: varchar('title', {
+      length: NOTIFICATION_TITLE_MAX_LENGTH,
+    }).notNull(),
     body: text('body').notNull(),
     carId: uuid('car_id').references(() => cars.id, { onDelete: 'set null' }),
     licensePlate: varchar('license_plate', {
@@ -151,7 +153,7 @@ export const carConditionAlerts = pgTable(
     index('car_condition_alerts_company_id_idx').on(table.companyId),
     check(
       'car_condition_alerts_kind_check',
-      sql`${table.kind} IN ('high_resistance', 'low_fuel')`,
+      sql`${table.kind} IN ('high_resistance', 'low_fuel', 'stale_telemetry')`,
     ),
   ],
 );
