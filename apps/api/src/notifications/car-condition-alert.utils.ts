@@ -1,0 +1,108 @@
+import {
+  FLEET_TOTAL_CAPACITY_LITERS,
+  getFuelLevel,
+} from '@fuel-carrier/shared-types/car-fleet-stats';
+import {
+  RESISTANCE_ALERT_THRESHOLD_OHMS,
+  RESISTANCE_PROBE_KEYS,
+  ResistanceProbeKeys,
+  isResistanceAboveAlertThreshold,
+  type ResistanceProbeKey,
+  type TankResistanceReadings,
+} from '@fuel-carrier/shared-types/car-telemetry';
+import { truncate } from '../common/string.utils';
+
+/**
+ * Keep max lengths local. Importing NOTIFICATION_*_MAX_LENGTH from
+ * shared-types into modules that the type-aware linter pairs with the
+ * notifications schema can resolve exports as `error`.
+ */
+const NOTIFICATION_TITLE_MAX_LENGTH = 120;
+const NOTIFICATION_BODY_MAX_LENGTH = 2000;
+
+const PROBE_LABELS: Record<ResistanceProbeKey, string> = {
+  [ResistanceProbeKeys.TANK_TO_GROUND]: 'Tank to ground',
+  [ResistanceProbeKeys.TANK_TO_NOZZLE]: 'Tank to nozzle',
+  [ResistanceProbeKeys.GROUND_TO_VEHICLE]: 'Ground to vehicle',
+};
+
+const LOW_FUEL_PERCENT = 25;
+
+export type HighResistanceProbe = {
+  probe: ResistanceProbeKey;
+  ohms: number;
+};
+
+export type ConditionAlertMessage = {
+  title: string;
+  body: string;
+  pushTitle: string;
+};
+
+export function listHighResistanceProbes(
+  resistance: TankResistanceReadings,
+): HighResistanceProbe[] {
+  const high: HighResistanceProbe[] = [];
+
+  for (const probe of RESISTANCE_PROBE_KEYS) {
+    const ohms = resistance[probe];
+    if (isResistanceAboveAlertThreshold(ohms)) {
+      high.push({ probe, ohms });
+    }
+  }
+
+  return high;
+}
+
+/** True when remain fuel is in the fleet "low" band (under 25%). */
+export function isLowFuel(remainFuel: number): boolean {
+  return getFuelLevel(remainFuel) === 'low';
+}
+
+export function buildResistanceAlertMessage(input: {
+  licensePlate: string;
+  probes: HighResistanceProbe[];
+}): ConditionAlertMessage {
+  const title = truncate('High tank resistance', NOTIFICATION_TITLE_MAX_LENGTH);
+  const pushTitle = truncate(
+    `High tank resistance — ${input.licensePlate}`,
+    NOTIFICATION_TITLE_MAX_LENGTH,
+  );
+  const lines = input.probes.map(
+    (entry) =>
+      `${PROBE_LABELS[entry.probe]} is ${formatNumber(entry.ohms)} Ω, above the ${RESISTANCE_ALERT_THRESHOLD_OHMS} Ω limit.`,
+  );
+
+  return {
+    title,
+    pushTitle,
+    body: truncate(lines.join('\n'), NOTIFICATION_BODY_MAX_LENGTH),
+  };
+}
+
+export function buildLowFuelAlertMessage(input: {
+  licensePlate: string;
+  remainFuel: number;
+}): ConditionAlertMessage {
+  const percent = fuelPercent(input.remainFuel);
+  const title = truncate('Low fuel', NOTIFICATION_TITLE_MAX_LENGTH);
+  const pushTitle = truncate(
+    `Low fuel — ${input.licensePlate}`,
+    NOTIFICATION_TITLE_MAX_LENGTH,
+  );
+  const body = truncate(
+    `Remaining fuel is ${percent}% (${formatNumber(input.remainFuel)} L), below ${LOW_FUEL_PERCENT}%.`,
+    NOTIFICATION_BODY_MAX_LENGTH,
+  );
+
+  return { title, body, pushTitle };
+}
+
+function fuelPercent(remainFuel: number): number {
+  const percent = (remainFuel / FLEET_TOTAL_CAPACITY_LITERS) * 100;
+  return Math.round(Math.max(0, Math.min(100, percent)));
+}
+
+function formatNumber(value: number): string {
+  return Number.isInteger(value) ? String(value) : value.toFixed(1);
+}

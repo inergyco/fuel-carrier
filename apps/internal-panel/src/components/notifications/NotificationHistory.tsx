@@ -10,6 +10,7 @@ import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import { keepPreviousData, useQuery } from '@fuel-carrier/web-ui/query'
 import {
   Badge,
+  LicensePlate,
   Pagination,
   QueryErrorState,
   Skeleton,
@@ -86,7 +87,14 @@ export function NotificationHistory() {
                   className="rounded-xl border border-base-content/8 bg-base-200/30 p-4"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
-                    <h3 className="min-w-0 text-sm font-medium">{item.title}</h3>
+                    <div className="flex min-w-0 flex-wrap items-center gap-2">
+                      <h3 className="min-w-0 text-sm font-medium">
+                        {item.title}
+                      </h3>
+                      {item.licensePlate ? (
+                        <LicensePlate value={item.licensePlate} size="sm" />
+                      ) : null}
+                    </div>
                     <time
                       className="text-xs text-base-content/45"
                       dateTime={item.createdAt}

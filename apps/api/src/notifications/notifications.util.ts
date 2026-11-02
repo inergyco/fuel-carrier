@@ -38,6 +38,8 @@ export const inboxItemColumns = {
   channel: notifications.channel,
   title: notifications.title,
   body: notifications.body,
+  carId: notifications.carId,
+  licensePlate: notifications.licensePlate,
   createdAt: notifications.createdAt,
 };
 
@@ -149,6 +151,8 @@ export function toBroadcast(
     channel: row.channel,
     title: row.title,
     body: row.body,
+    carId: row.carId,
+    licensePlate: row.licensePlate,
     levels: toStoredLevels(row.levels),
     companies: companySummaries,
     recipientCount: row.recipientCount,
@@ -162,6 +166,8 @@ export function toCompanyNotification(row: InboxItemRow): CompanyNotification {
     channel: row.channel,
     title: row.title,
     body: row.body,
+    carId: row.carId,
+    licensePlate: row.licensePlate,
     readAt: toIsoTimestampOrNull(row.readAt),
     createdAt: toIsoTimestamp(row.createdAt),
   };

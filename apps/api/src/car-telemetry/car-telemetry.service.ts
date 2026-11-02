@@ -19,6 +19,7 @@ import { companies } from '../database/schema/companies.schema';
 import { carTelemetryHistory } from '../database/schema/car-telemetry-history.schema';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
+import { CarConditionAlertService } from '../notifications/car-condition-alert.service';
 import { REDIS } from '../redis/redis.tokens';
 import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
 import {
@@ -75,6 +76,7 @@ export class CarTelemetryService {
     @Inject(REDIS) private readonly redis: Redis,
     private readonly carsReader: CarsReader,
     private readonly realtime: CarTelemetryRealtimeService,
+    private readonly carConditionAlerts: CarConditionAlertService,
   ) {}
 
   /**
@@ -87,7 +89,7 @@ export class CarTelemetryService {
     const recordedAt = input.recordedAt ?? new Date();
     const ingestedAt = new Date();
 
-    const markerIdentity = await this.tenantDb.run(context, async (tx) => {
+    const carIdentity = await this.tenantDb.run(context, async (tx) => {
       const car = await tx.query.cars.findFirst({
         where: eq(cars.id, input.carId),
         with: { company: true },
@@ -158,15 +160,23 @@ export class CarTelemetryService {
 
     const marker: CarTelemetryMarker = {
       ...telemetry,
-      licensePlate: markerIdentity.licensePlate,
+      licensePlate: carIdentity.licensePlate,
       companyId: input.companyId,
-      companyName: markerIdentity.companyName,
-      hasHighGrade: markerIdentity.hasHighGrade,
+      companyName: carIdentity.companyName,
+      hasHighGrade: carIdentity.hasHighGrade,
     };
     await this.realtime.publish({
       type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
       companyId: input.companyId,
       marker,
+    });
+
+    await this.carConditionAlerts.evaluateAfterTelemetry({
+      carId: input.carId,
+      companyId: input.companyId,
+      licensePlate: carIdentity.licensePlate,
+      resistance: input.resistance,
+      remainFuel: input.remainFuel,
     });
 
     return telemetry;

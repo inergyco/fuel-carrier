@@ -239,6 +239,13 @@
       "when": 1792500000000,
       "tag": "0033_company_user_image_url",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1793200000000,
+      "tag": "0034_car_condition_alerts",
+      "breakpoints": true
     }
   ]
 }

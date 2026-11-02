@@ -10,6 +10,7 @@ import { drivers } from './drivers.schema';
 import { mqttAcls } from './mqtt-acls.schema';
 import { mqttClients } from './mqtt-clients.schema';
 import {
+  carConditionAlerts,
   notificationDeliveries,
   notificationPushSubscriptions,
   notifications,
@@ -46,6 +47,7 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   carTelemetryHistory: many(carTelemetryHistory),
   notificationDeliveries: many(notificationDeliveries),
   notificationPushSubscriptions: many(notificationPushSubscriptions),
+  carConditionAlerts: many(carConditionAlerts),
 }));
 
 export const companyUsersRelations = relations(
@@ -91,6 +93,8 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
     fields: [cars.id],
     references: [mqttClients.carId],
   }),
+  conditionAlerts: many(carConditionAlerts),
+  notifications: many(notifications),
 }));
 
 export const mqttClientsRelations = relations(mqttClients, ({ one, many }) => ({
@@ -151,7 +155,33 @@ export const notificationsRelations = relations(
       fields: [notifications.createdByUserId],
       references: [users.id],
     }),
+    car: one(cars, {
+      fields: [notifications.carId],
+      references: [cars.id],
+    }),
     deliveries: many(notificationDeliveries),
+    conditionAlert: one(carConditionAlerts, {
+      fields: [notifications.id],
+      references: [carConditionAlerts.notificationId],
+    }),
+  }),
+);
+
+export const carConditionAlertsRelations = relations(
+  carConditionAlerts,
+  ({ one }) => ({
+    car: one(cars, {
+      fields: [carConditionAlerts.carId],
+      references: [cars.id],
+    }),
+    company: one(companies, {
+      fields: [carConditionAlerts.companyId],
+      references: [companies.id],
+    }),
+    notification: one(notifications, {
+      fields: [carConditionAlerts.notificationId],
+      references: [notifications.id],
+    }),
   }),
 );
 

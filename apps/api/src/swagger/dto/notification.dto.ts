@@ -25,6 +25,15 @@ export class NotificationBroadcastDto {
   @ApiProperty({ example: 'The north depot closes at 18:00 today.' })
   body!: string;
 
+  @ApiProperty({
+    example: '550e8400-e29b-41d4-a716-446655440030',
+    nullable: true,
+  })
+  carId!: string | null;
+
+  @ApiProperty({ example: '12ب34567', nullable: true })
+  licensePlate!: string | null;
+
   @ApiProperty({ enum: COMPANY_USER_LEVELS, isArray: true, example: ['admin'] })
   levels!: string[];
 
@@ -70,6 +79,15 @@ export class CompanyNotificationDto {
 
   @ApiProperty({ example: 'The north depot closes at 18:00 today.' })
   body!: string;
+
+  @ApiProperty({
+    example: '550e8400-e29b-41d4-a716-446655440030',
+    nullable: true,
+  })
+  carId!: string | null;
+
+  @ApiProperty({ example: '12ب34567', nullable: true })
+  licensePlate!: string | null;
 
   @ApiProperty({ example: '2026-10-14T10:05:00.000Z', nullable: true })
   readAt!: string | null;

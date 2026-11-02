@@ -5,6 +5,34 @@ export type TankResistanceReadings = {
   groundToVehicle: number;
 };
 
+/** Ohms strictly below this read as normal on the fleet UI. */
+export const RESISTANCE_OK_MAX_OHMS = 5;
+
+/**
+ * Ohms above this are an error on the fleet UI and open a company
+ * browser notification. Values from this threshold down to
+ * {@link RESISTANCE_OK_MAX_OHMS} stay in the warning band.
+ */
+export const RESISTANCE_ALERT_THRESHOLD_OHMS = 10;
+
+export const ResistanceProbeKeys = {
+  TANK_TO_GROUND: "tankToGround",
+  TANK_TO_NOZZLE: "tankToNozzle",
+  GROUND_TO_VEHICLE: "groundToVehicle",
+} as const;
+
+export type ResistanceProbeKey =
+  (typeof ResistanceProbeKeys)[keyof typeof ResistanceProbeKeys];
+
+export const RESISTANCE_PROBE_KEYS = [
+  ResistanceProbeKeys.TANK_TO_GROUND,
+  ResistanceProbeKeys.TANK_TO_NOZZLE,
+  ResistanceProbeKeys.GROUND_TO_VEHICLE,
+] as const;
+
+export const isResistanceAboveAlertThreshold = (value: number): boolean =>
+  value > RESISTANCE_ALERT_THRESHOLD_OHMS;
+
 /** Latest device telemetry for a car (served from Redis). */
 export type CarTelemetry = {
   carId: string;

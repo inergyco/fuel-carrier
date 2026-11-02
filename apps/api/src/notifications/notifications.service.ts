@@ -1,9 +1,11 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { and, asc, count, desc, eq, inArray, isNull } from 'drizzle-orm';
 import type {
   AuthSession,
   CompanyNotification,
+  CompanyUserLevel,
   NotificationBroadcast,
+  NotificationChannel,
   NotificationReadAllResult,
   NotificationUnreadCount,
   PaginatedResult,
@@ -34,7 +36,11 @@ import {
 } from '../database/schema/notifications.schema';
 import type { ApiTenantContext } from '../database/tenant-context.types';
 import { TenantDbService } from '../database/tenant-db.service';
-import { tenantContextFromSession } from '../database/tenant-context.utils';
+import type { TenantTransaction } from '../database/tenant-db.types';
+import {
+  internalTenantContext,
+  tenantContextFromSession,
+} from '../database/tenant-context.utils';
 import {
   buildDeliveryRows,
   inboxItemColumns,
@@ -46,8 +52,35 @@ import {
   uniqueValues,
 } from './notifications.util';
 
+export type DeliverAutomatedBrowserInput = {
+  companyId: string;
+  channel: NotificationChannel;
+  title: string;
+  body: string;
+  /** Plain-text title for OS browser push when the inbox uses a plate component. */
+  pushTitle?: string;
+  carId?: string | null;
+  licensePlate?: string | null;
+  levels: CompanyUserLevel[];
+  /**
+   * Runs in the same transaction as the notification insert. Use this to
+   * claim related open-alert rows so a unique violation rolls the message back.
+   */
+  afterInsert?: (
+    tx: TenantTransaction,
+    notificationId: string,
+  ) => Promise<void>;
+};
+
+export type DeliverAutomatedBrowserResult = {
+  notificationId: string;
+  recipientIds: string[];
+};
+
 @Injectable()
 export class NotificationsService {
+  private readonly logger = new Logger(NotificationsService.name);
+
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
@@ -177,6 +210,91 @@ export class NotificationsService {
     }
 
     return sent.broadcast;
+  }
+
+  /**
+   * System-authored browser message for one company. Returns null when there
+   * are no matching staff or the message could not be saved — callers must
+   * not treat that as a request failure.
+   */
+  async deliverAutomatedBrowser(
+    input: DeliverAutomatedBrowserInput,
+  ): Promise<DeliverAutomatedBrowserResult | null> {
+    const levels = uniqueValues(input.levels);
+    const context = internalTenantContext();
+
+    const sent = await this.tenantDb.run(context, async (tx) => {
+      const recipients = await tx
+        .select({
+          id: companyUsers.id,
+          companyId: companyUsers.companyId,
+        })
+        .from(companyUsers)
+        .where(
+          and(
+            eq(companyUsers.companyId, input.companyId),
+            inArray(companyUsers.level, levels),
+            isNull(companyUsers.deletedAt),
+          ),
+        );
+
+      if (recipients.length === 0) {
+        return null;
+      }
+
+      const [created] = await tx
+        .insert(notifications)
+        .values({
+          channel: input.channel,
+          title: input.title,
+          body: input.body,
+          carId: input.carId ?? null,
+          licensePlate: input.licensePlate ?? null,
+          levels,
+          recipientCount: recipients.length,
+          createdByUserId: null,
+        })
+        .returning({ id: notifications.id });
+
+      if (!created) {
+        this.logger.warn(
+          `Could not save automated notification for company ${input.companyId}`,
+        );
+        return null;
+      }
+
+      await tx.insert(notificationDeliveries).values(
+        buildDeliveryRows({
+          notificationId: created.id,
+          channel: input.channel,
+          recipients,
+        }),
+      );
+
+      if (input.afterInsert) {
+        await input.afterInsert(tx, created.id);
+      }
+
+      return {
+        notificationId: created.id,
+        recipientIds: recipients.map((recipient) => recipient.id),
+      };
+    });
+
+    if (!sent) {
+      return null;
+    }
+
+    if (input.channel === NotificationChannels.BROWSER) {
+      await this.browserPush.deliver({
+        companyUserIds: sent.recipientIds,
+        notificationId: sent.notificationId,
+        title: input.pushTitle ?? input.title,
+        body: input.body,
+      });
+    }
+
+    return sent;
   }
 
   async list(

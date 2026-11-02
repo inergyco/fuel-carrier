@@ -1,11 +1,16 @@
+import {
+  RESISTANCE_ALERT_THRESHOLD_OHMS,
+  RESISTANCE_OK_MAX_OHMS,
+} from '@fuel-carrier/shared-types/car-telemetry'
+
 export type ResistanceStatus = 'success' | 'warning' | 'error'
 
 export function getResistanceStatus(value: number): ResistanceStatus {
-  if (value < 5) {
+  if (value < RESISTANCE_OK_MAX_OHMS) {
     return 'success'
   }
 
-  if (value <= 10) {
+  if (value <= RESISTANCE_ALERT_THRESHOLD_OHMS) {
     return 'warning'
   }
 

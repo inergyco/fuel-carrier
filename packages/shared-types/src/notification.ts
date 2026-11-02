@@ -45,12 +45,16 @@ export type NotificationCompanySummary = {
   name: string;
 };
 
-/** A message an internal admin sent to company staff. */
+/** A message delivered to company staff (admin-composed or automated). */
 export type NotificationBroadcast = {
   id: string;
   channel: NotificationChannel;
   title: string;
   body: string;
+  /** Vehicle this message is about. Null for admin announcements. */
+  carId: string | null;
+  /** Plate at send time for automated car alerts (survives later plate edits). */
+  licensePlate: string | null;
   levels: CompanyUserLevel[];
   companies: NotificationCompanySummary[];
   recipientCount: number;
@@ -63,6 +67,10 @@ export type CompanyNotification = {
   channel: NotificationChannel;
   title: string;
   body: string;
+  /** Vehicle this message is about. Null for admin announcements. */
+  carId: string | null;
+  /** Plate at send time for automated car alerts (survives later plate edits). */
+  licensePlate: string | null;
   readAt: string | null;
   createdAt: string;
 };

@@ -12,24 +12,18 @@ import {
 } from 'drizzle-orm/pg-core';
 import type { CompanyUserLevel } from '@fuel-carrier/shared-types/company-user-level';
 import type { NotificationChannel } from '@fuel-carrier/shared-types/notification';
+import { cars } from './cars.schema';
 import { companies } from './companies.schema';
 import { companyUsers } from './company-users.schema';
 import { users } from './users.schema';
 
-/**
- * Keep these numeric literals local. Importing shared max-length consts into
- * this schema module makes Drizzle column types resolve as `error` under the
- * API ESLint type-checker and poisons every insert/select in the service.
- * Values must stay aligned with NOTIFICATION_*_MAX_LENGTH in shared-types.
- */
+/** Local literals — importing shared max-length consts poisons Drizzle types here. */
 const NOTIFICATION_TITLE_MAX_LENGTH = 120;
 const NOTIFICATION_BODY_MAX_LENGTH = 2000;
+const NOTIFICATION_LICENSE_PLATE_MAX_LENGTH = 32;
 
-/**
- * One admin-composed message and the audience it was sent to.
- * `channel` is the delivery method. Browser is the only channel today.
- * SMS and others add a channel value. Each recipient still gets one delivery row.
- */
+type CarConditionAlertKind = 'high_resistance' | 'low_fuel';
+
 export const notifications = pgTable(
   'notifications',
   {
@@ -39,6 +33,10 @@ export const notifications = pgTable(
       .$type<NotificationChannel>(),
     title: varchar('title', { length: 120 }).notNull(),
     body: text('body').notNull(),
+    carId: uuid('car_id').references(() => cars.id, { onDelete: 'set null' }),
+    licensePlate: varchar('license_plate', {
+      length: NOTIFICATION_LICENSE_PLATE_MAX_LENGTH,
+    }),
     levels: text('levels').array().notNull().$type<CompanyUserLevel[]>(),
     recipientCount: integer('recipient_count').notNull(),
     createdByUserId: uuid('created_by_user_id').references(() => users.id, {
@@ -50,6 +48,7 @@ export const notifications = pgTable(
   },
   (table) => [
     index('notifications_created_at_idx').on(table.createdAt),
+    index('notifications_car_id_idx').on(table.carId),
     check('notifications_channel_check', sql`${table.channel} IN ('browser')`),
     check(
       'notifications_title_length',
@@ -66,13 +65,6 @@ export const notifications = pgTable(
   ],
 );
 
-/**
- * One row per staff member who matched the audience at send time.
- * `companyId` is the company the message was delivered to. Row-level
- * security allows the row from that column, the same way as cars and drivers.
- * `readAt` is the per-person state. Channel, title, body, and createdAt
- * live on `notifications`.
- */
 export const notificationDeliveries = pgTable(
   'notification_deliveries',
   {
@@ -98,13 +90,6 @@ export const notificationDeliveries = pgTable(
   ],
 );
 
-/**
- * One browser Push API subscription. The endpoint belongs to a device, so a
- * later sign-in on that browser replaces the previous staff member.
- * Writes run as internal after the session's company user is resolved, because
- * company RLS would hide the previous owner's row. `companyId` stays on the
- * row for the same tenant check used by deliveries.
- */
 export const notificationPushSubscriptions = pgTable(
   'notification_push_subscriptions',
   {
@@ -131,6 +116,42 @@ export const notificationPushSubscriptions = pgTable(
     ),
     index('notification_push_subscriptions_company_user_id_idx').on(
       table.companyUserId,
+    ),
+  ],
+);
+
+export const carConditionAlerts = pgTable(
+  'car_condition_alerts',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    carId: uuid('car_id')
+      .notNull()
+      .references(() => cars.id, { onDelete: 'cascade' }),
+    companyId: uuid('company_id')
+      .notNull()
+      .references(() => companies.id, { onDelete: 'restrict' }),
+    notificationId: uuid('notification_id')
+      .notNull()
+      .references(() => notifications.id, { onDelete: 'restrict' }),
+    kind: varchar('kind', { length: 32 })
+      .notNull()
+      .$type<CarConditionAlertKind>(),
+    openedAt: timestamp('opened_at', { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex('car_condition_alerts_car_kind_uidx').on(
+      table.carId,
+      table.kind,
+    ),
+    uniqueIndex('car_condition_alerts_notification_id_uidx').on(
+      table.notificationId,
+    ),
+    index('car_condition_alerts_company_id_idx').on(table.companyId),
+    check(
+      'car_condition_alerts_kind_check',
+      sql`${table.kind} IN ('high_resistance', 'low_fuel')`,
     ),
   ],
 );
