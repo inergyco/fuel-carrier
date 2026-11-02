@@ -1,9 +1,10 @@
 import { FLEET_TOTAL_CAPACITY_LITERS } from '@fuel-carrier/shared-types';
-import { isLowFuel, listHighResistanceProbes } from './car-condition-alert.utils';
+import { STALE_TELEMETRY_THRESHOLD_MS } from '../config/notification.config';
 import {
-  STALE_TELEMETRY_THRESHOLD_MS,
-  isStaleTelemetry,
-} from './stale-telemetry-alert';
+  isLowFuel,
+  listHighResistanceProbes,
+} from './car-condition-alert.utils';
+import { isStaleTelemetry } from './stale-telemetry-alert';
 
 describe('car-condition-alert.utils', () => {
   it('lists only probes above the alert threshold', () => {

@@ -2,10 +2,8 @@ import { truncate } from '../common/string.utils';
 import {
   NOTIFICATION_BODY_MAX_LENGTH,
   NOTIFICATION_TITLE_MAX_LENGTH,
-} from '../database/schema/notification-limits';
-
-/** Device sample older than this vs ingest time opens a stale-telemetry alert. */
-export const STALE_TELEMETRY_THRESHOLD_MS = 30 * 60 * 1000;
+  STALE_TELEMETRY_THRESHOLD_MS,
+} from '../config/notification.config';
 
 export const isStaleTelemetry = (input: {
   recordedAt: Date;

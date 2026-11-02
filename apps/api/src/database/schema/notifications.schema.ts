@@ -19,7 +19,7 @@ import {
   NOTIFICATION_BODY_MAX_LENGTH,
   NOTIFICATION_LICENSE_PLATE_MAX_LENGTH,
   NOTIFICATION_TITLE_MAX_LENGTH,
-} from './notification-limits';
+} from '../../config/notification.config';
 import { users } from './users.schema';
 
 type CarConditionAlertKind = 'high_resistance' | 'low_fuel' | 'stale_telemetry';

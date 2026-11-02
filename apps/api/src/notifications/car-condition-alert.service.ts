@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import type { TankResistanceReadings } from '@fuel-carrier/shared-types/car-telemetry';
 import { COMPANY_USER_LEVELS } from '@fuel-carrier/shared-types/company-user-level';
 import { NotificationChannels } from '@fuel-carrier/shared-types/notification';
+import { STALE_TELEMETRY_THRESHOLD_MS } from '../config/notification.config';
 import {
   POSTGRES_UNIQUE_VIOLATION,
   getPostgresError,
@@ -22,8 +23,6 @@ import {
   type ConditionAlertMessage,
 } from './car-condition-alert.utils';
 import { NotificationsService } from './notifications.service';
-
-const STALE_TELEMETRY_THRESHOLD_MS = 30 * 60 * 1000;
 
 export type EvaluateCarConditionAlertsInput = {
   carId: string;

@@ -14,7 +14,7 @@ import { truncate } from '../common/string.utils';
 import {
   NOTIFICATION_BODY_MAX_LENGTH,
   NOTIFICATION_TITLE_MAX_LENGTH,
-} from '../database/schema/notification-limits';
+} from '../config/notification.config';
 
 const PROBE_LABELS: Record<ResistanceProbeKey, string> = {
   [ResistanceProbeKeys.TANK_TO_GROUND]: 'Tank to ground',
