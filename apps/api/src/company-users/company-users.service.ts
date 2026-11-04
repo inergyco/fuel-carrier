@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   CompanyUser,
@@ -34,7 +34,8 @@ import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
-import { companyUserImageStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { COMPANY_USER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
 import {
   assertCompanyAccess,
   assertCompanyExists,
@@ -61,6 +62,8 @@ export class CompanyUsersService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
+    @Inject(COMPANY_USER_IMAGE_STORAGE)
+    private readonly companyUserImageStorage: ImageStorage,
   ) {}
 
   async list(
@@ -306,7 +309,7 @@ export class CompanyUsersService {
     }
 
     const companyUser = await this.update(context, id, { imageUrl });
-    await companyUserImageStorage.removeStored(existing.imageUrl);
+    await this.companyUserImageStorage.removeStored(existing.imageUrl);
     return companyUser;
   }
 
@@ -332,7 +335,7 @@ export class CompanyUsersService {
       return;
     }
 
-    await companyUserImageStorage.removeStored(imageUrl);
+    await this.companyUserImageStorage.removeStored(imageUrl);
   }
 
   /** Soft-delete: set deletedAt, keep user profile and login row. */

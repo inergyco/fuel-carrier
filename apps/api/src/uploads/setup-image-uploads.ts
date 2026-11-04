@@ -7,20 +7,23 @@ import {
   DRIVER_IMAGE_PUBLIC_PREFIX,
   IMAGE_UPLOAD_MAX_BYTES,
 } from './image-upload.constants';
-import {
-  companyLogoStorage,
-  companyUserImageStorage,
-  driverImageStorage,
-} from './image-storages';
+import type { ImageStorage } from './image-storage';
 
 export { IMAGE_UPLOAD_MULTIPART_BODY_LIMIT } from './image-upload.constants';
 
+export type SetupImageUploadsOptions = {
+  companyLogoStorage: ImageStorage;
+  companyUserImageStorage: ImageStorage;
+  driverImageStorage: ImageStorage;
+};
+
 export async function setupImageUploads(
   app: NestFastifyApplication,
+  storages: SetupImageUploadsOptions,
 ): Promise<void> {
-  await companyLogoStorage.ensureDirectory();
-  await companyUserImageStorage.ensureDirectory();
-  await driverImageStorage.ensureDirectory();
+  await storages.companyLogoStorage.ensureDirectory();
+  await storages.companyUserImageStorage.ensureDirectory();
+  await storages.driverImageStorage.ensureDirectory();
 
   await app.register(fastifyMultipart, {
     limits: {
@@ -30,17 +33,17 @@ export async function setupImageUploads(
   });
 
   await registerStaticRoot(app, {
-    directory: companyLogoStorage.getDirectory(),
+    directory: storages.companyLogoStorage.getDirectory(),
     prefix: `${COMPANY_LOGO_PUBLIC_PREFIX}/`,
   });
 
   await registerStaticRoot(app, {
-    directory: companyUserImageStorage.getDirectory(),
+    directory: storages.companyUserImageStorage.getDirectory(),
     prefix: `${COMPANY_USER_IMAGE_PUBLIC_PREFIX}/`,
   });
 
   await registerStaticRoot(app, {
-    directory: driverImageStorage.getDirectory(),
+    directory: storages.driverImageStorage.getDirectory(),
     prefix: `${DRIVER_IMAGE_PUBLIC_PREFIX}/`,
   });
 }

@@ -30,6 +30,9 @@ import { S3_CLIENT } from './s3.tokens';
             }),
           },
           forcePathStyle: true,
+          // Arvan (and many S3 clones) reject AWS SDK v3 default flexible checksums.
+          requestChecksumCalculation: 'WHEN_REQUIRED',
+          responseChecksumValidation: 'WHEN_REQUIRED',
         });
       },
     },

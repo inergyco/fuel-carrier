@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Patch,
   Post,
+  Inject,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -36,7 +37,8 @@ import {
   UpdateCompanyPricingRequestDto,
 } from '../swagger/dto/company.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
-import { companyLogoStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { COMPANY_LOGO_STORAGE } from '../uploads/image-storage.tokens';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { CompaniesService } from './companies.service';
 
@@ -46,7 +48,11 @@ import { CompaniesService } from './companies.service';
 @Roles(UserRole.COMPANY_USER)
 @Controller('external/company')
 export class ExternalCompanyController {
-  constructor(private readonly companiesService: CompaniesService) {}
+  constructor(
+    private readonly companiesService: CompaniesService,
+    @Inject(COMPANY_LOGO_STORAGE)
+    private readonly companyLogoStorage: ImageStorage,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get the signed-in company' })
@@ -90,7 +96,7 @@ export class ExternalCompanyController {
   ): Promise<Company> {
     const logoUrl = await readImageUpload(
       request,
-      companyLogoStorage,
+      this.companyLogoStorage,
       'Logo must be 2 MB or smaller',
     );
     return this.companiesService.replaceLogo(

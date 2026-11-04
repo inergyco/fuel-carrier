@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import {
   and,
   count,
@@ -48,7 +48,8 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { COMPANY_POSTGRES_MAPPINGS } from './companies-postgres-mappings';
-import { companyLogoStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { COMPANY_LOGO_STORAGE } from '../uploads/image-storage.tokens';
 
 /**
  * Companies are not tenant-owned rows, but all database access still flows
@@ -59,6 +60,8 @@ export class CompaniesService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
+    @Inject(COMPANY_LOGO_STORAGE)
+    private readonly companyLogoStorage: ImageStorage,
   ) {}
 
   async list(options: {
@@ -225,7 +228,7 @@ export class CompaniesService {
 
     const previousLogoUrl = existing.logoUrl;
     const company = await this.update(context, id, { logoUrl });
-    await companyLogoStorage.removeStored(previousLogoUrl);
+    await this.companyLogoStorage.removeStored(previousLogoUrl);
     return company;
   }
 

@@ -11,6 +11,12 @@ import {
   IMAGE_UPLOAD_MULTIPART_BODY_LIMIT,
   setupImageUploads,
 } from './uploads/setup-image-uploads';
+import type { ImageStorage } from './uploads/image-storage';
+import {
+  COMPANY_LOGO_STORAGE,
+  COMPANY_USER_IMAGE_STORAGE,
+  DRIVER_IMAGE_STORAGE,
+} from './uploads/image-storage.tokens';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { REQUEST_ID_HEADER, assignRequestId } from './common/logging';
@@ -45,7 +51,11 @@ async function bootstrap() {
   await setupSecurityHeaders(app);
   await setupCors(app);
   await app.register(fastifyCookie);
-  await setupImageUploads(app);
+  await setupImageUploads(app, {
+    companyLogoStorage: app.get<ImageStorage>(COMPANY_LOGO_STORAGE),
+    companyUserImageStorage: app.get<ImageStorage>(COMPANY_USER_IMAGE_STORAGE),
+    driverImageStorage: app.get<ImageStorage>(DRIVER_IMAGE_STORAGE),
+  });
 
   // Echo request id so browsers/DevTools can show it on every response.
   const fastify = app.getHttpAdapter().getInstance();

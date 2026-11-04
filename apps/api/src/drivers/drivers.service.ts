@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   Driver,
@@ -39,7 +39,8 @@ import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
 import { mapCarRow } from '../cars/cars-reader.service';
-import { driverImageStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { DRIVER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
 import { buildDriverSearchFilter } from './drivers-list-filters';
 
 type CreateDriverPayload = {
@@ -89,6 +90,8 @@ export class DriversService {
     private readonly tenantDb: TenantDbService,
     private readonly auditLogService: AuditLogService,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
+    @Inject(DRIVER_IMAGE_STORAGE)
+    private readonly driverImageStorage: ImageStorage,
   ) {}
 
   async list(
@@ -277,7 +280,7 @@ export class DriversService {
     }
 
     const driver = await this.update(context, id, { imageUrl });
-    await driverImageStorage.removeStored(previousImageUrl);
+    await this.driverImageStorage.removeStored(previousImageUrl);
     return driver;
   }
 

@@ -1,18 +1,40 @@
 import { randomUUID } from 'node:crypto';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { detectImageUploadExtension } from './image-file';
+import {
+  detectImageUploadExtension,
+  type ImageUploadExtension,
+} from './image-file';
 
 const STORED_IMAGE_FILE_NAME =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(png|jpg|webp|gif|svg)$/i;
 
+const CONTENT_TYPE_BY_EXTENSION: Record<ImageUploadExtension, string> = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  webp: 'image/webp',
+  gif: 'image/gif',
+  svg: 'image/svg+xml',
+};
+
+export type ImageObjectStore = {
+  put: (options: {
+    key: string;
+    body: Buffer;
+    contentType: string;
+  }) => Promise<void>;
+  delete: (key: string) => Promise<void>;
+};
+
 export type ImageStorageOptions = {
-  /** Directory name under `uploads/`, e.g. `company-logos`. */
+  /** Directory / object-key prefix, e.g. `company-logos`. */
   folderName: string;
-  /** Public URL prefix including `/api`, e.g. `/api/uploads/company-logos`. */
+  /** Stable API path prefix, e.g. `/api/uploads/company-logos`. */
   publicPrefix: string;
   /** Message when magic-byte / MIME validation fails. */
   invalidMessage: string;
+  /** When set, save/delete use object storage instead of local disk. */
+  objectStore?: ImageObjectStore | null;
 };
 
 export type ImageStorage = {
@@ -27,7 +49,12 @@ export type ImageStorage = {
 };
 
 export function createImageStorage(options: ImageStorageOptions): ImageStorage {
-  const { folderName, publicPrefix, invalidMessage } = options;
+  const {
+    folderName,
+    publicPrefix,
+    invalidMessage,
+    objectStore = null,
+  } = options;
 
   class InvalidImageError extends Error {
     constructor() {
@@ -40,7 +67,15 @@ export function createImageStorage(options: ImageStorageOptions): ImageStorage {
     return path.join(process.cwd(), 'uploads', folderName);
   }
 
+  function toObjectKey(fileName: string): string {
+    return `${folderName}/${fileName}`;
+  }
+
   async function ensureDirectory(): Promise<void> {
+    if (objectStore) {
+      return;
+    }
+
     await mkdir(getDirectory(), { recursive: true });
   }
 
@@ -57,9 +92,19 @@ export function createImageStorage(options: ImageStorageOptions): ImageStorage {
       throw new InvalidImageError();
     }
 
-    await ensureDirectory();
     const fileName = `${randomUUID()}.${extension}`;
-    await writeFile(path.join(getDirectory(), fileName), saveOptions.buffer);
+
+    if (objectStore) {
+      await objectStore.put({
+        key: toObjectKey(fileName),
+        body: saveOptions.buffer,
+        contentType: CONTENT_TYPE_BY_EXTENSION[extension],
+      });
+    } else {
+      await ensureDirectory();
+      await writeFile(path.join(getDirectory(), fileName), saveOptions.buffer);
+    }
+
     return `${publicPrefix}/${fileName}`;
   }
 
@@ -69,6 +114,15 @@ export function createImageStorage(options: ImageStorageOptions): ImageStorage {
     const fileName = getStoredImageFileName(imageUrl);
 
     if (!fileName) {
+      return;
+    }
+
+    if (objectStore) {
+      await objectStore
+        .delete(toObjectKey(fileName))
+        .catch(function ignoreMissingImage() {
+          return undefined;
+        });
       return;
     }
 

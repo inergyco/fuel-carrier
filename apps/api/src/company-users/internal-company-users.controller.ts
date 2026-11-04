@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Inject,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -53,7 +54,8 @@ import {
 } from '../swagger/decorators/api-envelope.decorator';
 import { CompanyUserImageDto } from '../swagger/dto/company-user.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
-import { companyUserImageStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { COMPANY_USER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { CompanyUsersService } from './company-users.service';
 import {
@@ -67,7 +69,11 @@ import {
 @Roles(UserRole.INTERNAL_ADMIN)
 @Controller('internal/company-users')
 export class InternalCompanyUsersController {
-  constructor(private readonly companyUsersService: CompanyUsersService) {}
+  constructor(
+    private readonly companyUsersService: CompanyUsersService,
+    @Inject(COMPANY_USER_IMAGE_STORAGE)
+    private readonly companyUserImageStorage: ImageStorage,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'List company users for a company' })
@@ -107,7 +113,7 @@ export class InternalCompanyUsersController {
   ): Promise<CompanyUserImageDto> {
     const imageUrl = await readImageUpload(
       request,
-      companyUserImageStorage,
+      this.companyUserImageStorage,
       'Image must be 2 MB or smaller',
     );
     return { imageUrl };

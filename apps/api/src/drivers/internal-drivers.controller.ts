@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Inject,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -58,7 +59,8 @@ import {
   ReplaceDriverImageRequestDto,
 } from '../swagger/dto/driver.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
-import { driverImageStorage } from '../uploads/image-storages';
+import type { ImageStorage } from '../uploads/image-storage';
+import { DRIVER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { DriversService } from './drivers.service';
 import { replaceDriverImageDtoSchema } from './replace-driver-image.dto';
@@ -69,7 +71,11 @@ import { replaceDriverImageDtoSchema } from './replace-driver-image.dto';
 @Roles(UserRole.INTERNAL_ADMIN)
 @Controller('internal/drivers')
 export class InternalDriversController {
-  constructor(private readonly driversService: DriversService) {}
+  constructor(
+    private readonly driversService: DriversService,
+    @Inject(DRIVER_IMAGE_STORAGE)
+    private readonly driverImageStorage: ImageStorage,
+  ) {}
 
   @Get()
   @ApiOperation({
@@ -110,7 +116,7 @@ export class InternalDriversController {
   ): Promise<DriverImageUploadDto> {
     const imageUrl = await readImageUpload(
       request,
-      driverImageStorage,
+      this.driverImageStorage,
       'Image must be 2 MB or smaller',
     );
     return { imageUrl };
