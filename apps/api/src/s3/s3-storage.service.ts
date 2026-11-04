@@ -29,6 +29,7 @@ export class S3StorageService {
 
   async putObject(options: S3PutObjectOptions): Promise<void> {
     const client = this._requireClient();
+    const cacheSeconds = this._getSignedUrlWindowSeconds();
 
     await client.send(
       new PutObjectCommand({
@@ -36,6 +37,8 @@ export class S3StorageService {
         Key: options.key,
         Body: options.body,
         ContentType: options.contentType,
+        // Lets Arvan/CDN reuse the response while the signed query string stays stable.
+        CacheControl: `public, max-age=${cacheSeconds}`,
       }),
     );
   }
@@ -53,9 +56,8 @@ export class S3StorageService {
 
   async getSignedGetUrl(key: string): Promise<string> {
     const client = this._requireClient();
-    const expiresIn = this.configService.get('S3_SIGNED_URL_EXPIRES_SECONDS', {
-      infer: true,
-    });
+    const windowSeconds = this._getSignedUrlWindowSeconds();
+    const signingDate = floorToSigningWindow(windowSeconds);
 
     return getSignedUrl(
       client,
@@ -63,7 +65,12 @@ export class S3StorageService {
         Bucket: this._getBucket(),
         Key: key,
       }),
-      { expiresIn },
+      {
+        // Same window → same URL for every API instance / request.
+        // 2× window so links stay valid until the next window starts.
+        signingDate,
+        expiresIn: windowSeconds * 2,
+      },
     );
   }
 
@@ -80,4 +87,15 @@ export class S3StorageService {
   private _getBucket(): string {
     return this.configService.getOrThrow('S3_BUCKET', { infer: true });
   }
+
+  private _getSignedUrlWindowSeconds(): number {
+    return this.configService.get('S3_SIGNED_URL_EXPIRES_SECONDS', {
+      infer: true,
+    });
+  }
+}
+
+function floorToSigningWindow(windowSeconds: number): Date {
+  const windowMs = windowSeconds * 1000;
+  return new Date(Math.floor(Date.now() / windowMs) * windowMs);
 }

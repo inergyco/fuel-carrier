@@ -69,7 +69,9 @@ export const envSchema = z.object({
     .int()
     .positive()
     .default(3600)
-    .describe('Lifetime of signed GET URLs for private objects.'),
+    .describe(
+      'Signed GET URL cache window in seconds. URLs are stable within each window (CDN-friendly); validity is 2× this value.',
+    ),
   MQTT_URL: z
     .string()
     .min(1)
