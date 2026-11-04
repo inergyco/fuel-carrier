@@ -55,6 +55,24 @@ sudo chown deploy:deploy /var/www/fuel-carrier/api/.env   # or whatever user run
 
 Passwordless restart for CI is documented in [deploy-ci.md](./deploy-ci.md).
 
+## systemd — nginx retry
+
+Template: [`infra/systemd/nginx.service.d/retry.conf`](../infra/systemd/nginx.service.d/retry.conf)
+
+Unattended upgrades restart nginx with a full stop and start. If the startup config test fails while packages are still unpacking, the stock unit stays failed and the sites stay down. This drop-in retries every 15 seconds for 5 minutes, then stops, so a short upgrade race recovers and a permanently bad config does not loop.
+
+`StartLimitIntervalSec` is in `[Unit]`. In `[Service]`, systemd ignores it.
+
+```bash
+sudo mkdir -p /etc/systemd/system/nginx.service.d
+sudo cp /path/to/repo/infra/systemd/nginx.service.d/retry.conf \
+  /etc/systemd/system/nginx.service.d/retry.conf
+sudo systemctl daemon-reload
+systemctl show nginx -p Restart -p RestartUSec -p StartLimitIntervalUSec -p StartLimitBurst
+```
+
+Expected: `Restart=on-failure`, `RestartUSec=15s`, `StartLimitIntervalUSec=5min`, `StartLimitBurst=20`.
+
 ## nginx — panels (HTTPS)
 
 Templates:
@@ -111,7 +129,7 @@ See comments in that file for `stream { include … }` wiring. Mosquitto TLS ren
 ## After a rebuild / restore
 
 1. Restore `/var/www/fuel-carrier/` (deploy + `.env`)
-2. Install systemd + nginx templates from this doc
+2. Install systemd + nginx templates from this doc, including the nginx retry drop-in
 3. `systemctl enable --now fuel-carrier-api`
 4. `nginx -t && systemctl reload nginx`
 5. Hit both panel URLs and `/api/health/ready` via HTTPS
@@ -124,6 +142,9 @@ On the VPS, compare live files to git:
 diff -u infra/systemd/fuel-carrier-api.service \
   <(systemctl cat fuel-carrier-api | sed -n '/^# /!p')
 # or simply: sudo cat /etc/systemd/system/fuel-carrier-api.service
+
+diff -u infra/systemd/nginx.service.d/retry.conf \
+  /etc/systemd/system/nginx.service.d/retry.conf
 
 diff -u infra/nginx/fuel-carrier-external.conf \
   /etc/nginx/sites-enabled/fuel-carrier-external

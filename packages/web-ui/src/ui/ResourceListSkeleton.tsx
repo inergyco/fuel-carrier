@@ -50,12 +50,12 @@ export function ResourceListSkeleton({
                 isGrid && 'flex h-full flex-col',
               )}
             >
-              <p className="mb-3">
+              <div className="mb-3">
                 <span className="inline-flex items-center gap-2.5">
                   <Skeleton className="size-12 shrink-0 rounded-lg" />
                   <Skeleton className="h-5 w-28" />
                 </span>
-              </p>
+              </div>
               <dl
                 className={cn(
                   'grid gap-2',
