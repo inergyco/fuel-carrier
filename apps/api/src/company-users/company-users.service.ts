@@ -36,6 +36,7 @@ import type { TenantTransaction } from '../database/tenant-db.types';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import type { ImageStorage } from '../uploads/image-storage';
 import { COMPANY_USER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 import {
   assertCompanyAccess,
   assertCompanyExists,
@@ -64,6 +65,7 @@ export class CompanyUsersService {
     private readonly auditLogService: AuditLogService,
     @Inject(COMPANY_USER_IMAGE_STORAGE)
     private readonly companyUserImageStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   async list(
@@ -100,7 +102,7 @@ export class CompanyUsersService {
         .map(mapCompanyUser);
 
       return toPaginatedResult({
-        items,
+        items: await this._presentCompanyUsers(items),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -122,7 +124,7 @@ export class CompanyUsersService {
         );
       }
 
-      return mapCompanyUser(row);
+      return this._presentCompanyUser(mapCompanyUser(row));
     });
   }
 
@@ -134,6 +136,7 @@ export class CompanyUsersService {
     await assertCompanyExists(this.tenantDb, dto.companyId);
 
     const passwordHash = await hashPassword(dto.password);
+    const imageUrl = this.imageUrls.normalizeToStored(dto.imageUrl);
 
     try {
       return await this.tenantDb.run(context, async (tx) => {
@@ -156,7 +159,7 @@ export class CompanyUsersService {
             username: dto.username,
             nationalId: dto.nationalId ?? null,
             email: dto.email ?? null,
-            imageUrl: dto.imageUrl ?? null,
+            imageUrl,
             passwordHash,
             level: dto.level,
           })
@@ -180,7 +183,7 @@ export class CompanyUsersService {
           ),
         });
 
-        return companyUser;
+        return this._presentCompanyUser(companyUser);
       });
     } catch (error) {
       rethrowPostgresError(error, COMPANY_USER_POSTGRES_MAPPINGS);
@@ -251,7 +254,9 @@ export class CompanyUsersService {
               ? { nationalId: dto.nationalId }
               : {}),
             ...(dto.email !== undefined ? { email: dto.email } : {}),
-            ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl } : {}),
+            ...(dto.imageUrl !== undefined
+              ? { imageUrl: this.imageUrls.normalizeToStored(dto.imageUrl) }
+              : {}),
             ...(dto.level !== undefined ? { level: dto.level } : {}),
             ...(passwordHash ? { passwordHash, mustChangePassword: true } : {}),
           })
@@ -287,7 +292,7 @@ export class CompanyUsersService {
           ),
         });
 
-        return companyUser;
+        return this._presentCompanyUser(companyUser);
       });
     } catch (error) {
       rethrowPostgresError(error, COMPANY_USER_POSTGRES_MAPPINGS);
@@ -303,13 +308,18 @@ export class CompanyUsersService {
     id: string,
     imageUrl: string | null,
   ): Promise<CompanyUser> {
+    const storedImageUrl = this.imageUrls.normalizeToStored(imageUrl);
     const existing = await this.getById(context, id);
-    if (existing.imageUrl === imageUrl) {
+    const previousImageUrl = this.imageUrls.normalizeToStored(existing.imageUrl);
+
+    if (previousImageUrl === storedImageUrl) {
       return existing;
     }
 
-    const companyUser = await this.update(context, id, { imageUrl });
-    await this.companyUserImageStorage.removeStored(existing.imageUrl);
+    const companyUser = await this.update(context, id, {
+      imageUrl: storedImageUrl,
+    });
+    await this.companyUserImageStorage.removeStored(previousImageUrl);
     return companyUser;
   }
 
@@ -318,13 +328,18 @@ export class CompanyUsersService {
    * Referenced files stay until replace/remove updates the row.
    */
   async discardUploadedImage(imageUrl: string): Promise<void> {
+    const storedImageUrl = this.imageUrls.normalizeToStored(imageUrl);
+    if (!storedImageUrl) {
+      return;
+    }
+
     const referenced = await this.tenantDb.run(
       internalTenantContext(),
       async (tx) => {
         const [row] = await tx
           .select({ id: companyUsers.id })
           .from(companyUsers)
-          .where(eq(companyUsers.imageUrl, imageUrl))
+          .where(eq(companyUsers.imageUrl, storedImageUrl))
           .limit(1);
 
         return row != null;
@@ -335,7 +350,7 @@ export class CompanyUsersService {
       return;
     }
 
-    await this.companyUserImageStorage.removeStored(imageUrl);
+    await this.companyUserImageStorage.removeStored(storedImageUrl);
   }
 
   /** Soft-delete: set deletedAt, keep user profile and login row. */
@@ -393,6 +408,25 @@ export class CompanyUsersService {
 
       return null;
     });
+  }
+
+  private async _presentCompanyUser(
+    companyUser: CompanyUser,
+  ): Promise<CompanyUser> {
+    return {
+      ...companyUser,
+      imageUrl: await this.imageUrls.signStored(companyUser.imageUrl),
+    };
+  }
+
+  private async _presentCompanyUsers(
+    companyUserList: CompanyUser[],
+  ): Promise<CompanyUser[]> {
+    return Promise.all(
+      companyUserList.map((companyUser) =>
+        this._presentCompanyUser(companyUser),
+      ),
+    );
   }
 
   private async _recordMutationAudit(

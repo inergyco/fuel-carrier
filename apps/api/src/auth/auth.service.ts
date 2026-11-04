@@ -16,6 +16,7 @@ import type { AccessTokenClaims } from './access-token.constants';
 import { AccessTokenService } from './access-token.service';
 import { getAuthCookieMaxAgeMs } from './cookie.utils';
 import { createApiException } from '../common/exceptions/api.exception';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { hashPassword } from './password.utils';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private readonly accessTokens: AccessTokenService,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   async validateAdminCredentials(
@@ -78,7 +80,7 @@ export class AuthService {
       return null;
     }
 
-    return mapCompanyUserSession(companyUser);
+    return this._presentCompanyUserSession(mapCompanyUserSession(companyUser));
   }
 
   async getCompanyUserSession(userId: string): Promise<AuthSession | null> {
@@ -89,7 +91,7 @@ export class AuthService {
       return null;
     }
 
-    return mapCompanyUserSession(companyUser);
+    return this._presentCompanyUserSession(mapCompanyUserSession(companyUser));
   }
 
   /**
@@ -163,10 +165,21 @@ export class AuthService {
         ),
       );
 
-    return mapCompanyUserSession({
-      ...companyUser,
-      mustChangePassword: false,
-    });
+    return this._presentCompanyUserSession(
+      mapCompanyUserSession({
+        ...companyUser,
+        mustChangePassword: false,
+      }),
+    );
+  }
+
+  private async _presentCompanyUserSession(
+    session: AuthSession,
+  ): Promise<AuthSession> {
+    return {
+      ...session,
+      companyLogoUrl: await this.imageUrls.signStored(session.companyLogoUrl),
+    };
   }
 
   /** Live company user with profile + company; null if missing or soft-deleted. */

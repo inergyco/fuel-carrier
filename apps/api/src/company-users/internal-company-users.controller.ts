@@ -56,6 +56,7 @@ import { CompanyUserImageDto } from '../swagger/dto/company-user.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import type { ImageStorage } from '../uploads/image-storage';
 import { COMPANY_USER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { CompanyUsersService } from './company-users.service';
 import {
@@ -73,6 +74,7 @@ export class InternalCompanyUsersController {
     private readonly companyUsersService: CompanyUsersService,
     @Inject(COMPANY_USER_IMAGE_STORAGE)
     private readonly companyUserImageStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   @Get()
@@ -111,12 +113,12 @@ export class InternalCompanyUsersController {
   async uploadImage(
     @Req() request: FastifyRequest,
   ): Promise<CompanyUserImageDto> {
-    const imageUrl = await readImageUpload(
+    const storedImageUrl = await readImageUpload(
       request,
       this.companyUserImageStorage,
       'Image must be 2 MB or smaller',
     );
-    return { imageUrl };
+    return { imageUrl: await this.imageUrls.signStored(storedImageUrl) };
   }
 
   @Post('image/discard')

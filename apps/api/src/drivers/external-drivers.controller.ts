@@ -60,6 +60,7 @@ import {
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import type { ImageStorage } from '../uploads/image-storage';
 import { DRIVER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { DriversService } from './drivers.service';
 import { replaceDriverImageDtoSchema } from './replace-driver-image.dto';
@@ -74,6 +75,7 @@ export class ExternalDriversController {
     private readonly driversService: DriversService,
     @Inject(DRIVER_IMAGE_STORAGE)
     private readonly driverImageStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   @Get()
@@ -117,12 +119,12 @@ export class ExternalDriversController {
   async uploadImage(
     @Req() request: FastifyRequest,
   ): Promise<DriverImageUploadDto> {
-    const imageUrl = await readImageUpload(
+    const storedImageUrl = await readImageUpload(
       request,
       this.driverImageStorage,
       'Image must be 2 MB or smaller',
     );
-    return { imageUrl };
+    return { imageUrl: await this.imageUrls.signStored(storedImageUrl) };
   }
 
   @Post()

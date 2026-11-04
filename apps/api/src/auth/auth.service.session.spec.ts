@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@fuel-carrier/shared-types';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { AccessTokenService } from './access-token.service';
 import { AuthService } from './auth.service';
 import type { JwtPayload } from './auth.types';
@@ -28,6 +29,9 @@ describe('AuthService.resolveSessionFromJwtPayload', () => {
         isRevoked,
         revoke: jest.fn(),
       } as unknown as AccessTokenService,
+      {
+        signStored: jest.fn(async (url: string | null) => url),
+      } as unknown as ImageUrlService,
     );
   });
 

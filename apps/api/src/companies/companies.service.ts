@@ -50,6 +50,7 @@ import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { COMPANY_POSTGRES_MAPPINGS } from './companies-postgres-mappings';
 import type { ImageStorage } from '../uploads/image-storage';
 import { COMPANY_LOGO_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 
 /**
  * Companies are not tenant-owned rows, but all database access still flows
@@ -62,6 +63,7 @@ export class CompaniesService {
     private readonly auditLogService: AuditLogService,
     @Inject(COMPANY_LOGO_STORAGE)
     private readonly companyLogoStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   async list(options: {
@@ -91,7 +93,7 @@ export class CompaniesService {
         .offset(offset);
 
       return toPaginatedResult({
-        items: rows.map(_mapCompany),
+        items: await this._presentCompanies(rows.map(_mapCompany)),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -104,7 +106,7 @@ export class CompaniesService {
 
     return this.tenantDb.run(internalTenantContext(), async (tx) => {
       const row = await _findLiveCompanyById(tx, id);
-      return _mapCompany(row);
+      return this._presentCompany(_mapCompany(row));
     });
   }
 
@@ -140,11 +142,18 @@ export class CompaniesService {
   }
 
   async create(context: ApiTenantContext, dto: CompanyInput): Promise<Company> {
+    const values = {
+      ...dto,
+      ...(dto.logoUrl !== undefined
+        ? { logoUrl: this.imageUrls.normalizeToStored(dto.logoUrl) }
+        : {}),
+    };
+
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        await this._assertNationalIdAvailable(tx, dto.nationalId);
+        await this._assertNationalIdAvailable(tx, values.nationalId);
 
-        const [row] = await tx.insert(companies).values(dto).returning();
+        const [row] = await tx.insert(companies).values(values).returning();
         const company = _mapCompany(row);
 
         await this.auditLogService.record(context, {
@@ -159,7 +168,7 @@ export class CompaniesService {
           },
         });
 
-        return company;
+        return this._presentCompany(company);
       });
     } catch (error) {
       rethrowPostgresError(error, COMPANY_POSTGRES_MAPPINGS);
@@ -173,17 +182,24 @@ export class CompaniesService {
   ): Promise<Company> {
     assertUuidParam(id);
 
+    const values = {
+      ...dto,
+      ...(dto.logoUrl !== undefined
+        ? { logoUrl: this.imageUrls.normalizeToStored(dto.logoUrl) }
+        : {}),
+    };
+
     try {
       return await this.tenantDb.run(context, async (tx) => {
         const existing = await _findLiveCompanyById(tx, id);
 
-        if (dto.nationalId !== undefined) {
-          await this._assertNationalIdAvailable(tx, dto.nationalId, id);
+        if (values.nationalId !== undefined) {
+          await this._assertNationalIdAvailable(tx, values.nationalId, id);
         }
 
         const [row] = await tx
           .update(companies)
-          .set(dto)
+          .set(values)
           .where(and(eq(companies.id, id), isNull(companies.deletedAt)))
           .returning();
 
@@ -205,7 +221,7 @@ export class CompaniesService {
           },
         });
 
-        return company;
+        return this._presentCompany(company);
       });
     } catch (error) {
       rethrowPostgresError(error, COMPANY_POSTGRES_MAPPINGS);
@@ -221,13 +237,15 @@ export class CompaniesService {
     id: string,
     logoUrl: string | null,
   ): Promise<Company> {
+    const storedLogoUrl = this.imageUrls.normalizeToStored(logoUrl);
     const existing = await this.getById(id);
-    if (existing.logoUrl === logoUrl) {
+    const previousLogoUrl = this.imageUrls.normalizeToStored(existing.logoUrl);
+
+    if (previousLogoUrl === storedLogoUrl) {
       return existing;
     }
 
-    const previousLogoUrl = existing.logoUrl;
-    const company = await this.update(context, id, { logoUrl });
+    const company = await this.update(context, id, { logoUrl: storedLogoUrl });
     await this.companyLogoStorage.removeStored(previousLogoUrl);
     return company;
   }
@@ -310,6 +328,21 @@ export class CompaniesService {
         ],
       );
     }
+  }
+
+  private async _presentCompany(company: Company): Promise<Company> {
+    return {
+      ...company,
+      logoUrl: await this.imageUrls.signStored(company.logoUrl),
+    };
+  }
+
+  private async _presentCompanies(
+    companiesList: Company[],
+  ): Promise<Company[]> {
+    return Promise.all(
+      companiesList.map((company) => this._presentCompany(company)),
+    );
   }
 }
 

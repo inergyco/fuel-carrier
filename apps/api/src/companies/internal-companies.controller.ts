@@ -67,6 +67,7 @@ import {
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import type { ImageStorage } from '../uploads/image-storage';
 import { COMPANY_LOGO_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { readImageUpload } from '../uploads/read-image-upload';
 import { CompaniesService } from './companies.service';
 import { replaceCompanyLogoDtoSchema } from './replace-company-logo.dto';
@@ -81,6 +82,7 @@ export class InternalCompaniesController {
     private readonly companiesService: CompaniesService,
     @Inject(COMPANY_LOGO_STORAGE)
     private readonly companyLogoStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   @Get()
@@ -129,12 +131,12 @@ export class InternalCompaniesController {
   async uploadLogo(
     @Req() request: FastifyRequest,
   ): Promise<CompanyLogoUploadDto> {
-    const logoUrl = await readImageUpload(
+    const storedLogoUrl = await readImageUpload(
       request,
       this.companyLogoStorage,
       'Logo must be 2 MB or smaller',
     );
-    return { logoUrl };
+    return { logoUrl: await this.imageUrls.signStored(storedLogoUrl) };
   }
 
   @Post()

@@ -41,6 +41,7 @@ import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.serv
 import { mapCarRow } from '../cars/cars-reader.service';
 import type { ImageStorage } from '../uploads/image-storage';
 import { DRIVER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { buildDriverSearchFilter } from './drivers-list-filters';
 
 type CreateDriverPayload = {
@@ -92,6 +93,7 @@ export class DriversService {
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     @Inject(DRIVER_IMAGE_STORAGE)
     private readonly driverImageStorage: ImageStorage,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   async list(
@@ -125,7 +127,7 @@ export class DriversService {
       });
 
       return toPaginatedResult({
-        items: rows.map(_mapDriverWithCar),
+        items: await this._presentDrivers(rows.map(_mapDriverWithCar)),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
@@ -150,7 +152,7 @@ export class DriversService {
         );
       }
 
-      return _mapDriverWithCar(row);
+      return this._presentDriver(_mapDriverWithCar(row));
     });
   }
 
@@ -158,9 +160,14 @@ export class DriversService {
     context: TenantContext,
     dto: CreateDriverPayload,
   ): Promise<Driver> {
+    const values = {
+      ...dto,
+      imageUrl: this.imageUrls.normalizeToStored(dto.imageUrl),
+    };
+
     try {
       return await this.tenantDb.run(context, async (tx) => {
-        const [row] = await tx.insert(drivers).values(dto).returning();
+        const [row] = await tx.insert(drivers).values(values).returning();
 
         if (!row) {
           throw createApiException(
@@ -187,7 +194,7 @@ export class DriversService {
           },
         });
 
-        return driver;
+        return this._presentDriver(driver);
       });
     } catch (error) {
       rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
@@ -199,6 +206,13 @@ export class DriversService {
     id: string,
     dto: UpdateDriverPayload,
   ): Promise<Driver> {
+    const values = {
+      ...dto,
+      ...(dto.imageUrl !== undefined
+        ? { imageUrl: this.imageUrls.normalizeToStored(dto.imageUrl) }
+        : {}),
+    };
+
     try {
       return await this.tenantDb.run(context, async (tx) => {
         const [existing] = await tx
@@ -216,15 +230,15 @@ export class DriversService {
         }
 
         if (
-          dto.companyId !== undefined &&
-          dto.companyId !== existing.companyId
+          values.companyId !== undefined &&
+          values.companyId !== existing.companyId
         ) {
           await this._assertDriverNotAssigned(tx, id);
         }
 
         const [row] = await tx
           .update(drivers)
-          .set(dto)
+          .set(values)
           .where(and(eq(drivers.id, id), isNull(drivers.deletedAt)))
           .returning();
 
@@ -257,7 +271,7 @@ export class DriversService {
           },
         });
 
-        return driver;
+        return this._presentDriver(driver);
       });
     } catch (error) {
       rethrowPostgresError(error, DRIVER_POSTGRES_MAPPINGS);
@@ -273,13 +287,17 @@ export class DriversService {
     id: string,
     imageUrl: string | null,
   ): Promise<Driver> {
+    const storedImageUrl = this.imageUrls.normalizeToStored(imageUrl);
     const existing = await this.getById(context, id);
-    const previousImageUrl = (existing as { imageUrl: string | null }).imageUrl;
-    if (previousImageUrl === imageUrl) {
+    const previousImageUrl = this.imageUrls.normalizeToStored(
+      existing.imageUrl,
+    );
+
+    if (previousImageUrl === storedImageUrl) {
       return existing;
     }
 
-    const driver = await this.update(context, id, { imageUrl });
+    const driver = await this.update(context, id, { imageUrl: storedImageUrl });
     await this.driverImageStorage.removeStored(previousImageUrl);
     return driver;
   }
@@ -392,6 +410,17 @@ export class DriversService {
         ],
       );
     }
+  }
+
+  private async _presentDriver(driver: Driver): Promise<Driver> {
+    return {
+      ...driver,
+      imageUrl: await this.imageUrls.signStored(driver.imageUrl),
+    };
+  }
+
+  private async _presentDrivers(driverList: Driver[]): Promise<Driver[]> {
+    return Promise.all(driverList.map((driver) => this._presentDriver(driver)));
   }
 }
 

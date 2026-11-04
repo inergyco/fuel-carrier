@@ -11,10 +11,12 @@ import {
   COMPANY_USER_IMAGE_STORAGE,
   DRIVER_IMAGE_STORAGE,
 } from './image-storage.tokens';
+import { ImageUrlService } from './image-url.service';
 
 @Global()
 @Module({
   providers: [
+    ImageUrlService,
     {
       provide: COMPANY_LOGO_STORAGE,
       inject: [S3StorageService],
@@ -53,6 +55,7 @@ import {
     },
   ],
   exports: [
+    ImageUrlService,
     COMPANY_LOGO_STORAGE,
     COMPANY_USER_IMAGE_STORAGE,
     DRIVER_IMAGE_STORAGE,
