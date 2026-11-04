@@ -29,7 +29,12 @@ export function getUserColumns({
       cell: function renderName(user) {
         return (
           <span className="inline-flex items-center gap-2.5">
-            <Avatar src={user.imageUrl} fallback={user.firstName.charAt(0)} />
+            <Avatar
+              src={user.imageUrl}
+              alt={`${user.firstName} ${user.lastName}`.trim()}
+              fallback={user.firstName.charAt(0)}
+              preview
+            />
             <span>
               {user.firstName} {user.lastName}
             </span>

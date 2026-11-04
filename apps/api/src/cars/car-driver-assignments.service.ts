@@ -11,6 +11,7 @@ import type { ApiTenantContext } from '../database/tenant-context.types';
 import { getTenantContextActor } from '../database/tenant-context.utils';
 import { carDriverAssignments } from '../database/schema/car-driver-assignments.schema';
 import { cars } from '../database/schema/cars.schema';
+import { companyUsers } from '../database/schema/company-users.schema';
 import { drivers } from '../database/schema/drivers.schema';
 import { users } from '../database/schema/users.schema';
 import { createApiException } from '../common/exceptions/api.exception';
@@ -20,6 +21,7 @@ import {
   toIsoTimestamp,
   toIsoTimestampOrNull,
 } from '../common/iso-timestamp.utils';
+import { ImageUrlService } from '../uploads/image-url.service';
 import { CarsReader } from './cars-reader.service';
 
 @Injectable()
@@ -27,6 +29,7 @@ export class CarDriverAssignmentsService {
   constructor(
     private readonly tenantDb: TenantDbService,
     private readonly carsReader: CarsReader,
+    private readonly imageUrls: ImageUrlService,
   ) {}
 
   async listByCar(
@@ -61,19 +64,27 @@ export class CarDriverAssignmentsService {
           assignedByUserId: carDriverAssignments.assignedByUserId,
           driverFirstName: drivers.firstName,
           driverLastName: drivers.lastName,
+          driverImageUrl: drivers.imageUrl,
           assignedByFirstName: users.firstName,
           assignedByLastName: users.lastName,
+          assignedByImageUrl: companyUsers.imageUrl,
         })
         .from(carDriverAssignments)
         .leftJoin(drivers, eq(carDriverAssignments.driverId, drivers.id))
         .leftJoin(users, eq(carDriverAssignments.assignedByUserId, users.id))
+        .leftJoin(
+          companyUsers,
+          eq(companyUsers.userId, carDriverAssignments.assignedByUserId),
+        )
         .where(where)
         .orderBy(desc(carDriverAssignments.assignedAt))
         .limit(limit)
         .offset(offset);
 
       return {
-        items: rows.map(_mapAssignment),
+        items: await Promise.all(
+          rows.map((row) => this._presentAssignment(_mapAssignment(row))),
+        ),
         page,
         limit,
         totalItems,
@@ -274,6 +285,25 @@ export class CarDriverAssignmentsService {
         .for('update');
     }
   }
+
+  private async _presentAssignment(
+    assignment: CarDriverAssignment,
+  ): Promise<CarDriverAssignment> {
+    const [driverImageUrl, assignedByImageUrl] = await Promise.all([
+      this.imageUrls.signStored(assignment.driver?.imageUrl),
+      this.imageUrls.signStored(assignment.assignedBy?.imageUrl),
+    ]);
+
+    return {
+      ...assignment,
+      driver: assignment.driver
+        ? { ...assignment.driver, imageUrl: driverImageUrl }
+        : null,
+      assignedBy: assignment.assignedBy
+        ? { ...assignment.assignedBy, imageUrl: assignedByImageUrl }
+        : null,
+    };
+  }
 }
 
 function _mapAssignment(row: {
@@ -286,8 +316,10 @@ function _mapAssignment(row: {
   assignedByUserId: string | null;
   driverFirstName: string | null;
   driverLastName: string | null;
+  driverImageUrl: string | null;
   assignedByFirstName: string | null;
   assignedByLastName: string | null;
+  assignedByImageUrl: string | null;
 }): CarDriverAssignment {
   return {
     id: row.id,
@@ -302,6 +334,7 @@ function _mapAssignment(row: {
         ? {
             firstName: row.driverFirstName,
             lastName: row.driverLastName,
+            imageUrl: row.driverImageUrl,
           }
         : null,
     assignedBy:
@@ -309,6 +342,7 @@ function _mapAssignment(row: {
         ? {
             firstName: row.assignedByFirstName,
             lastName: row.assignedByLastName,
+            imageUrl: row.assignedByImageUrl,
           }
         : null,
   };

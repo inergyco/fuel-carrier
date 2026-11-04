@@ -4,6 +4,7 @@ export type CarDriverSummary = {
   firstName: string;
   lastName: string;
   mobileNumber: string;
+  imageUrl: string | null;
 };
 
 export type Car = {

@@ -21,7 +21,9 @@ export function getDriverColumns({
           <span className="inline-flex items-center gap-2.5">
             <Avatar
               src={driver.imageUrl}
+              alt={`${driver.firstName} ${driver.lastName}`.trim()}
               fallback={driver.firstName.charAt(0)}
+              preview
             />
             <span>
               {driver.firstName} {driver.lastName}

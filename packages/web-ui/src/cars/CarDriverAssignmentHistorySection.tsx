@@ -4,6 +4,7 @@ import {
   fetchCarDriverAssignments,
 } from "./car-driver-assignments";
 import { useQuery } from "../query";
+import { Avatar } from "../ui/Avatar";
 import { Pagination } from "../ui/Pagination";
 import { usePagination } from "../ui/usePagination";
 import { cn } from "../utils";
@@ -86,54 +87,83 @@ export function CarDriverAssignmentHistorySection({
                   />
 
                   <div className="min-w-0 flex-1 rounded-xl border border-base-content/6 bg-base-100/20 p-4 sm:p-5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-medium tracking-tight">
-                        {formatPersonName(
+                    <div className="flex items-start gap-3">
+                      <Avatar
+                        src={item.driver?.imageUrl}
+                        alt={formatPersonName(
                           item.driver,
                           carLabels.driverAssignmentHistoryUnknownDriver(),
                         )}
-                      </p>
-                      {isCurrent ? (
-                        <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                          {carLabels.driverAssignmentHistoryCurrent()}
-                        </span>
-                      ) : null}
-                    </div>
+                        fallback={personInitial(item.driver)}
+                        size="sm"
+                        preview
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-medium tracking-tight">
+                            {formatPersonName(
+                              item.driver,
+                              carLabels.driverAssignmentHistoryUnknownDriver(),
+                            )}
+                          </p>
+                          {isCurrent ? (
+                            <span className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                              {carLabels.driverAssignmentHistoryCurrent()}
+                            </span>
+                          ) : null}
+                        </div>
 
-                    <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
-                      <div>
-                        <dt className="text-xs text-base-content/45">
-                          {carLabels.driverAssignmentHistoryAssignedAt()}
-                        </dt>
-                        <dd className="mt-1 text-base-content/80">
-                          {formatAssignmentTimestamp(item.assignedAt, locale)}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt className="text-xs text-base-content/45">
-                          {carLabels.driverAssignmentHistoryUnassignedAt()}
-                        </dt>
-                        <dd className="mt-1 text-base-content/80">
-                          {item.unassignedAt
-                            ? formatAssignmentTimestamp(
-                                item.unassignedAt,
+                        <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                          <div>
+                            <dt className="text-xs text-base-content/45">
+                              {carLabels.driverAssignmentHistoryAssignedAt()}
+                            </dt>
+                            <dd className="mt-1 text-base-content/80">
+                              {formatAssignmentTimestamp(
+                                item.assignedAt,
                                 locale,
-                              )
-                            : carLabels.driverAssignmentHistoryOpenEnded()}
-                        </dd>
+                              )}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-base-content/45">
+                              {carLabels.driverAssignmentHistoryUnassignedAt()}
+                            </dt>
+                            <dd className="mt-1 text-base-content/80">
+                              {item.unassignedAt
+                                ? formatAssignmentTimestamp(
+                                    item.unassignedAt,
+                                    locale,
+                                  )
+                                : carLabels.driverAssignmentHistoryOpenEnded()}
+                            </dd>
+                          </div>
+                          <div className="sm:col-span-2">
+                            <dt className="text-xs text-base-content/45">
+                              {carLabels.driverAssignmentHistoryAssignedBy()}
+                            </dt>
+                            <dd className="mt-1 flex items-center gap-2.5 text-base-content/80">
+                              <Avatar
+                                src={item.assignedBy?.imageUrl}
+                                alt={formatPersonName(
+                                  item.assignedBy,
+                                  carLabels.driverAssignmentHistoryUnknownAssigner(),
+                                )}
+                                fallback={personInitial(item.assignedBy)}
+                                size="sm"
+                                preview
+                              />
+                              <span>
+                                {formatPersonName(
+                                  item.assignedBy,
+                                  carLabels.driverAssignmentHistoryUnknownAssigner(),
+                                )}
+                              </span>
+                            </dd>
+                          </div>
+                        </dl>
                       </div>
-                      <div className="sm:col-span-2">
-                        <dt className="text-xs text-base-content/45">
-                          {carLabels.driverAssignmentHistoryAssignedBy()}
-                        </dt>
-                        <dd className="mt-1 text-base-content/80">
-                          {formatPersonName(
-                            item.assignedBy,
-                            carLabels.driverAssignmentHistoryUnknownAssigner(),
-                          )}
-                        </dd>
-                      </div>
-                    </dl>
+                    </div>
                   </div>
                 </li>
               );
@@ -174,4 +204,11 @@ function formatPersonName(
   }
 
   return `${person.firstName} ${person.lastName}`.trim();
+}
+
+function personInitial(
+  person: { firstName: string } | null | undefined,
+): string {
+  const initial = person?.firstName?.charAt(0)?.toUpperCase();
+  return initial || "?";
 }

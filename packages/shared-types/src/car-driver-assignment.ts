@@ -1,11 +1,13 @@
 export type CarDriverAssignmentActor = {
   firstName: string;
   lastName: string;
+  imageUrl: string | null;
 };
 
 export type CarDriverAssignmentDriver = {
   firstName: string;
   lastName: string;
+  imageUrl: string | null;
 };
 
 export type CarDriverAssignment = {

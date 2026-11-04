@@ -6,6 +6,12 @@ class CarDriverAssignmentDriverDto {
 
   @ApiProperty({ example: 'Rezaei' })
   lastName!: string;
+
+  @ApiPropertyOptional({
+    example: '/api/uploads/driver-images/550e8400-e29b-41d4-a716-446655440000.png',
+    nullable: true,
+  })
+  imageUrl!: string | null;
 }
 
 class CarDriverAssignmentActorDto {
@@ -14,6 +20,13 @@ class CarDriverAssignmentActorDto {
 
   @ApiProperty({ example: 'Doe' })
   lastName!: string;
+
+  @ApiPropertyOptional({
+    example:
+      '/api/uploads/company-user-images/550e8400-e29b-41d4-a716-446655440000.png',
+    nullable: true,
+  })
+  imageUrl!: string | null;
 }
 
 export class CarDriverAssignmentDto {

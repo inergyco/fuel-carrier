@@ -38,7 +38,7 @@ import {
 import { TenantDbService } from '../database/tenant-db.service';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { CarDriverAssignmentsService } from '../cars/car-driver-assignments.service';
-import { mapCarRow } from '../cars/cars-reader.service';
+import { mapCarRow, presentCar } from '../cars/cars-reader.service';
 import type { ImageStorage } from '../uploads/image-storage';
 import { DRIVER_IMAGE_STORAGE } from '../uploads/image-storage.tokens';
 import { ImageUrlService } from '../uploads/image-url.service';
@@ -413,9 +413,15 @@ export class DriversService {
   }
 
   private async _presentDriver(driver: Driver): Promise<Driver> {
+    const [imageUrl, car] = await Promise.all([
+      this.imageUrls.signStored(driver.imageUrl),
+      driver.car ? presentCar(driver.car, this.imageUrls) : null,
+    ]);
+
     return {
       ...driver,
-      imageUrl: await this.imageUrls.signStored(driver.imageUrl),
+      imageUrl,
+      car,
     };
   }
 

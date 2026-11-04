@@ -1,5 +1,6 @@
 import type { Car } from '@fuel-carrier/shared-types'
-import { Fuel, User } from '../icons'
+import { Fuel } from '../icons'
+import { Avatar } from '../ui/Avatar'
 import { ICON_STROKE_WIDTH, iconSmClassName } from '../ui/iconClassName'
 
 export type CarFuelTypeLabels = {
@@ -50,13 +51,13 @@ export function CarOverviewSection({
       <dl>
         <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="flex items-center gap-3 border-b border-base-content/8 px-4 py-3 sm:border-e sm:border-b-0">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-base-content/8 bg-base-100/40 text-primary">
-              <User
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-            </span>
+            <Avatar
+              src={car.driver?.imageUrl}
+              alt={driverDisplay}
+              fallback={car.driver?.firstName.charAt(0).toUpperCase() || '?'}
+              size="sm"
+              preview
+            />
             <div className="min-w-0">
               <dt className="text-xs text-base-content/45">{labels.driver()}</dt>
               <dd className="truncate text-sm font-medium">{driverDisplay}</dd>

@@ -120,9 +120,11 @@ export class CarsService {
       });
 
       return toPaginatedResult({
-        items: rows.map(function toCar(row) {
-          return mapCarRow(row, row.driver);
-        }),
+        items: await this.carsReader.presentCars(
+          rows.map(function toCar(row) {
+            return mapCarRow(row, row.driver);
+          }),
+        ),
         page,
         limit,
         totalItems: countRow?.value ?? 0,
