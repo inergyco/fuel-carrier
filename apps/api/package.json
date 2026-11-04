@@ -29,6 +29,8 @@
     "simulate:car-path": "node -r ts-node/register -r tsconfig-paths/register src/scripts/simulate-car-path.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1161.0",
+    "@aws-sdk/s3-request-presigner": "^3.1161.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.3.0",
     "@fastify/helmet": "^13.0.2",

@@ -40,6 +40,36 @@ export const envSchema = z.object({
       'REDIS_URL must be a Redis connection string',
     )
     .default('redis://localhost:6379'),
+  S3_ENDPOINT: z
+    .url()
+    .optional()
+    .describe('Arvan Object Storage S3 API endpoint URL.'),
+  S3_REGION: z
+    .string()
+    .min(1)
+    .optional()
+    .describe('Arvan Object Storage region, e.g. ir-central1.'),
+  S3_BUCKET: z
+    .string()
+    .min(1)
+    .optional()
+    .describe('Object storage bucket for uploaded images.'),
+  S3_ACCESS_KEY_ID: z
+    .string()
+    .min(1)
+    .optional()
+    .describe('S3 access key id for Arvan Object Storage.'),
+  S3_SECRET_ACCESS_KEY: z
+    .string()
+    .min(1)
+    .optional()
+    .describe('S3 secret access key for Arvan Object Storage.'),
+  S3_SIGNED_URL_EXPIRES_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(3600)
+    .describe('Lifetime of signed GET URLs for private objects.'),
   MQTT_URL: z
     .string()
     .min(1)
@@ -113,6 +143,20 @@ export function validateEnv(config: Record<string, unknown>): Env {
   ) {
     throw new Error(
       'Invalid environment variables:\nMQTT_USERNAME and MQTT_PASSWORD are required when MQTT_URL is set',
+    );
+  }
+
+  const s3Values = [
+    result.data.S3_ENDPOINT,
+    result.data.S3_REGION,
+    result.data.S3_BUCKET,
+    result.data.S3_ACCESS_KEY_ID,
+    result.data.S3_SECRET_ACCESS_KEY,
+  ];
+  const s3ConfiguredCount = s3Values.filter(Boolean).length;
+  if (s3ConfiguredCount > 0 && s3ConfiguredCount < s3Values.length) {
+    throw new Error(
+      'Invalid environment variables:\nS3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, and S3_SECRET_ACCESS_KEY must all be set together',
     );
   }
 

@@ -6,6 +6,7 @@ import { createPinoHttpOptions } from './common/logging';
 import { type Env, validateEnv } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './redis/redis.module';
+import { S3Module } from './s3/s3.module';
 import { AuthModule } from './auth/auth.module';
 import { AuditLogsModule } from './audit-logs/audit-logs.module';
 import { ExternalModule } from './external/external.module';
@@ -36,6 +37,7 @@ import { HealthModule } from './health/health.module';
     }),
     DatabaseModule,
     RedisModule,
+    S3Module,
     AuditLogsModule,
     AuthModule,
     MqttModule,
