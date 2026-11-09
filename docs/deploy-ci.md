@@ -59,7 +59,7 @@ Paste the **private** key (`~/.ssh/fuel-carrier-deploy`) into the GitHub secret 
 On the VPS:
 
 ```bash
-echo 'deploy ALL=(root) NOPASSWD: /bin/systemctl restart fuel-carrier-api, /bin/systemctl status fuel-carrier-api, /bin/systemctl is-active fuel-carrier-api' | sudo tee /etc/sudoers.d/fuel-carrier-deploy
+echo 'deploy ALL=(root) NOPASSWD: /bin/systemctl restart fuel-carrier-api@3010, /bin/systemctl restart fuel-carrier-api@3011, /bin/systemctl status fuel-carrier-api@3010, /bin/systemctl status fuel-carrier-api@3011, /bin/systemctl is-active fuel-carrier-api@3010, /bin/systemctl is-active fuel-carrier-api@3011' | sudo tee /etc/sudoers.d/fuel-carrier-deploy
 sudo chmod 440 /etc/sudoers.d/fuel-carrier-deploy
 sudo visudo -cf /etc/sudoers.d/fuel-carrier-deploy
 ```
@@ -68,7 +68,7 @@ sudo visudo -cf /etc/sudoers.d/fuel-carrier-deploy
 
 - App root: `/var/www/fuel-carrier/`
 - API env (not overwritten by CI): `/var/www/fuel-carrier/api/.env` — keep `chmod 600` (contains `JWT_SECRET`, VAPID private key, DB URLs)
-- Service: `fuel-carrier-api.service`
+- Services: `fuel-carrier-api@3010` and `fuel-carrier-api@3011` (template: `fuel-carrier-api@.service`)
 
 Checked-in edge templates (systemd + nginx panel sites + MQTT stream) and install notes: [vps-edge.md](./vps-edge.md).
 
@@ -98,7 +98,7 @@ node -e 'require("readline").createInterface({input:process.stdin}).question("Pa
 ```bash
 bash scripts/pack-deploy.sh
 rsync -avz --delete --exclude '.env' deploy/ deploy@YOUR_HOST:/var/www/fuel-carrier/
-ssh deploy@YOUR_HOST 'sudo systemctl restart fuel-carrier-api'
+ssh deploy@YOUR_HOST 'sudo systemctl restart fuel-carrier-api@3010 fuel-carrier-api@3011'
 ```
 
 ## Triggers

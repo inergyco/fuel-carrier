@@ -11,7 +11,9 @@ CI does **not** auto-sync these (avoids breaking live TLS with a bad push).
 | `mobile-fueling-admin.inergy.ir` | Internal (admin) panel + `/api/` proxy |
 | `mqtt.inergy.ir` | MQTTS (nginx stream → Mosquitto) |
 
-There is no separate `api.*` host. The API listens on `127.0.0.1:3000` only.
+There is no separate `api.*` host. The API runs as two systemd instances on
+`127.0.0.1:3010` and `127.0.0.1:3011`; nginx load-balances via `fuel_carrier_api`.
+(Port `3001` is reserved by Uptime Kuma on the current VPS.)
 
 ## Layout on the VPS
 
@@ -22,25 +24,31 @@ There is no separate `api.*` host. The API listens on `127.0.0.1:3000` only.
 └── internal-panel/   # static SPA
 ```
 
-## systemd — API
+## systemd — API (two instances)
 
-Template: [`infra/systemd/fuel-carrier-api.service`](../infra/systemd/fuel-carrier-api.service)
+Template: [`infra/systemd/fuel-carrier-api@.service`](../infra/systemd/fuel-carrier-api@.service)
 
 ```bash
-sudo cp /path/to/repo/infra/systemd/fuel-carrier-api.service \
-  /etc/systemd/system/fuel-carrier-api.service
+sudo cp /path/to/repo/infra/systemd/fuel-carrier-api@.service \
+  /etc/systemd/system/fuel-carrier-api@.service
+# Disable the legacy single-instance unit if present:
+#   sudo systemctl disable --now fuel-carrier-api
 sudo systemctl daemon-reload
-sudo systemctl enable --now fuel-carrier-api
-sudo systemctl is-active fuel-carrier-api
-curl -sf http://127.0.0.1:3000/api/health/ready && echo OK
+sudo systemctl enable --now fuel-carrier-api@3010 fuel-carrier-api@3011
+sudo systemctl is-active fuel-carrier-api@3010 fuel-carrier-api@3011
+curl -sf http://127.0.0.1:3010/api/health/ready && echo OK10
+curl -sf http://127.0.0.1:3011/api/health/ready && echo OK11
 ```
 
 Ensure `/var/www/fuel-carrier/api/.env` has production values, including:
 
 ```bash
 HOST=127.0.0.1
-PORT=3000
+# PORT is set per-instance by the systemd unit (3010 / 3011); leave or ignore PORT in .env.
 CORS_ALLOWED_ORIGINS=https://mobile-fueling-admin.inergy.ir,https://mobile-fueling.inergy.ir
+# Both instances subscribe; Mosquitto shared group avoids duplicate ingest:
+MQTT_TELEMETRY_TOPIC="$share/fuel-carrier/telemetry/#"
+# (After deploying the shared-sub code, MQTT_TELEMETRY_TOPIC=telemetry/# + MQTT_SHARE_GROUP=fuel-carrier also works.)
 WEB_PUSH_VAPID_PUBLIC_KEY=...
 WEB_PUSH_VAPID_PRIVATE_KEY=...
 WEB_PUSH_VAPID_SUBJECT=mailto:ops@example.com
@@ -89,6 +97,8 @@ Local Vite mirrors that path: panel `server.proxy['/ofm']` targets the matching 
 REPO=/path/to/fuel-carrier   # or scp the conf files up
 
 sudo mkdir -p /etc/nginx/snippets
+sudo cp "$REPO"/infra/nginx/fuel-carrier-api-upstream.conf \
+  /etc/nginx/conf.d/fuel-carrier-api-upstream.conf
 sudo cp "$REPO"/infra/nginx/snippets/spa-security-headers.conf \
   /etc/nginx/snippets/fuel-carrier-spa-security-headers.conf
 sudo cp "$REPO"/infra/nginx/snippets/openfreemap-proxy.conf \
@@ -130,7 +140,7 @@ See comments in that file for `stream { include … }` wiring. Mosquitto TLS ren
 
 1. Restore `/var/www/fuel-carrier/` (deploy + `.env`)
 2. Install systemd + nginx templates from this doc, including the nginx retry drop-in
-3. `systemctl enable --now fuel-carrier-api`
+3. `systemctl enable --now fuel-carrier-api@3010 fuel-carrier-api@3011`
 4. `nginx -t && systemctl reload nginx`
 5. Hit both panel URLs and `/api/health/ready` via HTTPS
 
@@ -139,9 +149,10 @@ See comments in that file for `stream { include … }` wiring. Mosquitto TLS ren
 On the VPS, compare live files to git:
 
 ```bash
-diff -u infra/systemd/fuel-carrier-api.service \
-  <(systemctl cat fuel-carrier-api | sed -n '/^# /!p')
-# or simply: sudo cat /etc/systemd/system/fuel-carrier-api.service
+diff -u infra/systemd/fuel-carrier-api@.service \
+  /etc/systemd/system/fuel-carrier-api@.service
+diff -u infra/nginx/fuel-carrier-api-upstream.conf \
+  /etc/nginx/conf.d/fuel-carrier-api-upstream.conf
 
 diff -u infra/systemd/nginx.service.d/retry.conf \
   /etc/systemd/system/nginx.service.d/retry.conf
