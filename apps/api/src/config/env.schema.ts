@@ -82,7 +82,20 @@ export const envSchema = z.object({
     .optional(),
   MQTT_USERNAME: z.string().min(1).optional(),
   MQTT_PASSWORD: z.string().min(1).optional(),
-  MQTT_TELEMETRY_TOPIC: z.string().min(1).default('telemetry/#'),
+  MQTT_TELEMETRY_TOPIC: z
+    .string()
+    .min(1)
+    .default('telemetry/#')
+    .describe(
+      'Telemetry topic filter (publish path). The API wraps this in an MQTT shared subscription unless MQTT_SHARE_GROUP=none.',
+    ),
+  MQTT_SHARE_GROUP: z
+    .string()
+    .min(1)
+    .default('fuel-carrier')
+    .describe(
+      'Mosquitto shared-subscription group so only one API process handles each telemetry message. Set to "none" to subscribe without sharing.',
+    ),
   LOGIN_ATTEMPT_USER_LIMIT: z.coerce.number().int().positive().default(5),
   LOGIN_ATTEMPT_IP_LIMIT: z.coerce.number().int().positive().default(20),
   LOGIN_ATTEMPT_WINDOW_SECONDS: z.coerce

@@ -7,7 +7,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import mqtt, { type MqttClient } from 'mqtt';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
-import { buildMqttAckTopic } from './mqtt-secret.utils';
+import {
+  buildMqttAckTopic,
+  buildMqttSharedSubscribeTopic,
+} from './mqtt-secret.utils';
 import {
   buildTelemetryAck,
   parseTelemetryPayload,
@@ -33,8 +36,11 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
 
     const username = this.configService.get<string>('MQTT_USERNAME');
     const password = this.configService.get<string>('MQTT_PASSWORD');
-    const topic =
+    const topicFilter =
       this.configService.get<string>('MQTT_TELEMETRY_TOPIC') ?? 'telemetry/#';
+    const shareGroup =
+      this.configService.get<string>('MQTT_SHARE_GROUP') ?? 'fuel-carrier';
+    const topic = resolveTelemetrySubscribeTopic({ topicFilter, shareGroup });
 
     if (!username || !password) {
       this.logger.error(
@@ -46,6 +52,8 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     this.client = mqtt.connect(url, {
       username,
       password,
+      // Distinct per process so two systemd instances do not kick each other off.
+      clientId: `fuel-carrier-api-${process.pid}`,
       reconnectPeriod: 5_000,
       connectTimeout: 10_000,
     });
@@ -133,4 +141,15 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
       });
     });
   }
+}
+
+function resolveTelemetrySubscribeTopic(options: {
+  topicFilter: string;
+  shareGroup: string;
+}): string {
+  if (options.shareGroup === 'none') {
+    return options.topicFilter;
+  }
+
+  return buildMqttSharedSubscribeTopic(options);
 }

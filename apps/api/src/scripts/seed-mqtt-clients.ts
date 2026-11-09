@@ -54,7 +54,10 @@ async function seedMqttClients(): Promise<void> {
       username: BACKEND_USERNAME,
       password: backendPassword,
       acls: [
+        // Plain filter (single-instance / plugins that strip $share).
         { topic: 'telemetry/#', access: 'read' },
+        // Full shared-subscription filter (multi-instance API replicas).
+        { topic: '$share/+/telemetry/#', access: 'read' },
         { topic: 'ack/#', access: 'write' },
       ],
     });
@@ -66,14 +69,14 @@ async function seedMqttClients(): Promise<void> {
     );
     if (isProd) {
       console.log(
-        `  ${BACKEND_USERNAME} → subscribe telemetry/#, publish ack/# (password = MQTT_SEED_BACKEND_PASSWORD)`,
+        `  ${BACKEND_USERNAME} → subscribe telemetry/# (+ $share/+/telemetry/#), publish ack/# (password = MQTT_SEED_BACKEND_PASSWORD)`,
       );
       console.log(
         `  Set API MQTT_USERNAME=${BACKEND_USERNAME} and MQTT_PASSWORD to that same secret.`,
       );
     } else {
       console.log(
-        `  ${BACKEND_USERNAME} / ${backendPassword}  → subscribe telemetry/#, publish ack/#`,
+        `  ${BACKEND_USERNAME} / ${backendPassword}  → subscribe telemetry/# (+ shared), publish ack/#`,
       );
     }
 
