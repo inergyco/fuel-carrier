@@ -30,6 +30,8 @@ export type CarsMapLabels = {
   fuelTypeHighGrade: () => string;
   fuelTypeNormal: () => string;
   resistanceTitle: () => string;
+  statusLive: () => string;
+  statusOffline: () => string;
 };
 
 export type CarsMapProps = {
@@ -106,6 +108,7 @@ function CarsMapLayers({
             color={markerColor}
             selected={isSelected}
             ingestedAt={marker.createdAt ?? null}
+            showLiveness={!instantMarkerUpdates}
             plateLabel={
               marker.licensePlate.trim() ? (
                 <LicensePlate

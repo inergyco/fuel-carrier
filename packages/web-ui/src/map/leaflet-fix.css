@@ -29,6 +29,15 @@
   display: block;
   border-radius: 9999px;
   border: 2px solid var(--color-base-100);
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
+}
+
+/* Stale telemetry: muted dot, still clickable. Hover restores the fuel color. */
+.fuel-carrier-marker-dot.is-offline {
+  filter: grayscale(1);
+  opacity: 0.45;
 }
 
 .fuel-carrier-marker-ring {
@@ -78,15 +87,36 @@
   display: inline-flex;
   transform: scale(0.7);
   transform-origin: center bottom;
-  transition: transform 180ms ease;
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease,
+    filter 180ms ease;
+}
+
+.leaflet-marker-icon.fuel-carrier-map-marker.is-offline .fuel-carrier-plate-label {
+  filter: grayscale(0.85);
+  opacity: 0.5;
 }
 
 .leaflet-marker-icon.fuel-carrier-map-marker:hover {
   z-index: 10000 !important;
 }
 
-.leaflet-marker-icon.fuel-carrier-map-marker:hover .fuel-carrier-plate-label {
+.leaflet-marker-icon.fuel-carrier-map-marker:hover .fuel-carrier-plate-label,
+.leaflet-marker-icon.fuel-carrier-map-marker:focus-within .fuel-carrier-plate-label {
   transform: scale(1);
+}
+
+.leaflet-marker-icon.fuel-carrier-map-marker.is-offline:hover
+  .fuel-carrier-marker-dot,
+.leaflet-marker-icon.fuel-carrier-map-marker.is-offline:focus-within
+  .fuel-carrier-marker-dot,
+.leaflet-marker-icon.fuel-carrier-map-marker.is-offline:hover
+  .fuel-carrier-plate-label,
+.leaflet-marker-icon.fuel-carrier-map-marker.is-offline:focus-within
+  .fuel-carrier-plate-label {
+  filter: none;
+  opacity: 1;
 }
 
 .leaflet-container.fuel-carrier-plates-hidden .fuel-carrier-plate-anchor {
@@ -96,7 +126,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fuel-carrier-plate-label,
-  .fuel-carrier-plate-anchor {
+  .fuel-carrier-plate-anchor,
+  .fuel-carrier-marker-dot {
     transition: none;
   }
 

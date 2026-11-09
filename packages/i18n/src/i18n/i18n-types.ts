@@ -1174,6 +1174,14 @@ type RootTranslation = {
 			 */
 			unnamedVehicle: string
 			/**
+			 * L​i​v​e
+			 */
+			statusLive: string
+			/**
+			 * O​f​f​l​i​n​e
+			 */
+			statusOffline: string
+			/**
 			 * F​u​e​l​:​ ​{​v​o​l​u​m​e​}
 			 * @param {string} volume
 			 */
@@ -3662,6 +3670,14 @@ type RootTranslation = {
 			 */
 			unnamedVehicle: string
 			/**
+			 * L​i​v​e
+			 */
+			statusLive: string
+			/**
+			 * O​f​f​l​i​n​e
+			 */
+			statusOffline: string
+			/**
 			 * F​u​e​l​:​ ​{​v​o​l​u​m​e​}
 			 * @param {string} volume
 			 */
@@ -5126,6 +5142,14 @@ export type TranslationFunctions = {
 			 * Unnamed vehicle
 			 */
 			unnamedVehicle: () => LocalizedString
+			/**
+			 * Live
+			 */
+			statusLive: () => LocalizedString
+			/**
+			 * Offline
+			 */
+			statusOffline: () => LocalizedString
 			/**
 			 * Fuel: {volume}
 			 */
@@ -7568,6 +7592,14 @@ export type TranslationFunctions = {
 			 * Unnamed vehicle
 			 */
 			unnamedVehicle: () => LocalizedString
+			/**
+			 * Live
+			 */
+			statusLive: () => LocalizedString
+			/**
+			 * Offline
+			 */
+			statusOffline: () => LocalizedString
 			/**
 			 * Fuel: {volume}
 			 */

@@ -9,6 +9,7 @@ export type FuelLevelLegendLabels = {
   fuelLevelMidLow: () => string
   fuelLevelLow: () => string
   fuelLevelUnknown: () => string
+  statusOffline: () => string
 }
 
 type FuelLevelLegendProps = {
@@ -62,6 +63,17 @@ export function FuelLevelLegend({
               </li>
             )
           })}
+          <li>
+            <span className="inline-flex min-h-8 items-center gap-1.5 px-1.5 text-[11px] leading-none text-base-content/45">
+              <span
+                className="size-2 shrink-0 rounded-full bg-base-content/40 opacity-50 ring-1 ring-base-100"
+                aria-hidden
+              />
+              <span className="whitespace-nowrap">
+                {labels.statusOffline()}
+              </span>
+            </span>
+          </li>
         </ul>
       </aside>
     </div>
@@ -121,6 +133,7 @@ export function hasFuelLevelLegendLabels(
     typeof labels.fuelLevelMidHigh === 'function' &&
     typeof labels.fuelLevelMidLow === 'function' &&
     typeof labels.fuelLevelLow === 'function' &&
-    typeof labels.fuelLevelUnknown === 'function'
+    typeof labels.fuelLevelUnknown === 'function' &&
+    typeof labels.statusOffline === 'function'
   )
 }

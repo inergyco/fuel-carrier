@@ -6,6 +6,7 @@ import { ResistanceValue } from "../cars/ResistanceValue";
 import { Button } from "../ui";
 import { LicensePlate } from "../ui/license-plate-picker";
 import type { CarsMapLabels } from "./CarsMap";
+import { useTelemetryLiveness } from "./telemetry-liveness";
 
 export const mapPopupActionClassName =
   "min-w-0 flex-1 whitespace-nowrap px-2 text-center text-xs font-semibold leading-none normal-case tracking-normal no-underline shadow-none";
@@ -34,6 +35,12 @@ export function CarMarkerPopup({
       ) : (
         <p className="font-semibold tracking-tight">{title}</p>
       )}
+      {marker.createdAt ? (
+        <MarkerLivenessStatus
+          ingestedAt={marker.createdAt}
+          labels={labels}
+        />
+      ) : null}
       <p className="text-xs text-base-content/70">
         {labels.fuelType({
           type: carFuelTypeLabel(marker.hasHighGrade ?? false, labels),
@@ -82,6 +89,32 @@ type MarkerPlanRouteButtonProps = {
   label: string;
   onPlanRoute: () => void;
 };
+
+function MarkerLivenessStatus({
+  ingestedAt,
+  labels,
+}: {
+  ingestedAt: string;
+  labels: CarsMapLabels;
+}) {
+  const isLive = useTelemetryLiveness(ingestedAt) === "live";
+
+  return (
+    <p
+      className={`inline-flex items-center gap-1.5 text-xs ${
+        isLive ? "text-success" : "text-base-content/55"
+      }`}
+    >
+      <span
+        aria-hidden
+        className={`size-1.5 shrink-0 rounded-full ${
+          isLive ? "bg-success" : "bg-base-content/30"
+        }`}
+      />
+      {isLive ? labels.statusLive() : labels.statusOffline()}
+    </p>
+  );
+}
 
 function MarkerPlanRouteButton({
   label,

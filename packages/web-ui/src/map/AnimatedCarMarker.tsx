@@ -13,8 +13,13 @@ type AnimatedCarMarkerProps = {
   instant?: boolean;
   selected?: boolean;
   plateLabel?: ReactNode;
-  /** Server ingest time. A fresh value blinks the ring; stale markers have none. */
+  /** Server ingest time. A fresh value blinks the ring; stale markers fade out. */
   ingestedAt?: string | null;
+  /**
+   * When false, the marker stays at full color (route playback).
+   * Live fleet markers dim once ingest time goes stale.
+   */
+  showLiveness?: boolean;
 };
 
 /**
@@ -31,12 +36,15 @@ export function AnimatedCarMarker({
   selected = false,
   plateLabel = null,
   ingestedAt = null,
+  showLiveness = true,
 }: AnimatedCarMarkerProps) {
   const markerRef = useRef<LeafletMarker | null>(null);
   const [iconElement, setIconElement] = useState<HTMLElement | null>(null);
-  const live = useTelemetryLiveness(ingestedAt) === 'live';
+  const liveness = useTelemetryLiveness(ingestedAt);
+  const live = showLiveness && liveness === 'live';
+  const offline = showLiveness && !live;
   const [markerIcon] = useState(() =>
-    markerIconForColor({ color, selected, live }),
+    markerIconForColor({ color, selected, live, offline }),
   );
   const [initialPosition] = useState(position);
   const endLat = position[0];
@@ -90,12 +98,14 @@ export function AnimatedCarMarker({
       dot.style.boxShadow = 'none';
       ensureMarkerRing(dot);
       dot.classList.toggle('is-live', live);
+      dot.classList.toggle('is-offline', offline);
+      iconElement.classList.toggle('is-offline', offline);
       iconElement.style.width = `${size}px`;
       iconElement.style.height = `${size}px`;
       iconElement.style.marginLeft = `${-anchor}px`;
       iconElement.style.marginTop = `${-anchor}px`;
     },
-    [color, iconElement, live, selected],
+    [color, iconElement, live, offline, selected],
   );
 
   useEffect(
@@ -118,7 +128,12 @@ export function AnimatedCarMarker({
 
   return (
     <>
-      <Marker ref={markerRef} position={initialPosition} icon={markerIcon}>
+      <Marker
+        ref={markerRef}
+        position={initialPosition}
+        icon={markerIcon}
+        zIndexOffset={markerZIndexOffset({ live, offline })}
+      >
         {children}
       </Marker>
       {iconElement != null && plateLabel != null
@@ -131,4 +146,22 @@ export function AnimatedCarMarker({
         : null}
     </>
   );
+}
+
+function markerZIndexOffset({
+  live,
+  offline,
+}: {
+  live: boolean;
+  offline: boolean;
+}): number {
+  if (offline) {
+    return -1000;
+  }
+
+  if (live) {
+    return 400;
+  }
+
+  return 0;
 }
