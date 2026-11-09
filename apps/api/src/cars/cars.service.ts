@@ -335,7 +335,7 @@ export class CarsService {
 
   /** Soft-delete: set deletedAt, end custody, disable MQTT, keep row for history. */
   async delete(context: ApiTenantContext, id: string): Promise<null> {
-    return this.tenantDb.run(context, async (tx) => {
+    const removed = await this.tenantDb.run(context, async (tx) => {
       const existing = await this.carsReader.getByIdIncludingDeleted(tx, id);
 
       if (existing.deletedAt) {
@@ -385,7 +385,16 @@ export class CarsService {
         },
       });
 
-      return null;
+      return { companyId: existing.companyId, carId: id };
     });
+
+    if (removed) {
+      await this.carTelemetryService.clearForCar(
+        removed.companyId,
+        removed.carId,
+      );
+    }
+
+    return null;
   }
 }

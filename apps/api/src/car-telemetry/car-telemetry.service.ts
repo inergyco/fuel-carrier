@@ -7,7 +7,7 @@ import {
   type TankResistanceReadings,
 } from '@fuel-carrier/shared-types/car-telemetry';
 import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
-import { and, asc, eq, gte, lte } from 'drizzle-orm';
+import { and, asc, eq, gte, isNull, lte } from 'drizzle-orm';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
 import {
@@ -91,7 +91,7 @@ export class CarTelemetryService {
 
     const carIdentity = await this.tenantDb.run(context, async (tx) => {
       const car = await tx.query.cars.findFirst({
-        where: eq(cars.id, input.carId),
+        where: and(eq(cars.id, input.carId), isNull(cars.deletedAt)),
         with: { company: true },
       });
 
@@ -343,12 +343,22 @@ export class CarTelemetryService {
       this._readCompaniesTelemetry(companyIds),
     ]);
 
+    await this._clearTelemetryForMissingCars({
+      fleet,
+      telemetryByCompany,
+    });
+
     return toMarkers(fleet, telemetryByCompany);
   }
 
+  /**
+   * Map markers must follow the same live fleet as the dashboard counts.
+   * Soft-deleted rows stay in the table for history, so they have to be excluded here.
+   */
   private async _listFleetCars(context: TenantContext): Promise<FleetCar[]> {
     return this.tenantDb.run(context, async (tx) => {
       return tx.query.cars.findMany({
+        where: isNull(cars.deletedAt),
         columns: {
           id: true,
           licensePlate: true,
@@ -366,12 +376,43 @@ export class CarTelemetryService {
     });
   }
 
+  /**
+   * Redis still holds the last sample after a car is soft-deleted.
+   * Drop those keys so an open map removes the marker instead of keeping a dot
+   * that no fuel statistic can count.
+   */
+  private async _clearTelemetryForMissingCars(options: {
+    fleet: FleetCar[];
+    telemetryByCompany: ReadonlyMap<string, CarTelemetry[]>;
+  }): Promise<void> {
+    const { fleet, telemetryByCompany } = options;
+    const liveCarIds = new Set(fleet.map((car) => car.id));
+    const removals: Promise<void>[] = [];
+
+    for (const [companyId, samples] of telemetryByCompany) {
+      for (const sample of samples) {
+        if (liveCarIds.has(sample.carId)) {
+          continue;
+        }
+
+        removals.push(this.clearForCar(companyId, sample.carId));
+      }
+    }
+
+    await Promise.all(removals);
+  }
+
   private async _readCompaniesTelemetry(
     companyIds: string[],
-  ): Promise<CarTelemetry[][]> {
-    return Promise.all(
-      companyIds.map((companyId) => this._readCompanyTelemetry(companyId)),
+  ): Promise<Map<string, CarTelemetry[]>> {
+    const entries = await Promise.all(
+      companyIds.map(
+        async (companyId) =>
+          [companyId, await this._readCompanyTelemetry(companyId)] as const,
+      ),
     );
+
+    return new Map(entries);
   }
 
   private async _readCompanyTelemetry(
@@ -451,7 +492,7 @@ function toHistoryPoint(row: HistorySelectRow): CarTelemetry {
 
 function toMarkers(
   fleet: FleetCar[],
-  telemetryByCompany: CarTelemetry[][],
+  telemetryByCompany: ReadonlyMap<string, CarTelemetry[]>,
 ): CarTelemetryMarker[] {
   const carsById = new Map(
     fleet.map(function toCarEntry(car) {
@@ -461,7 +502,7 @@ function toMarkers(
 
   const markers: CarTelemetryMarker[] = [];
 
-  for (const companyTelemetry of telemetryByCompany) {
+  for (const companyTelemetry of telemetryByCompany.values()) {
     for (const telemetry of companyTelemetry) {
       const car = carsById.get(telemetry.carId);
       if (!car) {
