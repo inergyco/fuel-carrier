@@ -111,20 +111,39 @@ export class CarTelemetryService {
         );
       }
 
-      await tx.insert(carTelemetryHistory).values({
-        time: recordedAt,
-        carId: input.carId,
-        companyId: input.companyId,
-        latitude: input.latitude,
-        longitude: input.longitude,
-        speed: input.speed,
-        remainFuel: input.remainFuel,
-        fuelAmount: input.fuelAmount,
-        resistanceTankToGround: input.resistance?.tankToGround,
-        resistanceTankToNozzle: input.resistance?.tankToNozzle,
-        resistanceGroundToVehicle: input.resistance?.groundToVehicle,
-        createdAt: ingestedAt,
-      });
+      // Devices (and MQTT redelivery) may resend the same sample timestamp.
+      // Upsert so Redis / live map still refresh instead of failing the PK.
+      await tx
+        .insert(carTelemetryHistory)
+        .values({
+          time: recordedAt,
+          carId: input.carId,
+          companyId: input.companyId,
+          latitude: input.latitude,
+          longitude: input.longitude,
+          speed: input.speed,
+          remainFuel: input.remainFuel,
+          fuelAmount: input.fuelAmount,
+          resistanceTankToGround: input.resistance?.tankToGround,
+          resistanceTankToNozzle: input.resistance?.tankToNozzle,
+          resistanceGroundToVehicle: input.resistance?.groundToVehicle,
+          createdAt: ingestedAt,
+        })
+        .onConflictDoUpdate({
+          target: [carTelemetryHistory.time, carTelemetryHistory.carId],
+          set: {
+            companyId: input.companyId,
+            latitude: input.latitude,
+            longitude: input.longitude,
+            speed: input.speed,
+            remainFuel: input.remainFuel,
+            fuelAmount: input.fuelAmount,
+            resistanceTankToGround: input.resistance?.tankToGround,
+            resistanceTankToNozzle: input.resistance?.tankToNozzle,
+            resistanceGroundToVehicle: input.resistance?.groundToVehicle,
+            createdAt: ingestedAt,
+          },
+        });
 
       return {
         licensePlate: car.licensePlate,
