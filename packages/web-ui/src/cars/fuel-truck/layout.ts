@@ -39,7 +39,7 @@ export function clampFillRatio(capacity: number, filled: number): number {
 }
 
 export function formatVolume(value: number): string {
-  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 0 }).format(
+  return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(
     value,
   )
 }
