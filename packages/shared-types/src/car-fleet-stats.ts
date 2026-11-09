@@ -1,5 +1,5 @@
 /** Default compartment capacity used until cars expose tank capacity from the API. */
-export const DEFAULT_TANK_CAPACITY_LITERS = 500;
+export const DEFAULT_TANK_CAPACITY_LITERS = 415;
 
 export const DEFAULT_TANK_COUNT = 3;
 
