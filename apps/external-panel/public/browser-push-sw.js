@@ -217,6 +217,10 @@ function localizeFaBody(title, body) {
         return null
       }
 
+      if (isOpenLineOhms(Number(match[2]))) {
+        return `${FA_PROBES[match[1]]}: قطع همبندی.`
+      }
+
       return `مقاومت ${FA_PROBES[match[1]]} برابر ${formatOhms(match[2])} است و از حد ${formatOhms(match[3])} بیشتر است.`
     })
     if (lines.some((line) => line == null)) {
@@ -243,6 +247,11 @@ function formatPercent(raw) {
 
 function formatVolume(raw) {
   return `${formatAmount(Number(raw), 'fa')} لیتر`
+}
+
+/** Keep aligned with `isResistanceOpenLine` in shared car telemetry. */
+function isOpenLineOhms(value) {
+  return value === 65535 || Math.abs(value - 65535 / 100) < 0.06
 }
 
 function formatOhms(raw) {

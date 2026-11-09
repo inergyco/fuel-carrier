@@ -47,13 +47,15 @@ describe('car-condition-alert.utils', () => {
         licensePlate: '12-ب-345',
         probes: [
           { probe: 'tankToGround', ohms: RESISTANCE_OPEN_LINE_OHMS },
-          { probe: 'tankToNozzle', ohms: 12 },
+          { probe: 'tankToNozzle', ohms: RESISTANCE_OPEN_LINE_OHMS / 100 },
+          { probe: 'groundToVehicle', ohms: 655.3 },
         ],
       }).body,
     ).toBe(
       [
         'Tank to ground: Open line.',
-        'Tank to nozzle is 12 Ω, above the 10 Ω limit.',
+        'Tank to nozzle: Open line.',
+        'Ground to vehicle: Open line.',
       ].join('\n'),
     );
 

@@ -1,4 +1,5 @@
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
+import { isResistanceOpenLine } from '@fuel-carrier/shared-types/car-telemetry'
 
 /**
  * Stored vehicle alerts are English sentences from the API.
@@ -203,7 +204,10 @@ function formatHighResistanceLine(input: {
   const copy = input.LL.common.carAlerts
   const probe = probeLabel(input.probe.probe, input.LL)
 
-  if (input.probe.kind === 'open_line') {
+  if (
+    input.probe.kind === 'open_line' ||
+    (input.probe.kind === 'high' && isResistanceOpenLine(input.probe.ohms))
+  ) {
     return copy.highResistanceOpenLine({ probe })
   }
 

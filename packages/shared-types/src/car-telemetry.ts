@@ -17,9 +17,13 @@ export const RESISTANCE_ALERT_THRESHOLD_OHMS = 10;
 
 /**
  * Device sentinel for a disconnected bonding probe.
- * The meter reports uint16 max (`0xFFFF`) instead of an ohm reading.
+ * The meter reports uint16 max (`0xFFFF`). Packets may carry that raw
+ * count, or the same count already scaled to ohms (`0xFFFF / 100` ≈ 655.35).
  */
 export const RESISTANCE_OPEN_LINE_OHMS = 0xffff;
+
+/** How far a scaled open-line reading may sit from `0xFFFF / 100` after one-decimal rounding. */
+const RESISTANCE_OPEN_LINE_SCALED_TOLERANCE_OHMS = 0.06;
 
 export const ResistanceProbeKeys = {
   TANK_TO_GROUND: "tankToGround",
@@ -39,8 +43,16 @@ export const RESISTANCE_PROBE_KEYS = [
 export const isResistanceAboveAlertThreshold = (value: number): boolean =>
   value > RESISTANCE_ALERT_THRESHOLD_OHMS;
 
-export const isResistanceOpenLine = (value: number): boolean =>
-  value === RESISTANCE_OPEN_LINE_OHMS;
+export function isResistanceOpenLine(value: number): boolean {
+  if (value === RESISTANCE_OPEN_LINE_OHMS) {
+    return true;
+  }
+
+  return (
+    Math.abs(value - RESISTANCE_OPEN_LINE_OHMS / 100) <
+    RESISTANCE_OPEN_LINE_SCALED_TOLERANCE_OHMS
+  );
+}
 
 /** Latest device telemetry for a car (served from Redis). */
 export type CarTelemetry = {
