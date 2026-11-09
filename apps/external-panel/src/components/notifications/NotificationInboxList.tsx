@@ -1,5 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import type { CompanyNotification } from '@fuel-carrier/shared-types'
+import { localizeCarAlertMessage } from '@fuel-carrier/web-ui/notifications'
 import { LicensePlate } from '@fuel-carrier/web-ui/ui'
 import { useEffect, useRef } from 'react'
 
@@ -126,6 +127,14 @@ function NotificationInboxItem({
   locale: string
   onOpen: (item: CompanyNotification) => void
 }) {
+  const { LL } = useI18nContext()
+  const copy = localizeCarAlertMessage({
+    title: item.title,
+    body: item.body,
+    locale,
+    LL,
+  })
+
   function handleOpen() {
     onOpen(item)
   }
@@ -147,13 +156,13 @@ function NotificationInboxItem({
         )}
         <span className="min-w-0 flex-1">
           <span className="flex min-w-0 flex-wrap items-center gap-2">
-            <span className="truncate text-sm font-medium">{item.title}</span>
+            <span className="truncate text-sm font-medium">{copy.title}</span>
             {item.licensePlate ? (
               <LicensePlate value={item.licensePlate} size="sm" />
             ) : null}
           </span>
-          <span className="mt-0.5 line-clamp-2 block text-xs text-base-content/70">
-            {item.body}
+          <span className="mt-0.5 line-clamp-2 block whitespace-pre-line text-xs text-base-content/70">
+            {copy.body}
           </span>
           <time
             className="mt-1 block text-[11px] font-medium text-base-content/45"

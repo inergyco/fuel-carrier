@@ -16,6 +16,10 @@ import {
   NOTIFICATION_TITLE_MAX_LENGTH,
 } from '../config/notification.config';
 
+/**
+ * English sentences below are the stored canonical copy.
+ * Panels and the company-app service worker localize these exact strings.
+ */
 const PROBE_LABELS: Record<ResistanceProbeKey, string> = {
   [ResistanceProbeKeys.TANK_TO_GROUND]: 'Tank to ground',
   [ResistanceProbeKeys.TANK_TO_NOZZLE]: 'Tank to nozzle',

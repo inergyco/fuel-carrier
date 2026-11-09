@@ -139,6 +139,17 @@ const fa: Translation = {
     hidePassword: "مخفی کردن رمز عبور",
     dismiss: "بستن",
     close: "بستن",
+    carAlerts: {
+      lowFuelTitle: "سوخت کم",
+      lowFuelBody:
+        "سوخت باقیمانده {percent} ({volume}) است و از {threshold} کمتر است.",
+      highResistanceTitle: "مقاومت بالای مخزن",
+      highResistanceLine:
+        "مقاومت {probe} برابر {ohms} است و از حد {limit} بیشتر است.",
+      staleTelemetryTitle: "تله‌متری قدیمی",
+      staleTelemetryBody:
+        "نمونه دستگاه حدود {age} دقیقه قبل ثبت شده است (حد مجاز {limit} دقیقه).",
+    },
   },
   validation: {
     usernameRequired: "نام کاربری الزامی است",

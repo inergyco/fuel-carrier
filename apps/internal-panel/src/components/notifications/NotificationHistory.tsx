@@ -7,6 +7,7 @@ import {
   type NotificationChannel,
 } from "@fuel-carrier/shared-types";
 import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
+import { localizeCarAlertMessage } from "@fuel-carrier/web-ui/notifications";
 import { keepPreviousData, useQuery } from "@fuel-carrier/web-ui/query";
 import {
   Badge,
@@ -113,7 +114,14 @@ export function NotificationHistory({
           </p>
         ) : (
           <ul className="flex flex-col gap-3">
-            {result?.items.map((item) => {
+            {result?.items.map(function renderNotification(item) {
+              const message = localizeCarAlertMessage({
+                title: item.title,
+                body: item.body,
+                locale,
+                LL,
+              });
+
               return (
                 <li
                   key={item.id}
@@ -122,7 +130,7 @@ export function NotificationHistory({
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div className="flex min-w-0 flex-wrap items-center gap-2">
                       <h3 className="min-w-0 text-sm font-medium">
-                        {item.title}
+                        {message.title}
                       </h3>
                       {item.licensePlate ? (
                         <LicensePlate value={item.licensePlate} size="sm" />
@@ -135,8 +143,8 @@ export function NotificationHistory({
                       {formatWhen(item.createdAt)}
                     </time>
                   </div>
-                  <p className="mt-2 line-clamp-3 text-sm text-base-content/70">
-                    {item.body}
+                  <p className="mt-2 line-clamp-3 whitespace-pre-line text-sm text-base-content/70">
+                    {message.body}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <Badge size="sm" variant="info">

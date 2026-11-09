@@ -23,6 +23,7 @@ import {
   type ConditionAlertMessage,
 } from './car-condition-alert.utils';
 import { NotificationsService } from './notifications.service';
+import { buildStaleTelemetryAlertMessage } from './stale-telemetry-alert';
 
 export type EvaluateCarConditionAlertsInput = {
   carId: string;
@@ -109,11 +110,11 @@ export class CarConditionAlertService {
       kind: staleKind,
       active: isStale,
       message: isStale
-        ? {
-            title: 'Stale telemetry',
-            pushTitle: `Stale telemetry — ${input.licensePlate}`,
-            body: `The device sample is about ${Math.round(staleAgeMs / 60_000)} minutes old (limit ${STALE_TELEMETRY_THRESHOLD_MS / 60_000} minutes).`,
-          }
+        ? buildStaleTelemetryAlertMessage({
+            licensePlate: input.licensePlate,
+            recordedAt: input.recordedAt,
+            ingestedAt: input.ingestedAt,
+          })
         : null,
     });
   }

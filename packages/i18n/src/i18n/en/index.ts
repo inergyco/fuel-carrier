@@ -138,6 +138,17 @@ const en: BaseTranslation = {
     hidePassword: 'Hide password',
     dismiss: 'Dismiss',
     close: 'Close',
+    carAlerts: {
+      lowFuelTitle: 'Low fuel',
+      lowFuelBody:
+        'Remaining fuel is {percent:string} ({volume:string}), below {threshold:string}.',
+      highResistanceTitle: 'High tank resistance',
+      highResistanceLine:
+        '{probe:string} is {ohms:string}, above the {limit:string} limit.',
+      staleTelemetryTitle: 'Stale telemetry',
+      staleTelemetryBody:
+        'The device sample is about {age:string} minutes old (limit {limit:string} minutes).',
+    },
   },
   validation: {
     usernameRequired: 'Username is required',

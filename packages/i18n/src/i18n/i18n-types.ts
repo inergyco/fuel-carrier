@@ -472,6 +472,40 @@ type RootTranslation = {
 		 * C​l​o​s​e
 		 */
 		close: string
+		carAlerts: {
+			/**
+			 * L​o​w​ ​f​u​e​l
+			 */
+			lowFuelTitle: string
+			/**
+			 * R​e​m​a​i​n​i​n​g​ ​f​u​e​l​ ​i​s​ ​{​p​e​r​c​e​n​t​}​ ​(​{​v​o​l​u​m​e​}​)​,​ ​b​e​l​o​w​ ​{​t​h​r​e​s​h​o​l​d​}​.
+			 * @param {string} percent
+			 * @param {string} threshold
+			 * @param {string} volume
+			 */
+			lowFuelBody: RequiredParams<'percent' | 'threshold' | 'volume'>
+			/**
+			 * H​i​g​h​ ​t​a​n​k​ ​r​e​s​i​s​t​a​n​c​e
+			 */
+			highResistanceTitle: string
+			/**
+			 * {​p​r​o​b​e​}​ ​i​s​ ​{​o​h​m​s​}​,​ ​a​b​o​v​e​ ​t​h​e​ ​{​l​i​m​i​t​}​ ​l​i​m​i​t​.
+			 * @param {string} limit
+			 * @param {string} ohms
+			 * @param {string} probe
+			 */
+			highResistanceLine: RequiredParams<'limit' | 'ohms' | 'probe'>
+			/**
+			 * S​t​a​l​e​ ​t​e​l​e​m​e​t​r​y
+			 */
+			staleTelemetryTitle: string
+			/**
+			 * T​h​e​ ​d​e​v​i​c​e​ ​s​a​m​p​l​e​ ​i​s​ ​a​b​o​u​t​ ​{​a​g​e​}​ ​m​i​n​u​t​e​s​ ​o​l​d​ ​(​l​i​m​i​t​ ​{​l​i​m​i​t​}​ ​m​i​n​u​t​e​s​)​.
+			 * @param {string} age
+			 * @param {string} limit
+			 */
+			staleTelemetryBody: RequiredParams<'age' | 'limit'>
+		}
 	}
 	validation: {
 		/**
@@ -4435,6 +4469,32 @@ export type TranslationFunctions = {
 		 * Close
 		 */
 		close: () => LocalizedString
+		carAlerts: {
+			/**
+			 * Low fuel
+			 */
+			lowFuelTitle: () => LocalizedString
+			/**
+			 * Remaining fuel is {percent} ({volume}), below {threshold}.
+			 */
+			lowFuelBody: (arg: { percent: string, threshold: string, volume: string }) => LocalizedString
+			/**
+			 * High tank resistance
+			 */
+			highResistanceTitle: () => LocalizedString
+			/**
+			 * {probe} is {ohms}, above the {limit} limit.
+			 */
+			highResistanceLine: (arg: { limit: string, ohms: string, probe: string }) => LocalizedString
+			/**
+			 * Stale telemetry
+			 */
+			staleTelemetryTitle: () => LocalizedString
+			/**
+			 * The device sample is about {age} minutes old (limit {limit} minutes).
+			 */
+			staleTelemetryBody: (arg: { age: string, limit: string }) => LocalizedString
+		}
 	}
 	validation: {
 		/**

@@ -7,5 +7,6 @@ export {
   getDirection,
   isLocale,
   LOCALE_STORAGE_KEY,
+  LOCALE_SYNC_MESSAGE,
   locales,
 } from './locale.js'

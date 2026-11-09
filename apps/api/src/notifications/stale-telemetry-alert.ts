@@ -12,6 +12,7 @@ export const isStaleTelemetry = (input: {
   input.ingestedAt.getTime() - input.recordedAt.getTime() >
   STALE_TELEMETRY_THRESHOLD_MS;
 
+/** English copy is localized by the panels. Keep the sentence aligned with them. */
 export function buildStaleTelemetryAlertMessage(input: {
   licensePlate: string;
   recordedAt: Date;

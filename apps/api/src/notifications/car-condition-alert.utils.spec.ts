@@ -1,10 +1,15 @@
 import { FLEET_TOTAL_CAPACITY_LITERS } from '@fuel-carrier/shared-types';
 import { STALE_TELEMETRY_THRESHOLD_MS } from '../config/notification.config';
 import {
+  buildLowFuelAlertMessage,
+  buildResistanceAlertMessage,
   isLowFuel,
   listHighResistanceProbes,
 } from './car-condition-alert.utils';
-import { isStaleTelemetry } from './stale-telemetry-alert';
+import {
+  buildStaleTelemetryAlertMessage,
+  isStaleTelemetry,
+} from './stale-telemetry-alert';
 
 describe('car-condition-alert.utils', () => {
   it('lists only probes above the alert threshold', () => {
@@ -23,6 +28,48 @@ describe('car-condition-alert.utils', () => {
     expect(isLowFuel(quarter)).toBe(false);
     expect(isLowFuel(quarter - 0.1)).toBe(true);
     expect(isLowFuel(0)).toBe(true);
+  });
+
+  it('writes the English sentences the panels localize', () => {
+    expect(
+      buildLowFuelAlertMessage({ licensePlate: '12-ب-345', remainFuel: 0 }),
+    ).toEqual({
+      title: 'Low fuel',
+      pushTitle: 'Low fuel — 12-ب-345',
+      body: 'Remaining fuel is 0% (0 L), below 25%.',
+    });
+
+    expect(
+      buildResistanceAlertMessage({
+        licensePlate: '12-ب-345',
+        probes: [
+          { probe: 'tankToGround', ohms: 10.1 },
+          { probe: 'groundToVehicle', ohms: 12 },
+        ],
+      }),
+    ).toEqual({
+      title: 'High tank resistance',
+      pushTitle: 'High tank resistance — 12-ب-345',
+      body: [
+        'Tank to ground is 10.1 Ω, above the 10 Ω limit.',
+        'Ground to vehicle is 12 Ω, above the 10 Ω limit.',
+      ].join('\n'),
+    });
+
+    const ingestedAt = new Date('2026-11-02T12:45:00.000Z');
+    const recordedAt = new Date(ingestedAt.getTime() - 45 * 60_000);
+
+    expect(
+      buildStaleTelemetryAlertMessage({
+        licensePlate: '12-ب-345',
+        recordedAt,
+        ingestedAt,
+      }),
+    ).toEqual({
+      title: 'Stale telemetry',
+      pushTitle: 'Stale telemetry — 12-ب-345',
+      body: 'The device sample is about 45 minutes old (limit 30 minutes).',
+    });
   });
 
   it('flags device samples older than 30 minutes at ingest', () => {

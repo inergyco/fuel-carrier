@@ -2,6 +2,9 @@ import type { Locales } from './i18n/i18n-types.js'
 
 export const LOCALE_STORAGE_KEY = 'locale'
 
+/** Posted to the company-app service worker so push alerts follow the UI language. */
+export const LOCALE_SYNC_MESSAGE = 'fuel-carrier:locale'
+
 export const DEFAULT_LOCALE: Locales = 'fa'
 
 export const locales = ['en', 'fa'] as const satisfies readonly Locales[]
