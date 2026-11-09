@@ -469,6 +469,18 @@ type RootTranslation = {
 		 */
 		hidePassword: string
 		/**
+		 * C​o​p​y
+		 */
+		copy: string
+		/**
+		 * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
+		 */
+		copied: string
+		/**
+		 * C​o​u​l​d​ ​n​o​t​ ​c​o​p​y​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
+		 */
+		copyFailed: string
+		/**
 		 * D​i​s​m​i​s​s
 		 */
 		dismiss: string
@@ -1818,18 +1830,6 @@ type RootTranslation = {
 				 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​A​C​K​)
 				 */
 				mqttCredentialsSubscribeTopic: string
-				/**
-				 * C​o​p​y
-				 */
-				mqttCredentialsCopy: string
-				/**
-				 * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
-				 */
-				mqttCredentialsCopied: string
-				/**
-				 * C​o​u​l​d​ ​n​o​t​ ​c​o​p​y​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
-				 */
-				mqttCredentialsCopyFailed: string
 				/**
 				 * D​o​n​e
 				 */
@@ -3506,18 +3506,6 @@ type RootTranslation = {
 			 */
 			mqttCredentialsSubscribeTopic: string
 			/**
-			 * C​o​p​y
-			 */
-			mqttCredentialsCopy: string
-			/**
-			 * C​o​p​i​e​d​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
-			 */
-			mqttCredentialsCopied: string
-			/**
-			 * C​o​u​l​d​ ​n​o​t​ ​c​o​p​y​ ​t​o​ ​c​l​i​p​b​o​a​r​d​.
-			 */
-			mqttCredentialsCopyFailed: string
-			/**
 			 * D​o​n​e
 			 */
 			mqttCredentialsDismiss: string
@@ -4490,6 +4478,18 @@ export type TranslationFunctions = {
 		 * Hide password
 		 */
 		hidePassword: () => LocalizedString
+		/**
+		 * Copy
+		 */
+		copy: () => LocalizedString
+		/**
+		 * Copied to clipboard.
+		 */
+		copied: () => LocalizedString
+		/**
+		 * Could not copy to clipboard.
+		 */
+		copyFailed: () => LocalizedString
 		/**
 		 * Dismiss
 		 */
@@ -5780,18 +5780,6 @@ export type TranslationFunctions = {
 				 * Subscribe topic (ACK)
 				 */
 				mqttCredentialsSubscribeTopic: () => LocalizedString
-				/**
-				 * Copy
-				 */
-				mqttCredentialsCopy: () => LocalizedString
-				/**
-				 * Copied to clipboard.
-				 */
-				mqttCredentialsCopied: () => LocalizedString
-				/**
-				 * Could not copy to clipboard.
-				 */
-				mqttCredentialsCopyFailed: () => LocalizedString
 				/**
 				 * Done
 				 */
@@ -7439,18 +7427,6 @@ export type TranslationFunctions = {
 			 * Subscribe topic (ACK)
 			 */
 			mqttCredentialsSubscribeTopic: () => LocalizedString
-			/**
-			 * Copy
-			 */
-			mqttCredentialsCopy: () => LocalizedString
-			/**
-			 * Copied to clipboard.
-			 */
-			mqttCredentialsCopied: () => LocalizedString
-			/**
-			 * Could not copy to clipboard.
-			 */
-			mqttCredentialsCopyFailed: () => LocalizedString
 			/**
 			 * Done
 			 */

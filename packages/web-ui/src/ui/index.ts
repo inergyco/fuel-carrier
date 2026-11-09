@@ -1,3 +1,4 @@
+export { CopyableCredentialField } from './CopyableCredentialField'
 export { Input } from './Input'
 export { LocalizedDateTimePicker } from './LocalizedDateTimePicker'
 export { LocalizedDateTimeRangePicker } from './LocalizedDateTimeRangePicker'

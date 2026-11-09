@@ -138,6 +138,9 @@ const fa: Translation = {
     },
     showPassword: "نمایش رمز عبور",
     hidePassword: "مخفی کردن رمز عبور",
+    copy: "کپی",
+    copied: "در کلیپ‌بورد کپی شد.",
+    copyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
     dismiss: "بستن",
     close: "بستن",
     carAlerts: {
@@ -502,9 +505,6 @@ const fa: Translation = {
         mqttCredentialsPassword: "رمز عبور",
         mqttCredentialsTopic: "تاپیک انتشار",
         mqttCredentialsSubscribeTopic: "تاپیک اشتراک (تأیید دریافت)",
-        mqttCredentialsCopy: "کپی",
-        mqttCredentialsCopied: "در کلیپ‌بورد کپی شد.",
-        mqttCredentialsCopyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
         mqttCredentialsDismiss: "تمام",
         mqttCredentialsFailed:
           "صدور اعتبارنامه MQTT انجام نشد. لطفاً دوباره تلاش کنید.",
@@ -987,9 +987,6 @@ const fa: Translation = {
       mqttCredentialsPassword: "رمز عبور",
       mqttCredentialsTopic: "تاپیک انتشار",
       mqttCredentialsSubscribeTopic: "تاپیک اشتراک (تأیید دریافت)",
-      mqttCredentialsCopy: "کپی",
-      mqttCredentialsCopied: "در کلیپ‌بورد کپی شد.",
-      mqttCredentialsCopyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
       mqttCredentialsDismiss: "تمام",
       mqttCredentialsFailed:
         "صدور اعتبارنامه MQTT انجام نشد. لطفاً دوباره تلاش کنید.",
