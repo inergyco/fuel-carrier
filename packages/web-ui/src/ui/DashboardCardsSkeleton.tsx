@@ -119,7 +119,7 @@ function CarCardSkeleton({ showActions }: { showActions: boolean }) {
         <div className="mt-1 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
             <Skeleton className="h-3 w-28" />
-            <Skeleton className="h-3 w-8" />
+            <Skeleton className="h-3 w-12" />
           </div>
           <Skeleton className="h-1.5 w-full rounded-full" />
         </div>

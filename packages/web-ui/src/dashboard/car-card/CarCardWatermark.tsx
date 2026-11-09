@@ -1,4 +1,5 @@
 import { getFuelLevelColor } from "../../map";
+import { formatFillPercent } from "./car-card-utils";
 
 type CarCardWatermarkProps = {
   fillPercent: number | null;
@@ -20,7 +21,7 @@ export function CarCardWatermark({
             : "base-content/30",
       }}
     >
-      {fillPercent != null ? `${fillPercent}%` : "?"}
+      {fillPercent != null ? formatFillPercent(fillPercent) : "?"}
     </span>
   );
 }

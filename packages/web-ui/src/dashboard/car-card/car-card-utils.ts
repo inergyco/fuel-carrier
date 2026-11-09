@@ -20,8 +20,10 @@ export function getFuelFillPercent(remainFuel: number | null): number | null {
     return null
   }
 
-  return Math.min(
-    100,
-    Math.round((remainFuel / CAR_CARD_TOTAL_CAPACITY_LITERS) * 100),
-  )
+  const percent = (remainFuel / CAR_CARD_TOTAL_CAPACITY_LITERS) * 100
+
+  return Math.min(100, Math.round(percent * 10) / 10)
 }
+
+export const formatFillPercent = (fillPercent: number) =>
+  `${fillPercent.toFixed(1)}%`
