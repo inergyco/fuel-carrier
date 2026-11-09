@@ -1,6 +1,7 @@
 import {
   RESISTANCE_ALERT_THRESHOLD_OHMS,
   RESISTANCE_OK_MAX_OHMS,
+  isResistanceOpenLine,
 } from '@fuel-carrier/shared-types/car-telemetry'
 
 export type ResistanceStatus = 'success' | 'warning' | 'error'
@@ -84,4 +85,26 @@ export function getResistanceStatusStyles(
 
 export function formatResistanceValue(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1)
+}
+
+export function formatResistanceMeasure({
+  value,
+  unit,
+  openLine,
+  empty,
+}: {
+  value: number | undefined
+  unit: string
+  openLine: string
+  empty: string
+}): string {
+  if (value == null || !Number.isFinite(value)) {
+    return empty
+  }
+
+  if (isResistanceOpenLine(value)) {
+    return openLine
+  }
+
+  return `${formatResistanceValue(value)} ${unit}`
 }

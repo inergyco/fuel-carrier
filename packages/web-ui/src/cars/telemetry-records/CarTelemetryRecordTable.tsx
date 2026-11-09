@@ -10,7 +10,7 @@ import {
   DataTableRow,
 } from '../../ui/DataTable'
 import { formatVolume } from '../fuel-truck'
-import { formatResistanceValue } from '../resistance-status'
+import { formatResistanceMeasure } from '../resistance-status'
 import {
   formatCoordinate,
   formatMeasure,
@@ -87,26 +87,26 @@ export function CarTelemetryRecordTable({
                 {formatCoordinate(record.longitude)}
               </DataTableCell>
               <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
-                {formatMeasure({
+                {formatResistanceMeasure({
                   value: record.resistance?.tankToGround,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               </DataTableCell>
               <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
-                {formatMeasure({
+                {formatResistanceMeasure({
                   value: record.resistance?.tankToNozzle,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               </DataTableCell>
               <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
-                {formatMeasure({
+                {formatResistanceMeasure({
                   value: record.resistance?.groundToVehicle,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               </DataTableCell>

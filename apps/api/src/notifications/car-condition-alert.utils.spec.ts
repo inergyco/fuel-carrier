@@ -1,4 +1,7 @@
-import { FLEET_TOTAL_CAPACITY_LITERS } from '@fuel-carrier/shared-types';
+import {
+  FLEET_TOTAL_CAPACITY_LITERS,
+  RESISTANCE_OPEN_LINE_OHMS,
+} from '@fuel-carrier/shared-types';
 import { STALE_TELEMETRY_THRESHOLD_MS } from '../config/notification.config';
 import {
   buildLowFuelAlertMessage,
@@ -38,6 +41,21 @@ describe('car-condition-alert.utils', () => {
       pushTitle: 'Low fuel — 12-ب-345',
       body: 'Remaining fuel is 0% (0 L), below 25%.',
     });
+
+    expect(
+      buildResistanceAlertMessage({
+        licensePlate: '12-ب-345',
+        probes: [
+          { probe: 'tankToGround', ohms: RESISTANCE_OPEN_LINE_OHMS },
+          { probe: 'tankToNozzle', ohms: 12 },
+        ],
+      }).body,
+    ).toBe(
+      [
+        'Tank to ground: Open line.',
+        'Tank to nozzle is 12 Ω, above the 10 Ω limit.',
+      ].join('\n'),
+    );
 
     expect(
       buildResistanceAlertMessage({

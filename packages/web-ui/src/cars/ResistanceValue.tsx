@@ -1,3 +1,5 @@
+import { isResistanceOpenLine } from '@fuel-carrier/shared-types/car-telemetry'
+import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { AlertCircle, AlertTriangle, CheckCircle2 } from '../icons/index'
 import {
   formatResistanceValue,
@@ -19,35 +21,45 @@ export function ResistanceValue({
   className = '',
   compact = false,
 }: ResistanceValueProps) {
+  const { LL } = useI18nContext()
   const status = getResistanceStatus(value)
   const styles = getResistanceStatusStyles(status)
   const StatusIcon = resistanceStatusIcon(status)
+  const openLine = isResistanceOpenLine(value)
+  const reading = openLine
+    ? LL.common.carTelemetry.resistanceOpenLine()
+    : formatResistanceValue(value)
+  const readingFont = openLine
+    ? 'font-sans tracking-normal'
+    : 'font-mono tabular-nums'
 
   if (compact) {
     return (
       <span
-        className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 font-mono text-[11px] font-semibold tabular-nums ${styles.badge} ${styles.text} ${className}`}
+        className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-semibold ${readingFont} ${styles.badge} ${styles.text} ${className}`}
       >
         <StatusIcon
           className={`size-3 shrink-0 ${styles.icon} ${styles.pulse}`}
           aria-hidden
         />
-        {formatResistanceValue(value)}
-        {unit}
+        {reading}
+        {openLine ? null : unit}
       </span>
     )
   }
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-mono font-semibold tabular-nums ${styles.text} ${className}`}
+      className={`inline-flex items-center gap-1.5 font-semibold ${readingFont} ${styles.text} ${className}`}
     >
       <StatusIcon
         className={`size-4 shrink-0 ${styles.icon} ${styles.pulse}`}
         aria-hidden
       />
-      {formatResistanceValue(value)}
-      <span className="text-sm font-medium opacity-70">{unit}</span>
+      {reading}
+      {openLine ? null : (
+        <span className="text-sm font-medium opacity-70">{unit}</span>
+      )}
     </span>
   )
 }

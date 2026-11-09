@@ -167,6 +167,9 @@ const LOW_FUEL_BODY =
 const RESISTANCE_LINE =
   /^(Tank to ground|Tank to nozzle|Ground to vehicle) is (\d+(?:\.\d+)?) Ω, above the (\d+(?:\.\d+)?) Ω limit\.$/
 
+const OPEN_RESISTANCE_LINE =
+  /^(Tank to ground|Tank to nozzle|Ground to vehicle): Open line\.$/
+
 const STALE_BODY =
   /^The device sample is about (\d+) minutes old \(limit (\d+) minutes\)\.$/
 
@@ -204,6 +207,11 @@ function localizeFaBody(title, body) {
 
   if (title === 'High tank resistance') {
     const lines = body.split('\n').map(function localizeLine(line) {
+      const openLine = OPEN_RESISTANCE_LINE.exec(line)
+      if (openLine && FA_PROBES[openLine[1]]) {
+        return `${FA_PROBES[openLine[1]]}: قطع همبندی.`
+      }
+
       const match = RESISTANCE_LINE.exec(line)
       if (!match || !FA_PROBES[match[1]]) {
         return null

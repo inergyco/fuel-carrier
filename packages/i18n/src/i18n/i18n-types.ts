@@ -208,6 +208,10 @@ type RootTranslation = {
 			 */
 			resistanceUnit: string
 			/**
+			 * O​p​e​n​ ​l​i​n​e
+			 */
+			resistanceOpenLine: string
+			/**
 			 * —
 			 */
 			emptyCell: string
@@ -495,6 +499,11 @@ type RootTranslation = {
 			 * @param {string} probe
 			 */
 			highResistanceLine: RequiredParams<'limit' | 'ohms' | 'probe'>
+			/**
+			 * {​p​r​o​b​e​}​:​ ​O​p​e​n​ ​l​i​n​e​.
+			 * @param {string} probe
+			 */
+			highResistanceOpenLine: RequiredParams<'probe'>
 			/**
 			 * S​t​a​l​e​ ​t​e​l​e​m​e​t​r​y
 			 */
@@ -4221,6 +4230,10 @@ export type TranslationFunctions = {
 			 */
 			resistanceUnit: () => LocalizedString
 			/**
+			 * Open line
+			 */
+			resistanceOpenLine: () => LocalizedString
+			/**
 			 * —
 			 */
 			emptyCell: () => LocalizedString
@@ -4502,6 +4515,10 @@ export type TranslationFunctions = {
 			 * {probe} is {ohms}, above the {limit} limit.
 			 */
 			highResistanceLine: (arg: { limit: string, ohms: string, probe: string }) => LocalizedString
+			/**
+			 * {probe}: Open line.
+			 */
+			highResistanceOpenLine: (arg: { probe: string }) => LocalizedString
 			/**
 			 * Stale telemetry
 			 */

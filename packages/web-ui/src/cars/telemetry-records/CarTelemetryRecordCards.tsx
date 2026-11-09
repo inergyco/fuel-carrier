@@ -1,7 +1,7 @@
 import type { CarTelemetry } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { formatVolume } from '../fuel-truck'
-import { formatResistanceValue } from '../resistance-status'
+import { formatResistanceMeasure } from '../resistance-status'
 import {
   formatCoordinate,
   formatMeasure,
@@ -68,28 +68,28 @@ export function CarTelemetryRecordCards({
               />
               <RecordField
                 label={labels.resistanceTankToGround()}
-                value={formatMeasure({
+                value={formatResistanceMeasure({
                   value: record.resistance?.tankToGround,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               />
               <RecordField
                 label={labels.resistanceTankToNozzle()}
-                value={formatMeasure({
+                value={formatResistanceMeasure({
                   value: record.resistance?.tankToNozzle,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               />
               <RecordField
                 label={labels.resistanceGroundToVehicle()}
-                value={formatMeasure({
+                value={formatResistanceMeasure({
                   value: record.resistance?.groundToVehicle,
-                  format: formatResistanceValue,
                   unit: labels.resistanceUnit(),
+                  openLine: labels.resistanceOpenLine(),
                   empty: labels.emptyCell(),
                 })}
               />

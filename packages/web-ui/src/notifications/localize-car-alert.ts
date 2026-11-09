@@ -14,6 +14,9 @@ const LOW_FUEL_BODY =
 const RESISTANCE_LINE =
   /^(Tank to ground|Tank to nozzle|Ground to vehicle) is (\d+(?:\.\d+)?) Ω, above the (\d+(?:\.\d+)?) Ω limit\.$/
 
+const OPEN_RESISTANCE_LINE =
+  /^(Tank to ground|Tank to nozzle|Ground to vehicle): Open line\.$/
+
 const STALE_TELEMETRY_BODY =
   /^The device sample is about (\d+) minutes old \(limit (\d+) minutes\)\.$/
 
@@ -25,6 +28,18 @@ const PROBE_LABELS = [
 
 type ProbeLabel = (typeof PROBE_LABELS)[number]
 
+type ParsedResistanceProbe =
+  | {
+      kind: 'high'
+      probe: ProbeLabel
+      ohms: number
+      limitOhms: number
+    }
+  | {
+      kind: 'open_line'
+      probe: ProbeLabel
+    }
+
 type ParsedCarAlert =
   | {
       kind: 'low_fuel'
@@ -34,7 +49,7 @@ type ParsedCarAlert =
     }
   | {
       kind: 'high_resistance'
-      probes: { probe: ProbeLabel; ohms: number; limitOhms: number }[]
+      probes: ParsedResistanceProbe[]
     }
   | {
       kind: 'stale_telemetry'
@@ -88,19 +103,15 @@ function parseCarAlertMessage(
 
   if (trimmedTitle === HIGH_RESISTANCE_TITLE) {
     const lines = trimmedBody.split('\n')
-    const probes: { probe: ProbeLabel; ohms: number; limitOhms: number }[] = []
+    const probes: ParsedResistanceProbe[] = []
 
     for (const line of lines) {
-      const match = RESISTANCE_LINE.exec(line)
-      if (!match || !isProbeLabel(match[1])) {
+      const probe = parseResistanceProbeLine(line)
+      if (!probe) {
         return null
       }
 
-      probes.push({
-        probe: match[1],
-        ohms: Number(match[2]),
-        limitOhms: Number(match[3]),
-      })
+      probes.push(probe)
     }
 
     if (probes.length === 0) {
@@ -146,13 +157,8 @@ function formatCarAlertMessage(input: {
   }
 
   if (parsed.kind === 'high_resistance') {
-    const lines = parsed.probes.map(
-      (probe) =>
-        copy.highResistanceLine({
-          probe: probeLabel(probe.probe, LL),
-          ohms: formatOhms(probe.ohms, locale, LL),
-          limit: formatOhms(probe.limitOhms, locale, LL),
-        }),
+    const lines = parsed.probes.map((probe) =>
+      formatHighResistanceLine({ probe, locale, LL }),
     )
 
     return {
@@ -168,6 +174,44 @@ function formatCarAlertMessage(input: {
       limit: formatAmount(parsed.limitMinutes, locale),
     }),
   }
+}
+
+function parseResistanceProbeLine(line: string): ParsedResistanceProbe | null {
+  const openLine = OPEN_RESISTANCE_LINE.exec(line)
+  if (openLine?.[1] && isProbeLabel(openLine[1])) {
+    return { kind: 'open_line', probe: openLine[1] }
+  }
+
+  const match = RESISTANCE_LINE.exec(line)
+  if (!match?.[1] || !isProbeLabel(match[1])) {
+    return null
+  }
+
+  return {
+    kind: 'high',
+    probe: match[1],
+    ohms: Number(match[2]),
+    limitOhms: Number(match[3]),
+  }
+}
+
+function formatHighResistanceLine(input: {
+  probe: ParsedResistanceProbe
+  locale: string
+  LL: TranslationFunctions
+}): string {
+  const copy = input.LL.common.carAlerts
+  const probe = probeLabel(input.probe.probe, input.LL)
+
+  if (input.probe.kind === 'open_line') {
+    return copy.highResistanceOpenLine({ probe })
+  }
+
+  return copy.highResistanceLine({
+    probe,
+    ohms: formatOhms(input.probe.ohms, input.locale, input.LL),
+    limit: formatOhms(input.probe.limitOhms, input.locale, input.LL),
+  })
 }
 
 function probeLabel(probe: ProbeLabel, LL: TranslationFunctions): string {

@@ -57,6 +57,7 @@ const fa: Translation = {
       speedUnit: "km/h",
       volumeUnit: "لیتر",
       resistanceUnit: "Ω",
+      resistanceOpenLine: "قطع همبندی",
       emptyCell: "—",
     },
     dashboardMode: {
@@ -146,6 +147,7 @@ const fa: Translation = {
       highResistanceTitle: "مقاومت بالای مخزن",
       highResistanceLine:
         "مقاومت {probe} برابر {ohms} است و از حد {limit} بیشتر است.",
+      highResistanceOpenLine: "{probe}: قطع همبندی.",
       staleTelemetryTitle: "تله‌متری قدیمی",
       staleTelemetryBody:
         "نمونه دستگاه حدود {age} دقیقه قبل ثبت شده است (حد مجاز {limit} دقیقه).",

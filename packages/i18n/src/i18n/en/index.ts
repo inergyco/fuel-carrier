@@ -57,6 +57,7 @@ const en: BaseTranslation = {
       speedUnit: 'km/h',
       volumeUnit: 'L',
       resistanceUnit: 'Ω',
+      resistanceOpenLine: 'Open line',
       emptyCell: '—',
     },
     dashboardMode: {
@@ -145,6 +146,7 @@ const en: BaseTranslation = {
       highResistanceTitle: 'High tank resistance',
       highResistanceLine:
         '{probe:string} is {ohms:string}, above the {limit:string} limit.',
+      highResistanceOpenLine: '{probe:string}: Open line.',
       staleTelemetryTitle: 'Stale telemetry',
       staleTelemetryBody:
         'The device sample is about {age:string} minutes old (limit {limit:string} minutes).',

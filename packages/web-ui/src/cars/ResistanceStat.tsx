@@ -1,3 +1,4 @@
+import { isResistanceOpenLine } from '@fuel-carrier/shared-types/car-telemetry'
 import { ArrowRight } from '../icons/index'
 import { ResistanceValue } from './ResistanceValue'
 import {
@@ -49,9 +50,11 @@ export function ResistanceStat({
       </dt>
       <dd className="relative mt-2.5 text-lg tracking-tight">
         <ResistanceValue value={value} unit={unit} />
-        <span className="sr-only">
-          {formatResistanceValue(value)} {unit}, status {status}
-        </span>
+        {isResistanceOpenLine(value) ? null : (
+          <span className="sr-only">
+            {formatResistanceValue(value)} {unit}, status {status}
+          </span>
+        )}
       </dd>
     </div>
   )

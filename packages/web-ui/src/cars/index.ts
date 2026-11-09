@@ -36,6 +36,7 @@ export {
 export { ResistancePanel, type ResistancePanelLabels, type ResistancePanelProps } from './ResistancePanel'
 export { ResistanceValue } from './ResistanceValue'
 export {
+  formatResistanceMeasure,
   formatResistanceValue,
   getResistanceStatus,
   getResistanceStatusStyles,

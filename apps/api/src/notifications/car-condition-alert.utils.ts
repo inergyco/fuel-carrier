@@ -7,6 +7,7 @@ import {
   RESISTANCE_PROBE_KEYS,
   ResistanceProbeKeys,
   isResistanceAboveAlertThreshold,
+  isResistanceOpenLine,
   type ResistanceProbeKey,
   type TankResistanceReadings,
 } from '@fuel-carrier/shared-types/car-telemetry';
@@ -68,10 +69,7 @@ export function buildResistanceAlertMessage(input: {
     `High tank resistance — ${input.licensePlate}`,
     NOTIFICATION_TITLE_MAX_LENGTH,
   );
-  const lines = input.probes.map(
-    (entry) =>
-      `${PROBE_LABELS[entry.probe]} is ${formatNumber(entry.ohms)} Ω, above the ${RESISTANCE_ALERT_THRESHOLD_OHMS} Ω limit.`,
-  );
+  const lines = input.probes.map(formatResistanceAlertLine);
 
   return {
     title,
@@ -101,6 +99,15 @@ export function buildLowFuelAlertMessage(input: {
 function fuelPercent(remainFuel: number): number {
   const percent = (remainFuel / FLEET_TOTAL_CAPACITY_LITERS) * 100;
   return Math.round(Math.max(0, Math.min(100, percent)));
+}
+
+function formatResistanceAlertLine(entry: HighResistanceProbe): string {
+  const probe = PROBE_LABELS[entry.probe];
+  if (isResistanceOpenLine(entry.ohms)) {
+    return `${probe}: Open line.`;
+  }
+
+  return `${probe} is ${formatNumber(entry.ohms)} Ω, above the ${RESISTANCE_ALERT_THRESHOLD_OHMS} Ω limit.`;
 }
 
 function formatNumber(value: number): string {
