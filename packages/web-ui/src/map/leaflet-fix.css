@@ -31,13 +31,25 @@
   border: 2px solid var(--color-base-100);
   transition:
     opacity 180ms ease,
-    filter 180ms ease;
+    filter 180ms ease,
+    background-color 180ms ease;
 }
 
-/* Stale telemetry: muted dot, still clickable. Hover restores the fuel color. */
-.fuel-carrier-marker-dot.is-offline {
-  filter: grayscale(1);
-  opacity: 0.45;
+/*
+  Stale telemetry stays clickable. Mixing toward the theme surface softens a
+  dark fill in light mode and a light fill in dark mode; transparency alone
+  leaves the light-mode dot nearly black. Hover restores the fuel color.
+  Inline background from the icon is overridden here.
+*/
+.fuel-carrier-marker-dot.is-offline,
+.fuel-carrier-offline-swatch {
+  background: color-mix(
+    in oklab,
+    var(--color-base-content) 58%,
+    var(--color-base-100)
+  ) !important;
+  filter: none;
+  opacity: 1;
 }
 
 .fuel-carrier-marker-ring {
@@ -94,8 +106,8 @@
 }
 
 .leaflet-marker-icon.fuel-carrier-map-marker.is-offline .fuel-carrier-plate-label {
-  filter: grayscale(0.85);
-  opacity: 0.5;
+  filter: grayscale(0.45);
+  opacity: 0.72;
 }
 
 .leaflet-marker-icon.fuel-carrier-map-marker:hover {
@@ -110,7 +122,12 @@
 .leaflet-marker-icon.fuel-carrier-map-marker.is-offline:hover
   .fuel-carrier-marker-dot,
 .leaflet-marker-icon.fuel-carrier-map-marker.is-offline:focus-within
-  .fuel-carrier-marker-dot,
+  .fuel-carrier-marker-dot {
+  background: var(--marker-color) !important;
+  filter: none;
+  opacity: 1;
+}
+
 .leaflet-marker-icon.fuel-carrier-map-marker.is-offline:hover
   .fuel-carrier-plate-label,
 .leaflet-marker-icon.fuel-carrier-map-marker.is-offline:focus-within

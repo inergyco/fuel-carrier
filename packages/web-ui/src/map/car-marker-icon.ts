@@ -7,7 +7,7 @@ type CarMarkerIconOptions = {
   selected?: boolean;
   /** Fresh telemetry. The ring blinks. */
   live?: boolean;
-  /** Stale telemetry. The dot and plate render muted. */
+  /** Stale telemetry. The dot uses the theme foreground; the plate is dimmed. */
   offline?: boolean;
 };
 
