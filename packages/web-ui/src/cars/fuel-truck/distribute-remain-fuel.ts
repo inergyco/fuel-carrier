@@ -6,21 +6,22 @@ import {
 export { DEFAULT_TANK_CAPACITY_LITERS, DEFAULT_TANK_COUNT };
 
 /**
- * Fills tanks from front to back with the remaining fuel volume from telemetry.
+ * Splits remaining fuel evenly so every tank drops together.
+ * Each tank is capped at its own capacity.
  */
 export function distributeRemainFuel(
   remainFuel: number,
   tankCount: number = DEFAULT_TANK_COUNT,
   capacityPerTank: number = DEFAULT_TANK_CAPACITY_LITERS,
 ): number[] {
-  let remaining = Math.max(0, remainFuel);
-  const filled: number[] = [];
+  const count = Math.max(0, Math.trunc(tankCount));
+  const share =
+    count === 0
+      ? 0
+      : Math.min(
+          Math.max(0, capacityPerTank),
+          Math.max(0, remainFuel) / count,
+        );
 
-  for (let index = 0; index < tankCount; index += 1) {
-    const amount = Math.min(capacityPerTank, remaining);
-    filled.push(amount);
-    remaining -= amount;
-  }
-
-  return filled;
+  return Array.from({ length: count }, () => share);
 }
