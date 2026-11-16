@@ -156,13 +156,29 @@ type RootTranslation = {
 			 */
 			empty: string
 			/**
-			 * C​h​o​o​s​e​ ​a​ ​s​t​a​r​t​ ​a​n​d​ ​e​n​d​ ​t​i​m​e​ ​t​o​ ​l​o​a​d​ ​r​e​c​o​r​d​s​.
+			 * N​o​ ​t​e​l​e​m​e​t​r​y​ ​w​a​s​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​.
 			 */
-			chooseRange: string
+			emptyAll: string
 			/**
 			 * R​e​c​o​r​d​e​d​ ​a​t
 			 */
 			recordedAt: string
+			/**
+			 * M​o​d​e
+			 */
+			mode: string
+			/**
+			 * I​d​l​e
+			 */
+			modeIdle: string
+			/**
+			 * L​o​a​d​i​n​g
+			 */
+			modeLoading: string
+			/**
+			 * D​i​s​p​e​n​s​i​n​g
+			 */
+			modeDispensing: string
 			/**
 			 * S​p​e​e​d
 			 */
@@ -4204,13 +4220,29 @@ export type TranslationFunctions = {
 			 */
 			empty: () => LocalizedString
 			/**
-			 * Choose a start and end time to load records.
+			 * No telemetry was recorded for this vehicle.
 			 */
-			chooseRange: () => LocalizedString
+			emptyAll: () => LocalizedString
 			/**
 			 * Recorded at
 			 */
 			recordedAt: () => LocalizedString
+			/**
+			 * Mode
+			 */
+			mode: () => LocalizedString
+			/**
+			 * Idle
+			 */
+			modeIdle: () => LocalizedString
+			/**
+			 * Loading
+			 */
+			modeLoading: () => LocalizedString
+			/**
+			 * Dispensing
+			 */
+			modeDispensing: () => LocalizedString
 			/**
 			 * Speed
 			 */

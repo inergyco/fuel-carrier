@@ -8,6 +8,7 @@ import {
   formatRecordTimestamp,
   formatSpeed,
 } from './formatTelemetryRecord'
+import { TelemetryModeBadge } from './TelemetryModeBadge'
 
 type CarTelemetryRecordCardsProps = {
   records: CarTelemetry[]
@@ -27,9 +28,12 @@ export function CarTelemetryRecordCards({
             key={record.updatedAt}
             className="rounded-2xl border border-base-content/8 bg-base-100/20 p-4"
           >
-            <p className="text-sm font-medium tracking-tight">
-              {formatRecordTimestamp(record.updatedAt, locale)}
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium tracking-tight">
+                {formatRecordTimestamp(record.updatedAt, locale)}
+              </p>
+              <TelemetryModeBadge mode={record.mode} />
+            </div>
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
               <RecordField
                 label={labels.speed()}

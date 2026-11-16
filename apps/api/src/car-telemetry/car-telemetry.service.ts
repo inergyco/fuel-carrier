@@ -41,8 +41,8 @@ type IngestDeviceTelemetryInput = {
 
 type ListCarTelemetryHistoryInput = {
   carId: string;
-  start: Date;
-  end: Date;
+  start?: Date;
+  end?: Date;
 };
 
 @Injectable()

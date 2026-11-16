@@ -145,8 +145,10 @@ export class CarTelemetryUtils {
       .where(
         and(
           eq(carTelemetryHistory.carId, options.carId),
-          gte(carTelemetryHistory.time, options.start),
-          lte(carTelemetryHistory.time, options.end),
+          options.start
+            ? gte(carTelemetryHistory.time, options.start)
+            : undefined,
+          options.end ? lte(carTelemetryHistory.time, options.end) : undefined,
         ),
       )
       .orderBy(asc(carTelemetryHistory.time));
@@ -315,8 +317,8 @@ export type RecordedCarIdentity = {
 type LoadCarTelemetryHistoryOptions = {
   companyId?: string;
   carId: string;
-  start: Date;
-  end: Date;
+  start?: Date;
+  end?: Date;
 };
 
 type HistorySelectRow = {

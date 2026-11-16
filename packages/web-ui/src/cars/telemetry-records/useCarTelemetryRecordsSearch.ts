@@ -1,13 +1,11 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DEFAULT_LIMIT, MAX_LIMIT } from '@fuel-carrier/shared-types'
 import type { DateTimeRangeValue } from '../../ui/LocalizedDateTimeRangePicker'
 import {
   parsePaginationSearch,
   type PaginationSearch,
 } from '../../ui/usePagination'
-
-const DEFAULT_RANGE_MS = 24 * 60 * 60 * 1000
 
 /** Optional `?page=&limit=&start=&end=` on a car telemetry records route. */
 export type CarTelemetryRecordsSearch = PaginationSearch & {
@@ -16,26 +14,20 @@ export type CarTelemetryRecordsSearch = PaginationSearch & {
 }
 
 /**
- * Syncs telemetry record pagination and the sample time range with the route URL.
- * The first visit uses the last 24 hours and writes that range into the URL.
- * Clearing the range stops the query until both ends are chosen again.
+ * Syncs telemetry record pagination and an optional sample time range with the route URL.
+ * A visit with no range shows every stored sample. The range is applied only when both ends are set.
  */
 export function useCarTelemetryRecordsSearch() {
   const routeSearch = useSearch({ strict: false })
   const navigate = useNavigate()
-  const [fallbackRange] = useState(createDefaultTelemetryRange)
-  const [rangeDismissed, setRangeDismissed] = useState(false)
-  const persistedDefault = useRef(false)
   const parsed = parseCarTelemetryRecordsSearch(routeSearch)
   const page = parsed.page ?? 1
   const limit = parsed.limit ?? DEFAULT_LIMIT
-  const start =
-    parsed.start ?? (rangeDismissed ? undefined : fallbackRange.start)
-  const end = parsed.end ?? (rangeDismissed ? undefined : fallbackRange.end)
-  const [draftRange, setDraftRange] = useState<DateTimeRangeValue>(() => ({
-    start: new Date(start ?? fallbackRange.start),
-    end: new Date(end ?? fallbackRange.end),
-  }))
+  const start = parsed.start
+  const end = parsed.end
+  const [draftRange, setDraftRange] = useState<DateTimeRangeValue>(() =>
+    toDraftRange(start, end),
+  )
 
   function patchSearch(next: {
     page: number
@@ -52,42 +44,18 @@ export function useCarTelemetryRecordsSearch() {
   }
 
   useEffect(() => {
-    setDraftRange({
-      start: start ? new Date(start) : null,
-      end: end ? new Date(end) : null,
-    })
+    setDraftRange(toDraftRange(start, end))
   }, [start, end])
-
-  useEffect(() => {
-    if (persistedDefault.current || rangeDismissed) {
-      return
-    }
-
-    if (parsed.start && parsed.end) {
-      persistedDefault.current = true
-      return
-    }
-
-    persistedDefault.current = true
-    patchSearch({
-      page,
-      limit,
-      start: fallbackRange.start,
-      end: fallbackRange.end,
-    })
-  }, [parsed.start, parsed.end, rangeDismissed])
 
   function handleRangeChange(nextRange: DateTimeRangeValue) {
     setDraftRange(nextRange)
 
     if (nextRange.start == null && nextRange.end == null) {
-      setRangeDismissed(true)
       patchSearch({ page: 1, limit, start: undefined, end: undefined })
       return
     }
 
     if (nextRange.start != null && nextRange.end != null) {
-      setRangeDismissed(false)
       patchSearch({
         page: 1,
         limit,
@@ -155,15 +123,10 @@ function parseIsoSearchParam(value: unknown): string | undefined {
   return parsed.toISOString()
 }
 
-function createDefaultTelemetryRange(): { start: string; end: string } {
-  const end = new Date()
-  const start = new Date(end.getTime() - DEFAULT_RANGE_MS)
-
-  return {
-    start: start.toISOString(),
-    end: end.toISOString(),
-  }
-}
+const toDraftRange = (start?: string, end?: string): DateTimeRangeValue => ({
+  start: start ? new Date(start) : null,
+  end: end ? new Date(end) : null,
+})
 
 function toUrlSearch(params: {
   page: number

@@ -33,32 +33,18 @@ export function CarTelemetryRecordsPage({
     handlePageChange,
     handleLimitChange,
   } = useCarTelemetryRecordsSearch()
-  const filters =
-    start && end
-      ? {
-          carId,
-          start,
-          end,
-        }
-      : null
-  const historyQuery = useCarTelemetryHistory(api, filters)
+  const historyQuery = useCarTelemetryHistory(api, { carId, start, end })
   const records = historyQuery.data
   const pageResult = records
     ? paginateTelemetryRecords({ records, page, limit })
     : null
 
   function renderBody() {
-    if (!filters) {
-      return (
-        <p className="text-sm text-base-content/50">{labels.chooseRange()}</p>
-      )
-    }
-
     if (historyQuery.isLoading && !records) {
       return (
         <ResourceListSkeleton
           variant={isMdUp ? 'table' : 'cards'}
-          columns={isMdUp ? 9 : 4}
+          columns={isMdUp ? 10 : 4}
           label={labels.loading()}
         />
       )
@@ -79,7 +65,11 @@ export function CarTelemetryRecordsPage({
     }
 
     if ((records?.length ?? 0) === 0 || !pageResult) {
-      return <p className="text-sm text-base-content/50">{labels.empty()}</p>
+      return (
+        <p className="text-sm text-base-content/50">
+          {start && end ? labels.empty() : labels.emptyAll()}
+        </p>
+      )
     }
 
     return (

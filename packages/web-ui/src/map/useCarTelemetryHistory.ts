@@ -15,22 +15,28 @@ export const carTelemetryHistoryKeys = {
 
 export type CarTelemetryHistoryFilters = {
   carId: string;
-  start: string;
-  end: string;
+  start?: string;
+  end?: string;
 };
 
 export function fetchCarTelemetryHistory(
   api: KyInstance,
   filters: CarTelemetryHistoryFilters,
 ): Promise<CarTelemetry[]> {
+  const searchParams: Record<string, string> = {
+    carId: filters.carId,
+  };
+
+  if (filters.start) {
+    searchParams.start = filters.start;
+  }
+
+  if (filters.end) {
+    searchParams.end = filters.end;
+  }
+
   return api
-    .get('car-telemetry/history', {
-      searchParams: {
-        carId: filters.carId,
-        start: filters.start,
-        end: filters.end,
-      },
-    })
+    .get('car-telemetry/history', { searchParams })
     .json<CarTelemetry[]>();
 }
 

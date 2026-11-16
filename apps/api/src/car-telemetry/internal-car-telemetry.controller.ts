@@ -55,8 +55,8 @@ export class InternalCarTelemetryController {
   ): Promise<CarTelemetry[]> {
     return this.carTelemetryService.listHistory(internalTenantContext(), {
       carId: query.carId,
-      start: new Date(query.start),
-      end: new Date(query.end),
+      start: query.start == null ? undefined : new Date(query.start),
+      end: query.end == null ? undefined : new Date(query.end),
     });
   }
 }

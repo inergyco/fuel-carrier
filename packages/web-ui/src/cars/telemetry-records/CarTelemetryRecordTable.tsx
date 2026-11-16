@@ -17,6 +17,7 @@ import {
   formatRecordTimestamp,
   formatSpeed,
 } from './formatTelemetryRecord'
+import { TelemetryModeBadge } from './TelemetryModeBadge'
 
 type CarTelemetryRecordTableProps = {
   records: CarTelemetry[]
@@ -33,6 +34,7 @@ export function CarTelemetryRecordTable({
       <DataTableHead>
         <DataTableHeaderRow>
           <DataTableHeaderCell>{labels.recordedAt()}</DataTableHeaderCell>
+          <DataTableHeaderCell>{labels.mode()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.speed()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.remainFuel()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.fuelAmount()}</DataTableHeaderCell>
@@ -55,6 +57,9 @@ export function CarTelemetryRecordTable({
             <DataTableRow key={record.updatedAt}>
               <DataTableCell className="whitespace-nowrap">
                 {formatRecordTimestamp(record.updatedAt, locale)}
+              </DataTableCell>
+              <DataTableCell>
+                <TelemetryModeBadge mode={record.mode} />
               </DataTableCell>
               <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
                 {formatMeasure({
