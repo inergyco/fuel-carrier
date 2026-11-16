@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { registerPanelServiceWorker } from '@fuel-carrier/web-config/pwa'
 import { setApiUnauthorizedHandler } from '@fuel-carrier/web-ui/api'
 import { broadcastAuthLogout } from '@fuel-carrier/web-ui/auth'
 import {
@@ -14,6 +15,8 @@ import { router } from './router'
 
 const panelId = 'internal' as const
 const storageKeys = getPanelStorageKeys(panelId)
+
+registerPanelServiceWorker()
 
 setApiUnauthorizedHandler(() => {
   broadcastAuthLogout(panelId)

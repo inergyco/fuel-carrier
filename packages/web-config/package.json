@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./vite": "./vite.ts",
+    "./pwa": "./pwa/register-panel-service-worker.ts",
     "./eslint": "./eslint.config.js",
     "./styles/entry.css": "./styles/entry.css",
     "./styles/internal-entry.css": "./styles/internal-entry.css",
@@ -29,9 +30,11 @@
     "globals": "^17.6.0",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "workbox-window": "^7.4.1"
   },
   "peerDependencies": {
-    "vite": "^8.0.0"
+    "vite": "^8.0.0",
+    "workbox-window": "^7.4.1"
   }
 }

@@ -1,8 +1,15 @@
+import { createRequire } from "node:module";
+import { dirname } from "node:path";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { defineConfig, type PluginOption, type UserConfig } from "vite";
 import { VitePWA, type VitePWAOptions } from "vite-plugin-pwa";
+
+const require = createRequire(import.meta.url);
+const workboxWindowRoot = dirname(
+  require.resolve("workbox-window/package.json"),
+);
 
 const defaultApiProxyTarget = "http://localhost:3000";
 /** Production external panel — default OpenFreeMap reverse-proxy upstream for local Vite. */
@@ -40,8 +47,15 @@ export function createPanelViteConfig({
 }: PanelViteConfigOptions) {
   return defineConfig({
     plugins: createPanelPlugins(pwa),
+    resolve: {
+      // pnpm keeps workbox-window nested; pin it for virtual:pwa-register.
+      alias: {
+        "workbox-window": workboxWindowRoot,
+      },
+    },
     optimizeDeps: {
       include: [
+        "workbox-window",
         "@fuel-carrier/web-ui > leaflet",
         "@fuel-carrier/web-ui > react-leaflet",
         "@fuel-carrier/web-ui > maplibre-gl",
@@ -92,8 +106,10 @@ export function createPanelPlugins(pwa: PanelPwaManifest): PluginOption[] {
 
 function createPanelPwaOptions(pwa: PanelPwaManifest): Partial<VitePWAOptions> {
   return {
+    // New workers activate + claim clients; apps call registerPanelServiceWorker().
     registerType: "autoUpdate",
-    injectRegister: "auto",
+    // Virtual-module registration only — do not inject a second register script.
+    injectRegister: null,
     includeAssets: [
       "favicon.svg",
       "apple-touch-icon.png",
@@ -132,6 +148,9 @@ function createPanelPwaOptions(pwa: PanelPwaManifest): Partial<VitePWAOptions> {
       ],
     },
     workbox: {
+      cleanupOutdatedCaches: true,
+      skipWaiting: true,
+      clientsClaim: true,
       navigateFallback: "index.html",
       navigateFallbackDenylist: [/^\/api\//, /^\/ofm\//],
       globPatterns: [
