@@ -1,47 +1,41 @@
+import type { CarTelemetryMode } from '../database/schema/car-telemetry-history.schema';
+
 type ResistanceReadings = {
   tankToGround: number;
   tankToNozzle: number;
   groundToVehicle: number;
 };
 
-type CarTelemetry = {
-  carId: string;
-  latitude: number;
-  longitude: number;
-  updatedAt: string;
-  createdAt?: string;
-  speed?: number;
-  remainFuel?: number;
-  fuelAmount?: number;
-  resistance?: ResistanceReadings;
-};
-
-export function companyCarTelemetryKey(companyId: string): string {
-  return `company:${companyId}:car-telemetry`;
-}
-
+/** JSON stored in Redis. `carId` is the hash field, not part of the value. */
 type RedisCarTelemetryPayload = {
   latitude: number;
   longitude: number;
   updatedAt: string;
   createdAt?: string;
+  mode: CarTelemetryMode;
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
   resistance?: ResistanceReadings;
 };
 
+/** Parsed hash entry: the stored payload plus the hash field. */
+type CarTelemetry = RedisCarTelemetryPayload & {
+  carId: string;
+};
+
 /** Latest telemetry fields accepted by Redis serialization (`updatedAt` may be a Date). */
-export type SerializableCarTelemetry = {
-  latitude: number;
-  longitude: number;
+export type SerializableCarTelemetry = Omit<
+  RedisCarTelemetryPayload,
+  'updatedAt' | 'createdAt'
+> & {
   updatedAt: Date | string;
   createdAt?: Date | string;
-  speed?: number;
-  remainFuel?: number;
-  fuelAmount?: number;
-  resistance?: ResistanceReadings;
 };
+
+export function companyCarTelemetryKey(companyId: string): string {
+  return `company:${companyId}:car-telemetry`;
+}
 
 export function serializeCarTelemetry(
   telemetry: SerializableCarTelemetry,
@@ -50,6 +44,7 @@ export function serializeCarTelemetry(
     latitude: telemetry.latitude,
     longitude: telemetry.longitude,
     updatedAt: toIsoTimestamp(telemetry.updatedAt),
+    mode: telemetry.mode,
   };
 
   if (telemetry.createdAt != null) {
@@ -106,6 +101,7 @@ export function parseCarTelemetry(
       latitude,
       longitude,
       updatedAt,
+      mode: parseMode(record.mode),
     };
 
     if (typeof record.createdAt === 'string') {
@@ -134,6 +130,14 @@ export function parseCarTelemetry(
 
 const toIsoTimestamp = (value: Date | string) =>
   typeof value === 'string' ? value : value.toISOString();
+
+function parseMode(value: unknown): CarTelemetryMode {
+  if (value === 'loading' || value === 'dispensing' || value === 'idle') {
+    return value;
+  }
+
+  return 'idle';
+}
 
 function parseResistance(value: unknown): ResistanceReadings | null {
   if (typeof value !== 'object' || value == null) {

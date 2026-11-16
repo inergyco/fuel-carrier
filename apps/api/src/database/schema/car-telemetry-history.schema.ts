@@ -1,6 +1,7 @@
 import {
   doublePrecision,
   index,
+  pgEnum,
   pgTable,
   primaryKey,
   timestamp,
@@ -8,6 +9,16 @@ import {
 } from 'drizzle-orm/pg-core';
 import { cars } from './cars.schema';
 import { companies } from './companies.schema';
+
+/** Device operating mode persisted on each telemetry sample. */
+export const carTelemetryModes = ['idle', 'loading', 'dispensing'] as const;
+
+export type CarTelemetryMode = (typeof carTelemetryModes)[number];
+
+export const carTelemetryModeEnum = pgEnum(
+  'car_telemetry_mode',
+  carTelemetryModes,
+);
 
 /**
  * Append-only device telemetry trail stored as a TimescaleDB hypertable
@@ -33,6 +44,11 @@ export const carTelemetryHistory = pgTable(
     remainFuel: doublePrecision('remain_fuel'),
     /** Last dispensed amount in liters. */
     fuelAmount: doublePrecision('fuel_amount'),
+    /**
+     * Operating mode from the device status flags.
+     * Fuel mode stores loading, dispense mode stores dispensing, otherwise idle.
+     */
+    mode: carTelemetryModeEnum('mode').notNull().default(carTelemetryModes[0]),
     /** Insulation resistance: tank → ground (ohms). */
     resistanceTankToGround: doublePrecision('resistance_tank_to_ground'),
     /** Insulation resistance: tank → nozzle / manifold (ohms). */

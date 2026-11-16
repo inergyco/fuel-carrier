@@ -75,7 +75,17 @@ export function toHistoryMarker({
 }: {
   car: Car;
   liveMarker: CarTelemetryMarker | null;
-  point: Pick<CarTelemetry, 'latitude' | 'longitude' | 'updatedAt' | 'speed' | 'remainFuel' | 'fuelAmount' | 'resistance'>;
+  point: Pick<
+    CarTelemetry,
+    | 'latitude'
+    | 'longitude'
+    | 'updatedAt'
+    | 'speed'
+    | 'remainFuel'
+    | 'fuelAmount'
+    | 'resistance'
+    | 'mode'
+  >;
 }): CarTelemetryMarker {
   return {
     carId: car.id,
@@ -88,6 +98,7 @@ export function toHistoryMarker({
     latitude: point.latitude,
     longitude: point.longitude,
     updatedAt: point.updatedAt,
+    mode: point.mode,
     speed: point.speed,
     remainFuel: point.remainFuel,
     fuelAmount: point.fuelAmount,

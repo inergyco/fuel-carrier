@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { CarTelemetryMode } from '../database/schema/car-telemetry-history.schema';
 
 const CAR_ID_IN_TOPIC =
   /^telemetry\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/|$)/i;
@@ -59,6 +60,11 @@ type ResistanceReadings = {
   groundToVehicle: number;
 };
 
+type TelemetryStatusFlags = {
+  fuelMode?: boolean;
+  dispenseMode?: boolean;
+};
+
 export type TelemetrySample = {
   carId: string;
   latitude: number;
@@ -67,6 +73,8 @@ export type TelemetrySample = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
+  /** Derived from `status.fuelMode` / `status.dispenseMode`. */
+  mode: CarTelemetryMode;
   resistance?: ResistanceReadings;
   /** Device-facing company code from the packet (`company.id`). */
   companyId?: string;
@@ -119,6 +127,7 @@ export function parseTelemetryPayload(
     speed: parsed.data.location.speed,
     remainFuel: parsed.data.fuel?.remainFuel,
     fuelAmount: parsed.data.fuel?.fuelAmount,
+    mode: resolveTelemetryMode(parsed.data.status),
     companyId: parsed.data.company?.id,
     deviceId: parsed.data.device?.deviceId,
     transactionId: parsed.data.transaction?.transactionId,
@@ -159,6 +168,24 @@ export function buildTelemetryAck(params: {
 export function parseTelemetryCarId(topic: string): string | null {
   const match = CAR_ID_IN_TOPIC.exec(topic);
   return match?.[1]?.toLowerCase() ?? null;
+}
+
+/**
+ * Fuel mode stores loading. Dispense mode stores dispensing.
+ * Fuel mode wins when both flags are set. Missing flags stay idle.
+ */
+function resolveTelemetryMode(
+  status: TelemetryStatusFlags | undefined,
+): CarTelemetryMode {
+  if (status?.fuelMode) {
+    return 'loading';
+  }
+
+  if (status?.dispenseMode) {
+    return 'dispensing';
+  }
+
+  return 'idle';
 }
 
 function parseRecordedAt(value: string | number | undefined): Date | undefined {

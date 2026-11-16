@@ -63,6 +63,11 @@ export type CarTelemetry = {
   updatedAt: string;
   /** Server ingest time (ISO). Live markers use this for online/offline. */
   createdAt?: string;
+  /**
+   * Device operating mode.
+   * `fuelMode` maps to loading, `dispenseMode` maps to dispensing, otherwise idle.
+   */
+  mode: "idle" | "loading" | "dispensing";
   /** Ground speed from device telemetry (km/h when provided). */
   speed?: number;
   /** Remaining fuel volume in liters (`fuel.remainFuel` from device packet). */

@@ -68,6 +68,7 @@ export async function writeCityTrajectory(
       longitude: lastPoint.longitude,
       updatedAt: lastRow.time,
       createdAt: new Date(),
+      mode: 'idle',
       speed: lastRow.speed,
       remainFuel: lastRow.remainFuel,
       resistance: {

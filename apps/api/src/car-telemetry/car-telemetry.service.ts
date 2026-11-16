@@ -1,44 +1,31 @@
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types/api-error-code';
 import {
   CarTelemetrySocketEvents,
   type CarTelemetry,
   type CarTelemetryMarker,
-  type TankResistanceReadings,
 } from '@fuel-carrier/shared-types/car-telemetry';
 import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
-import { and, asc, eq, gte, isNull, lte } from 'drizzle-orm';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
-import {
-  ApiException,
-  createApiException,
-} from '../common/exceptions/api.exception';
-import { cars } from '../database/schema/cars.schema';
+import { ApiException } from '../common/exceptions/api.exception';
 import { companies } from '../database/schema/companies.schema';
-import { carTelemetryHistory } from '../database/schema/car-telemetry-history.schema';
+import type { CarTelemetryMode } from '../database/schema/car-telemetry-history.schema';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import { CarConditionAlertService } from '../notifications/car-condition-alert.service';
 import { REDIS } from '../redis/redis.tokens';
 import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
 import {
+  CarTelemetryUtils,
+  type FleetCar,
+  type RecordCarTelemetryInput,
+} from './car-telemetry.utils';
+import {
   companyCarTelemetryKey,
   parseCarTelemetry,
   serializeCarTelemetry,
 } from './car-telemetry.redis';
-
-type RecordCarTelemetryInput = {
-  carId: string;
-  companyId: string;
-  latitude: number;
-  longitude: number;
-  recordedAt?: Date;
-  speed?: number;
-  remainFuel?: number;
-  fuelAmount?: number;
-  resistance?: TankResistanceReadings;
-};
 
 type IngestDeviceTelemetryInput = {
   carId: string;
@@ -48,25 +35,14 @@ type IngestDeviceTelemetryInput = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
-  resistance?: TankResistanceReadings;
+  mode?: CarTelemetryMode;
+  resistance?: RecordCarTelemetryInput['resistance'];
 };
 
 type ListCarTelemetryHistoryInput = {
   carId: string;
   start: Date;
   end: Date;
-};
-
-type FleetCar = {
-  id: string;
-  licensePlate: string;
-  companyId: string;
-  hasHighGrade: boolean;
-  tankCount: number;
-  tankCapacityLiters: number;
-  company: {
-    name: string;
-  } | null;
 };
 
 @Injectable()
@@ -90,90 +66,13 @@ export class CarTelemetryService {
   ): Promise<CarTelemetry> {
     const recordedAt = input.recordedAt ?? new Date();
     const ingestedAt = new Date();
+    const mode = input.mode ?? 'idle';
+    const sample = { input, recordedAt, ingestedAt, mode };
 
-    const carIdentity = await this.tenantDb.run(context, async (tx) => {
-      const car = await tx.query.cars.findFirst({
-        where: and(eq(cars.id, input.carId), isNull(cars.deletedAt)),
-        with: { company: true },
-      });
-
-      if (!car) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
-
-      if (car.companyId !== input.companyId) {
-        throw createApiException(
-          HttpStatus.BAD_REQUEST,
-          ApiErrorCode.VALIDATION_ERROR,
-          'Car does not belong to the given company',
-        );
-      }
-
-      // Devices (and MQTT redelivery) may resend the same sample timestamp.
-      // Upsert so Redis / live map still refresh instead of failing the PK.
-      await tx
-        .insert(carTelemetryHistory)
-        .values({
-          time: recordedAt,
-          carId: input.carId,
-          companyId: input.companyId,
-          latitude: input.latitude,
-          longitude: input.longitude,
-          speed: input.speed,
-          remainFuel: input.remainFuel,
-          fuelAmount: input.fuelAmount,
-          resistanceTankToGround: input.resistance?.tankToGround,
-          resistanceTankToNozzle: input.resistance?.tankToNozzle,
-          resistanceGroundToVehicle: input.resistance?.groundToVehicle,
-          createdAt: ingestedAt,
-        })
-        .onConflictDoUpdate({
-          target: [carTelemetryHistory.time, carTelemetryHistory.carId],
-          set: {
-            companyId: input.companyId,
-            latitude: input.latitude,
-            longitude: input.longitude,
-            speed: input.speed,
-            remainFuel: input.remainFuel,
-            fuelAmount: input.fuelAmount,
-            resistanceTankToGround: input.resistance?.tankToGround,
-            resistanceTankToNozzle: input.resistance?.tankToNozzle,
-            resistanceGroundToVehicle: input.resistance?.groundToVehicle,
-            createdAt: ingestedAt,
-          },
-        });
-
-      return {
-        licensePlate: car.licensePlate,
-        hasHighGrade: car.hasHighGrade,
-        tankCount: car.tankCount,
-        tankCapacityLiters: car.tankCapacityLiters,
-        companyName: car.company?.name ?? '',
-      };
-    });
-
-    const telemetry: CarTelemetry = {
-      carId: input.carId,
-      latitude: input.latitude,
-      longitude: input.longitude,
-      updatedAt: recordedAt.toISOString(),
-      createdAt: ingestedAt.toISOString(),
-      speed: input.speed,
-      remainFuel: input.remainFuel,
-      fuelAmount: input.fuelAmount,
-    };
-
-    if (input.resistance != null) {
-      telemetry.resistance = {
-        tankToGround: input.resistance.tankToGround,
-        tankToNozzle: input.resistance.tankToNozzle,
-        groundToVehicle: input.resistance.groundToVehicle,
-      };
-    }
+    const carIdentity = await this.tenantDb.run(context, (tx) =>
+      CarTelemetryUtils.persistSample(tx, sample),
+    );
+    const telemetry = CarTelemetryUtils.toRecordedTelemetry(sample);
 
     await this.redis.hset(
       companyCarTelemetryKey(input.companyId),
@@ -233,6 +132,7 @@ export class CarTelemetryService {
         speed: input.speed,
         remainFuel: input.remainFuel,
         fuelAmount: input.fuelAmount,
+        mode: input.mode,
         resistance: input.resistance,
       });
     } catch (error) {
@@ -261,9 +161,7 @@ export class CarTelemetryService {
     const context = internalTenantContext();
     const companyIds = await this.tenantDb.run(context, async (tx) => {
       const rows = await tx.select({ id: companies.id }).from(companies);
-      return rows.map(function toCompanyId(row) {
-        return row.id;
-      });
+      return rows.map((row) => row.id);
     });
 
     return this._listMarkersForCompanies(context, companyIds);
@@ -273,63 +171,14 @@ export class CarTelemetryService {
     context: TenantContext,
     input: ListCarTelemetryHistoryInput,
   ): Promise<CarTelemetry[]> {
-    return this.tenantDb.run(context, async function loadHistory(tx): Promise<
-      CarTelemetry[]
-    > {
-      const car = await tx.query.cars.findFirst({
-        where: eq(cars.id, input.carId),
-        columns: {
-          id: true,
-          companyId: true,
-        },
-      });
-
-      if (!car) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
-
-      if (context.companyId && car.companyId !== context.companyId) {
-        throw createApiException(
-          HttpStatus.NOT_FOUND,
-          ApiErrorCode.NOT_FOUND,
-          'Car not found',
-        );
-      }
-
-      const rows = await tx
-        .select({
-          carId: carTelemetryHistory.carId,
-          latitude: carTelemetryHistory.latitude,
-          longitude: carTelemetryHistory.longitude,
-          updatedAt: carTelemetryHistory.time,
-          speed: carTelemetryHistory.speed,
-          remainFuel: carTelemetryHistory.remainFuel,
-          fuelAmount: carTelemetryHistory.fuelAmount,
-          resistanceTankToGround: carTelemetryHistory.resistanceTankToGround,
-          resistanceTankToNozzle: carTelemetryHistory.resistanceTankToNozzle,
-          resistanceGroundToVehicle:
-            carTelemetryHistory.resistanceGroundToVehicle,
-        })
-        .from(carTelemetryHistory)
-        .where(
-          and(
-            eq(carTelemetryHistory.carId, input.carId),
-            gte(carTelemetryHistory.time, input.start),
-            lte(carTelemetryHistory.time, input.end),
-          ),
-        )
-        .orderBy(asc(carTelemetryHistory.time));
-
-      const historyPoints: CarTelemetry[] = [];
-      for (const row of toHistorySelectRows(rows)) {
-        historyPoints.push(toHistoryPoint(row));
-      }
-      return historyPoints;
-    });
+    return this.tenantDb.run(context, (tx) =>
+      CarTelemetryUtils.loadHistory(tx, {
+        companyId: context.companyId,
+        carId: input.carId,
+        start: input.start,
+        end: input.end,
+      }),
+    );
   }
 
   async clearForCar(companyId: string, carId: string): Promise<void> {
@@ -375,60 +224,23 @@ export class CarTelemetryService {
       telemetryByCompany,
     });
 
-    return toMarkers(fleet, telemetryByCompany);
+    return CarTelemetryUtils.toMarkers(fleet, telemetryByCompany);
   }
 
-  /**
-   * Map markers must follow the same live fleet as the dashboard counts.
-   * Soft-deleted rows stay in the table for history, so they have to be excluded here.
-   */
   private async _listFleetCars(context: TenantContext): Promise<FleetCar[]> {
-    return this.tenantDb.run(context, async (tx) => {
-      return tx.query.cars.findMany({
-        where: isNull(cars.deletedAt),
-        columns: {
-          id: true,
-          licensePlate: true,
-          companyId: true,
-          hasHighGrade: true,
-          tankCount: true,
-          tankCapacityLiters: true,
-        },
-        with: {
-          company: {
-            columns: {
-              name: true,
-            },
-          },
-        },
-      });
-    });
+    return this.tenantDb.run(context, (tx) =>
+      CarTelemetryUtils.listLiveFleetCars(tx),
+    );
   }
 
-  /**
-   * Redis still holds the last sample after a car is soft-deleted.
-   * Drop those keys so an open map removes the marker instead of keeping a dot
-   * that no fuel statistic can count.
-   */
   private async _clearTelemetryForMissingCars(options: {
     fleet: FleetCar[];
     telemetryByCompany: ReadonlyMap<string, CarTelemetry[]>;
   }): Promise<void> {
-    const { fleet, telemetryByCompany } = options;
-    const liveCarIds = new Set(fleet.map((car) => car.id));
-    const removals: Promise<void>[] = [];
-
-    for (const [companyId, samples] of telemetryByCompany) {
-      for (const sample of samples) {
-        if (liveCarIds.has(sample.carId)) {
-          continue;
-        }
-
-        removals.push(this.clearForCar(companyId, sample.carId));
-      }
-    }
-
-    await Promise.all(removals);
+    const removed = CarTelemetryUtils.listRemovedCars(options);
+    await Promise.all(
+      removed.map((entry) => this.clearForCar(entry.companyId, entry.carId)),
+    );
   }
 
   private async _readCompaniesTelemetry(
@@ -461,96 +273,6 @@ export class CarTelemetryService {
 
     return telemetry;
   }
-}
-
-type HistorySelectRow = {
-  carId: string;
-  latitude: number;
-  longitude: number;
-  updatedAt: Date | string;
-  speed: number | null;
-  remainFuel: number | null;
-  fuelAmount: number | null;
-  resistanceTankToGround: number | null;
-  resistanceTankToNozzle: number | null;
-  resistanceGroundToVehicle: number | null;
-};
-
-function toHistorySelectRows(rows: unknown): HistorySelectRow[] {
-  return rows as HistorySelectRow[];
-}
-
-function toHistoryResistance(
-  row: HistorySelectRow,
-): TankResistanceReadings | undefined {
-  if (
-    row.resistanceTankToGround == null ||
-    row.resistanceTankToNozzle == null ||
-    row.resistanceGroundToVehicle == null
-  ) {
-    return undefined;
-  }
-
-  return {
-    tankToGround: row.resistanceTankToGround,
-    tankToNozzle: row.resistanceTankToNozzle,
-    groundToVehicle: row.resistanceGroundToVehicle,
-  };
-}
-
-function toIsoTimestamp(value: Date | string): string {
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
-
-  return new Date(value).toISOString();
-}
-
-function toHistoryPoint(row: HistorySelectRow): CarTelemetry {
-  return {
-    carId: row.carId,
-    latitude: row.latitude,
-    longitude: row.longitude,
-    updatedAt: toIsoTimestamp(row.updatedAt),
-    speed: row.speed ?? undefined,
-    remainFuel: row.remainFuel ?? undefined,
-    fuelAmount: row.fuelAmount ?? undefined,
-    resistance: toHistoryResistance(row),
-  };
-}
-
-function toMarkers(
-  fleet: FleetCar[],
-  telemetryByCompany: ReadonlyMap<string, CarTelemetry[]>,
-): CarTelemetryMarker[] {
-  const carsById = new Map(
-    fleet.map(function toCarEntry(car) {
-      return [car.id, car] as const;
-    }),
-  );
-
-  const markers: CarTelemetryMarker[] = [];
-
-  for (const companyTelemetry of telemetryByCompany.values()) {
-    for (const telemetry of companyTelemetry) {
-      const car = carsById.get(telemetry.carId);
-      if (!car) {
-        continue;
-      }
-
-      markers.push({
-        ...telemetry,
-        licensePlate: car.licensePlate,
-        companyId: car.companyId,
-        companyName: car.company?.name ?? '',
-        hasHighGrade: car.hasHighGrade,
-        tankCount: car.tankCount,
-        tankCapacityLiters: car.tankCapacityLiters,
-      });
-    }
-  }
-
-  return markers;
 }
 
 function isNotFoundApiException(error: unknown): boolean {

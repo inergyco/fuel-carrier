@@ -54,6 +54,7 @@ describe('mqtt-telemetry.utils', () => {
       speed: 12.5,
       remainFuel: 1140,
       fuelAmount: 14.76,
+      mode: 'loading',
       companyId: 'COMPANY_001',
       deviceId: 'TRUCK_12',
       transactionId: 125,
@@ -65,6 +66,16 @@ describe('mqtt-telemetry.utils', () => {
     });
   });
 
+  it('derives mode from fuel and dispense flags', () => {
+    expect(readMode({ fuelMode: true, dispenseMode: false })).toBe('loading');
+    expect(readMode({ fuelMode: false, dispenseMode: true })).toBe(
+      'dispensing',
+    );
+    expect(readMode({ fuelMode: true, dispenseMode: true })).toBe('loading');
+    expect(readMode({ fuelMode: false, dispenseMode: false })).toBe('idle');
+    expect(readMode(undefined)).toBe('idle');
+  });
+
   it('builds the device ACK payload after successful ingest', () => {
     const ack = buildTelemetryAck({
       sample: {
@@ -74,6 +85,7 @@ describe('mqtt-telemetry.utils', () => {
         companyId: 'COMPANY_001',
         deviceId: 'TRUCK_12',
         transactionId: 125,
+        mode: 'idle',
       },
       serverTime: new Date('2026-06-05T13:45:13Z'),
     });
@@ -109,3 +121,18 @@ describe('mqtt-telemetry.utils', () => {
     ).toBeNull();
   });
 });
+
+function readMode(
+  status: { fuelMode?: boolean; dispenseMode?: boolean } | undefined,
+) {
+  const carId = '20bb76d1-acb0-4ddf-bcfb-088f2223a07e';
+  const sample = parseTelemetryPayload(
+    `telemetry/${carId}/packet`,
+    JSON.stringify({
+      location: { lat: 35.72154, lon: 51.39485 },
+      ...(status ? { status } : {}),
+    }),
+  );
+
+  return sample?.mode;
+}

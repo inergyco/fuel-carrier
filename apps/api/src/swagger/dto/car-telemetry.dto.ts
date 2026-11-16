@@ -1,4 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  carTelemetryModes,
+  type CarTelemetryMode,
+} from '../../database/schema/car-telemetry-history.schema';
 
 export class CarTelemetryMarkerDto {
   @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
@@ -12,6 +16,12 @@ export class CarTelemetryMarkerDto {
 
   @ApiProperty({ example: '2026-07-22T10:19:48.680Z' })
   updatedAt!: string;
+
+  @ApiProperty({
+    enum: carTelemetryModes,
+    example: carTelemetryModes[0],
+  })
+  mode!: CarTelemetryMode;
 
   @ApiPropertyOptional({
     example: '2026-07-22T10:19:49.100Z',
@@ -66,6 +76,12 @@ export class CarTelemetryDto {
 
   @ApiProperty({ example: '2026-07-22T10:19:48.680Z' })
   updatedAt!: string;
+
+  @ApiProperty({
+    enum: carTelemetryModes,
+    example: carTelemetryModes[0],
+  })
+  mode!: CarTelemetryMode;
 
   @ApiPropertyOptional({ example: 42.5 })
   speed?: number;
