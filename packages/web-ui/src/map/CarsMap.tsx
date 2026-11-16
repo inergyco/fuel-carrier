@@ -1,4 +1,7 @@
-import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
+import {
+  getTotalTankCapacityLiters,
+  type CarTelemetryMarker,
+} from "@fuel-carrier/shared-types";
 import { useMemo, type ReactNode } from "react";
 import { MapContainer, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -99,7 +102,13 @@ function CarsMapLayers({
           ? marker.licensePlate
           : labels.unnamedVehicle();
         const isSelected = marker.carId === selectedCarId;
-        const markerColor = getFuelLevelColor(marker.remainFuel);
+        const markerColor = getFuelLevelColor(
+          marker.remainFuel,
+          getTotalTankCapacityLiters(
+            marker.tankCount,
+            marker.tankCapacityLiters,
+          ),
+        );
 
         return (
           <AnimatedCarMarker

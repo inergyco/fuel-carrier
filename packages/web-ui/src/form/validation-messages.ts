@@ -1,5 +1,9 @@
 import type { TranslationFunctions } from '@fuel-carrier/i18n'
 import {
+  MAX_TANK_CAPACITY_LITERS,
+  MIN_TANK_CAPACITY_LITERS,
+} from '@fuel-carrier/shared-types'
+import {
   CAR_LICENSE_PLATE_MAX_LENGTH,
   CAR_NOTE_MAX_LENGTH,
   type CarValidationMessages,
@@ -84,4 +88,10 @@ export const toCarValidationMessages = (
   licensePlateInvalid: LL.validation.licensePlateInvalid(),
   driverRequired: LL.validation.driverRequired(),
   noteTooLong: LL.validation.noteTooLong({ max: CAR_NOTE_MAX_LENGTH }),
+  tankCountInvalid: LL.validation.tankCountInvalid(),
+  tankCapacityInvalid: LL.validation.tankCapacityInvalid(),
+  tankCapacityOutOfRange: LL.validation.tankCapacityOutOfRange({
+    min: MIN_TANK_CAPACITY_LITERS,
+    max: MAX_TANK_CAPACITY_LITERS,
+  }),
 })

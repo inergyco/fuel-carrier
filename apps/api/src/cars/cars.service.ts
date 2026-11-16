@@ -10,7 +10,11 @@ import {
   AuditActions,
   AuditEntityType,
 } from '@fuel-carrier/shared-types';
-import { computeCarFleetStats } from '@fuel-carrier/shared-types/car-fleet-stats';
+import {
+  computeCarFleetStats,
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+} from '@fuel-carrier/shared-types/car-fleet-stats';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -153,7 +157,12 @@ export class CarsService {
     const [fleetCars, remainFuelByCarId] = await Promise.all([
       this.tenantDb.run(context, async (tx) => {
         return tx
-          .select({ id: cars.id, hasHighGrade: cars.hasHighGrade })
+          .select({
+            id: cars.id,
+            hasHighGrade: cars.hasHighGrade,
+            tankCount: cars.tankCount,
+            tankCapacityLiters: cars.tankCapacityLiters,
+          })
           .from(cars)
           .where(
             and(isNull(cars.deletedAt), eq(cars.companyId, scopedCompanyId)),
@@ -187,6 +196,9 @@ export class CarsService {
             companyId: dto.companyId,
             driverId: dto.driverId,
             hasHighGrade: dto.hasHighGrade ?? false,
+            tankCount: dto.tankCount ?? DEFAULT_TANK_COUNT,
+            tankCapacityLiters:
+              dto.tankCapacityLiters ?? DEFAULT_TANK_CAPACITY_LITERS,
             note: dto.note ?? null,
           })
           .returning();
@@ -295,6 +307,12 @@ export class CarsService {
             ...(dto.driverId !== undefined ? { driverId: dto.driverId } : {}),
             ...(dto.hasHighGrade !== undefined
               ? { hasHighGrade: dto.hasHighGrade }
+              : {}),
+            ...(dto.tankCount !== undefined
+              ? { tankCount: dto.tankCount }
+              : {}),
+            ...(dto.tankCapacityLiters !== undefined
+              ? { tankCapacityLiters: dto.tankCapacityLiters }
               : {}),
             ...(dto.note !== undefined ? { note: dto.note } : {}),
           })

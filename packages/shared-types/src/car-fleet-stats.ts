@@ -1,11 +1,35 @@
-/** Default compartment capacity used until cars expose tank capacity from the API. */
+/** Create-time default. Every tank on a car shares this capacity. */
 export const DEFAULT_TANK_CAPACITY_LITERS = 415;
 
+export const MIN_TANK_CAPACITY_LITERS = 1;
+
+export const MAX_TANK_CAPACITY_LITERS = 10_000;
+
+/** Create-time default. A car may have 1, 2, or 3 tanks. */
 export const DEFAULT_TANK_COUNT = 3;
 
-/** Total usable capacity across all tank compartments. */
+export const MIN_TANK_COUNT = 1;
+
+export const MAX_TANK_COUNT = 3;
+
+/** Total usable capacity when a car still uses the create-time defaults. */
 export const FLEET_TOTAL_CAPACITY_LITERS =
   DEFAULT_TANK_CAPACITY_LITERS * DEFAULT_TANK_COUNT;
+
+/** Liters across every compartment. Tanks on one car share one capacity. */
+export function getTotalTankCapacityLiters(
+  tankCount: number = DEFAULT_TANK_COUNT,
+  tankCapacityLiters: number = DEFAULT_TANK_CAPACITY_LITERS,
+): number {
+  const count = Number.isFinite(tankCount)
+    ? Math.trunc(tankCount)
+    : DEFAULT_TANK_COUNT;
+  const capacity = Number.isFinite(tankCapacityLiters)
+    ? tankCapacityLiters
+    : DEFAULT_TANK_CAPACITY_LITERS;
+
+  return Math.max(0, count) * Math.max(0, capacity);
+}
 
 export const FUEL_LEVELS = [
   'high',
@@ -31,15 +55,19 @@ export type CarFleetStats = {
  * Bands: ≥75% green, ≥50% blue, ≥25% orange, &lt;25% red.
  * Missing / non-finite remainFuel → unknown.
  */
-export function getFuelLevel(remainFuel: number | null | undefined): FuelLevel {
+export function getFuelLevel(
+  remainFuel: number | null | undefined,
+  totalCapacityLiters: number = FLEET_TOTAL_CAPACITY_LITERS,
+): FuelLevel {
   if (remainFuel == null || !Number.isFinite(remainFuel)) {
     return 'unknown';
   }
 
-  const percent = Math.max(
-    0,
-    Math.min(100, (remainFuel / FLEET_TOTAL_CAPACITY_LITERS) * 100),
-  );
+  const capacity =
+    Number.isFinite(totalCapacityLiters) && totalCapacityLiters > 0
+      ? totalCapacityLiters
+      : FLEET_TOTAL_CAPACITY_LITERS;
+  const percent = Math.max(0, Math.min(100, (remainFuel / capacity) * 100));
 
   if (percent >= 75) {
     return 'high';
@@ -57,7 +85,12 @@ export function getFuelLevel(remainFuel: number | null | undefined): FuelLevel {
 }
 
 export function computeCarFleetStats(
-  cars: readonly { id: string; hasHighGrade: boolean }[],
+  cars: readonly {
+    id: string;
+    hasHighGrade: boolean;
+    tankCount: number;
+    tankCapacityLiters: number;
+  }[],
   remainFuelByCarId: ReadonlyMap<string, number | undefined>,
 ): CarFleetStats {
   let fuelHigh = 0;
@@ -71,7 +104,10 @@ export function computeCarFleetStats(
       highGrade += 1;
     }
 
-    const level = getFuelLevel(remainFuelByCarId.get(car.id));
+    const level = getFuelLevel(
+      remainFuelByCarId.get(car.id),
+      getTotalTankCapacityLiters(car.tankCount, car.tankCapacityLiters),
+    );
 
     if (level === 'high') {
       fuelHigh += 1;

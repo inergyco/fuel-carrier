@@ -79,6 +79,10 @@ export type CarTelemetryMarker = CarTelemetry & {
   companyId: string;
   companyName?: string;
   hasHighGrade: boolean;
+  /** Compartment count used to scale remaining-fuel bands. */
+  tankCount: number;
+  /** Liters per tank. Tanks on one car share this capacity. */
+  tankCapacityLiters: number;
 };
 
 /** Socket.IO / Redis fan-out event names for live telemetry updates. */

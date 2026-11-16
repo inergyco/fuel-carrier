@@ -1,6 +1,7 @@
 import type { Driver } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
+  CarTankFields,
   FormCheckbox,
   FormLicensePlatePicker,
   FormSelect,
@@ -44,11 +45,13 @@ export function CarFormFields({
         label={LL.externalPanel.cars.hasHighGrade()}
       />
 
-      <FormTextarea
-        name="note"
-        label={LL.externalPanel.cars.note()}
-        rows={3}
+      <CarTankFields
+        tankCountLabel={LL.externalPanel.cars.tankCount()}
+        tankCapacityLabel={LL.externalPanel.cars.tankCapacityLiters()}
+        tankCapacityHint={LL.externalPanel.cars.tankCapacityHint()}
       />
+
+      <FormTextarea name="note" label={LL.externalPanel.cars.note()} rows={3} />
 
       {serverError && (
         <div className="rounded-lg border border-error/20 bg-error/8 px-3 py-2 text-xs text-error">

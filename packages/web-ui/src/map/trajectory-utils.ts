@@ -83,6 +83,8 @@ export function toHistoryMarker({
     companyId: car.companyId,
     companyName: liveMarker?.companyName,
     hasHighGrade: car.hasHighGrade,
+    tankCount: car.tankCount,
+    tankCapacityLiters: car.tankCapacityLiters,
     latitude: point.latitude,
     longitude: point.longitude,
     updatedAt: point.updatedAt,

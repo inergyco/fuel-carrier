@@ -19,6 +19,7 @@ export const FUEL_LEVEL_COLORS: Record<FuelLevel, string> = {
 
 export function getFuelLevelColor(
   remainFuel: number | null | undefined,
+  totalCapacityLiters: number = FLEET_TOTAL_CAPACITY_LITERS,
 ): string {
-  return FUEL_LEVEL_COLORS[getFuelLevel(remainFuel)]
+  return FUEL_LEVEL_COLORS[getFuelLevel(remainFuel, totalCapacityLiters)]
 }

@@ -4,11 +4,13 @@ import { formatFillPercent } from "./car-card-utils";
 type CarCardWatermarkProps = {
   fillPercent: number | null;
   remainFuel: number | null;
+  totalCapacityLiters: number;
 };
 
 export function CarCardWatermark({
   fillPercent,
   remainFuel,
+  totalCapacityLiters,
 }: CarCardWatermarkProps) {
   return (
     <span
@@ -17,7 +19,7 @@ export function CarCardWatermark({
       style={{
         color:
           remainFuel != null
-            ? getFuelLevelColor(remainFuel)
+            ? getFuelLevelColor(remainFuel, totalCapacityLiters)
             : "base-content/30",
       }}
     >

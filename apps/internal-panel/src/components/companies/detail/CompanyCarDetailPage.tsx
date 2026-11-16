@@ -68,6 +68,8 @@ export function CompanyCarDetailPage({
       <div className="flex flex-col gap-6">
         <CarTanksSection
           carId={car.id}
+          tankCount={car.tankCount}
+          tankCapacityLiters={car.tankCapacityLiters}
           labels={LL.internalPanel.companies.detail}
         />
         <CarOverviewSection

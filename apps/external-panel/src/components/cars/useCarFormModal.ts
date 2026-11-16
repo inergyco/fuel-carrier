@@ -65,6 +65,8 @@ export function useCarFormModal({
             licensePlate: defaults.licensePlate,
             note: defaults.note,
             hasHighGrade: defaults.hasHighGrade,
+            tankCount: defaults.tankCount,
+            tankCapacityLiters: defaults.tankCapacityLiters,
           },
   })
 
@@ -107,7 +109,13 @@ export function useCarFormModal({
       applyApiFieldErrors({
         error,
         setError,
-          fields: ['licensePlate', 'note', 'driverId'],
+        fields: [
+          'licensePlate',
+          'note',
+          'driverId',
+          'tankCount',
+          'tankCapacityLiters',
+        ],
         messages: {
           licensePlate: () => LL.externalPanel.cars.duplicateLicensePlate(),
         },

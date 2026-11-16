@@ -5,6 +5,8 @@ export type CreateCarPayload = {
   companyId: string;
   driverId: string;
   hasHighGrade?: boolean;
+  tankCount?: number;
+  tankCapacityLiters?: number;
   note?: string | null;
 };
 
@@ -26,5 +28,7 @@ export const CAR_AUDIT_FIELDS = [
   'licensePlate',
   'driverId',
   'hasHighGrade',
+  'tankCount',
+  'tankCapacityLiters',
   'note',
 ] as const satisfies readonly (keyof Car)[];

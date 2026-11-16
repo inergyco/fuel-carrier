@@ -708,6 +708,20 @@ type RootTranslation = {
 		 */
 		noteTooLong: RequiredParams<'max'>
 		/**
+		 * T​a​n​k​ ​c​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​1​,​ ​2​,​ ​o​r​ ​3
+		 */
+		tankCountInvalid: string
+		/**
+		 * T​a​n​k​ ​c​a​p​a​c​i​t​y​ ​m​u​s​t​ ​b​e​ ​a​ ​w​h​o​l​e​ ​n​u​m​b​e​r​ ​o​f​ ​l​i​t​e​r​s
+		 */
+		tankCapacityInvalid: string
+		/**
+		 * T​a​n​k​ ​c​a​p​a​c​i​t​y​ ​m​u​s​t​ ​b​e​ ​b​e​t​w​e​e​n​ ​{​m​i​n​}​ ​a​n​d​ ​{​m​a​x​}​ ​l​i​t​e​r​s
+		 * @param {number} max
+		 * @param {number} min
+		 */
+		tankCapacityOutOfRange: RequiredParams<'max' | 'min'>
+		/**
 		 * T​i​t​l​e​ ​i​s​ ​r​e​q​u​i​r​e​d
 		 */
 		notificationTitleRequired: string
@@ -1650,6 +1664,18 @@ type RootTranslation = {
 				 * H​i​g​h​-​g​r​a​d​e​ ​p​e​t​r​o​l
 				 */
 				hasHighGrade: string
+				/**
+				 * T​a​n​k​ ​c​o​u​n​t
+				 */
+				tankCount: string
+				/**
+				 * C​a​p​a​c​i​t​y​ ​p​e​r​ ​t​a​n​k​ ​(​L​)
+				 */
+				tankCapacityLiters: string
+				/**
+				 * E​v​e​r​y​ ​t​a​n​k​ ​o​n​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​u​s​e​s​ ​t​h​i​s​ ​c​a​p​a​c​i​t​y​.
+				 */
+				tankCapacityHint: string
 				/**
 				 * F​u​e​l​ ​t​y​p​e
 				 */
@@ -3267,6 +3293,18 @@ type RootTranslation = {
 			 */
 			hasHighGrade: string
 			/**
+			 * T​a​n​k​ ​c​o​u​n​t
+			 */
+			tankCount: string
+			/**
+			 * C​a​p​a​c​i​t​y​ ​p​e​r​ ​t​a​n​k​ ​(​L​)
+			 */
+			tankCapacityLiters: string
+			/**
+			 * E​v​e​r​y​ ​t​a​n​k​ ​o​n​ ​t​h​i​s​ ​v​e​h​i​c​l​e​ ​u​s​e​s​ ​t​h​i​s​ ​c​a​p​a​c​i​t​y​.
+			 */
+			tankCapacityHint: string
+			/**
 			 * F​u​e​l​ ​t​y​p​e
 			 */
 			fuelType: string
@@ -4695,6 +4733,18 @@ export type TranslationFunctions = {
 		 */
 		noteTooLong: (arg: { max: number }) => LocalizedString
 		/**
+		 * Tank count must be 1, 2, or 3
+		 */
+		tankCountInvalid: () => LocalizedString
+		/**
+		 * Tank capacity must be a whole number of liters
+		 */
+		tankCapacityInvalid: () => LocalizedString
+		/**
+		 * Tank capacity must be between {min} and {max} liters
+		 */
+		tankCapacityOutOfRange: (arg: { max: number, min: number }) => LocalizedString
+		/**
 		 * Title is required
 		 */
 		notificationTitleRequired: () => LocalizedString
@@ -5604,6 +5654,18 @@ export type TranslationFunctions = {
 				 * High-grade petrol
 				 */
 				hasHighGrade: () => LocalizedString
+				/**
+				 * Tank count
+				 */
+				tankCount: () => LocalizedString
+				/**
+				 * Capacity per tank (L)
+				 */
+				tankCapacityLiters: () => LocalizedString
+				/**
+				 * Every tank on this vehicle uses this capacity.
+				 */
+				tankCapacityHint: () => LocalizedString
 				/**
 				 * Fuel type
 				 */
@@ -7195,6 +7257,18 @@ export type TranslationFunctions = {
 			 * High-grade petrol
 			 */
 			hasHighGrade: () => LocalizedString
+			/**
+			 * Tank count
+			 */
+			tankCount: () => LocalizedString
+			/**
+			 * Capacity per tank (L)
+			 */
+			tankCapacityLiters: () => LocalizedString
+			/**
+			 * Every tank on this vehicle uses this capacity.
+			 */
+			tankCapacityHint: () => LocalizedString
 			/**
 			 * Fuel type
 			 */

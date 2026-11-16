@@ -1,8 +1,7 @@
+import { getTotalTankCapacityLiters } from '@fuel-carrier/shared-types'
 import { api } from '../api/index'
 import { useCarTelemetryLive } from '../map/useCarTelemetryLive'
 import {
-  DEFAULT_TANK_CAPACITY_LITERS,
-  DEFAULT_TANK_COUNT,
   distributeRemainFuel,
   formatVolume,
   FuelTruckDiagram,
@@ -27,6 +26,8 @@ export type CarTanksSectionLabels = {
 
 export type CarTanksSectionProps = {
   carId: string
+  tankCount: number
+  tankCapacityLiters: number
   labels: CarTanksSectionLabels
 }
 
@@ -36,19 +37,24 @@ function captionBeforeColon(text: string) {
   return text.slice(0, separator).trim()
 }
 
-export function CarTanksSection({ carId, labels }: CarTanksSectionProps) {
+export function CarTanksSection({
+  carId,
+  tankCount,
+  tankCapacityLiters,
+  labels,
+}: CarTanksSectionProps) {
   const telemetryQuery = useCarTelemetryLive(api)
   const telemetry = (telemetryQuery.data ?? []).find(function matchCar(marker) {
     return marker.carId === carId
   })
 
   const unitLabel = labels.tankUnit()
-  const capacity = DEFAULT_TANK_CAPACITY_LITERS
+  const capacity = tankCapacityLiters
   const filled =
     telemetry?.remainFuel != null
-      ? distributeRemainFuel(telemetry.remainFuel)
-      : [0, 0, 0]
-  const totalCapacity = capacity * DEFAULT_TANK_COUNT
+      ? distributeRemainFuel(telemetry.remainFuel, tankCount, capacity)
+      : Array.from({ length: tankCount }, () => 0)
+  const totalCapacity = getTotalTankCapacityLiters(tankCount, capacity)
   const remainFuel = telemetry?.remainFuel ?? 0
   const fillPercent =
     telemetry?.remainFuel != null

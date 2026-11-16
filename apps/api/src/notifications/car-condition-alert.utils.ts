@@ -56,8 +56,11 @@ export function listHighResistanceProbes(
 }
 
 /** True when remain fuel is in the fleet "low" band (under 25%). */
-export function isLowFuel(remainFuel: number): boolean {
-  return getFuelLevel(remainFuel) === 'low';
+export function isLowFuel(
+  remainFuel: number,
+  totalCapacityLiters: number = FLEET_TOTAL_CAPACITY_LITERS,
+): boolean {
+  return getFuelLevel(remainFuel, totalCapacityLiters) === 'low';
 }
 
 export function buildResistanceAlertMessage(input: {
@@ -81,8 +84,12 @@ export function buildResistanceAlertMessage(input: {
 export function buildLowFuelAlertMessage(input: {
   licensePlate: string;
   remainFuel: number;
+  totalCapacityLiters?: number;
 }): ConditionAlertMessage {
-  const percent = fuelPercent(input.remainFuel);
+  const percent = fuelPercent(
+    input.remainFuel,
+    input.totalCapacityLiters ?? FLEET_TOTAL_CAPACITY_LITERS,
+  );
   const title = truncate('Low fuel', NOTIFICATION_TITLE_MAX_LENGTH);
   const pushTitle = truncate(
     `Low fuel — ${input.licensePlate}`,
@@ -96,8 +103,8 @@ export function buildLowFuelAlertMessage(input: {
   return { title, body, pushTitle };
 }
 
-function fuelPercent(remainFuel: number): number {
-  const percent = (remainFuel / FLEET_TOTAL_CAPACITY_LITERS) * 100;
+function fuelPercent(remainFuel: number, totalCapacityLiters: number): number {
+  const percent = (remainFuel / totalCapacityLiters) * 100;
   return Math.round(Math.max(0, Math.min(100, percent)));
 }
 

@@ -1,3 +1,11 @@
+import {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+  MAX_TANK_CAPACITY_LITERS,
+  MAX_TANK_COUNT,
+  MIN_TANK_CAPACITY_LITERS,
+  MIN_TANK_COUNT,
+} from "@fuel-carrier/shared-types";
 import { z } from "zod";
 import { optionalTextField } from "../optional-text-field";
 import {
@@ -34,6 +42,9 @@ export type CarValidationMessages = {
   licensePlateInvalid: string;
   driverRequired: string;
   noteTooLong: string;
+  tankCountInvalid: string;
+  tankCapacityInvalid: string;
+  tankCapacityOutOfRange: string;
 };
 
 const defaultCarValidationMessages: CarValidationMessages = {
@@ -42,6 +53,9 @@ const defaultCarValidationMessages: CarValidationMessages = {
   licensePlateInvalid: "Enter a valid Iranian license plate",
   driverRequired: "Select a driver",
   noteTooLong: `Note must be at most ${CAR_NOTE_MAX_LENGTH} characters`,
+  tankCountInvalid: "Tank count must be 1, 2, or 3",
+  tankCapacityInvalid: "Tank capacity must be a whole number of liters",
+  tankCapacityOutOfRange: `Tank capacity must be between ${MIN_TANK_CAPACITY_LITERS} and ${MAX_TANK_CAPACITY_LITERS} liters`,
 };
 
 function createCarLicensePlateField(messages: CarValidationMessages) {
@@ -69,6 +83,76 @@ function createCarNoteField(messages: CarValidationMessages) {
   return optionalTextField(CAR_NOTE_MAX_LENGTH, messages.noteTooLong);
 }
 
+function toWholeNumber(value: unknown): unknown {
+  if (typeof value === "number") {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed === "") {
+      return value;
+    }
+
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : value;
+  }
+
+  return value;
+}
+
+function tankCountSchema(messages: CarValidationMessages) {
+  return z
+    .number({ error: messages.tankCountInvalid })
+    .int({ error: messages.tankCountInvalid })
+    .min(MIN_TANK_COUNT, { error: messages.tankCountInvalid })
+    .max(MAX_TANK_COUNT, { error: messages.tankCountInvalid });
+}
+
+function tankCapacitySchema(messages: CarValidationMessages) {
+  return z
+    .number({ error: messages.tankCapacityInvalid })
+    .int({ error: messages.tankCapacityInvalid })
+    .min(MIN_TANK_CAPACITY_LITERS, {
+      error: messages.tankCapacityOutOfRange,
+    })
+    .max(MAX_TANK_CAPACITY_LITERS, {
+      error: messages.tankCapacityOutOfRange,
+    });
+}
+
+/** Omitted create fields fall back to the fleet defaults. */
+function createTankCountField(messages: CarValidationMessages) {
+  return z.preprocess(
+    (value) =>
+      value === undefined ? DEFAULT_TANK_COUNT : toWholeNumber(value),
+    tankCountSchema(messages),
+  );
+}
+
+function createTankCapacityField(messages: CarValidationMessages) {
+  return z.preprocess(
+    (value) =>
+      value === undefined ? DEFAULT_TANK_CAPACITY_LITERS : toWholeNumber(value),
+    tankCapacitySchema(messages),
+  );
+}
+
+/** Omitted update fields stay unchanged. */
+function updateTankCountField(messages: CarValidationMessages) {
+  return z.preprocess(
+    (value) => (value === undefined ? undefined : toWholeNumber(value)),
+    tankCountSchema(messages).optional(),
+  );
+}
+
+function updateTankCapacityField(messages: CarValidationMessages) {
+  return z.preprocess(
+    (value) => (value === undefined ? undefined : toWholeNumber(value)),
+    tankCapacitySchema(messages).optional(),
+  );
+}
+
 /** Create body: omitted optional fields get create-time defaults. */
 export function createCarBaseSchema(
   messages: CarValidationMessages = defaultCarValidationMessages,
@@ -77,6 +161,8 @@ export function createCarBaseSchema(
     licensePlate: createCarLicensePlateField(messages),
     driverId: createCarDriverIdField(messages),
     hasHighGrade: carHasHighGradeField.optional().default(false),
+    tankCount: createTankCountField(messages),
+    tankCapacityLiters: createTankCapacityField(messages),
     note: createCarNoteField(messages).optional().default(""),
   });
 }
@@ -110,6 +196,8 @@ function createCarUpdateBaseSchema(
       licensePlate: createCarLicensePlateField(messages).optional(),
       driverId: createCarDriverIdField(messages).optional(),
       hasHighGrade: carHasHighGradeField.optional(),
+      tankCount: updateTankCountField(messages),
+      tankCapacityLiters: updateTankCapacityField(messages),
       note: createCarNoteField(messages).optional(),
       expectedDriverId: carExpectedDriverIdField.optional(),
     })

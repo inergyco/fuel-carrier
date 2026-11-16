@@ -1,9 +1,4 @@
 import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { DEFAULT_TANK_CAPACITY_LITERS, DEFAULT_TANK_COUNT } from '../../cars'
-
-/** Matches the tanks diagram on the vehicle detail page. */
-export const CAR_CARD_TOTAL_CAPACITY_LITERS =
-  DEFAULT_TANK_CAPACITY_LITERS * DEFAULT_TANK_COUNT
 
 export function getRemainFuelLiters(
   telemetry: CarTelemetryMarker | null,
@@ -15,12 +10,15 @@ export function getRemainFuelLiters(
   return Math.max(0, telemetry.remainFuel)
 }
 
-export function getFuelFillPercent(remainFuel: number | null): number | null {
-  if (remainFuel == null) {
+export function getFuelFillPercent(
+  remainFuel: number | null,
+  totalCapacityLiters: number,
+): number | null {
+  if (remainFuel == null || totalCapacityLiters <= 0) {
     return null
   }
 
-  const percent = (remainFuel / CAR_CARD_TOTAL_CAPACITY_LITERS) * 100
+  const percent = (remainFuel / totalCapacityLiters) * 100
 
   return Math.min(100, Math.round(percent * 10) / 10)
 }

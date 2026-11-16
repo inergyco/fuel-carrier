@@ -1,4 +1,8 @@
-import type { Car, CarTelemetryMarker } from '@fuel-carrier/shared-types'
+import {
+  getTotalTankCapacityLiters,
+  type Car,
+  type CarTelemetryMarker,
+} from '@fuel-carrier/shared-types'
 import type { ReactNode } from 'react'
 import { carFuelTypeLabel, formatVolume } from '../../cars'
 import { useTelemetryLiveness } from '../../map/telemetry-liveness'
@@ -9,11 +13,7 @@ import { CarCardFuelSection } from './CarCardFuelSection'
 import { CarCardHeader } from './CarCardHeader'
 import { CarCardWatermark } from './CarCardWatermark'
 import type { CarCardLabels } from './car-card-labels'
-import {
-  CAR_CARD_TOTAL_CAPACITY_LITERS,
-  getFuelFillPercent,
-  getRemainFuelLiters,
-} from './car-card-utils'
+import { getFuelFillPercent, getRemainFuelLiters } from './car-card-utils'
 
 export type CarCardProps = {
   car: Car
@@ -35,8 +35,12 @@ export function CarCard({
   )
   const isLive = liveness === 'live'
 
+  const totalCapacityLiters = getTotalTankCapacityLiters(
+    car.tankCount,
+    car.tankCapacityLiters,
+  )
   const remainFuel = getRemainFuelLiters(telemetry)
-  const fillPercent = getFuelFillPercent(remainFuel)
+  const fillPercent = getFuelFillPercent(remainFuel, totalCapacityLiters)
 
   const statusLabel = isLive ? labels.locationLive() : labels.statusOffline()
 
@@ -53,14 +57,18 @@ export function CarCard({
     remainFuel != null
       ? labels.fuelVolumeOfCapacity({
           volume: formatVolume(remainFuel),
-          capacity: formatVolume(CAR_CARD_TOTAL_CAPACITY_LITERS),
+          capacity: formatVolume(totalCapacityLiters),
           unit: labels.tankUnit(),
         })
       : null
 
   return (
     <article className={CAR_CARD_SHELL_CLASS_NAME}>
-      <CarCardWatermark fillPercent={fillPercent} remainFuel={remainFuel} />
+      <CarCardWatermark
+        fillPercent={fillPercent}
+        remainFuel={remainFuel}
+        totalCapacityLiters={totalCapacityLiters}
+      />
 
       <CarCardHeader
         licensePlate={car.licensePlate}
@@ -80,6 +88,7 @@ export function CarCard({
         <CarCardFuelSection
           remainFuel={remainFuel}
           fillPercent={fillPercent}
+          totalCapacityLiters={totalCapacityLiters}
           remainFuelUnknown={labels.remainFuelUnknown()}
           fuelVolumeLabel={fuelVolumeLabel}
         />

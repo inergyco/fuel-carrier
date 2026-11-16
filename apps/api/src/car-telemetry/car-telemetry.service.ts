@@ -62,6 +62,8 @@ type FleetCar = {
   licensePlate: string;
   companyId: string;
   hasHighGrade: boolean;
+  tankCount: number;
+  tankCapacityLiters: number;
   company: {
     name: string;
   } | null;
@@ -148,6 +150,8 @@ export class CarTelemetryService {
       return {
         licensePlate: car.licensePlate,
         hasHighGrade: car.hasHighGrade,
+        tankCount: car.tankCount,
+        tankCapacityLiters: car.tankCapacityLiters,
         companyName: car.company?.name ?? '',
       };
     });
@@ -183,6 +187,8 @@ export class CarTelemetryService {
       companyId: input.companyId,
       companyName: carIdentity.companyName,
       hasHighGrade: carIdentity.hasHighGrade,
+      tankCount: carIdentity.tankCount,
+      tankCapacityLiters: carIdentity.tankCapacityLiters,
     };
     await this.realtime.publish({
       type: CarTelemetrySocketEvents.TELEMETRY_UPDATED,
@@ -194,6 +200,8 @@ export class CarTelemetryService {
       carId: input.carId,
       companyId: input.companyId,
       licensePlate: carIdentity.licensePlate,
+      tankCount: carIdentity.tankCount,
+      tankCapacityLiters: carIdentity.tankCapacityLiters,
       recordedAt,
       ingestedAt,
       resistance: input.resistance,
@@ -383,6 +391,8 @@ export class CarTelemetryService {
           licensePlate: true,
           companyId: true,
           hasHighGrade: true,
+          tankCount: true,
+          tankCapacityLiters: true,
         },
         with: {
           company: {
@@ -534,6 +544,8 @@ function toMarkers(
         companyId: car.companyId,
         companyName: car.company?.name ?? '',
         hasHighGrade: car.hasHighGrade,
+        tankCount: car.tankCount,
+        tankCapacityLiters: car.tankCapacityLiters,
       });
     }
   }

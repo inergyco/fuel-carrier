@@ -20,8 +20,43 @@ describe('car update DTO schemas', () => {
       licensePlate: '۱۲ب۳۴۵-۶۷',
       driverId: DRIVER_ID,
       hasHighGrade: false,
+      tankCount: 3,
+      tankCapacityLiters: 415,
       note: '',
     });
+  });
+
+  it('defaults tanks to 3 compartments of 415 L and accepts 1 tank', () => {
+    const parsed = createInternalCarDtoSchema.parse({
+      companyId: COMPANY_ID,
+      licensePlate: '12ب345-67',
+      driverId: DRIVER_ID,
+      tankCount: '1',
+      tankCapacityLiters: '500',
+    });
+
+    expect(parsed.tankCount).toBe(1);
+    expect(parsed.tankCapacityLiters).toBe(500);
+  });
+
+  it('rejects a tank count outside 1–3 and a non-positive capacity', () => {
+    expect(
+      createInternalCarDtoSchema.safeParse({
+        companyId: COMPANY_ID,
+        licensePlate: '۱۲ب۳۴۵-۶۷',
+        driverId: DRIVER_ID,
+        tankCount: 4,
+      }).success,
+    ).toBe(false);
+
+    expect(
+      createInternalCarDtoSchema.safeParse({
+        companyId: COMPANY_ID,
+        licensePlate: '۱۲ب۳۴۵-۶۷',
+        driverId: DRIVER_ID,
+        tankCapacityLiters: 0,
+      }).success,
+    ).toBe(false);
   });
 
   it('rejects create without driverId', () => {
@@ -43,6 +78,8 @@ describe('car update DTO schemas', () => {
     });
     expect('driverId' in parsed).toBe(false);
     expect('note' in parsed).toBe(false);
+    expect('tankCount' in parsed).toBe(false);
+    expect('tankCapacityLiters' in parsed).toBe(false);
   });
 
   it('rejects unassign via driverId null', () => {

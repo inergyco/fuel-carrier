@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import type {
-  CarTelemetryMarker,
-  FuelLevelFilter,
+import {
+  getTotalTankCapacityLiters,
+  type CarTelemetryMarker,
+  type FuelLevelFilter,
 } from '@fuel-carrier/shared-types'
 import { getFuelLevel, type FuelLevel } from './fuel-level'
 
@@ -32,8 +33,8 @@ export function useFuelLevelMapFilter({
   const visibleMarkers =
     selectedLevel == null
       ? markers
-      : markers.filter(
-          (marker) => getFuelLevel(marker.remainFuel) === selectedLevel,
+      : markers.filter((marker) =>
+          markerMatchesFuelLevel(marker, selectedLevel),
         )
 
   function handleSelectLevel(level: FuelLevel) {
@@ -60,6 +61,15 @@ export function useFuelLevelMapFilter({
     handleSelectLevel,
   }
 }
+
+const markerMatchesFuelLevel = (
+  marker: CarTelemetryMarker,
+  selectedLevel: FuelLevel,
+) =>
+  getFuelLevel(
+    marker.remainFuel,
+    getTotalTankCapacityLiters(marker.tankCount, marker.tankCapacityLiters),
+  ) === selectedLevel
 
 function resolveSelectedLevel(options: {
   isControlled: boolean

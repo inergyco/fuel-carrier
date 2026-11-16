@@ -1,9 +1,11 @@
-import type {
-  Car,
-  CarFleetStats,
-  CarMqttCredentials,
-  PaginatedResult,
-  ResourceListParams,
+import {
+  DEFAULT_TANK_CAPACITY_LITERS,
+  DEFAULT_TANK_COUNT,
+  type Car,
+  type CarFleetStats,
+  type CarMqttCredentials,
+  type PaginatedResult,
+  type ResourceListParams,
 } from '@fuel-carrier/shared-types'
 import { DEFAULT_LIMIT } from '@fuel-carrier/shared-types'
 import type {
@@ -31,6 +33,8 @@ export type CarFormValues = {
   note: string
   driverId: string
   hasHighGrade: boolean
+  tankCount: number
+  tankCapacityLiters: number
 }
 
 export function carToFormValues(car?: Car): CarFormValues {
@@ -39,6 +43,8 @@ export function carToFormValues(car?: Car): CarFormValues {
     note: car?.note ?? '',
     driverId: car?.driverId ?? '',
     hasHighGrade: car?.hasHighGrade ?? false,
+    tankCount: car?.tankCount ?? DEFAULT_TANK_COUNT,
+    tankCapacityLiters: car?.tankCapacityLiters ?? DEFAULT_TANK_CAPACITY_LITERS,
   }
 }
 

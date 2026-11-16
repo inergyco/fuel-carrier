@@ -16,6 +16,10 @@ export type Car = {
   driver: CarDriverSummary | null;
   /** True when the vehicle has high-grade petrol; false = normal. */
   hasHighGrade: boolean;
+  /** Integer compartment count from 1 to 3. Every tank shares `tankCapacityLiters`. */
+  tankCount: number;
+  /** Liters per tank. */
+  tankCapacityLiters: number;
   note: string | null;
   /** ISO-8601 timestamptz when soft-deleted; null while live. */
   deletedAt: string | null;
@@ -28,5 +32,5 @@ export type Car = {
 /** Create/update payload — deletedAt/driver summary are server-managed. */
 export type CarInput = Omit<
   Car,
-  "id" | "createdAt" | "updatedAt" | "deletedAt" | "driver"
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'driver'
 >;

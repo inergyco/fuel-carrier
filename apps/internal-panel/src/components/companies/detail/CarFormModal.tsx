@@ -1,20 +1,21 @@
-import { useMemo, useState } from 'react'
-import type { Car, Driver } from '@fuel-carrier/shared-types'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { useMemo, useState } from "react";
+import type { Car, Driver } from "@fuel-carrier/shared-types";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
 import {
   createCarFormSchemas,
   type CreateInternalCarDto,
-} from '@fuel-carrier/shared-validation/car/create'
-import { applyApiFieldErrors } from '@fuel-carrier/web-ui/api'
+} from "@fuel-carrier/shared-validation/car/create";
+import { applyApiFieldErrors } from "@fuel-carrier/web-ui/api";
 import {
   zodResolver,
   Form,
   useForm,
   toCarValidationMessages,
   type SubmitHandler,
-} from '@fuel-carrier/web-ui/form'
-import { useMutation } from '@fuel-carrier/web-ui/query'
+} from "@fuel-carrier/web-ui/form";
+import { useMutation } from "@fuel-carrier/web-ui/query";
 import {
+  CarTankFields,
   FormCheckbox,
   FormLicensePlatePicker,
   FormSelect,
@@ -22,37 +23,30 @@ import {
   Modal,
   ModalActions,
   useToast,
-} from '@fuel-carrier/web-ui/ui'
-import { z } from 'zod'
-import {
-  carToFormValues,
-  createCar,
-  updateCar,
-} from '../../../lib/api/cars'
+} from "@fuel-carrier/web-ui/ui";
+import { z } from "zod";
+import { carToFormValues, createCar, updateCar } from "../../../lib/api/cars";
 
-type CarFormSchemas = ReturnType<typeof createCarFormSchemas>
+type CarFormSchemas = ReturnType<typeof createCarFormSchemas>;
 type CarFormInput =
-  | z.input<CarFormSchemas['createSchema']>
-  | z.input<CarFormSchemas['editSchema']>
+  | z.input<CarFormSchemas["createSchema"]>
+  | z.input<CarFormSchemas["editSchema"]>;
 type CarFormOutput =
-  | z.output<CarFormSchemas['createSchema']>
-  | z.output<CarFormSchemas['editSchema']>
+  | z.output<CarFormSchemas["createSchema"]>
+  | z.output<CarFormSchemas["editSchema"]>;
 
-type CarFormModalMode = 'create' | 'edit'
+type CarFormModalMode = "create" | "edit";
 
 interface CarFormModalProps {
-  mode: CarFormModalMode
-  companyId: string
-  drivers: Driver[]
-  car?: Car
-  onClose: () => void
-  onSuccess: () => void
+  mode: CarFormModalMode;
+  companyId: string;
+  drivers: Driver[];
+  car?: Car;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
-function isUnassignedDriver(driver: Driver): boolean {
-  return !driver.car
-}
-
+// TODO: Refactor this component to reduce number of lines.
 export function CarFormModal({
   mode,
   companyId,
@@ -61,101 +55,107 @@ export function CarFormModal({
   onClose,
   onSuccess,
 }: CarFormModalProps) {
-  const { LL } = useI18nContext()
-  const toast = useToast()
-  const [serverError, setServerError] = useState<string | null>(null)
-  const detail = LL.internalPanel.companies.detail
-  const freeDrivers = drivers.filter(isUnassignedDriver)
+  const { LL } = useI18nContext();
+  const toast = useToast();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const detail = LL.internalPanel.companies.detail;
+  const freeDrivers = drivers.filter((driver) => !driver.car);
   const schema = useMemo(
     function createSchema() {
-      const schemas = createCarFormSchemas(toCarValidationMessages(LL))
+      const schemas = createCarFormSchemas(toCarValidationMessages(LL));
 
-      return mode === 'create' ? schemas.createSchema : schemas.editSchema
+      return mode === "create" ? schemas.createSchema : schemas.editSchema;
     },
     [LL, mode],
-  )
-  const defaults = carToFormValues(car)
+  );
+  const defaults = carToFormValues(car);
 
   const form = useForm<CarFormInput, unknown, CarFormOutput>({
     resolver: zodResolver(schema),
     defaultValues:
-      mode === 'create'
+      mode === "create"
         ? defaults
         : {
             licensePlate: defaults.licensePlate,
             note: defaults.note,
             hasHighGrade: defaults.hasHighGrade,
+            tankCount: defaults.tankCount,
+            tankCapacityLiters: defaults.tankCapacityLiters,
           },
-  })
+  });
 
   const {
     setError,
     formState: { isSubmitting },
-  } = form
+  } = form;
 
   const saveMutation = useMutation({
     mutationFn: async function saveCar(data: CarFormOutput) {
-      if (mode === 'edit' && car) {
+      if (mode === "edit" && car) {
         return updateCar(car.id, {
           licensePlate: data.licensePlate,
           note: data.note,
           hasHighGrade: data.hasHighGrade,
+          tankCount: data.tankCount,
+          tankCapacityLiters: data.tankCapacityLiters,
           companyId,
-        })
+        });
       }
 
       const payload: CreateInternalCarDto = {
-        ...(data as z.output<CarFormSchemas['createSchema']>),
+        ...(data as z.output<CarFormSchemas["createSchema"]>),
         companyId,
-      }
-      return createCar(payload)
+      };
+      return createCar(payload);
     },
     onSuccess: function handleSaveSuccess() {
       toast.success(
-        mode === 'edit'
+        mode === "edit"
           ? LL.internalPanel.toast.carUpdated()
           : LL.internalPanel.toast.carCreated(),
-      )
-      onSuccess()
-      onClose()
+      );
+      onSuccess();
+      onClose();
     },
-  })
+  });
 
-  const onSubmit: SubmitHandler<CarFormOutput> = async function onSubmit(
-    data,
-  ) {
-    setServerError(null)
+  const onSubmit: SubmitHandler<CarFormOutput> = async function onSubmit(data) {
+    setServerError(null);
 
     try {
-      await saveMutation.mutateAsync(data)
+      await saveMutation.mutateAsync(data);
     } catch (error) {
       setServerError(
         applyApiFieldErrors({
           error,
           setError,
-          fields: ['licensePlate', 'note', 'driverId'],
+          fields: [
+            "licensePlate",
+            "note",
+            "driverId",
+            "tankCount",
+            "tankCapacityLiters",
+          ],
           messages: {
             licensePlate: () => detail.duplicateLicensePlate(),
           },
           fallbackMessage: detail.createFailed(),
         }),
-      )
+      );
     }
-  }
+  };
 
   function handleClose() {
     if (!isSubmitting && !saveMutation.isPending) {
-      onClose()
+      onClose();
     }
   }
 
-  const isSaving = isSubmitting || saveMutation.isPending
+  const isSaving = isSubmitting || saveMutation.isPending;
   const title =
-    mode === 'edit' ? detail.carEditTitle() : detail.carCreateTitle()
+    mode === "edit" ? detail.carEditTitle() : detail.carCreateTitle();
   const confirmLabel =
-    mode === 'edit'
-      ? LL.internalPanel.companies.update()
-      : detail.addCar()
+    mode === "edit" ? LL.internalPanel.companies.update() : detail.addCar();
 
   return (
     <Modal
@@ -188,7 +188,7 @@ export function CarFormModal({
           label={detail.licensePlate()}
         />
 
-        {mode === 'create' ? (
+        {mode === "create" ? (
           <FormSelect name="driverId" label={detail.driver()}>
             <option value="">{detail.selectDriver()}</option>
             {freeDrivers.map(function renderDriverOption(driver) {
@@ -196,12 +196,18 @@ export function CarFormModal({
                 <option key={driver.id} value={driver.id}>
                   {driver.firstName} {driver.lastName}
                 </option>
-              )
+              );
             })}
           </FormSelect>
         ) : null}
 
         <FormCheckbox name="hasHighGrade" label={detail.hasHighGrade()} />
+
+        <CarTankFields
+          tankCountLabel={detail.tankCount()}
+          tankCapacityLabel={detail.tankCapacityLiters()}
+          tankCapacityHint={detail.tankCapacityHint()}
+        />
 
         <FormTextarea
           name="note"
@@ -216,5 +222,5 @@ export function CarFormModal({
         )}
       </Form>
     </Modal>
-  )
+  );
 }

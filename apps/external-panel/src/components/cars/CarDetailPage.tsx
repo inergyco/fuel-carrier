@@ -1,39 +1,41 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { isCompanyUserAdmin } from '@fuel-carrier/shared-types'
-import { CarDriverAssignmentHistorySection } from '@fuel-carrier/web-ui/cars'
-import { QueryErrorState } from '@fuel-carrier/web-ui/ui'
-import { getRouteApi } from '@tanstack/react-router'
-import { CarCustodyPickerSession } from './CarCustodyPickerSession'
-import { useCarCustody } from './useCarCustody'
-import { useCarQuery } from './useCarQuery'
-import { CarDetailHeader } from './detail/CarDetailHeader'
-import { CarDetailNotFound } from './detail/CarDetailNotFound'
-import { CarOverviewSection } from './detail/CarOverviewSection'
-import { CarTanksSection } from './detail/CarTanksSection'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { isCompanyUserAdmin } from "@fuel-carrier/shared-types";
+import {
+  CarDriverAssignmentHistorySection,
+  CarTanksSection,
+} from "@fuel-carrier/web-ui/cars";
+import { QueryErrorState } from "@fuel-carrier/web-ui/ui";
+import { getRouteApi } from "@tanstack/react-router";
+import { CarCustodyPickerSession } from "./CarCustodyPickerSession";
+import { useCarCustody } from "./useCarCustody";
+import { useCarQuery } from "./useCarQuery";
+import { CarDetailHeader } from "./detail/CarDetailHeader";
+import { CarDetailNotFound } from "./detail/CarDetailNotFound";
+import { CarOverviewSection } from "./detail/CarOverviewSection";
 
-const panelRouteApi = getRouteApi('/panel')
+const panelRouteApi = getRouteApi("/panel");
 
 interface CarDetailPageProps {
-  carId: string
+  carId: string;
 }
 
 export function CarDetailPage({ carId }: CarDetailPageProps) {
-  const { LL } = useI18nContext()
-  const { user } = panelRouteApi.useRouteContext()
-  const canManage = isCompanyUserAdmin(user)
-  const { carQuery, isNotFound } = useCarQuery(carId)
-  const custody = useCarCustody()
+  const { LL } = useI18nContext();
+  const { user } = panelRouteApi.useRouteContext();
+  const canManage = isCompanyUserAdmin(user);
+  const { carQuery, isNotFound } = useCarQuery(carId);
+  const custody = useCarCustody();
 
   if (carQuery.isLoading) {
     return (
       <p className="text-sm text-base-content/50">
         {LL.externalPanel.cars.loading()}
       </p>
-    )
+    );
   }
 
   if (isNotFound) {
-    return <CarDetailNotFound />
+    return <CarDetailNotFound />;
   }
 
   if (carQuery.isError || !carQuery.data) {
@@ -42,7 +44,7 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
         <div className="mb-6">
           <QueryErrorState
             onRetry={() => {
-              void carQuery.refetch()
+              void carQuery.refetch();
             }}
             labels={{
               loadFailed: LL.common.queryError.loadFailed(),
@@ -51,16 +53,21 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
           />
         </div>
       </div>
-    )
+    );
   }
 
-  const car = carQuery.data
+  const car = carQuery.data;
 
   return (
     <div>
       <CarDetailHeader car={car} custody={custody} canManage={canManage} />
       <div className="flex flex-col gap-6">
-        <CarTanksSection carId={car.id} />
+        <CarTanksSection
+          carId={carId}
+          tankCount={car.tankCount}
+          tankCapacityLiters={car.tankCapacityLiters}
+          labels={LL.externalPanel.cars}
+        />
         <CarOverviewSection
           car={car}
           currentDriverName={custody.currentDriverName(car)}
@@ -79,5 +86,5 @@ export function CarDetailPage({ carId }: CarDetailPageProps) {
         />
       ) : null}
     </div>
-  )
+  );
 }

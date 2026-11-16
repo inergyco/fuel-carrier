@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { getFuelLevelColor } from '../../map'
-import { CAR_CARD_TOTAL_CAPACITY_LITERS, formatFillPercent } from './car-card-utils'
+import { formatFillPercent } from './car-card-utils'
 
 type CarCardFuelSectionProps = {
   remainFuel: number | null
   fillPercent: number | null
+  totalCapacityLiters: number
   remainFuelUnknown: string
   fuelVolumeLabel: ReactNode
 }
@@ -12,10 +13,11 @@ type CarCardFuelSectionProps = {
 export function CarCardFuelSection({
   remainFuel,
   fillPercent,
+  totalCapacityLiters,
   remainFuelUnknown,
   fuelVolumeLabel,
 }: CarCardFuelSectionProps) {
-  const fuelColor = getFuelLevelColor(remainFuel)
+  const fuelColor = getFuelLevelColor(remainFuel, totalCapacityLiters)
 
   return (
     <div className="mt-1 space-y-1.5">
@@ -36,7 +38,7 @@ export function CarCardFuelSection({
           className="h-1.5 overflow-hidden rounded-full bg-base-content/8"
           role="meter"
           aria-valuemin={0}
-          aria-valuemax={CAR_CARD_TOTAL_CAPACITY_LITERS}
+          aria-valuemax={totalCapacityLiters}
           aria-valuenow={remainFuel}
           dir="ltr"
         >

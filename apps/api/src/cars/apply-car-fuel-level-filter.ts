@@ -1,6 +1,9 @@
 import { and, inArray } from 'drizzle-orm';
 import type { FuelLevelFilter } from '@fuel-carrier/shared-types';
-import { getFuelLevel } from '@fuel-carrier/shared-types/car-fleet-stats';
+import {
+  getFuelLevel,
+  getTotalTankCapacityLiters,
+} from '@fuel-carrier/shared-types/car-fleet-stats';
 import { cars } from '../database/schema/cars.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 
@@ -20,15 +23,18 @@ export async function applyCarFuelLevelFilter(options: {
     companyId: string,
   ) => Promise<Map<string, number | undefined>>;
 }): Promise<CarListWhere | null> {
-  const { tx, baseWhere, companyId, fuelLevel, getRemainFuelByCarId } =
-    options;
+  const { tx, baseWhere, companyId, fuelLevel, getRemainFuelByCarId } = options;
 
   if (fuelLevel === 'all' || !companyId) {
     return baseWhere;
   }
 
   const scopeRows = await tx
-    .select({ id: cars.id })
+    .select({
+      id: cars.id,
+      tankCount: cars.tankCount,
+      tankCapacityLiters: cars.tankCapacityLiters,
+    })
     .from(cars)
     .where(baseWhere);
 
@@ -39,7 +45,12 @@ export async function applyCarFuelLevelFilter(options: {
   const remainFuelByCarId = await getRemainFuelByCarId(companyId);
   const matchingIds = scopeRows
     .filter(function matchesFuelLevel(row) {
-      return getFuelLevel(remainFuelByCarId.get(row.id)) === fuelLevel;
+      return (
+        getFuelLevel(
+          remainFuelByCarId.get(row.id),
+          getTotalTankCapacityLiters(row.tankCount, row.tankCapacityLiters),
+        ) === fuelLevel
+      );
     })
     .map(function toCarId(row) {
       return row.id;

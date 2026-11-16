@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import type { TankResistanceReadings } from '@fuel-carrier/shared-types/car-telemetry';
 import { COMPANY_USER_LEVELS } from '@fuel-carrier/shared-types/company-user-level';
 import { NotificationChannels } from '@fuel-carrier/shared-types/notification';
+import { getTotalTankCapacityLiters } from '@fuel-carrier/shared-types/car-fleet-stats';
 import { STALE_TELEMETRY_THRESHOLD_MS } from '../config/notification.config';
 import {
   POSTGRES_UNIQUE_VIOLATION,
@@ -29,6 +30,8 @@ export type EvaluateCarConditionAlertsInput = {
   carId: string;
   companyId: string;
   licensePlate: string;
+  tankCount: number;
+  tankCapacityLiters: number;
   recordedAt: Date;
   ingestedAt: Date;
   resistance?: TankResistanceReadings;
@@ -84,7 +87,11 @@ export class CarConditionAlertService {
     }
 
     if (input.remainFuel != null && Number.isFinite(input.remainFuel)) {
-      const isLow = isLowFuel(input.remainFuel);
+      const totalCapacityLiters = getTotalTankCapacityLiters(
+        input.tankCount,
+        input.tankCapacityLiters,
+      );
+      const isLow = isLowFuel(input.remainFuel, totalCapacityLiters);
       await this._syncEpisode({
         carId: input.carId,
         companyId: input.companyId,
@@ -95,6 +102,7 @@ export class CarConditionAlertService {
           ? buildLowFuelAlertMessage({
               licensePlate: input.licensePlate,
               remainFuel: input.remainFuel,
+              totalCapacityLiters,
             })
           : null,
       });

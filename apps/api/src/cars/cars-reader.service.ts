@@ -94,6 +94,8 @@ export function mapCarRow(row: CarRow, driverRow?: DriverRow | null): Car {
     driverId: row.driverId,
     driver: mapCarDriverSummary(driverRow),
     hasHighGrade: row.hasHighGrade,
+    tankCount: row.tankCount,
+    tankCapacityLiters: row.tankCapacityLiters,
     note: row.note,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
