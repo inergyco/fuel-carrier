@@ -1,35 +1,71 @@
-/** Source art size. Tank coordinates are in this space. */
-export const ART_WIDTH = 1024
-export const ART_HEIGHT = 582
-
-/**
- * Visible frame. The PNG has a large empty margin above and below the truck,
- * so the viewBox crops to the drawing.
- */
+/** Shared visible frame across both BONIZ schematics. */
 export const VIEWBOX_X = 18
 export const VIEWBOX_Y = 107
 export const VIEWBOX_WIDTH = 1006
 export const VIEWBOX_HEIGHT = 392
+
+export type TruckArtMetrics = {
+  width: number
+  height: number
+  viewBoxX: number
+  viewBoxY: number
+  viewBoxWidth: number
+  viewBoxHeight: number
+}
+
+/** Three-tank BONIZ 500 art and crop. */
+export const THREE_TANK_ART: TruckArtMetrics = {
+  width: 1024,
+  height: 582,
+  viewBoxX: VIEWBOX_X,
+  viewBoxY: VIEWBOX_Y,
+  viewBoxWidth: VIEWBOX_WIDTH,
+  viewBoxHeight: VIEWBOX_HEIGHT,
+}
+
+/** One-tank BONIZ 300 art and crop. */
+export const ONE_TANK_ART: TruckArtMetrics = {
+  width: 1024,
+  height: 682,
+  viewBoxX: 12,
+  viewBoxY: 118,
+  viewBoxWidth: 1000,
+  viewBoxHeight: 400,
+}
 
 /**
  * Three-tank interiors, ordered front (cab) to rear.
  * Radii sit just inside the printed outlines so liquid never covers the ink.
  */
 export const TANK_SLOTS = [
-  { cx: 519.5, cy: 248, r: 57 },
-  { cx: 390.5, cy: 248, r: 57 },
-  { cx: 263, cy: 248, r: 57 },
+  { cx: 519.5, cy: 248, rx: 57, ry: 57 },
+  { cx: 390.5, cy: 248, rx: 57, ry: 57 },
+  { cx: 263, cy: 248, rx: 57, ry: 57 },
 ] as const
 
-/** The single compartment on the one-tank schematic, in the same art space. */
-export const SINGLE_TANK_SLOTS = [{ cx: 390.5, cy: 248, r: 57 }] as const
+/**
+ * Horizontal capsule on the one-tank schematic.
+ * Measured just inside the printed outline so liquid reaches the ink.
+ */
+export const SINGLE_TANK_SLOTS = [
+  { cx: 387.5, cy: 254, rx: 182, ry: 73 },
+] as const
 
 export type TankSlot = {
   cx: number
   cy: number
-  r: number
+  rx: number
+  ry: number
   filled: number
   index: number
+}
+
+export function getTruckArtMetrics(tankCount: number): TruckArtMetrics {
+  if (tankCount === 1) {
+    return ONE_TANK_ART
+  }
+
+  return THREE_TANK_ART
 }
 
 export function clampFillRatio(capacity: number, filled: number): number {

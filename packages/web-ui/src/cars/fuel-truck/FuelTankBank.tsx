@@ -23,7 +23,8 @@ export function FuelTankBank({ capacity, filled, idPrefix }: FuelTankBankProps) 
             id={`${idPrefix}-tank-${slot.index}`}
             cx={slot.cx}
             cy={slot.cy}
-            r={slot.r}
+            rx={slot.rx}
+            ry={slot.ry}
             capacity={capacity}
             filled={slot.filled}
           />

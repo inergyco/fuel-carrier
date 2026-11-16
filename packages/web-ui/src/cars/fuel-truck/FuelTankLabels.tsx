@@ -1,31 +1,30 @@
 import {
   formatVolume,
+  getTruckArtMetrics,
   getVisibleTankSlots,
-  VIEWBOX_HEIGHT,
-  VIEWBOX_WIDTH,
-  VIEWBOX_X,
-  VIEWBOX_Y,
-} from "./layout";
+} from './layout'
 
 export type FuelTankLabelsProps = {
-  filled: number[];
-  unitLabel?: string;
-};
+  filled: number[]
+  unitLabel?: string
+}
 
 export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
-  const slots = getVisibleTankSlots(filled);
+  const slots = getVisibleTankSlots(filled)
+  const art = getTruckArtMetrics(filled.length)
 
   if (slots.length === 0) {
-    return null;
+    return null
   }
 
   return (
     <ul className="pointer-events-none absolute inset-0">
       {slots.map(function renderLabel(slot) {
-        const leftPercent = ((slot.cx - VIEWBOX_X) / VIEWBOX_WIDTH) * 100;
+        const leftPercent =
+          ((slot.cx - art.viewBoxX) / art.viewBoxWidth) * 100
         const topPercent =
-          ((slot.cy - slot.r - VIEWBOX_Y) / VIEWBOX_HEIGHT) * 100 - 2;
-        const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ""}`;
+          ((slot.cy - slot.ry - art.viewBoxY) / art.viewBoxHeight) * 100 - 2
+        const label = `${formatVolume(slot.filled)}${unitLabel ? ` ${unitLabel}` : ''}`
 
         return (
           <li
@@ -37,8 +36,8 @@ export function FuelTankLabels({ filled, unitLabel }: FuelTankLabelsProps) {
               {label}
             </p>
           </li>
-        );
+        )
       })}
     </ul>
-  );
+  )
 }

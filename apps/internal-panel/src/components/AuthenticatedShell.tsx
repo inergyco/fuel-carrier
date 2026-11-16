@@ -10,7 +10,9 @@ import {
   ConfirmModal,
   ICON_STROKE_WIDTH,
   LicensePlate,
+  MEDIA_QUERIES,
   PanelShell,
+  useMediaQuery,
   type PanelNavItem,
 } from "@fuel-carrier/web-ui/ui";
 import {
@@ -49,6 +51,8 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
     },
   });
   const isMapPage = pathname === "/map";
+  const isSmUp = useMediaQuery(MEDIA_QUERIES.smUp);
+  const showCompanySwitcher = pathname === "/" || pathname === "/map";
   const heading = useAppBarHeading(pathname, user.firstName);
 
   const navItems = useMemo(
@@ -162,12 +166,15 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProps) {
             heading?.back ? <AppBarBackLink {...heading.back} /> : null
           }
           appBarActions={
-            pathname === "/" || pathname === "/map" ? (
-              <div className="flex w-full min-w-0 flex-wrap items-center justify-end gap-2 sm:gap-3">
+            showCompanySwitcher && isSmUp ? (
+              <div className="flex w-full min-w-0 items-center justify-end gap-2 sm:gap-3">
                 <CompanySwitcher />
                 {/* <DashboardModeSwitcher /> */}
               </div>
             ) : null
+          }
+          appBarInlineActions={
+            showCompanySwitcher && !isSmUp ? <CompanySwitcher /> : null
           }
           fullWidthMain={isMapPage}
           footer={

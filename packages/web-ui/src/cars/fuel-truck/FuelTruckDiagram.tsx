@@ -1,25 +1,18 @@
-import { useId, type ReactNode } from "react";
-import { cn } from "../../utils";
-import { getTruckArtUrl } from "./artwork";
-import { FuelTankBank } from "./FuelTankBank";
-import { FuelTankLabels } from "./FuelTankLabels";
-import {
-  ART_HEIGHT,
-  ART_WIDTH,
-  VIEWBOX_HEIGHT,
-  VIEWBOX_WIDTH,
-  VIEWBOX_X,
-  VIEWBOX_Y,
-} from "./layout";
+import { useId, type ReactNode } from 'react'
+import { cn } from '../../utils'
+import { getTruckArtUrl } from './artwork'
+import { FuelTankBank } from './FuelTankBank'
+import { FuelTankLabels } from './FuelTankLabels'
+import { getTruckArtMetrics } from './layout'
 
 export type FuelTruckDiagramProps = {
-  capacity: number;
-  filled: number[];
-  unitLabel?: string;
-  className?: string;
-  leading?: ReactNode;
-  trailing?: ReactNode;
-};
+  capacity: number
+  filled: number[]
+  unitLabel?: string
+  className?: string
+  leading?: ReactNode
+  trailing?: ReactNode
+}
 
 export function FuelTruckDiagram({
   capacity,
@@ -29,13 +22,19 @@ export function FuelTruckDiagram({
   leading,
   trailing,
 }: FuelTruckDiagramProps) {
-  const reactId = useId().replace(/:/g, "");
-  const artUrl = getTruckArtUrl(filled.length);
+  const reactId = useId().replace(/:/g, '')
+  const tankCount = filled.length
+  const artUrl = getTruckArtUrl(tankCount)
+  const art = getTruckArtMetrics(tankCount)
+  const ariaLabel =
+    tankCount === 1
+      ? 'BONIZ 300 fuel carrier side view'
+      : 'BONIZ 500 fuel carrier side view'
 
   return (
     <figure
       className={cn(
-        "relative w-full overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card p-2 sm:p-4 md:p-5",
+        'relative w-full overflow-hidden rounded-2xl border border-base-content/8 bg-panel-card p-2 sm:p-4 md:p-5',
         className,
       )}
     >
@@ -56,13 +55,15 @@ export function FuelTruckDiagram({
           <div dir="ltr" className="relative mx-auto w-full max-w-3xl">
             <div
               className="relative w-full"
-              style={{ aspectRatio: `${VIEWBOX_WIDTH} / ${VIEWBOX_HEIGHT}` }}
+              style={{
+                aspectRatio: `${art.viewBoxWidth} / ${art.viewBoxHeight}`,
+              }}
             >
               <FuelTankLabels filled={filled} unitLabel={unitLabel} />
               <svg
-                viewBox={`${VIEWBOX_X} ${VIEWBOX_Y} ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
+                viewBox={`${art.viewBoxX} ${art.viewBoxY} ${art.viewBoxWidth} ${art.viewBoxHeight}`}
                 role="img"
-                aria-label="BONIZ 500 fuel carrier side view"
+                aria-label={ariaLabel}
                 preserveAspectRatio="xMidYMid meet"
                 className="absolute inset-0 size-full text-base-content"
               >
@@ -75,8 +76,8 @@ export function FuelTruckDiagram({
                   href={artUrl}
                   x={0}
                   y={0}
-                  width={ART_WIDTH}
-                  height={ART_HEIGHT}
+                  width={art.width}
+                  height={art.height}
                   className="pointer-events-none [html[data-theme='dark']_&]:invert [html[data-theme$='-dark']_&]:invert"
                 />
               </svg>
@@ -88,5 +89,5 @@ export function FuelTruckDiagram({
         ) : null}
       </div>
     </figure>
-  );
+  )
 }
