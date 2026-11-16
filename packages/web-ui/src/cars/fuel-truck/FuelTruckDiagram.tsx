@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { cn } from "../../utils";
-import truckArtUrl from "./boniz-500.png";
+import { getTruckArtUrl } from "./artwork";
 import { FuelTankBank } from "./FuelTankBank";
 import { FuelTankLabels } from "./FuelTankLabels";
 import {
@@ -30,6 +30,8 @@ export function FuelTruckDiagram({
   trailing,
 }: FuelTruckDiagramProps) {
   const reactId = useId().replace(/:/g, "");
+  const artUrl = getTruckArtUrl(filled.length);
+
   return (
     <figure
       className={cn(
@@ -70,7 +72,7 @@ export function FuelTruckDiagram({
                   idPrefix={reactId}
                 />
                 <image
-                  href={truckArtUrl}
+                  href={artUrl}
                   x={0}
                   y={0}
                   width={ART_WIDTH}

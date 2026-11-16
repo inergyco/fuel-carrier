@@ -260,6 +260,13 @@
       "when": 1794000000000,
       "tag": "0036_car_telemetry_mode",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1794900000000,
+      "tag": "0037_car_tank_count",
+      "breakpoints": true
     }
   ]
 }

@@ -5,12 +5,19 @@ export const MIN_TANK_CAPACITY_LITERS = 1;
 
 export const MAX_TANK_CAPACITY_LITERS = 10_000;
 
-/** Create-time default. A car may have 1, 2, or 3 tanks. */
+/** Create-time default. A car has either 1 or 3 tanks. */
 export const DEFAULT_TANK_COUNT = 3;
 
-export const MIN_TANK_COUNT = 1;
+export const TANK_COUNTS = [1, 3] as const;
 
-export const MAX_TANK_COUNT = 3;
+export type TankCount = (typeof TANK_COUNTS)[number];
+
+export const MIN_TANK_COUNT = TANK_COUNTS[0];
+
+export const MAX_TANK_COUNT = TANK_COUNTS[TANK_COUNTS.length - 1];
+
+export const isTankCount = (value: number): value is TankCount =>
+  (TANK_COUNTS as readonly number[]).includes(value);
 
 /** Total usable capacity when a car still uses the create-time defaults. */
 export const FLEET_TOTAL_CAPACITY_LITERS =

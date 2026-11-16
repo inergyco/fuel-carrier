@@ -11,10 +11,8 @@ export const VIEWBOX_Y = 107
 export const VIEWBOX_WIDTH = 1006
 export const VIEWBOX_HEIGHT = 392
 
-export const MAX_TANKS = 3
-
 /**
- * Tank interiors measured from the schematic, ordered front (cab) to rear.
+ * Three-tank interiors, ordered front (cab) to rear.
  * Radii sit just inside the printed outlines so liquid never covers the ink.
  */
 export const TANK_SLOTS = [
@@ -22,6 +20,9 @@ export const TANK_SLOTS = [
   { cx: 390.5, cy: 248, r: 57 },
   { cx: 263, cy: 248, r: 57 },
 ] as const
+
+/** The single compartment on the one-tank schematic, in the same art space. */
+export const SINGLE_TANK_SLOTS = [{ cx: 390.5, cy: 248, r: 57 }] as const
 
 export type TankSlot = {
   cx: number
@@ -45,13 +46,14 @@ export function formatVolume(value: number): string {
 }
 
 export function getVisibleTankSlots(filled: number[]): TankSlot[] {
-  const levels = filled.slice(0, MAX_TANKS)
+  const geometry = filled.length === 1 ? SINGLE_TANK_SLOTS : TANK_SLOTS
+  const levels = filled.slice(0, geometry.length)
 
   return levels.flatMap(function toSlot(level, index) {
-    const geometry = TANK_SLOTS[index]
-    if (geometry === undefined) {
+    const slot = geometry[index]
+    if (slot === undefined) {
       return []
     }
-    return [{ ...geometry, filled: level, index }]
+    return [{ ...slot, filled: level, index }]
   })
 }

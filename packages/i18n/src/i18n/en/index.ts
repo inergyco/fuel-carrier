@@ -210,7 +210,7 @@ const en: BaseTranslation = {
     licensePlateInvalid: 'Enter a valid Iranian license plate',
     driverRequired: 'Select a driver',
     noteTooLong: 'Note must be at most {max:number} characters',
-    tankCountInvalid: 'Tank count must be 1, 2, or 3',
+    tankCountInvalid: 'Tank count must be 1 or 3',
     tankCapacityInvalid: 'Tank capacity must be a whole number of liters',
     tankCapacityOutOfRange:
       'Tank capacity must be between {min:number} and {max:number} liters',

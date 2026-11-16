@@ -16,7 +16,7 @@ export type Car = {
   driver: CarDriverSummary | null;
   /** True when the vehicle has high-grade petrol; false = normal. */
   hasHighGrade: boolean;
-  /** Integer compartment count from 1 to 3. Every tank shares `tankCapacityLiters`. */
+  /** Integer compartment count: 1 or 3. Every tank shares `tankCapacityLiters`. */
   tankCount: number;
   /** Liters per tank. */
   tankCapacityLiters: number;

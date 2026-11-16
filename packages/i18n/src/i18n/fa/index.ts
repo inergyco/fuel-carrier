@@ -205,7 +205,7 @@ const fa: Translation = {
     licensePlateInvalid: "یک پلاک ایرانی معتبر وارد کنید",
     driverRequired: "یک راننده انتخاب کنید",
     noteTooLong: "یادداشت باید حداکثر {max} کاراکتر باشد",
-    tankCountInvalid: "تعداد مخزن باید ۱، ۲ یا ۳ باشد",
+    tankCountInvalid: "تعداد مخزن باید ۱ یا ۳ باشد",
     tankCapacityInvalid: "ظرفیت مخزن باید یک عدد صحیح بر حسب لیتر باشد",
     tankCapacityOutOfRange: "ظرفیت مخزن باید بین {min} و {max} لیتر باشد",
     notificationTitleRequired: "عنوان الزامی است",

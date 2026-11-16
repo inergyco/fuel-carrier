@@ -39,7 +39,16 @@ describe('car update DTO schemas', () => {
     expect(parsed.tankCapacityLiters).toBe(500);
   });
 
-  it('rejects a tank count outside 1–3 and a non-positive capacity', () => {
+  it('rejects a tank count other than 1 or 3 and a non-positive capacity', () => {
+    expect(
+      createInternalCarDtoSchema.safeParse({
+        companyId: COMPANY_ID,
+        licensePlate: '۱۲ب۳۴۵-۶۷',
+        driverId: DRIVER_ID,
+        tankCount: 2,
+      }).success,
+    ).toBe(false);
+
     expect(
       createInternalCarDtoSchema.safeParse({
         companyId: COMPANY_ID,

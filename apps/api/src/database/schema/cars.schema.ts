@@ -2,9 +2,7 @@ import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
   MAX_TANK_CAPACITY_LITERS,
-  MAX_TANK_COUNT,
   MIN_TANK_CAPACITY_LITERS,
-  MIN_TANK_COUNT,
 } from '@fuel-carrier/shared-types';
 import { sql } from 'drizzle-orm';
 import {
@@ -36,7 +34,7 @@ export const cars = pgTable(
     driverId: uuid('driver_id').unique(),
     /** True when the vehicle has high-grade petrol; false = normal. */
     hasHighGrade: boolean('has_high_grade').notNull().default(false),
-    /** Integer compartment count, from 1 to 3. Every tank shares `tankCapacityLiters`. */
+    /** Integer compartment count: 1 or 3. Every tank shares `tankCapacityLiters`. */
     tankCount: integer('tank_count').notNull().default(DEFAULT_TANK_COUNT),
     /** Liters per tank. */
     tankCapacityLiters: integer('tank_capacity_liters')
@@ -59,10 +57,7 @@ export const cars = pgTable(
     uniqueIndex('cars_license_plate_unique')
       .on(table.licensePlate)
       .where(sql`${table.deletedAt} IS NULL`),
-    check(
-      'cars_tank_count_check',
-      sql`${table.tankCount} BETWEEN ${sql.raw(String(MIN_TANK_COUNT))} AND ${sql.raw(String(MAX_TANK_COUNT))}`,
-    ),
+    check('cars_tank_count_check', sql`${table.tankCount} IN (1, 3)`),
     check(
       'cars_tank_capacity_liters_check',
       sql`${table.tankCapacityLiters} BETWEEN ${sql.raw(String(MIN_TANK_CAPACITY_LITERS))} AND ${sql.raw(String(MAX_TANK_CAPACITY_LITERS))}`,

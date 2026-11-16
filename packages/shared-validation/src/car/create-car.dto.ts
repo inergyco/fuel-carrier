@@ -1,10 +1,9 @@
 import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
+  isTankCount,
   MAX_TANK_CAPACITY_LITERS,
-  MAX_TANK_COUNT,
   MIN_TANK_CAPACITY_LITERS,
-  MIN_TANK_COUNT,
 } from "@fuel-carrier/shared-types";
 import { z } from "zod";
 import { optionalTextField } from "../optional-text-field";
@@ -53,7 +52,7 @@ const defaultCarValidationMessages: CarValidationMessages = {
   licensePlateInvalid: "Enter a valid Iranian license plate",
   driverRequired: "Select a driver",
   noteTooLong: `Note must be at most ${CAR_NOTE_MAX_LENGTH} characters`,
-  tankCountInvalid: "Tank count must be 1, 2, or 3",
+  tankCountInvalid: "Tank count must be 1 or 3",
   tankCapacityInvalid: "Tank capacity must be a whole number of liters",
   tankCapacityOutOfRange: `Tank capacity must be between ${MIN_TANK_CAPACITY_LITERS} and ${MAX_TANK_CAPACITY_LITERS} liters`,
 };
@@ -105,8 +104,7 @@ function tankCountSchema(messages: CarValidationMessages) {
   return z
     .number({ error: messages.tankCountInvalid })
     .int({ error: messages.tankCountInvalid })
-    .min(MIN_TANK_COUNT, { error: messages.tankCountInvalid })
-    .max(MAX_TANK_COUNT, { error: messages.tankCountInvalid });
+    .refine(isTankCount, { message: messages.tankCountInvalid });
 }
 
 function tankCapacitySchema(messages: CarValidationMessages) {

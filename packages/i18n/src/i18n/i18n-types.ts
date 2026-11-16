@@ -724,7 +724,7 @@ type RootTranslation = {
 		 */
 		noteTooLong: RequiredParams<'max'>
 		/**
-		 * T​a​n​k​ ​c​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​1​,​ ​2​,​ ​o​r​ ​3
+		 * T​a​n​k​ ​c​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​1​ ​o​r​ ​3
 		 */
 		tankCountInvalid: string
 		/**
@@ -4765,7 +4765,7 @@ export type TranslationFunctions = {
 		 */
 		noteTooLong: (arg: { max: number }) => LocalizedString
 		/**
-		 * Tank count must be 1, 2, or 3
+		 * Tank count must be 1 or 3
 		 */
 		tankCountInvalid: () => LocalizedString
 		/**
