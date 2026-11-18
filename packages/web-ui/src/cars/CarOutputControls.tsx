@@ -5,14 +5,14 @@ import { cn } from '../utils'
 import { carDetailActionClassName } from './car-detail-action-class-name'
 
 export type CarOutputControlsProps = {
-  /** Assumed active until a successful disable ACK. */
+  /** True when truck outputs are on (default). Click sends the opposite command. */
   active: boolean
   pending: boolean
   disabled?: boolean
   onToggle: () => void
 }
 
-/** Single toggle for truck GPIO outputs — cars default to active. */
+/** Single toggle for truck GPIO outputs — label is the next action. */
 export function CarOutputControls({
   active,
   pending,
@@ -21,8 +21,11 @@ export function CarOutputControls({
 }: CarOutputControlsProps) {
   const { LL } = useI18nContext()
   const labels = LL.common.carOutput
-  const Icon = active ? Power : PowerOff
-  const label = active ? labels.active() : labels.inactive()
+  // Outputs on → next action is disable; outputs off → enable.
+  const willDisable = active
+  const Icon = willDisable ? PowerOff : Power
+  const label = willDisable ? labels.disable() : labels.enable()
+  const loadingLabel = willDisable ? labels.disabling() : labels.enabling()
 
   return (
     <Button
@@ -30,13 +33,13 @@ export function CarOutputControls({
       variant="ghost"
       className={cn(
         carDetailActionClassName,
-        active
-          ? 'border-success/25 bg-success/10 text-success'
-          : 'border-error/25 bg-error/10 text-error',
+        willDisable
+          ? 'border-error/25 bg-error/10 text-error'
+          : 'border-success/25 bg-success/10 text-success',
       )}
       disabled={disabled || pending}
       loading={pending}
-      loadingText={label}
+      loadingText={loadingLabel}
       aria-pressed={active}
       onClick={onToggle}
     >
