@@ -2,11 +2,10 @@ import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   CarFirmwareIdentityModal,
-  CarOutputControls,
+  CarOutputToggle,
   carDetailActionClassName,
   carDetailActionRowClassName,
   carDetailDriverChipClassName,
-  useCarOutputCommand,
 } from '@fuel-carrier/web-ui/cars'
 import { Activity, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
@@ -33,17 +32,12 @@ export function CompanyCarDetailHeader({
 }: CompanyCarDetailHeaderProps) {
   const { LL } = useI18nContext()
   const mqtt = useCompanyCarMqttCredentials()
-  const outputs = useCarOutputCommand()
   const firmware = useCompanyCarFirmwareIdentity(car)
   const detail = LL.internalPanel.companies.detail
   const driverName = custody.currentDriverName(car)
 
   function handleOpenMqttCredentials() {
     mqtt.openMqttCredentials(car)
-  }
-
-  function handleToggleOutputs() {
-    outputs.toggle(car.id)
   }
 
   const emptyFirmwareLabel = LL.internalPanel.companies.emptyCell()
@@ -64,11 +58,7 @@ export function CompanyCarDetailHeader({
 
       <div className={carDetailActionRowClassName}>
         <CarCustodyActions car={car} custody={custody} />
-        <CarOutputControls
-          active={outputs.active}
-          pending={outputs.isPending}
-          onToggle={handleToggleOutputs}
-        />
+        <CarOutputToggle carId={car.id} licensePlate={car.licensePlate} />
         <Button
           type="button"
           variant="ghost"

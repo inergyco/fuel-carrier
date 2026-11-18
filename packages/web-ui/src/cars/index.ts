@@ -24,6 +24,10 @@ export {
   type CarOutputControlsProps,
 } from './CarOutputControls'
 export {
+  CarOutputToggle,
+  type CarOutputToggleProps,
+} from './CarOutputToggle'
+export {
   carDetailActionClassName,
   carDetailActionRowClassName,
   carDetailDriverChipClassName,

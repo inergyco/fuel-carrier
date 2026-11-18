@@ -44,6 +44,10 @@ const en: BaseTranslation = {
       disable: 'Disable truck',
       enabling: 'Enabling…',
       disabling: 'Disabling…',
+      enableConfirmTitle: 'Enable truck?',
+      enableConfirmDescription: 'Enable fuel-system outputs on this truck?',
+      disableConfirmTitle: 'Disable truck?',
+      disableConfirmDescription: 'Disable fuel-system outputs on this truck?',
       enabledToast: 'Truck outputs enabled.',
       disabledToast: 'Truck outputs disabled.',
       firmwareIdentityRequired:
@@ -159,6 +163,7 @@ const en: BaseTranslation = {
     copyFailed: 'Could not copy to clipboard.',
     dismiss: 'Dismiss',
     close: 'Close',
+    cancel: 'Cancel',
     carAlerts: {
       lowFuelTitle: 'Low fuel',
       lowFuelBody:

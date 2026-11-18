@@ -156,6 +156,22 @@ type RootTranslation = {
 			 */
 			disabling: string
 			/**
+			 * E​n​a​b​l​e​ ​t​r​u​c​k​?
+			 */
+			enableConfirmTitle: string
+			/**
+			 * E​n​a​b​l​e​ ​f​u​e​l​-​s​y​s​t​e​m​ ​o​u​t​p​u​t​s​ ​o​n​ ​t​h​i​s​ ​t​r​u​c​k​?
+			 */
+			enableConfirmDescription: string
+			/**
+			 * D​i​s​a​b​l​e​ ​t​r​u​c​k​?
+			 */
+			disableConfirmTitle: string
+			/**
+			 * D​i​s​a​b​l​e​ ​f​u​e​l​-​s​y​s​t​e​m​ ​o​u​t​p​u​t​s​ ​o​n​ ​t​h​i​s​ ​t​r​u​c​k​?
+			 */
+			disableConfirmDescription: string
+			/**
 			 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​e​n​a​b​l​e​d​.
 			 */
 			enabledToast: string
@@ -546,6 +562,10 @@ type RootTranslation = {
 		 * C​l​o​s​e
 		 */
 		close: string
+		/**
+		 * C​a​n​c​e​l
+		 */
+		cancel: string
 		carAlerts: {
 			/**
 			 * L​o​w​ ​f​u​e​l
@@ -4454,6 +4474,22 @@ export type TranslationFunctions = {
 			 */
 			disabling: () => LocalizedString
 			/**
+			 * Enable truck?
+			 */
+			enableConfirmTitle: () => LocalizedString
+			/**
+			 * Enable fuel-system outputs on this truck?
+			 */
+			enableConfirmDescription: () => LocalizedString
+			/**
+			 * Disable truck?
+			 */
+			disableConfirmTitle: () => LocalizedString
+			/**
+			 * Disable fuel-system outputs on this truck?
+			 */
+			disableConfirmDescription: () => LocalizedString
+			/**
 			 * Truck outputs enabled.
 			 */
 			enabledToast: () => LocalizedString
@@ -4844,6 +4880,10 @@ export type TranslationFunctions = {
 		 * Close
 		 */
 		close: () => LocalizedString
+		/**
+		 * Cancel
+		 */
+		cancel: () => LocalizedString
 		carAlerts: {
 			/**
 			 * Low fuel

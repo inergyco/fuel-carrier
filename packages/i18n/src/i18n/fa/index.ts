@@ -44,6 +44,10 @@ const fa: Translation = {
       disable: "غیرفعال‌سازی خودرو",
       enabling: "در حال فعال‌سازی…",
       disabling: "در حال غیرفعال‌سازی…",
+      enableConfirmTitle: "فعال‌سازی خودرو؟",
+      enableConfirmDescription: "خروجی‌های سامانه سوخت این خودرو فعال شود؟",
+      disableConfirmTitle: "غیرفعال‌سازی خودرو؟",
+      disableConfirmDescription: "خروجی‌های سامانه سوخت این خودرو غیرفعال شود؟",
       enabledToast: "خروجی‌های خودرو فعال شد.",
       disabledToast: "خروجی‌های خودرو غیرفعال شد.",
       firmwareIdentityRequired:
@@ -160,6 +164,7 @@ const fa: Translation = {
     copyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
     dismiss: "بستن",
     close: "بستن",
+    cancel: "انصراف",
     carAlerts: {
       lowFuelTitle: "سوخت کم",
       lowFuelBody:

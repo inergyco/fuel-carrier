@@ -10,6 +10,7 @@ interface ConfirmModalProps {
   cancelLabel: string
   onConfirm: () => void
   onCancel: () => void
+  children?: ReactNode
   loading?: boolean
   loadingLabel?: ReactNode
   confirmVariant?: ButtonVariant
@@ -23,6 +24,7 @@ export function ConfirmModal({
   cancelLabel,
   onConfirm,
   onCancel,
+  children,
   loading,
   loadingLabel,
   confirmVariant = 'primary',
@@ -46,6 +48,8 @@ export function ConfirmModal({
           confirmVariant={confirmVariant}
         />
       }
-    />
+    >
+      {children}
+    </Modal>
   )
 }

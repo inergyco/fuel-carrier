@@ -21,16 +21,25 @@ async function sendCarOutputCommand(options: {
     .json<CarOutputCommandResult>()
 }
 
-/** Shared truck-output toggle for car detail pages (defaults to active). */
+type PendingToggle = {
+  carId: string
+  action: CarOutputAction
+}
+
+/** Shared truck-output toggle — confirm, then command (defaults to active). */
 export function useCarOutputCommand() {
   const { LL } = useI18nContext()
   const toast = useToast()
   const [active, setActive] = useState(true)
+  const [pendingToggle, setPendingToggle] = useState<PendingToggle | null>(
+    null,
+  )
 
   const mutation = useMutation({
     mutationFn: sendCarOutputCommand,
     onSuccess: function onOutputCommandSuccess(result) {
       setActive(result.action === CarOutputActions.ENABLE)
+      setPendingToggle(null)
       toast.success(
         result.action === CarOutputActions.ENABLE
           ? LL.common.carOutput.enabledToast()
@@ -42,16 +51,42 @@ export function useCarOutputCommand() {
     },
   })
 
-  function toggle(carId: string) {
-    mutation.mutate({
+  function requestToggle(carId: string) {
+    if (mutation.isPending) {
+      return
+    }
+    setPendingToggle({
       carId,
       action: active ? CarOutputActions.DISABLE : CarOutputActions.ENABLE,
     })
   }
 
+  function cancelToggle() {
+    if (mutation.isPending) {
+      return
+    }
+    setPendingToggle(null)
+  }
+
+  async function confirmToggle() {
+    if (!pendingToggle) {
+      return
+    }
+    try {
+      await mutation.mutateAsync(pendingToggle)
+    } catch {
+      // Toast handled in onError; keep confirm open.
+    }
+  }
+
   return {
     active,
-    toggle,
+    pendingToggle,
+    confirmOpen: pendingToggle !== null,
+    willDisable: pendingToggle?.action === CarOutputActions.DISABLE,
+    requestToggle,
+    cancelToggle,
+    confirmToggle,
     isPending: mutation.isPending,
   }
 }
