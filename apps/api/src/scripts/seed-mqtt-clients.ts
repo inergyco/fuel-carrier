@@ -59,6 +59,7 @@ async function seedMqttClients(): Promise<void> {
         // Full shared-subscription filter (multi-instance API replicas).
         { topic: '$share/+/telemetry/#', access: 'read' },
         { topic: 'ack/#', access: 'write' },
+        { topic: 'command/#', access: 'write' },
       ],
     });
 
@@ -69,14 +70,14 @@ async function seedMqttClients(): Promise<void> {
     );
     if (isProd) {
       console.log(
-        `  ${BACKEND_USERNAME} → subscribe telemetry/# (+ $share/+/telemetry/#), publish ack/# (password = MQTT_SEED_BACKEND_PASSWORD)`,
+        `  ${BACKEND_USERNAME} → subscribe telemetry/# (+ $share/+/telemetry/#), publish ack/# + command/# (password = MQTT_SEED_BACKEND_PASSWORD)`,
       );
       console.log(
         `  Set API MQTT_USERNAME=${BACKEND_USERNAME} and MQTT_PASSWORD to that same secret.`,
       );
     } else {
       console.log(
-        `  ${BACKEND_USERNAME} / ${backendPassword}  → subscribe telemetry/# (+ shared), publish ack/#`,
+        `  ${BACKEND_USERNAME} / ${backendPassword}  → subscribe telemetry/# (+ shared), publish ack/# + command/#`,
       );
     }
 
@@ -89,10 +90,11 @@ async function seedMqttClients(): Promise<void> {
         acls: [
           { topic: `telemetry/${DEVICE_USERNAME}/#`, access: 'write' },
           { topic: `ack/${DEVICE_USERNAME}/#`, access: 'read' },
+          { topic: `command/${DEVICE_USERNAME}/#`, access: 'read' },
         ],
       });
       console.log(
-        `  ${DEVICE_USERNAME} / ${password}  → publish telemetry/${DEVICE_USERNAME}/#, subscribe ack/${DEVICE_USERNAME}/#`,
+        `  ${DEVICE_USERNAME} / ${password}  → publish telemetry/${DEVICE_USERNAME}/#, subscribe ack + command`,
       );
     }
 

@@ -4,6 +4,7 @@ import {
   MIN_TANK_CAPACITY_LITERS,
 } from '@fuel-carrier/shared-types'
 import {
+  CAR_FIRMWARE_ID_MAX_LENGTH,
   CAR_LICENSE_PLATE_MAX_LENGTH,
   CAR_NOTE_MAX_LENGTH,
   type CarValidationMessages,
@@ -88,6 +89,12 @@ export const toCarValidationMessages = (
   licensePlateInvalid: LL.validation.licensePlateInvalid(),
   driverRequired: LL.validation.driverRequired(),
   noteTooLong: LL.validation.noteTooLong({ max: CAR_NOTE_MAX_LENGTH }),
+  firmwareCompanyIdTooLong: LL.validation.firmwareCompanyIdTooLong({
+    max: CAR_FIRMWARE_ID_MAX_LENGTH,
+  }),
+  firmwareDeviceIdTooLong: LL.validation.firmwareDeviceIdTooLong({
+    max: CAR_FIRMWARE_ID_MAX_LENGTH,
+  }),
   tankCountInvalid: LL.validation.tankCountInvalid(),
   tankCapacityInvalid: LL.validation.tankCapacityInvalid(),
   tankCapacityOutOfRange: LL.validation.tankCapacityOutOfRange({

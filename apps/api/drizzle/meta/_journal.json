@@ -267,6 +267,13 @@
       "when": 1794900000000,
       "tag": "0037_car_tank_count",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1795000000000,
+      "tag": "0038_car_firmware_identity",
+      "breakpoints": true
     }
   ]
 }

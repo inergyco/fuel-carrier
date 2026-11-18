@@ -1,6 +1,15 @@
+import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Activity, KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import {
+  CarFirmwareIdentityModal,
+  CarOutputControls,
+  carDetailActionClassName,
+  carDetailActionRowClassName,
+  carDetailDriverChipClassName,
+  useCarOutputCommand,
+} from '@fuel-carrier/web-ui/cars'
+import { Activity, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
   ICON_STROKE_WIDTH,
@@ -23,6 +32,8 @@ export function CompanyCarDetailHeader({
 }: CompanyCarDetailHeaderProps) {
   const { LL } = useI18nContext()
   const mqtt = useCompanyCarMqttCredentials()
+  const outputs = useCarOutputCommand()
+  const [firmwareOpen, setFirmwareOpen] = useState(false)
   const detail = LL.internalPanel.companies.detail
   const driverName = custody.currentDriverName(car)
 
@@ -30,54 +41,96 @@ export function CompanyCarDetailHeader({
     mqtt.openMqttCredentials(car)
   }
 
-  return (
-    <div className="mb-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="min-w-0">
-          <p className="inline-flex max-w-full items-center gap-2 rounded-lg border border-base-content/10 bg-base-100/40 px-3 py-2 text-sm">
-            <User
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-            <span className="truncate">
-              <span className="text-base-content/45">{detail.driver()}: </span>
-              <span className="font-medium">{driverName}</span>
-            </span>
-          </p>
-        </div>
+  function handleOpenFirmwareIdentity() {
+    setFirmwareOpen(true)
+  }
 
-        <div className="flex w-full flex-wrap items-center justify-end gap-2 lg:w-auto lg:flex-nowrap">
-          <CarCustodyActions car={car} custody={custody} />
-          <Button
-            type="button"
-            variant="ghost"
-            className="h-11 w-auto shrink-0 border border-base-content/12 bg-base-100/45 px-4"
-            onClick={handleOpenMqttCredentials}
-          >
-            <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-              <KeyRound
-                className={iconSmClassName}
-                strokeWidth={ICON_STROKE_WIDTH}
-                aria-hidden
-              />
-              {detail.mqttCredentialsAction()}
-            </span>
-          </Button>
-          <Link
-            to="/companies/$companyId/cars/$carId/telemetry"
-            params={{ companyId: car.companyId, carId: car.id }}
-            className="btn btn-ghost inline-flex h-11 min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg border border-base-content/12 bg-base-100/45 px-4 font-normal normal-case tracking-normal whitespace-nowrap sm:w-auto"
-          >
-            <Activity
+  function handleCloseFirmwareIdentity() {
+    setFirmwareOpen(false)
+  }
+
+  function handleToggleOutputs() {
+    outputs.toggle(car.id)
+  }
+
+  return (
+    <div className="mb-6 flex flex-col gap-4">
+      <p className={carDetailDriverChipClassName}>
+        <User
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+        <span className="min-w-0 truncate">
+          <span className="text-base-content/45">{detail.driver()}: </span>
+          <span className="font-medium">{driverName}</span>
+        </span>
+      </p>
+
+      <div className={carDetailActionRowClassName}>
+        <CarCustodyActions car={car} custody={custody} />
+        <CarOutputControls
+          active={outputs.active}
+          pending={outputs.isPending}
+          onToggle={handleToggleOutputs}
+        />
+        <Button
+          type="button"
+          variant="ghost"
+          className={carDetailActionClassName}
+          onClick={handleOpenFirmwareIdentity}
+        >
+          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+            <Cpu
               className={iconSmClassName}
               strokeWidth={ICON_STROKE_WIDTH}
               aria-hidden
             />
-            {LL.common.carTelemetry.action()}
-          </Link>
-        </div>
+            {detail.firmwareIdentityAction()}
+          </span>
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className={carDetailActionClassName}
+          onClick={handleOpenMqttCredentials}
+        >
+          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+            <KeyRound
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {detail.mqttCredentialsAction()}
+          </span>
+        </Button>
+        <Link
+          to="/companies/$companyId/cars/$carId/telemetry"
+          params={{ companyId: car.companyId, carId: car.id }}
+          className={`btn btn-ghost inline-flex items-center justify-center gap-2 font-normal normal-case tracking-normal ${carDetailActionClassName}`}
+        >
+          <Activity
+            className={iconSmClassName}
+            strokeWidth={ICON_STROKE_WIDTH}
+            aria-hidden
+          />
+          {LL.common.carTelemetry.action()}
+        </Link>
       </div>
+
+      <CarFirmwareIdentityModal
+        open={firmwareOpen}
+        car={car}
+        labels={{
+          title: detail.firmwareIdentityTitle,
+          description: detail.firmwareIdentityDescription,
+          firmwareCompanyId: detail.firmwareCompanyId,
+          firmwareDeviceId: detail.firmwareDeviceId,
+          empty: LL.internalPanel.companies.emptyCell,
+          dismiss: detail.firmwareIdentityDismiss,
+        }}
+        onClose={handleCloseFirmwareIdentity}
+      />
 
       <CarMqttCredentialsModals
         target={mqtt.mqttTarget}

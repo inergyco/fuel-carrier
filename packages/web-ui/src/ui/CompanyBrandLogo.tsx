@@ -1,7 +1,7 @@
 import { Shield } from '../icons'
 import { cn } from '../utils'
 import { useEffect, useState } from 'react'
-import { ICON_STROKE_WIDTH } from './iconClassName'
+import { ICON_STROKE_WIDTH } from './IconButton'
 
 interface CompanyBrandLogoProps {
   logoUrl?: string | null

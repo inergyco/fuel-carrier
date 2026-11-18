@@ -20,6 +20,16 @@ export type Car = {
   tankCount: number;
   /** Liters per tank. */
   tankCapacityLiters: number;
+  /**
+   * Human-readable company code for truck firmware (`company.id` in MQTT JSON).
+   * Not the DB company UUID.
+   */
+  firmwareCompanyId: string | null;
+  /**
+   * Human-readable device code for truck firmware (`device.deviceId` in MQTT JSON).
+   * Not the car UUID used in MQTT topics.
+   */
+  firmwareDeviceId: string | null;
   note: string | null;
   /** ISO-8601 timestamptz when soft-deleted; null while live. */
   deletedAt: string | null;

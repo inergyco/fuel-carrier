@@ -7,6 +7,8 @@ export type CarMqttCredentials = {
   publishTopic: string;
   /** Topic pattern the device may subscribe to for ingest ACKs. */
   subscribeTopic: string;
+  /** Topic pattern the device may subscribe to for remote commands. */
+  commandSubscribeTopic: string;
   /** True when an existing credential was replaced. */
   rotated: boolean;
 };

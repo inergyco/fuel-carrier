@@ -7,7 +7,7 @@ import { X } from '../icons'
 import { cn } from '../utils'
 import { getDatePickerLocale } from './date-picker-locale'
 import { Field } from './Field'
-import { ICON_STROKE_WIDTH, iconSmClassName } from './iconClassName'
+import { ICON_STROKE_WIDTH, iconSmClassName } from './IconButton'
 import { useFieldIds } from './useFieldIds'
 import './localized-date-time-picker.css'
 

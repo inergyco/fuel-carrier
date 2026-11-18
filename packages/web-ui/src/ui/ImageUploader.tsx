@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { ImageIcon } from '../icons'
-import { ICON_STROKE_WIDTH } from './iconClassName'
+import { ICON_STROKE_WIDTH } from './IconButton'
 import {
   FileUploader,
   type FileUploaderLabels,

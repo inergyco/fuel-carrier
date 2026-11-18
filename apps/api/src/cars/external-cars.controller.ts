@@ -22,6 +22,7 @@ import type {
   CarDriverAssignment,
   CarFleetStats,
   CarMqttCredentials,
+  CarOutputCommandResult,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
@@ -31,6 +32,10 @@ import {
   updateExternalCarDtoSchema,
   type UpdateExternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create';
+import {
+  carOutputCommandDtoSchema,
+  type CarOutputCommandDto,
+} from '@fuel-carrier/shared-validation/car/output-command';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MustChangePasswordGuard } from '../auth/must-change-password.guard';
@@ -49,6 +54,7 @@ import {
 } from '../common/dto/resource-list-query.dto';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
+import { MqttOutputCommandService } from '../mqtt/mqtt-output-command.service';
 import {
   ApiEnvelopeBadRequestResponse,
   ApiEnvelopeNotFoundResponse,
@@ -59,7 +65,12 @@ import {
 import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
 import { CarFleetStatsDto } from '../swagger/dto/car-fleet-stats.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
+import {
+  CarOutputCommandRequestDto,
+  CarOutputCommandResultDto,
+} from '../swagger/dto/car-output-command.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
+import { redactFirmwareIdentity } from './cars-reader.service';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsService } from './cars.service';
 
@@ -73,6 +84,7 @@ export class ExternalCarsController {
     private readonly carsService: CarsService,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     private readonly mqttCredentialsService: MqttCredentialsService,
+    private readonly mqttOutputCommandService: MqttOutputCommandService,
   ) {}
 
   @Get()
@@ -92,12 +104,19 @@ export class ExternalCarsController {
   })
   @ApiEnvelopeOkPaginatedResponse(Object)
   @ApiEnvelopeUnauthorizedResponse()
-  list(
+  async list(
     @CurrentUser() user: AuthSession,
     @Query(new ZodValidationPipe(resourceListQuerySchema))
     query: ResourceListQueryDto,
   ): Promise<PaginatedResult<Car>> {
-    return this.carsService.list(tenantContextFromSession(user), query);
+    const result = await this.carsService.list(
+      tenantContextFromSession(user),
+      query,
+    );
+    return {
+      ...result,
+      items: result.items.map(redactFirmwareIdentity),
+    };
   }
 
   @Get('stats')
@@ -140,11 +159,15 @@ export class ExternalCarsController {
   @ApiEnvelopeOkResponse(Object)
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  getById(
+  async getById(
     @CurrentUser() user: AuthSession,
     @Param('id') id: string,
   ): Promise<Car> {
-    return this.carsService.getById(tenantContextFromSession(user), id);
+    const car = await this.carsService.getById(
+      tenantContextFromSession(user),
+      id,
+    );
+    return redactFirmwareIdentity(car);
   }
 
   @Post(':id/mqtt-credentials')
@@ -167,6 +190,31 @@ export class ExternalCarsController {
     );
   }
 
+  @Post(':id/outputs')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary:
+      'Enable or disable truck GPIO outputs (fuel system) via MQTT and wait for device ACK',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: CarOutputCommandRequestDto })
+  @ApiEnvelopeOkResponse(CarOutputCommandResultDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  sendOutputCommand(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(carOutputCommandDtoSchema))
+    dto: CarOutputCommandDto,
+  ): Promise<CarOutputCommandResult> {
+    return this.mqttOutputCommandService.sendOutputCommand(
+      tenantContextFromSession(user),
+      id,
+      dto.action,
+    );
+  }
+
   @Post()
   @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({ summary: 'Create a car for the authenticated company' })
@@ -174,15 +222,16 @@ export class ExternalCarsController {
   @ApiEnvelopeOkResponse(Object)
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  create(
+  async create(
     @CurrentUser() user: AuthSession,
     @Body(new ZodValidationPipe(createExternalCarDtoSchema))
     dto: CreateExternalCarDto,
   ): Promise<Car> {
-    return this.carsService.create(tenantContextFromSession(user), {
+    const car = await this.carsService.create(tenantContextFromSession(user), {
       ...dto,
       companyId: user.companyId!,
     });
+    return redactFirmwareIdentity(car);
   }
 
   @Patch(':id')
@@ -196,13 +245,18 @@ export class ExternalCarsController {
   @ApiEnvelopeBadRequestResponse()
   @ApiEnvelopeNotFoundResponse()
   @ApiEnvelopeUnauthorizedResponse()
-  update(
+  async update(
     @CurrentUser() user: AuthSession,
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateExternalCarDtoSchema))
     dto: UpdateExternalCarDto,
   ): Promise<Car> {
-    return this.carsService.update(tenantContextFromSession(user), id, dto);
+    const car = await this.carsService.update(
+      tenantContextFromSession(user),
+      id,
+      dto,
+    );
+    return redactFirmwareIdentity(car);
   }
 
   @Delete(':id')

@@ -1,5 +1,5 @@
 import type { LucideIcon } from '../../icons'
-import { ICON_STROKE_WIDTH } from '../../ui/iconClassName'
+import { ICON_STROKE_WIDTH } from '../../ui/IconButton'
 import { cn } from '../../utils'
 
 type CarCardMetaRowProps = {

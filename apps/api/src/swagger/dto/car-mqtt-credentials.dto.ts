@@ -27,6 +27,13 @@ export class CarMqttCredentialsDto {
   subscribeTopic!: string;
 
   @ApiProperty({
+    description:
+      'Topic pattern the device may subscribe to for remote commands',
+    example: 'command/a1b2c3d4-e5f6-7890-abcd-ef1234567890/#',
+  })
+  commandSubscribeTopic!: string;
+
+  @ApiProperty({
     description: 'True when an existing credential was replaced',
     example: false,
   })

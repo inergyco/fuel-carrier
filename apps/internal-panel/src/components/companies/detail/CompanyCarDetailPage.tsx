@@ -75,6 +75,7 @@ export function CompanyCarDetailPage({
         <CarOverviewSection
           car={car}
           currentDriverName={overviewDriverName}
+          showFirmwareIdentity
           labels={{
             note: LL.internalPanel.companies.note,
             driver: detailLabels.driver,
@@ -82,6 +83,8 @@ export function CompanyCarDetailPage({
             fuelType: detailLabels.fuelType,
             fuelTypeHighGrade: detailLabels.fuelTypeHighGrade,
             fuelTypeNormal: detailLabels.fuelTypeNormal,
+            firmwareCompanyId: detailLabels.firmwareCompanyId,
+            firmwareDeviceId: detailLabels.firmwareDeviceId,
             emptyCell: LL.internalPanel.companies.emptyCell,
           }}
         />

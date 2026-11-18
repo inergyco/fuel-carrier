@@ -14,6 +14,13 @@ export const CAR_POSTGRES_MAPPINGS: PostgresConstraintMapping[] = [
   },
   {
     code: POSTGRES_UNIQUE_VIOLATION,
+    constraint: 'cars_firmware_identity_unique',
+    field: 'firmwareDeviceId',
+    message: 'A car with this firmware company/device ID pair already exists',
+  },
+
+  {
+    code: POSTGRES_UNIQUE_VIOLATION,
     constraint: 'cars_driver_id_unique',
     field: 'driverId',
     message: 'This driver is already assigned to another vehicle',

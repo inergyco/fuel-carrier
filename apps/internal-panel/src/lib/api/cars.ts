@@ -38,6 +38,8 @@ export type CarFormValues = {
   hasHighGrade: boolean;
   tankCount: number;
   tankCapacityLiters: number;
+  firmwareCompanyId: string;
+  firmwareDeviceId: string;
 };
 
 export type FetchCarsParams = ResourceListParams & {
@@ -52,6 +54,8 @@ export function carToFormValues(car?: Car): CarFormValues {
     hasHighGrade: car?.hasHighGrade ?? false,
     tankCount: car?.tankCount ?? DEFAULT_TANK_COUNT,
     tankCapacityLiters: car?.tankCapacityLiters ?? DEFAULT_TANK_CAPACITY_LITERS,
+    firmwareCompanyId: car?.firmwareCompanyId ?? "",
+    firmwareDeviceId: car?.firmwareDeviceId ?? "",
   };
 }
 

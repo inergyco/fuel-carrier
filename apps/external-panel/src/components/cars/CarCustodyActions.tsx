@@ -1,6 +1,7 @@
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { UserPlus, UserRoundPen } from '@fuel-carrier/web-ui/icons'
+import { UserRoundPen } from '@fuel-carrier/web-ui/icons'
+import { carDetailPrimaryActionClassName } from '@fuel-carrier/web-ui/cars'
 import {
   Button,
   ICON_STROKE_WIDTH,
@@ -15,17 +16,13 @@ interface CarCustodyActionsProps {
   layout?: 'header' | 'compact'
 }
 
+/** Cars always have a driver (required at create) — only change is offered. */
 export function CarCustodyActions({
   car,
   custody,
   layout = 'header',
 }: CarCustodyActionsProps) {
   const { LL } = useI18nContext()
-  const hasDriver = Boolean(car.driverId)
-
-  function handleAssign() {
-    custody.openAssign(car)
-  }
 
   function handleChange() {
     custody.openChange(car)
@@ -33,59 +30,36 @@ export function CarCustodyActions({
 
   if (layout === 'compact') {
     return (
-      <div className="flex flex-nowrap items-center gap-2">
-        {hasDriver ? (
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableEditActionClassName()}
-            onClick={handleChange}
-            aria-label={LL.externalPanel.cars.changeDriver()}
-          >
-            <UserRoundPen
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            variant="ghost"
-            className={dataTableEditActionClassName()}
-            onClick={handleAssign}
-            aria-label={LL.externalPanel.cars.assignDriver()}
-          >
-            <UserPlus
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-          </Button>
-        )}
-      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        className={dataTableEditActionClassName()}
+        onClick={handleChange}
+        aria-label={LL.externalPanel.cars.changeDriver()}
+      >
+        <UserRoundPen
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+      </Button>
     )
   }
 
   return (
-    <div className="flex shrink-0">
-      {hasDriver ? (
-        <Button
-          type="button"
-          className="w-auto whitespace-nowrap px-5"
-          onClick={handleChange}
-        >
-          {LL.externalPanel.cars.changeDriver()}
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          className="whitespace-nowrap px-5"
-          onClick={handleAssign}
-        >
-          {LL.externalPanel.cars.assignDriver()}
-        </Button>
-      )}
-    </div>
+    <Button
+      type="button"
+      className={carDetailPrimaryActionClassName}
+      onClick={handleChange}
+    >
+      <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+        <UserRoundPen
+          className={iconSmClassName}
+          strokeWidth={ICON_STROKE_WIDTH}
+          aria-hidden
+        />
+        {LL.externalPanel.cars.changeDriver()}
+      </span>
+    </Button>
   )
 }

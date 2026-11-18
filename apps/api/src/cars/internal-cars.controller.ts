@@ -23,6 +23,7 @@ import type {
   CarDriverAssignment,
   CarFleetStats,
   CarMqttCredentials,
+  CarOutputCommandResult,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import { UserRole } from '@fuel-carrier/shared-types';
@@ -32,6 +33,10 @@ import {
   updateInternalCarDtoSchema,
   type UpdateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create';
+import {
+  carOutputCommandDtoSchema,
+  type CarOutputCommandDto,
+} from '@fuel-carrier/shared-validation/car/output-command';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import { Roles } from '../auth/roles.decorator';
@@ -48,6 +53,7 @@ import {
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { internalTenantContext } from '../database/tenant-context.utils';
 import { MqttCredentialsService } from '../mqtt/mqtt-credentials.service';
+import { MqttOutputCommandService } from '../mqtt/mqtt-output-command.service';
 import {
   ApiEnvelopeOkPaginatedResponse,
   ApiEnvelopeBadRequestResponse,
@@ -58,6 +64,10 @@ import {
 import { CarDriverAssignmentDto } from '../swagger/dto/car-driver-assignment.dto';
 import { CarFleetStatsDto } from '../swagger/dto/car-fleet-stats.dto';
 import { CarMqttCredentialsDto } from '../swagger/dto/car-mqtt-credentials.dto';
+import {
+  CarOutputCommandRequestDto,
+  CarOutputCommandResultDto,
+} from '../swagger/dto/car-output-command.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsService } from './cars.service';
@@ -72,6 +82,7 @@ export class InternalCarsController {
     private readonly carsService: CarsService,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     private readonly mqttCredentialsService: MqttCredentialsService,
+    private readonly mqttOutputCommandService: MqttOutputCommandService,
   ) {}
 
   @Get()
@@ -130,6 +141,30 @@ export class InternalCarsController {
     return this.mqttCredentialsService.provisionForCar(
       internalTenantContext(user),
       id,
+    );
+  }
+
+  @Post(':id/outputs')
+  @ApiOperation({
+    summary:
+      'Enable or disable truck GPIO outputs (fuel system) via MQTT and wait for device ACK',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: CarOutputCommandRequestDto })
+  @ApiEnvelopeOkResponse(CarOutputCommandResultDto)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  sendOutputCommand(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(carOutputCommandDtoSchema))
+    dto: CarOutputCommandDto,
+  ): Promise<CarOutputCommandResult> {
+    return this.mqttOutputCommandService.sendOutputCommand(
+      internalTenantContext(user),
+      id,
+      dto.action,
     );
   }
 

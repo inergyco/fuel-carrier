@@ -130,6 +130,48 @@ type RootTranslation = {
 			 */
 			clear: string
 		}
+		carOutput: {
+			/**
+			 * A​c​t​i​v​e
+			 */
+			active: string
+			/**
+			 * I​n​a​c​t​i​v​e
+			 */
+			inactive: string
+			/**
+			 * E​n​a​b​l​e​ ​t​r​u​c​k
+			 */
+			enable: string
+			/**
+			 * D​i​s​a​b​l​e​ ​t​r​u​c​k
+			 */
+			disable: string
+			/**
+			 * E​n​a​b​l​i​n​g​…
+			 */
+			enabling: string
+			/**
+			 * D​i​s​a​b​l​i​n​g​…
+			 */
+			disabling: string
+			/**
+			 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​e​n​a​b​l​e​d​.
+			 */
+			enabledToast: string
+			/**
+			 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​d​i​s​a​b​l​e​d​.
+			 */
+			disabledToast: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​s​ ​a​r​e​ ​n​o​t​ ​s​e​t​ ​—​ ​a​d​d​ ​t​h​e​m​ ​o​n​ ​t​h​e​ ​v​e​h​i​c​l​e​,​ ​o​r​ ​w​a​i​t​ ​f​o​r​ ​t​e​l​e​m​e​t​r​y​.
+			 */
+			firmwareIdentityRequired: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​t​r​u​c​k​ ​o​u​t​p​u​t​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			failed: string
+		}
 		carTelemetry: {
 			/**
 			 * T​e​l​e​m​e​t​r​y​ ​r​e​c​o​r​d​s
@@ -723,6 +765,16 @@ type RootTranslation = {
 		 * @param {number} max
 		 */
 		noteTooLong: RequiredParams<'max'>
+		/**
+		 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​ ​I​D​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		firmwareCompanyIdTooLong: RequiredParams<'max'>
+		/**
+		 * F​i​r​m​w​a​r​e​ ​d​e​v​i​c​e​ ​I​D​ ​m​u​s​t​ ​b​e​ ​a​t​ ​m​o​s​t​ ​{​m​a​x​}​ ​c​h​a​r​a​c​t​e​r​s
+		 * @param {number} max
+		 */
+		firmwareDeviceIdTooLong: RequiredParams<'max'>
 		/**
 		 * T​a​n​k​ ​c​o​u​n​t​ ​m​u​s​t​ ​b​e​ ​1​ ​o​r​ ​3
 		 */
@@ -1693,6 +1745,38 @@ type RootTranslation = {
 				 */
 				tankCapacityHint: string
 				/**
+				 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​ ​I​D
+				 */
+				firmwareCompanyId: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​d​e​v​i​c​e​ ​I​D
+				 */
+				firmwareDeviceId: string
+				/**
+				 * H​u​m​a​n​-​r​e​a​d​a​b​l​e​ ​I​D​s​ ​f​l​a​s​h​e​d​ ​o​n​ ​t​h​e​ ​t​r​u​c​k​ ​(​e​.​g​.​ ​C​O​M​P​A​N​Y​_​0​0​1​ ​/​ ​T​R​U​C​K​_​1​2​)​.​ ​M​u​s​t​ ​m​a​t​c​h​ ​v​e​h​i​c​l​e​_​c​o​n​f​i​g​.​h​.
+				 */
+				firmwareIdentityHint: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​I​D​s
+				 */
+				firmwareIdentityAction: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​i​d​e​n​t​i​t​y
+				 */
+				firmwareIdentityTitle: string
+				/**
+				 * H​u​m​a​n​-​r​e​a​d​a​b​l​e​ ​c​o​m​p​a​n​y​ ​a​n​d​ ​d​e​v​i​c​e​ ​I​D​s​ ​e​x​p​e​c​t​e​d​ ​b​y​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+				 */
+				firmwareIdentityDescription: string
+				/**
+				 * D​o​n​e
+				 */
+				firmwareIdentityDismiss: string
+				/**
+				 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​f​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​ ​p​a​i​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+				 */
+				duplicateFirmwareIdentity: string
+				/**
 				 * F​u​e​l​ ​t​y​p​e
 				 */
 				fuelType: string
@@ -1872,6 +1956,10 @@ type RootTranslation = {
 				 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​A​C​K​)
 				 */
 				mqttCredentialsSubscribeTopic: string
+				/**
+				 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​c​o​m​m​a​n​d​s​)
+				 */
+				mqttCredentialsCommandTopic: string
 				/**
 				 * D​o​n​e
 				 */
@@ -2249,6 +2337,14 @@ type RootTranslation = {
 					 */
 					carMqttCredentialsRotated: string
 					/**
+					 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​e​n​a​b​l​e​d
+					 */
+					carOutputEnabled: string
+					/**
+					 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​d​i​s​a​b​l​e​d
+					 */
+					carOutputDisabled: string
+					/**
 					 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 					 */
 					authLoginSucceeded: string
@@ -2330,6 +2426,14 @@ type RootTranslation = {
 					 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
 					 */
 					driverId: string
+					/**
+					 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​ ​I​D
+					 */
+					firmwareCompanyId: string
+					/**
+					 * F​i​r​m​w​a​r​e​ ​d​e​v​i​c​e​ ​I​D
+					 */
+					firmwareDeviceId: string
 					/**
 					 * M​o​b​i​l​e​ ​n​u​m​b​e​r
 					 */
@@ -3321,6 +3425,38 @@ type RootTranslation = {
 			 */
 			tankCapacityHint: string
 			/**
+			 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​ ​I​D
+			 */
+			firmwareCompanyId: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​d​e​v​i​c​e​ ​I​D
+			 */
+			firmwareDeviceId: string
+			/**
+			 * H​u​m​a​n​-​r​e​a​d​a​b​l​e​ ​I​D​s​ ​f​l​a​s​h​e​d​ ​o​n​ ​t​h​e​ ​t​r​u​c​k​ ​(​e​.​g​.​ ​C​O​M​P​A​N​Y​_​0​0​1​ ​/​ ​T​R​U​C​K​_​1​2​)​.​ ​M​u​s​t​ ​m​a​t​c​h​ ​v​e​h​i​c​l​e​_​c​o​n​f​i​g​.​h​.
+			 */
+			firmwareIdentityHint: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​I​D​s
+			 */
+			firmwareIdentityAction: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​i​d​e​n​t​i​t​y
+			 */
+			firmwareIdentityTitle: string
+			/**
+			 * H​u​m​a​n​-​r​e​a​d​a​b​l​e​ ​c​o​m​p​a​n​y​ ​a​n​d​ ​d​e​v​i​c​e​ ​I​D​s​ ​e​x​p​e​c​t​e​d​ ​b​y​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+			 */
+			firmwareIdentityDescription: string
+			/**
+			 * D​o​n​e
+			 */
+			firmwareIdentityDismiss: string
+			/**
+			 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​f​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​ ​p​a​i​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
+			 */
+			duplicateFirmwareIdentity: string
+			/**
 			 * F​u​e​l​ ​t​y​p​e
 			 */
 			fuelType: string
@@ -3559,6 +3695,10 @@ type RootTranslation = {
 			 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​A​C​K​)
 			 */
 			mqttCredentialsSubscribeTopic: string
+			/**
+			 * S​u​b​s​c​r​i​b​e​ ​t​o​p​i​c​ ​(​c​o​m​m​a​n​d​s​)
+			 */
+			mqttCredentialsCommandTopic: string
 			/**
 			 * D​o​n​e
 			 */
@@ -3972,6 +4112,14 @@ type RootTranslation = {
 				 */
 				carMqttCredentialsRotated: string
 				/**
+				 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​e​n​a​b​l​e​d
+				 */
+				carOutputEnabled: string
+				/**
+				 * T​r​u​c​k​ ​o​u​t​p​u​t​s​ ​d​i​s​a​b​l​e​d
+				 */
+				carOutputDisabled: string
+				/**
 				 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 				 */
 				authLoginSucceeded: string
@@ -4049,6 +4197,14 @@ type RootTranslation = {
 				 * A​s​s​i​g​n​e​d​ ​d​r​i​v​e​r
 				 */
 				driverId: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​ ​I​D
+				 */
+				firmwareCompanyId: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​d​e​v​i​c​e​ ​I​D
+				 */
+				firmwareDeviceId: string
 				/**
 				 * M​o​b​i​l​e​ ​n​u​m​b​e​r
 				 */
@@ -4193,6 +4349,48 @@ export type TranslationFunctions = {
 			 * Clear date range
 			 */
 			clear: () => LocalizedString
+		}
+		carOutput: {
+			/**
+			 * Active
+			 */
+			active: () => LocalizedString
+			/**
+			 * Inactive
+			 */
+			inactive: () => LocalizedString
+			/**
+			 * Enable truck
+			 */
+			enable: () => LocalizedString
+			/**
+			 * Disable truck
+			 */
+			disable: () => LocalizedString
+			/**
+			 * Enabling…
+			 */
+			enabling: () => LocalizedString
+			/**
+			 * Disabling…
+			 */
+			disabling: () => LocalizedString
+			/**
+			 * Truck outputs enabled.
+			 */
+			enabledToast: () => LocalizedString
+			/**
+			 * Truck outputs disabled.
+			 */
+			disabledToast: () => LocalizedString
+			/**
+			 * Firmware company/device IDs are not set — add them on the vehicle, or wait for telemetry.
+			 */
+			firmwareIdentityRequired: () => LocalizedString
+			/**
+			 * Could not update truck outputs. Please try again.
+			 */
+			failed: () => LocalizedString
 		}
 		carTelemetry: {
 			/**
@@ -4764,6 +4962,14 @@ export type TranslationFunctions = {
 		 * Note must be at most {max} characters
 		 */
 		noteTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Firmware company ID must be at most {max} characters
+		 */
+		firmwareCompanyIdTooLong: (arg: { max: number }) => LocalizedString
+		/**
+		 * Firmware device ID must be at most {max} characters
+		 */
+		firmwareDeviceIdTooLong: (arg: { max: number }) => LocalizedString
 		/**
 		 * Tank count must be 1 or 3
 		 */
@@ -5699,6 +5905,38 @@ export type TranslationFunctions = {
 				 */
 				tankCapacityHint: () => LocalizedString
 				/**
+				 * Firmware company ID
+				 */
+				firmwareCompanyId: () => LocalizedString
+				/**
+				 * Firmware device ID
+				 */
+				firmwareDeviceId: () => LocalizedString
+				/**
+				 * Human-readable IDs flashed on the truck (e.g. COMPANY_001 / TRUCK_12). Must match vehicle_config.h.
+				 */
+				firmwareIdentityHint: () => LocalizedString
+				/**
+				 * Firmware IDs
+				 */
+				firmwareIdentityAction: () => LocalizedString
+				/**
+				 * Firmware identity
+				 */
+				firmwareIdentityTitle: () => LocalizedString
+				/**
+				 * Human-readable company and device IDs expected by the truck firmware.
+				 */
+				firmwareIdentityDescription: () => LocalizedString
+				/**
+				 * Done
+				 */
+				firmwareIdentityDismiss: () => LocalizedString
+				/**
+				 * A vehicle with this firmware company/device ID pair already exists.
+				 */
+				duplicateFirmwareIdentity: () => LocalizedString
+				/**
 				 * Fuel type
 				 */
 				fuelType: () => LocalizedString
@@ -5874,6 +6112,10 @@ export type TranslationFunctions = {
 				 * Subscribe topic (ACK)
 				 */
 				mqttCredentialsSubscribeTopic: () => LocalizedString
+				/**
+				 * Subscribe topic (commands)
+				 */
+				mqttCredentialsCommandTopic: () => LocalizedString
 				/**
 				 * Done
 				 */
@@ -6244,6 +6486,14 @@ export type TranslationFunctions = {
 					 */
 					carMqttCredentialsRotated: () => LocalizedString
 					/**
+					 * Truck outputs enabled
+					 */
+					carOutputEnabled: () => LocalizedString
+					/**
+					 * Truck outputs disabled
+					 */
+					carOutputDisabled: () => LocalizedString
+					/**
 					 * Login succeeded
 					 */
 					authLoginSucceeded: () => LocalizedString
@@ -6325,6 +6575,14 @@ export type TranslationFunctions = {
 					 * Assigned driver
 					 */
 					driverId: () => LocalizedString
+					/**
+					 * Firmware company ID
+					 */
+					firmwareCompanyId: () => LocalizedString
+					/**
+					 * Firmware device ID
+					 */
+					firmwareDeviceId: () => LocalizedString
 					/**
 					 * Mobile number
 					 */
@@ -7302,6 +7560,38 @@ export type TranslationFunctions = {
 			 */
 			tankCapacityHint: () => LocalizedString
 			/**
+			 * Firmware company ID
+			 */
+			firmwareCompanyId: () => LocalizedString
+			/**
+			 * Firmware device ID
+			 */
+			firmwareDeviceId: () => LocalizedString
+			/**
+			 * Human-readable IDs flashed on the truck (e.g. COMPANY_001 / TRUCK_12). Must match vehicle_config.h.
+			 */
+			firmwareIdentityHint: () => LocalizedString
+			/**
+			 * Firmware IDs
+			 */
+			firmwareIdentityAction: () => LocalizedString
+			/**
+			 * Firmware identity
+			 */
+			firmwareIdentityTitle: () => LocalizedString
+			/**
+			 * Human-readable company and device IDs expected by the truck firmware.
+			 */
+			firmwareIdentityDescription: () => LocalizedString
+			/**
+			 * Done
+			 */
+			firmwareIdentityDismiss: () => LocalizedString
+			/**
+			 * A vehicle with this firmware company/device ID pair already exists.
+			 */
+			duplicateFirmwareIdentity: () => LocalizedString
+			/**
 			 * Fuel type
 			 */
 			fuelType: () => LocalizedString
@@ -7533,6 +7823,10 @@ export type TranslationFunctions = {
 			 * Subscribe topic (ACK)
 			 */
 			mqttCredentialsSubscribeTopic: () => LocalizedString
+			/**
+			 * Subscribe topic (commands)
+			 */
+			mqttCredentialsCommandTopic: () => LocalizedString
 			/**
 			 * Done
 			 */
@@ -7939,6 +8233,14 @@ export type TranslationFunctions = {
 				 */
 				carMqttCredentialsRotated: () => LocalizedString
 				/**
+				 * Truck outputs enabled
+				 */
+				carOutputEnabled: () => LocalizedString
+				/**
+				 * Truck outputs disabled
+				 */
+				carOutputDisabled: () => LocalizedString
+				/**
 				 * Login succeeded
 				 */
 				authLoginSucceeded: () => LocalizedString
@@ -8016,6 +8318,14 @@ export type TranslationFunctions = {
 				 * Assigned driver
 				 */
 				driverId: () => LocalizedString
+				/**
+				 * Firmware company ID
+				 */
+				firmwareCompanyId: () => LocalizedString
+				/**
+				 * Firmware device ID
+				 */
+				firmwareDeviceId: () => LocalizedString
 				/**
 				 * Mobile number
 				 */

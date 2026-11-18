@@ -1,13 +1,13 @@
 import {
-  createCarFormSchemas,
+  createInternalCarFormSchemas,
   type CarValidationMessages,
 } from '@fuel-carrier/shared-validation/car/create'
 import { z } from 'zod'
 
 export const createCarFormSchemaPair = (messages: CarValidationMessages) =>
-  createCarFormSchemas(messages)
+  createInternalCarFormSchemas(messages)
 
-type CarFormSchemas = ReturnType<typeof createCarFormSchemas>
+type CarFormSchemas = ReturnType<typeof createInternalCarFormSchemas>
 
 export type CreateCarFormOutput = z.output<CarFormSchemas['createSchema']>
 export type CarFormInput =

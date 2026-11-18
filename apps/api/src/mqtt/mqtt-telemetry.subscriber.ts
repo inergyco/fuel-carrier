@@ -1,97 +1,37 @@
-import {
-  Injectable,
-  Logger,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import mqtt, { type MqttClient } from 'mqtt';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
-import {
-  buildMqttAckTopic,
-  buildMqttSharedSubscribeTopic,
-} from './mqtt-secret.utils';
+import { MqttBrokerService } from './mqtt-broker.service';
+import { MqttOutputCommandService } from './mqtt-output-command.service';
+import { buildMqttAckTopic } from './mqtt-secret.utils';
 import {
   buildTelemetryAck,
   parseTelemetryPayload,
   type TelemetrySample,
 } from './mqtt-telemetry.utils';
+import { isOutputAckTopic } from './mqtt-output-command.utils';
 
 @Injectable()
-export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
+export class MqttTelemetrySubscriber implements OnModuleInit {
   private readonly logger = new Logger(MqttTelemetrySubscriber.name);
-  private client: MqttClient | null = null;
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly broker: MqttBrokerService,
     private readonly carTelemetryService: CarTelemetryService,
+    private readonly outputCommandService: MqttOutputCommandService,
   ) {}
 
   onModuleInit(): void {
-    const url = this.configService.get<string>('MQTT_URL');
-    if (!url) {
-      this.logger.log('MQTT_URL not set — telemetry subscriber disabled');
-      return;
-    }
-
-    const username = this.configService.get<string>('MQTT_USERNAME');
-    const password = this.configService.get<string>('MQTT_PASSWORD');
-    const topicFilter =
-      this.configService.get<string>('MQTT_TELEMETRY_TOPIC') ?? 'telemetry/#';
-    const shareGroup =
-      this.configService.get<string>('MQTT_SHARE_GROUP') ?? 'fuel-carrier';
-    const topic = resolveTelemetrySubscribeTopic({ topicFilter, shareGroup });
-
-    if (!username || !password) {
-      this.logger.error(
-        'MQTT_URL is set but MQTT_USERNAME / MQTT_PASSWORD are missing — subscriber disabled',
-      );
-      return;
-    }
-
-    this.client = mqtt.connect(url, {
-      username,
-      password,
-      // Distinct per process so two systemd instances do not kick each other off.
-      clientId: `fuel-carrier-api-${process.pid}`,
-      reconnectPeriod: 5_000,
-      connectTimeout: 10_000,
-    });
-
-    this.client.on('connect', () => {
-      this.logger.log(`Connected to MQTT broker; subscribing to ${topic}`);
-      this.client?.subscribe(topic, (error) => {
-        if (error) {
-          this.logger.error(`Failed to subscribe to ${topic}`, error.stack);
-        }
-      });
-    });
-
-    this.client.on('reconnect', () => {
-      this.logger.warn('Reconnecting to MQTT broker…');
-    });
-
-    this.client.on('error', (error) => {
-      this.logger.error(`MQTT client error: ${error.message}`, error.stack);
-    });
-
-    this.client.on('message', (messageTopic, payload) => {
-      void this._handleMessage(messageTopic, payload);
-    });
-  }
-
-  async onModuleDestroy(): Promise<void> {
-    if (!this.client) {
-      return;
-    }
-
-    await new Promise<void>((resolve) => {
-      this.client?.end(false, {}, () => resolve());
-    });
-    this.client = null;
+    this.broker.addMessageHandler((topic, payload) =>
+      this._handleMessage(topic, payload),
+    );
   }
 
   private async _handleMessage(topic: string, payload: Buffer): Promise<void> {
+    // Output ACKs are handled by MqttOutputCommandService on the same fan-out.
+    if (isOutputAckTopic(topic)) {
+      return;
+    }
+
     const sample: TelemetrySample | null = parseTelemetryPayload(
       topic,
       payload,
@@ -102,6 +42,11 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     }
 
     try {
+      await this.outputCommandService.rememberDeviceIdentity(sample.carId, {
+        companyCode: sample.companyId,
+        deviceId: sample.deviceId,
+      });
+
       const stored =
         await this.carTelemetryService.ingestDeviceTelemetry(sample);
       if (!stored) {
@@ -118,7 +63,7 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
   }
 
   private async _publishAck(sample: TelemetrySample): Promise<void> {
-    if (!this.client?.connected) {
+    if (!this.broker.isConnected) {
       this.logger.warn(
         `Skipping ACK for car ${sample.carId}: MQTT client not connected`,
       );
@@ -129,27 +74,13 @@ export class MqttTelemetrySubscriber implements OnModuleInit, OnModuleDestroy {
     const ack = buildTelemetryAck({ sample });
     const body = JSON.stringify(ack);
 
-    await new Promise<void>((resolve) => {
-      this.client?.publish(ackTopic, body, { qos: 2 }, (error) => {
-        if (error) {
-          this.logger.error(
-            `Failed to publish ACK on ${ackTopic}`,
-            error.stack,
-          );
-        }
-        resolve();
-      });
-    });
+    try {
+      await this.broker.publish(ackTopic, body, { qos: 2 });
+    } catch (error) {
+      this.logger.error(
+        `Failed to publish ACK on ${ackTopic}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
   }
-}
-
-function resolveTelemetrySubscribeTopic(options: {
-  topicFilter: string;
-  shareGroup: string;
-}): string {
-  if (options.shareGroup === 'none') {
-    return options.topicFilter;
-  }
-
-  return buildMqttSharedSubscribeTopic(options);
 }

@@ -27,7 +27,15 @@ export type { BadgeVariant, BadgeSize } from './Badge'
 export { Avatar, avatarSizeClassName } from './Avatar'
 export type { AvatarSize } from './Avatar'
 export { ImagePreviewModal } from './ImagePreviewModal'
-export { IconButton, iconButtonClassName } from './IconButton'
+export {
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+  iconMdClassName,
+  iconLgClassName,
+  iconXlClassName,
+  IconButton,
+  iconButtonClassName,
+} from './IconButton'
 export type { IconButtonProps } from './IconButton'
 export { ThemeToggle } from './ThemeToggle'
 export { ThemeProvider, useTheme } from './theme-context'
@@ -39,13 +47,6 @@ export { PanelShell } from './PanelShell'
 export type { PanelNavItem } from './PanelShell'
 export { PageHeader } from './PageHeader'
 export type { PageHeaderProps } from './PageHeader'
-export {
-  ICON_STROKE_WIDTH,
-  iconSmClassName,
-  iconMdClassName,
-  iconLgClassName,
-  iconXlClassName,
-} from './iconClassName'
 export { ConfirmModal } from './ConfirmModal'
 export { CompanyBrandLogo } from './CompanyBrandLogo'
 export { FileUploader } from './FileUploader'

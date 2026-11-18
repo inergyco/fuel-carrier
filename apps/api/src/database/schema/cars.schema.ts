@@ -40,6 +40,16 @@ export const cars = pgTable(
     tankCapacityLiters: integer('tank_capacity_liters')
       .notNull()
       .default(DEFAULT_TANK_CAPACITY_LITERS),
+    /**
+     * Human-readable company code expected by truck firmware (`company.id` in MQTT JSON).
+     * Distinct from the DB company UUID.
+     */
+    firmwareCompanyId: varchar('firmware_company_id', { length: 64 }),
+    /**
+     * Human-readable device code expected by truck firmware (`device.deviceId` in MQTT JSON).
+     * Distinct from the car UUID used in MQTT topics.
+     */
+    firmwareDeviceId: varchar('firmware_device_id', { length: 64 }),
     note: text('note'),
     ...softDeleteColumn(),
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -57,6 +67,15 @@ export const cars = pgTable(
     uniqueIndex('cars_license_plate_unique')
       .on(table.licensePlate)
       .where(sql`${table.deletedAt} IS NULL`),
+    /**
+     * Firmware identity pair must be unique among live cars.
+     * Rows with either side null are excluded (not yet configured).
+     */
+    uniqueIndex('cars_firmware_identity_unique')
+      .on(table.firmwareCompanyId, table.firmwareDeviceId)
+      .where(
+        sql`${table.deletedAt} IS NULL AND ${table.firmwareCompanyId} IS NOT NULL AND ${table.firmwareDeviceId} IS NOT NULL`,
+      ),
     check('cars_tank_count_check', sql`${table.tankCount} IN (1, 3)`),
     check(
       'cars_tank_capacity_liters_check',

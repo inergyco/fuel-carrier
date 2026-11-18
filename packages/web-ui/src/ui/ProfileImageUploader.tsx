@@ -5,7 +5,7 @@ import {
   isImageUploadMimeType,
 } from '@fuel-carrier/shared-validation/image-upload/constants'
 import { User } from '../icons'
-import { ICON_STROKE_WIDTH } from './iconClassName'
+import { ICON_STROKE_WIDTH } from './IconButton'
 import { ImageUploader } from './ImageUploader'
 
 interface ProfileImageUploaderProps {

@@ -24,6 +24,7 @@ import {
   generateMqttSecret,
   hashMqttSecret,
   buildMqttAckSubscribeTopic,
+  buildMqttCommandSubscribeTopic,
   buildMqttTelemetryTopic,
 } from './mqtt-secret.utils';
 
@@ -47,6 +48,7 @@ export class MqttCredentialsService {
     const username = carId;
     const publishTopic = buildMqttTelemetryTopic(carId);
     const subscribeTopic = buildMqttAckSubscribeTopic(carId);
+    const commandSubscribeTopic = buildMqttCommandSubscribeTopic(carId);
 
     return this.tenantDb.run(context, async (tx) => {
       const [car] = await tx
@@ -117,6 +119,11 @@ export class MqttCredentialsService {
           topic: subscribeTopic,
           access: 'read',
         },
+        {
+          clientId,
+          topic: commandSubscribeTopic,
+          access: 'read',
+        },
       ]);
 
       const companyName = await fetchCompanyName(tx, car.companyId);
@@ -142,6 +149,7 @@ export class MqttCredentialsService {
         password,
         publishTopic,
         subscribeTopic,
+        commandSubscribeTopic,
         rotated,
       };
     });

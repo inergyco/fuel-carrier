@@ -1,6 +1,6 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Moon, Sun } from '@fuel-carrier/web-ui/icons'
-import { ICON_STROKE_WIDTH, iconMdClassName } from './iconClassName'
+import { ICON_STROKE_WIDTH, iconMdClassName } from './IconButton'
 import { Button } from './Button'
 import { useTheme } from './theme-context'
 

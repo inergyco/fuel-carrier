@@ -14,6 +14,7 @@ import {
 
 export const CAR_LICENSE_PLATE_MAX_LENGTH = 32;
 export const CAR_NOTE_MAX_LENGTH = 2000;
+export const CAR_FIRMWARE_ID_MAX_LENGTH = 64;
 
 export {
   IRANIAN_LICENSE_PLATE_LETTERS,
@@ -41,6 +42,8 @@ export type CarValidationMessages = {
   licensePlateInvalid: string;
   driverRequired: string;
   noteTooLong: string;
+  firmwareCompanyIdTooLong: string;
+  firmwareDeviceIdTooLong: string;
   tankCountInvalid: string;
   tankCapacityInvalid: string;
   tankCapacityOutOfRange: string;
@@ -52,6 +55,8 @@ const defaultCarValidationMessages: CarValidationMessages = {
   licensePlateInvalid: "Enter a valid Iranian license plate",
   driverRequired: "Select a driver",
   noteTooLong: `Note must be at most ${CAR_NOTE_MAX_LENGTH} characters`,
+  firmwareCompanyIdTooLong: `Firmware company ID must be at most ${CAR_FIRMWARE_ID_MAX_LENGTH} characters`,
+  firmwareDeviceIdTooLong: `Firmware device ID must be at most ${CAR_FIRMWARE_ID_MAX_LENGTH} characters`,
   tankCountInvalid: "Tank count must be 1 or 3",
   tankCapacityInvalid: "Tank capacity must be a whole number of liters",
   tankCapacityOutOfRange: `Tank capacity must be between ${MIN_TANK_CAPACITY_LITERS} and ${MAX_TANK_CAPACITY_LITERS} liters`,
@@ -80,6 +85,20 @@ const carHasHighGradeField = z.boolean();
 
 function createCarNoteField(messages: CarValidationMessages) {
   return optionalTextField(CAR_NOTE_MAX_LENGTH, messages.noteTooLong);
+}
+
+function createFirmwareCompanyIdField(messages: CarValidationMessages) {
+  return optionalTextField(
+    CAR_FIRMWARE_ID_MAX_LENGTH,
+    messages.firmwareCompanyIdTooLong,
+  );
+}
+
+function createFirmwareDeviceIdField(messages: CarValidationMessages) {
+  return optionalTextField(
+    CAR_FIRMWARE_ID_MAX_LENGTH,
+    messages.firmwareDeviceIdTooLong,
+  );
 }
 
 function toWholeNumber(value: unknown): unknown {
@@ -151,7 +170,7 @@ function updateTankCapacityField(messages: CarValidationMessages) {
   );
 }
 
-/** Create body: omitted optional fields get create-time defaults. */
+/** Shared car fields without firmware identity (external panel). */
 export function createCarBaseSchema(
   messages: CarValidationMessages = defaultCarValidationMessages,
 ) {
@@ -162,6 +181,20 @@ export function createCarBaseSchema(
     tankCount: createTankCountField(messages),
     tankCapacityLiters: createTankCapacityField(messages),
     note: createCarNoteField(messages).optional().default(""),
+  });
+}
+
+/** Internal admin create/edit also carries firmware company/device IDs. */
+export function createInternalCarBaseSchema(
+  messages: CarValidationMessages = defaultCarValidationMessages,
+) {
+  return createCarBaseSchema(messages).extend({
+    firmwareCompanyId: createFirmwareCompanyIdField(messages)
+      .optional()
+      .default(""),
+    firmwareDeviceId: createFirmwareDeviceIdField(messages)
+      .optional()
+      .default(""),
   });
 }
 
@@ -176,7 +209,19 @@ export function createCarFormSchemas(
   };
 }
 
+export function createInternalCarFormSchemas(
+  messages: CarValidationMessages = defaultCarValidationMessages,
+) {
+  const createSchema = createInternalCarBaseSchema(messages);
+
+  return {
+    createSchema,
+    editSchema: createSchema.omit({ driverId: true }),
+  };
+}
+
 const carBaseSchema = createCarBaseSchema();
+const internalCarBaseSchema = createInternalCarBaseSchema();
 
 /**
  * Update body: omitted keys stay undefined (leave unchanged).
@@ -186,41 +231,66 @@ const carBaseSchema = createCarBaseSchema();
  * custody writes can return 409 instead of last-write-wins false success.
  * `driverId` must be a uuid — unassigning is not allowed.
  */
+function carUpdateFields(
+  messages: CarValidationMessages = defaultCarValidationMessages,
+) {
+  return {
+    licensePlate: createCarLicensePlateField(messages).optional(),
+    driverId: createCarDriverIdField(messages).optional(),
+    hasHighGrade: carHasHighGradeField.optional(),
+    tankCount: updateTankCountField(messages),
+    tankCapacityLiters: updateTankCapacityField(messages),
+    note: createCarNoteField(messages).optional(),
+    expectedDriverId: carExpectedDriverIdField.optional(),
+  };
+}
+
+function refineDriverCustody(
+  data: { driverId?: unknown; expectedDriverId?: unknown },
+  ctx: z.RefinementCtx,
+) {
+  if (data.driverId !== undefined && data.expectedDriverId === undefined) {
+    ctx.addIssue({
+      code: "custom",
+      message: "expectedDriverId is required when driverId is set",
+      path: ["expectedDriverId"],
+    });
+  }
+}
+
 function createCarUpdateBaseSchema(
   messages: CarValidationMessages = defaultCarValidationMessages,
 ) {
+  return z.object(carUpdateFields(messages)).superRefine(refineDriverCustody);
+}
+
+function createInternalCarUpdateBaseSchema(
+  messages: CarValidationMessages = defaultCarValidationMessages,
+) {
+  // Firmware fields must live on the object schema before superRefine.
+  // Extending a refined schema (`safeExtend` / `.extend` after refine) produces
+  // broken/error types under typescript-eslint.
   return z
     .object({
-      licensePlate: createCarLicensePlateField(messages).optional(),
-      driverId: createCarDriverIdField(messages).optional(),
-      hasHighGrade: carHasHighGradeField.optional(),
-      tankCount: updateTankCountField(messages),
-      tankCapacityLiters: updateTankCapacityField(messages),
-      note: createCarNoteField(messages).optional(),
-      expectedDriverId: carExpectedDriverIdField.optional(),
+      ...carUpdateFields(messages),
+      firmwareCompanyId: createFirmwareCompanyIdField(messages).optional(),
+      firmwareDeviceId: createFirmwareDeviceIdField(messages).optional(),
     })
-    .superRefine((data, ctx) => {
-      if (data.driverId !== undefined && data.expectedDriverId === undefined) {
-        ctx.addIssue({
-          code: "custom",
-          message: "expectedDriverId is required when driverId is set",
-          path: ["expectedDriverId"],
-        });
-      }
-    });
+    .superRefine(refineDriverCustody);
 }
 
 const carUpdateBaseSchema = createCarUpdateBaseSchema();
+const internalCarUpdateBaseSchema = createInternalCarUpdateBaseSchema();
 
 /** Internal admin: companyId is required in the request body. */
-export const createInternalCarDtoSchema = carBaseSchema.extend({
+export const createInternalCarDtoSchema = internalCarBaseSchema.extend({
   companyId: z.uuid(),
 });
 
 /** Company user: companyId is taken from the JWT, not the request body. */
 export const createExternalCarDtoSchema = carBaseSchema;
 
-export const updateInternalCarDtoSchema = carUpdateBaseSchema.extend({
+export const updateInternalCarDtoSchema = internalCarUpdateBaseSchema.extend({
   companyId: z.uuid().optional(),
 });
 export const updateExternalCarDtoSchema = carUpdateBaseSchema;

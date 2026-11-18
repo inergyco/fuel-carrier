@@ -43,3 +43,18 @@ function stripMqttSharePrefix(topicFilter: string): string {
 export function buildMqttAckSubscribeTopic(carId: string): string {
   return `ack/${carId}/#`;
 }
+
+/** Exact topic for GPIO enable/disable commands (SDD §18). */
+export function buildMqttOutputCommandTopic(carId: string): string {
+  return `command/${carId}/output`;
+}
+
+/** Topic pattern the device may subscribe to for remote commands. */
+export function buildMqttCommandSubscribeTopic(carId: string): string {
+  return `command/${carId}/#`;
+}
+
+/** Exact topic the device publishes GPIO command results to. */
+export function buildMqttOutputAckTopic(carId: string): string {
+  return `telemetry/${carId}/output-ack`;
+}

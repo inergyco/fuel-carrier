@@ -45,7 +45,7 @@ pkill -f 'ssh.*5433:127.0.0.1:5432'
 Use the monorepo seed script with production flags. It upserts `backend` with:
 
 - subscribe `telemetry/#` and `$share/+/telemetry/#` (shared group for multi-instance API)
-- publish `ack/#`
+- publish `ack/#` and `command/#`
 
 **Password must match** the live API `MQTT_PASSWORD` in `/var/www/fuel-carrier/api/.env`. If you set a different `MQTT_SEED_BACKEND_PASSWORD`, the API will fail to connect to Mosquitto until you update `.env` and restart the unit.
 

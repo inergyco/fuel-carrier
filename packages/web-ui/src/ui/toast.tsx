@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { CheckCircle2, X } from '../icons'
-import { iconMdClassName, iconSmClassName, ICON_STROKE_WIDTH } from './iconClassName'
+import { iconMdClassName, iconSmClassName, ICON_STROKE_WIDTH } from './IconButton'
 import { cn } from '../utils'
 
 type ToastVariant = 'success' | 'error'

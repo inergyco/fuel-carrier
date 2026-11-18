@@ -30,6 +30,8 @@ const ACTION_LABEL_KEYS: Record<string, string> = {
   [AuditActions.CAR_DELETED]: 'carDeleted',
   [AuditActions.CAR_MQTT_CREDENTIALS_PROVISIONED]: 'carMqttCredentialsProvisioned',
   [AuditActions.CAR_MQTT_CREDENTIALS_ROTATED]: 'carMqttCredentialsRotated',
+  [AuditActions.CAR_OUTPUT_ENABLED]: 'carOutputEnabled',
+  [AuditActions.CAR_OUTPUT_DISABLED]: 'carOutputDisabled',
   [AuditActions.AUTH_LOGIN_SUCCEEDED]: 'authLoginSucceeded',
   [AuditActions.AUTH_LOGIN_FAILED]: 'authLoginFailed',
   [AuditActions.AUTH_LOGOUT]: 'authLogout',

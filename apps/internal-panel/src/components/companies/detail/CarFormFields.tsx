@@ -3,6 +3,7 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   CarTankFields,
   FormCheckbox,
+  FormInput,
   FormLicensePlatePicker,
   FormSelect,
   FormTextarea,
@@ -51,6 +52,22 @@ export function CarFormFields({
         tankCapacityLabel={detail.tankCapacityLiters()}
         tankCapacityHint={detail.tankCapacityHint()}
       />
+
+      <div className="flex flex-col gap-3">
+        <p className="text-xs text-base-content/45">
+          {detail.firmwareIdentityHint()}
+        </p>
+        <FormInput
+          name="firmwareCompanyId"
+          label={detail.firmwareCompanyId()}
+          dir="ltr"
+        />
+        <FormInput
+          name="firmwareDeviceId"
+          label={detail.firmwareDeviceId()}
+          dir="ltr"
+        />
+      </div>
 
       <FormTextarea
         name="note"

@@ -7,6 +7,8 @@ export type CreateCarPayload = {
   hasHighGrade?: boolean;
   tankCount?: number;
   tankCapacityLiters?: number;
+  firmwareCompanyId?: string | null;
+  firmwareDeviceId?: string | null;
   note?: string | null;
 };
 
@@ -30,5 +32,7 @@ export const CAR_AUDIT_FIELDS = [
   'hasHighGrade',
   'tankCount',
   'tankCapacityLiters',
+  'firmwareCompanyId',
+  'firmwareDeviceId',
   'note',
 ] as const satisfies readonly (keyof Car)[];

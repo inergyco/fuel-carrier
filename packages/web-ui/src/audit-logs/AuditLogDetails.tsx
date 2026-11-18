@@ -1,6 +1,6 @@
 import type { AuditLogMetadata } from '@fuel-carrier/shared-types'
 import { ArrowRight } from '../icons'
-import { iconSmClassName, ICON_STROKE_WIDTH } from '../ui/iconClassName'
+import { iconSmClassName, ICON_STROKE_WIDTH } from '../ui/IconButton'
 import { cn } from '../utils'
 import {
   formatAuditFieldLabel,

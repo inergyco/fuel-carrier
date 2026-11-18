@@ -199,7 +199,9 @@ export class CarsService {
             tankCount: dto.tankCount ?? DEFAULT_TANK_COUNT,
             tankCapacityLiters:
               dto.tankCapacityLiters ?? DEFAULT_TANK_CAPACITY_LITERS,
-            note: dto.note ?? null,
+            firmwareCompanyId: emptyToNull(dto.firmwareCompanyId),
+            firmwareDeviceId: emptyToNull(dto.firmwareDeviceId),
+            note: emptyToNull(dto.note),
           })
           .returning();
 
@@ -314,7 +316,13 @@ export class CarsService {
             ...(dto.tankCapacityLiters !== undefined
               ? { tankCapacityLiters: dto.tankCapacityLiters }
               : {}),
-            ...(dto.note !== undefined ? { note: dto.note } : {}),
+            ...(dto.firmwareCompanyId !== undefined
+              ? { firmwareCompanyId: emptyToNull(dto.firmwareCompanyId) }
+              : {}),
+            ...(dto.firmwareDeviceId !== undefined
+              ? { firmwareDeviceId: emptyToNull(dto.firmwareDeviceId) }
+              : {}),
+            ...(dto.note !== undefined ? { note: emptyToNull(dto.note) } : {}),
           })
           .where(and(eq(cars.id, id), isNull(cars.deletedAt)))
           .returning();
@@ -415,4 +423,13 @@ export class CarsService {
 
     return null;
   }
+}
+
+function emptyToNull(value: string | null | undefined): string | null {
+  if (value == null) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }

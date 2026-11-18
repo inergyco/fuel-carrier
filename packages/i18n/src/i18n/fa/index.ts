@@ -37,6 +37,19 @@ const fa: Translation = {
       placeholder: "شروع و پایان را انتخاب کنید",
       clear: "پاک کردن بازه زمانی",
     },
+    carOutput: {
+      active: "فعال",
+      inactive: "غیرفعال",
+      enable: "فعال‌سازی خودرو",
+      disable: "غیرفعال‌سازی خودرو",
+      enabling: "در حال فعال‌سازی…",
+      disabling: "در حال غیرفعال‌سازی…",
+      enabledToast: "خروجی‌های خودرو فعال شد.",
+      disabledToast: "خروجی‌های خودرو غیرفعال شد.",
+      firmwareIdentityRequired:
+        "شناسه‌های میان‌افزار شرکت/دستگاه تنظیم نشده‌اند — آن‌ها را روی خودرو ثبت کنید یا منتظر تله‌متری بمانید.",
+      failed: "به‌روزرسانی خروجی‌های خودرو انجام نشد. دوباره تلاش کنید.",
+    },
     carTelemetry: {
       action: "سوابق تله‌متری",
       title: "سوابق تله‌متری",
@@ -205,6 +218,10 @@ const fa: Translation = {
     licensePlateInvalid: "یک پلاک ایرانی معتبر وارد کنید",
     driverRequired: "یک راننده انتخاب کنید",
     noteTooLong: "یادداشت باید حداکثر {max} کاراکتر باشد",
+    firmwareCompanyIdTooLong:
+      "شناسه شرکت میان‌افزار باید حداکثر {max} کاراکتر باشد",
+    firmwareDeviceIdTooLong:
+      "شناسه دستگاه میان‌افزار باید حداکثر {max} کاراکتر باشد",
     tankCountInvalid: "تعداد مخزن باید ۱ یا ۳ باشد",
     tankCapacityInvalid: "ظرفیت مخزن باید یک عدد صحیح بر حسب لیتر باشد",
     tankCapacityOutOfRange: "ظرفیت مخزن باید بین {min} و {max} لیتر باشد",
@@ -464,6 +481,17 @@ const fa: Translation = {
         tankCount: "تعداد مخزن",
         tankCapacityLiters: "ظرفیت هر مخزن (لیتر)",
         tankCapacityHint: "همه مخزن‌های این خودرو همین ظرفیت را دارند.",
+        firmwareCompanyId: "شناسه شرکت میان‌افزار",
+        firmwareDeviceId: "شناسه دستگاه میان‌افزار",
+        firmwareIdentityHint:
+          "شناسه‌های خوانا روی برد خودرو (مثل COMPANY_001 / TRUCK_12). باید با vehicle_config.h یکی باشد.",
+        firmwareIdentityAction: "شناسه‌های میان‌افزار",
+        firmwareIdentityTitle: "هویت میان‌افزار",
+        firmwareIdentityDescription:
+          "شناسه‌های خوانای شرکت و دستگاه که میان‌افزار خودرو انتظار دارد.",
+        firmwareIdentityDismiss: "تمام",
+        duplicateFirmwareIdentity:
+          "خودرویی با این جفت شناسه شرکت/دستگاه میان‌افزار از قبل وجود دارد.",
         fuelType: "نوع سوخت",
         fuelTypeHighGrade: "سوپر",
         fuelTypeNormal: "معمولی",
@@ -515,6 +543,7 @@ const fa: Translation = {
         mqttCredentialsPassword: "رمز عبور",
         mqttCredentialsTopic: "تاپیک انتشار",
         mqttCredentialsSubscribeTopic: "تاپیک اشتراک (تأیید دریافت)",
+        mqttCredentialsCommandTopic: "تاپیک اشتراک (فرمان‌ها)",
         mqttCredentialsDismiss: "تمام",
         mqttCredentialsFailed:
           "صدور اعتبارنامه MQTT انجام نشد. لطفاً دوباره تلاش کنید.",
@@ -616,6 +645,8 @@ const fa: Translation = {
           carDeleted: "حذف خودرو",
           carMqttCredentialsProvisioned: "صدور اعتبارنامه MQTT",
           carMqttCredentialsRotated: "چرخش اعتبارنامه MQTT",
+          carOutputEnabled: "فعال‌سازی خروجی‌های خودرو",
+          carOutputDisabled: "غیرفعال‌سازی خروجی‌های خودرو",
           authLoginSucceeded: "ورود موفق",
           authLoginFailed: "ورود ناموفق",
           authLogout: "خروج",
@@ -638,6 +669,8 @@ const fa: Translation = {
           level: "سطح دسترسی",
           licensePlate: "پلاک",
           driverId: "راننده تخصیص‌یافته",
+          firmwareCompanyId: "شناسه شرکت میان‌افزار",
+          firmwareDeviceId: "شناسه دستگاه میان‌افزار",
           mobileNumber: "شماره موبایل",
           title: "عنوان",
           channel: "کانال",
@@ -935,6 +968,17 @@ const fa: Translation = {
       tankCount: "تعداد مخزن",
       tankCapacityLiters: "ظرفیت هر مخزن (لیتر)",
       tankCapacityHint: "همه مخزن‌های این خودرو همین ظرفیت را دارند.",
+      firmwareCompanyId: "شناسه شرکت میان‌افزار",
+      firmwareDeviceId: "شناسه دستگاه میان‌افزار",
+      firmwareIdentityHint:
+        "شناسه‌های خوانا روی برد خودرو (مثل COMPANY_001 / TRUCK_12). باید با vehicle_config.h یکی باشد.",
+      firmwareIdentityAction: "شناسه‌های میان‌افزار",
+      firmwareIdentityTitle: "هویت میان‌افزار",
+      firmwareIdentityDescription:
+        "شناسه‌های خوانای شرکت و دستگاه که میان‌افزار خودرو انتظار دارد.",
+      firmwareIdentityDismiss: "تمام",
+      duplicateFirmwareIdentity:
+        "خودرویی با این جفت شناسه شرکت/دستگاه میان‌افزار از قبل وجود دارد.",
       fuelType: "نوع سوخت",
       fuelTypeHighGrade: "سوپر",
       fuelTypeNormal: "معمولی",
@@ -1000,6 +1044,7 @@ const fa: Translation = {
       mqttCredentialsPassword: "رمز عبور",
       mqttCredentialsTopic: "تاپیک انتشار",
       mqttCredentialsSubscribeTopic: "تاپیک اشتراک (تأیید دریافت)",
+      mqttCredentialsCommandTopic: "تاپیک اشتراک (فرمان‌ها)",
       mqttCredentialsDismiss: "تمام",
       mqttCredentialsFailed:
         "صدور اعتبارنامه MQTT انجام نشد. لطفاً دوباره تلاش کنید.",
@@ -1109,6 +1154,8 @@ const fa: Translation = {
         carDeleted: "خودرو حذف شد",
         carMqttCredentialsProvisioned: "اعتبارنامه MQTT صادر شد",
         carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد",
+        carOutputEnabled: "فعال‌سازی خروجی‌های خودرو",
+        carOutputDisabled: "غیرفعال‌سازی خروجی‌های خودرو",
         authLoginSucceeded: "ورود موفق",
         authLoginFailed: "ورود ناموفق",
         authLogout: "خروج",
@@ -1130,6 +1177,8 @@ const fa: Translation = {
         password: "رمز عبور",
         licensePlate: "پلاک",
         driverId: "راننده تخصیص‌یافته",
+        firmwareCompanyId: "شناسه شرکت میان‌افزار",
+        firmwareDeviceId: "شناسه دستگاه میان‌افزار",
         mobileNumber: "شماره موبایل",
         title: "عنوان",
         channel: "کانال",

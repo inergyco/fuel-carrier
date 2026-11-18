@@ -22,6 +22,8 @@ describe('car update DTO schemas', () => {
       hasHighGrade: false,
       tankCount: 3,
       tankCapacityLiters: 415,
+      firmwareCompanyId: '',
+      firmwareDeviceId: '',
       note: '',
     });
   });

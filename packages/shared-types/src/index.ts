@@ -10,7 +10,9 @@ export * from "./company";
 export * from "./company-user";
 export * from "./driver";
 export * from "./company-user-level";
+export * from "./car-output-command";
 export * from "./mqtt-credentials";
+
 export * from "./notification";
 export * from "./pagination";
 export * from "./resource-list";

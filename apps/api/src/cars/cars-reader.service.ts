@@ -96,6 +96,8 @@ export function mapCarRow(row: CarRow, driverRow?: DriverRow | null): Car {
     hasHighGrade: row.hasHighGrade,
     tankCount: row.tankCount,
     tankCapacityLiters: row.tankCapacityLiters,
+    firmwareCompanyId: row.firmwareCompanyId ?? null,
+    firmwareDeviceId: row.firmwareDeviceId ?? null,
     note: row.note,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
@@ -117,5 +119,14 @@ export async function presentCar(
       ...car.driver,
       imageUrl: await imageUrls.signStored(car.driver.imageUrl),
     },
+  };
+}
+
+/** Hide firmware identity from company-facing (external) API responses. */
+export function redactFirmwareIdentity(car: Car): Car {
+  return {
+    ...car,
+    firmwareCompanyId: null,
+    firmwareDeviceId: null,
   };
 }

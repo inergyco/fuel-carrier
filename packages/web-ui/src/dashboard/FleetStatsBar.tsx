@@ -2,7 +2,7 @@ import type { CarFleetStats } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Car, Droplets, Fuel, type LucideIcon } from '../icons'
 import { FUEL_LEVEL_COLORS } from '../map'
-import { ICON_STROKE_WIDTH } from '../ui/iconClassName'
+import { ICON_STROKE_WIDTH } from '../ui/IconButton'
 import { cn } from '../utils'
 import type {
   CompanyDashboardLinkRenderers,

@@ -12,6 +12,8 @@
     "./company/constants": "./src/company/constants.ts",
     "./image-upload/constants": "./src/image-upload/constants.ts",
     "./car/create": "./src/car/create-car.dto.ts",
+    "./car/output-command": "./src/car/output-command.dto.ts",
+
     "./driver/create": "./src/driver/create-driver.dto.ts",
     "./company-user/create": "./src/company-user/create-company-user.dto.ts",
     "./national-id": "./src/national-id.ts",

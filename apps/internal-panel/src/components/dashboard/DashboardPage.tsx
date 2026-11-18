@@ -1,6 +1,6 @@
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import type { CarTelemetryMarker } from '@fuel-carrier/shared-types'
-import { api } from '@fuel-carrier/web-ui/api'
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import type { CarTelemetryMarker } from "@fuel-carrier/shared-types";
+import { api } from "@fuel-carrier/web-ui/api";
 import {
   CompanyDashboard,
   type CompanyDashboardDataSource,
@@ -8,39 +8,43 @@ import {
   type FleetStatCarsSearch,
   carDetailsLinkClassName,
   fleetStatLinkClassName,
-} from '@fuel-carrier/web-ui/dashboard'
-import { Info } from '@fuel-carrier/web-ui/icons'
-import { mapPopupActionClassName } from '@fuel-carrier/web-ui/map'
-import { buttonClassName, ICON_STROKE_WIDTH } from '@fuel-carrier/web-ui/ui'
-import { cn } from '@fuel-carrier/web-ui/utils'
-import { Link } from '@tanstack/react-router'
-import type { ReactNode } from 'react'
+} from "@fuel-carrier/web-ui/dashboard";
+import { Info } from "@fuel-carrier/web-ui/icons";
+import { mapPopupActionClassName } from "@fuel-carrier/web-ui/map";
+import {
+  buttonClassName,
+  buttonSizeClassName,
+  ICON_STROKE_WIDTH,
+} from "@fuel-carrier/web-ui/ui";
+import { cn } from "@fuel-carrier/web-ui/utils";
+import { Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import {
   carKeys,
   fetchAllCars,
   fetchCarFleetStats,
   fetchCars,
-} from '../../lib/api/cars'
-import { useActiveCompany } from '../shell/activeCompanyContext'
+} from "../../lib/api/cars";
+import { useActiveCompany } from "../shell/activeCompanyContext";
 
 const dashboardDataSource: CompanyDashboardDataSource = {
   fetchCars,
   fetchAllCars: (scopedCompanyId) => fetchAllCars(scopedCompanyId),
   fetchFleetStats: (scopedCompanyId) => {
     if (!scopedCompanyId) {
-      return Promise.reject(new Error('companyId is required'))
+      return Promise.reject(new Error("companyId is required"));
     }
-    return fetchCarFleetStats(scopedCompanyId)
+    return fetchCarFleetStats(scopedCompanyId);
   },
-  carsListKey: (params) => carKeys.byCompany(params.companyId ?? '', params),
-  carsAllKey: (scopedCompanyId) => carKeys.allByCompany(scopedCompanyId ?? ''),
-  carsStatsKey: (scopedCompanyId) => carKeys.stats(scopedCompanyId ?? ''),
-}
+  carsListKey: (params) => carKeys.byCompany(params.companyId ?? "", params),
+  carsAllKey: (scopedCompanyId) => carKeys.allByCompany(scopedCompanyId ?? ""),
+  carsStatsKey: (scopedCompanyId) => carKeys.stats(scopedCompanyId ?? ""),
+};
 
 export function DashboardPage() {
-  const { LL } = useI18nContext()
-  const { companyId, hasCompanies, isLoading } = useActiveCompany()
-  const detail = LL.internalPanel.companies.detail
+  const { LL } = useI18nContext();
+  const { companyId, hasCompanies, isLoading } = useActiveCompany();
+  const detail = LL.internalPanel.companies.detail;
 
   const labels: CompanyDashboardLabels = {
     carsLoading: LL.internalPanel.companies.loading,
@@ -57,27 +61,31 @@ export function DashboardPage() {
     viewDetails: detail.viewCar,
     fuelType: detail,
     map: LL.internalPanel.map,
-  }
+  };
 
   function renderVehicleLink(marker: CarTelemetryMarker) {
     if (!companyId) {
-      return null
+      return null;
     }
 
     return (
       <Link
         to="/companies/$companyId/cars/$carId"
         params={{ companyId, carId: marker.carId }}
-        className={cn(buttonClassName.outline, mapPopupActionClassName)}
+        className={cn(
+          buttonClassName.outline,
+          buttonSizeClassName.sm,
+          mapPopupActionClassName,
+        )}
       >
         {LL.internalPanel.map.viewVehicle()}
       </Link>
-    )
+    );
   }
 
   function renderCarDetailsLink(carId: string) {
     if (!companyId) {
-      return null
+      return null;
     }
 
     return (
@@ -93,7 +101,7 @@ export function DashboardPage() {
         />
         {labels.viewDetails()}
       </Link>
-    )
+    );
   }
 
   function renderFleetStatLink(
@@ -101,7 +109,7 @@ export function DashboardPage() {
     children: ReactNode,
   ) {
     if (!companyId) {
-      return children
+      return children;
     }
 
     return (
@@ -113,10 +121,10 @@ export function DashboardPage() {
       >
         {children}
       </Link>
-    )
+    );
   }
 
-  const enabled = Boolean(companyId) && hasCompanies && !isLoading
+  const enabled = Boolean(companyId) && hasCompanies && !isLoading;
 
   return (
     <CompanyDashboard
@@ -141,5 +149,5 @@ export function DashboardPage() {
         </div>
       }
     />
-  )
+  );
 }

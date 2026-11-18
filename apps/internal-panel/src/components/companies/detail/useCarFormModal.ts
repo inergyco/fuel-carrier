@@ -71,6 +71,8 @@ export function useCarFormModal({
             hasHighGrade: defaults.hasHighGrade,
             tankCount: defaults.tankCount,
             tankCapacityLiters: defaults.tankCapacityLiters,
+            firmwareCompanyId: defaults.firmwareCompanyId,
+            firmwareDeviceId: defaults.firmwareDeviceId,
           },
   })
 
@@ -88,6 +90,8 @@ export function useCarFormModal({
           hasHighGrade: data.hasHighGrade,
           tankCount: data.tankCount,
           tankCapacityLiters: data.tankCapacityLiters,
+          firmwareCompanyId: data.firmwareCompanyId,
+          firmwareDeviceId: data.firmwareDeviceId,
           companyId,
         })
       }
@@ -130,9 +134,12 @@ export function useCarFormModal({
           'driverId',
           'tankCount',
           'tankCapacityLiters',
+          'firmwareCompanyId',
+          'firmwareDeviceId',
         ],
         messages: {
           licensePlate: () => detail.duplicateLicensePlate(),
+          firmwareDeviceId: () => detail.duplicateFirmwareIdentity(),
         },
         fallbackMessage: detail.createFailed(),
       }),
