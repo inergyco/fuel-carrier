@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
@@ -12,6 +11,7 @@ import {
 import { Activity, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import {
   Button,
+  ConfirmModal,
   ICON_STROKE_WIDTH,
   iconSmClassName,
 } from '@fuel-carrier/web-ui/ui'
@@ -19,6 +19,7 @@ import { Link } from '@tanstack/react-router'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'
 import type { CompanyCarCustodyApi } from './custody/useCompanyCarCustody'
+import { useCompanyCarFirmwareIdentity } from './useCompanyCarFirmwareIdentity'
 import { useCompanyCarMqttCredentials } from './useCompanyCarMqttCredentials'
 
 type CompanyCarDetailHeaderProps = {
@@ -33,7 +34,7 @@ export function CompanyCarDetailHeader({
   const { LL } = useI18nContext()
   const mqtt = useCompanyCarMqttCredentials()
   const outputs = useCarOutputCommand()
-  const [firmwareOpen, setFirmwareOpen] = useState(false)
+  const firmware = useCompanyCarFirmwareIdentity(car)
   const detail = LL.internalPanel.companies.detail
   const driverName = custody.currentDriverName(car)
 
@@ -41,17 +42,11 @@ export function CompanyCarDetailHeader({
     mqtt.openMqttCredentials(car)
   }
 
-  function handleOpenFirmwareIdentity() {
-    setFirmwareOpen(true)
-  }
-
-  function handleCloseFirmwareIdentity() {
-    setFirmwareOpen(false)
-  }
-
   function handleToggleOutputs() {
     outputs.toggle(car.id)
   }
+
+  const emptyFirmwareLabel = LL.internalPanel.companies.emptyCell()
 
   return (
     <div className="mb-6 flex flex-col gap-4">
@@ -78,7 +73,7 @@ export function CompanyCarDetailHeader({
           type="button"
           variant="ghost"
           className={carDetailActionClassName}
-          onClick={handleOpenFirmwareIdentity}
+          onClick={firmware.openModal}
         >
           <span className="flex items-center justify-center gap-2 whitespace-nowrap">
             <Cpu
@@ -119,17 +114,46 @@ export function CompanyCarDetailHeader({
       </div>
 
       <CarFirmwareIdentityModal
-        open={firmwareOpen}
+        open={firmware.open}
         car={car}
+        mode={firmware.mode}
+        draft={firmware.draft}
+        continueDisabled={firmware.continueDisabled}
         labels={{
           title: detail.firmwareIdentityTitle,
           description: detail.firmwareIdentityDescription,
+          editDescription: detail.firmwareIdentityEditDescription,
           firmwareCompanyId: detail.firmwareCompanyId,
           firmwareDeviceId: detail.firmwareDeviceId,
           empty: LL.internalPanel.companies.emptyCell,
           dismiss: detail.firmwareIdentityDismiss,
+          edit: detail.firmwareIdentityEdit,
+          cancel: LL.internalPanel.nav.cancel,
+          continue: detail.firmwareIdentityContinue,
         }}
-        onClose={handleCloseFirmwareIdentity}
+        onClose={firmware.closeModal}
+        onEdit={firmware.startEdit}
+        onCancelEdit={firmware.cancelEdit}
+        onDraftChange={firmware.setDraft}
+        onContinue={firmware.continueToConfirm}
+      />
+
+      <ConfirmModal
+        open={firmware.confirmOpen}
+        title={detail.firmwareIdentityConfirmTitle()}
+        description={detail.firmwareIdentityConfirmDescription({
+          licensePlate: car.licensePlate,
+          firmwareCompanyId:
+            firmware.draft.firmwareCompanyId.trim() || emptyFirmwareLabel,
+          firmwareDeviceId:
+            firmware.draft.firmwareDeviceId.trim() || emptyFirmwareLabel,
+        })}
+        confirmLabel={detail.firmwareIdentityConfirm()}
+        cancelLabel={LL.internalPanel.nav.cancel()}
+        loading={firmware.isPending}
+        loadingLabel={detail.firmwareIdentityUpdating()}
+        onConfirm={firmware.confirmSave}
+        onCancel={firmware.cancelConfirm}
       />
 
       <CarMqttCredentialsModals

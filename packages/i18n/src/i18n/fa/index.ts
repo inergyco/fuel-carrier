@@ -489,7 +489,19 @@ const fa: Translation = {
         firmwareIdentityTitle: "هویت میان‌افزار",
         firmwareIdentityDescription:
           "شناسه‌های خوانای شرکت و دستگاه که میان‌افزار خودرو انتظار دارد.",
+        firmwareIdentityEditDescription:
+          "باید با میان‌افزار خودرو یکی باشد.",
         firmwareIdentityDismiss: "تمام",
+        firmwareIdentityEdit: "ویرایش",
+        firmwareIdentityContinue: "ادامه",
+        firmwareIdentityConfirmTitle: "به‌روزرسانی شناسه‌های میان‌افزار؟",
+        firmwareIdentityConfirmDescription:
+          "شناسه‌های میان‌افزار خودرو {licensePlate} به شرکت «{firmwareCompanyId}» و دستگاه «{firmwareDeviceId}» به‌روز شود؟ باید با میان‌افزار خودرو یکی باشد.",
+        firmwareIdentityConfirm: "به‌روزرسانی شناسه‌ها",
+        firmwareIdentityUpdating: "در حال به‌روزرسانی…",
+        firmwareIdentityUpdated: "شناسه‌های میان‌افزار به‌روز شد.",
+        firmwareIdentityUpdateFailed:
+          "به‌روزرسانی شناسه‌های میان‌افزار انجام نشد. دوباره تلاش کنید.",
         duplicateFirmwareIdentity:
           "خودرویی با این جفت شناسه شرکت/دستگاه میان‌افزار از قبل وجود دارد.",
         fuelType: "نوع سوخت",
@@ -976,7 +988,19 @@ const fa: Translation = {
       firmwareIdentityTitle: "هویت میان‌افزار",
       firmwareIdentityDescription:
         "شناسه‌های خوانای شرکت و دستگاه که میان‌افزار خودرو انتظار دارد.",
+      firmwareIdentityEditDescription:
+        "باید با میان‌افزار خودرو یکی باشد.",
       firmwareIdentityDismiss: "تمام",
+      firmwareIdentityEdit: "ویرایش",
+      firmwareIdentityContinue: "ادامه",
+      firmwareIdentityConfirmTitle: "به‌روزرسانی شناسه‌های میان‌افزار؟",
+      firmwareIdentityConfirmDescription:
+        "شناسه‌های میان‌افزار خودرو {licensePlate} به شرکت «{firmwareCompanyId}» و دستگاه «{firmwareDeviceId}» به‌روز شود؟ باید با میان‌افزار خودرو یکی باشد.",
+      firmwareIdentityConfirm: "به‌روزرسانی شناسه‌ها",
+      firmwareIdentityUpdating: "در حال به‌روزرسانی…",
+      firmwareIdentityUpdated: "شناسه‌های میان‌افزار به‌روز شد.",
+      firmwareIdentityUpdateFailed:
+        "به‌روزرسانی شناسه‌های میان‌افزار انجام نشد. دوباره تلاش کنید.",
       duplicateFirmwareIdentity:
         "خودرویی با این جفت شناسه شرکت/دستگاه میان‌افزار از قبل وجود دارد.",
       fuelType: "نوع سوخت",

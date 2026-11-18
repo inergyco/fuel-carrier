@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { cn } from '../utils'
 
 interface FieldProps {
+  className?: string
   label?: string
   error?: string
   htmlFor?: string
@@ -9,9 +10,9 @@ interface FieldProps {
   children: ReactNode
 }
 
-export function Field({ label, error, htmlFor, errorId, children }: FieldProps) {
+export function Field({ className, label, error, htmlFor, errorId, children }: FieldProps) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className={cn("flex flex-col gap-1", className)}>
       {label ? (
         <label
           htmlFor={htmlFor}

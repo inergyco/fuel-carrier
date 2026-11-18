@@ -1,41 +1,41 @@
-import { useState } from 'react'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Check, Copy } from '../icons'
-import { Button } from './Button'
-import { Field } from './Field'
-import { ICON_STROKE_WIDTH, iconSmClassName } from './IconButton'
-import { Input } from './Input'
-import { useFieldIds } from './useFieldIds'
-import { useToast } from './toast'
+import { useState } from "react";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { Check, Copy } from "../icons";
+import { Button } from "./Button";
+import { Field } from "./Field";
+import { ICON_STROKE_WIDTH, iconSmClassName } from "./IconButton";
+import { Input } from "./Input";
+import { useFieldIds } from "./useFieldIds";
+import { useToast } from "./toast";
 
-const COPIED_RESET_MS = 1500
+const COPIED_RESET_MS = 1500;
 
 type CopyableCredentialFieldProps = {
-  label: string
-  value: string
-  type?: 'text' | 'password'
-}
+  label: string;
+  value: string;
+  type?: "text" | "password";
+};
 
 export function CopyableCredentialField({
   label,
   value,
-  type = 'text',
+  type = "text",
 }: CopyableCredentialFieldProps) {
-  const { LL } = useI18nContext()
-  const toast = useToast()
-  const { id } = useFieldIds({})
-  const [copied, setCopied] = useState(false)
+  const { LL } = useI18nContext();
+  const toast = useToast();
+  const { id } = useFieldIds({});
+  const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(value)
-      setCopied(true)
-      toast.success(LL.common.copied())
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      toast.success(LL.common.copied());
       window.setTimeout(function resetCopied() {
-        setCopied(false)
-      }, COPIED_RESET_MS)
+        setCopied(false);
+      }, COPIED_RESET_MS);
     } catch {
-      toast.error(LL.common.copyFailed())
+      toast.error(LL.common.copyFailed());
     }
   }
 
@@ -45,7 +45,7 @@ export function CopyableCredentialField({
         <Input
           id={id}
           bare
-          name={type === 'password' ? 'password' : 'username'}
+          name={type === "password" ? "password" : "username"}
           type={type}
           value={value}
           readOnly
@@ -76,5 +76,5 @@ export function CopyableCredentialField({
         </Button>
       </div>
     </Field>
-  )
+  );
 }

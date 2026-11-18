@@ -34,6 +34,7 @@ export {
   CarFirmwareIdentityModal,
   type CarFirmwareIdentityModalLabels,
   type CarFirmwareIdentityModalProps,
+  type FirmwareIdentityDraft,
 } from './CarFirmwareIdentityModal'
 export {
   carDriverAssignmentKeys,

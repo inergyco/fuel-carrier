@@ -495,7 +495,19 @@ const en: BaseTranslation = {
         firmwareIdentityTitle: 'Firmware identity',
         firmwareIdentityDescription:
           'Human-readable company and device IDs expected by the truck firmware.',
+        firmwareIdentityEditDescription:
+          'Must match the truck firmware.',
         firmwareIdentityDismiss: 'Done',
+        firmwareIdentityEdit: 'Edit',
+        firmwareIdentityContinue: 'Continue',
+        firmwareIdentityConfirmTitle: 'Update firmware IDs?',
+        firmwareIdentityConfirmDescription:
+          'Update firmware IDs for {licensePlate:string} to company “{firmwareCompanyId:string}” and device “{firmwareDeviceId:string}”? This must match the truck firmware.',
+        firmwareIdentityConfirm: 'Update IDs',
+        firmwareIdentityUpdating: 'Updating…',
+        firmwareIdentityUpdated: 'Firmware IDs updated.',
+        firmwareIdentityUpdateFailed:
+          'Could not update firmware IDs. Please try again.',
         duplicateFirmwareIdentity:
           'A vehicle with this firmware company/device ID pair already exists.',
         fuelType: 'Fuel type',
@@ -988,7 +1000,19 @@ const en: BaseTranslation = {
       firmwareIdentityTitle: 'Firmware identity',
       firmwareIdentityDescription:
         'Human-readable company and device IDs expected by the truck firmware.',
+      firmwareIdentityEditDescription:
+        'Must match the truck firmware.',
       firmwareIdentityDismiss: 'Done',
+      firmwareIdentityEdit: 'Edit',
+      firmwareIdentityContinue: 'Continue',
+      firmwareIdentityConfirmTitle: 'Update firmware IDs?',
+      firmwareIdentityConfirmDescription:
+        'Update firmware IDs for {licensePlate:string} to company “{firmwareCompanyId:string}” and device “{firmwareDeviceId:string}”? This must match the truck firmware.',
+      firmwareIdentityConfirm: 'Update IDs',
+      firmwareIdentityUpdating: 'Updating…',
+      firmwareIdentityUpdated: 'Firmware IDs updated.',
+      firmwareIdentityUpdateFailed:
+        'Could not update firmware IDs. Please try again.',
       duplicateFirmwareIdentity:
         'A vehicle with this firmware company/device ID pair already exists.',
       fuelType: 'Fuel type',

@@ -52,7 +52,19 @@ export function Modal({
   const descriptionId = useId()
   const panelRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+  const closeDisabledRef = useRef(closeDisabled)
 
+  useEffect(
+    function syncModalCloseHandlers() {
+      onCloseRef.current = onClose
+      closeDisabledRef.current = closeDisabled
+    },
+    [onClose, closeDisabled],
+  )
+
+  // Only (re)focus when the modal opens — not when onClose identity changes
+  // (e.g. parent re-renders while typing in a controlled field).
   useEffect(
     function manageModalFocus() {
       if (!open) {
@@ -73,9 +85,9 @@ export function Modal({
 
       function handleDocumentKeyDown(event: KeyboardEvent) {
         if (event.key === 'Escape') {
-          if (!closeDisabled) {
+          if (!closeDisabledRef.current) {
             event.preventDefault()
-            onClose()
+            onCloseRef.current()
           }
           return
         }
@@ -114,7 +126,7 @@ export function Modal({
         previousFocusRef.current?.focus()
       }
     },
-    [open, closeDisabled, onClose],
+    [open],
   )
 
   if (!open) {

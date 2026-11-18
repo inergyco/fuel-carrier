@@ -1769,9 +1769,48 @@ type RootTranslation = {
 				 */
 				firmwareIdentityDescription: string
 				/**
+				 * M​u​s​t​ ​m​a​t​c​h​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+				 */
+				firmwareIdentityEditDescription: string
+				/**
 				 * D​o​n​e
 				 */
 				firmwareIdentityDismiss: string
+				/**
+				 * E​d​i​t
+				 */
+				firmwareIdentityEdit: string
+				/**
+				 * C​o​n​t​i​n​u​e
+				 */
+				firmwareIdentityContinue: string
+				/**
+				 * U​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​?
+				 */
+				firmwareIdentityConfirmTitle: string
+				/**
+				 * U​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​ ​f​o​r​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​ ​t​o​ ​c​o​m​p​a​n​y​ ​“​{​f​i​r​m​w​a​r​e​C​o​m​p​a​n​y​I​d​}​”​ ​a​n​d​ ​d​e​v​i​c​e​ ​“​{​f​i​r​m​w​a​r​e​D​e​v​i​c​e​I​d​}​”​?​ ​T​h​i​s​ ​m​u​s​t​ ​m​a​t​c​h​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+				 * @param {string} firmwareCompanyId
+				 * @param {string} firmwareDeviceId
+				 * @param {string} licensePlate
+				 */
+				firmwareIdentityConfirmDescription: RequiredParams<'firmwareCompanyId' | 'firmwareDeviceId' | 'licensePlate'>
+				/**
+				 * U​p​d​a​t​e​ ​I​D​s
+				 */
+				firmwareIdentityConfirm: string
+				/**
+				 * U​p​d​a​t​i​n​g​…
+				 */
+				firmwareIdentityUpdating: string
+				/**
+				 * F​i​r​m​w​a​r​e​ ​I​D​s​ ​u​p​d​a​t​e​d​.
+				 */
+				firmwareIdentityUpdated: string
+				/**
+				 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+				 */
+				firmwareIdentityUpdateFailed: string
 				/**
 				 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​f​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​ ​p​a​i​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 				 */
@@ -3449,9 +3488,48 @@ type RootTranslation = {
 			 */
 			firmwareIdentityDescription: string
 			/**
+			 * M​u​s​t​ ​m​a​t​c​h​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+			 */
+			firmwareIdentityEditDescription: string
+			/**
 			 * D​o​n​e
 			 */
 			firmwareIdentityDismiss: string
+			/**
+			 * E​d​i​t
+			 */
+			firmwareIdentityEdit: string
+			/**
+			 * C​o​n​t​i​n​u​e
+			 */
+			firmwareIdentityContinue: string
+			/**
+			 * U​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​?
+			 */
+			firmwareIdentityConfirmTitle: string
+			/**
+			 * U​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​ ​f​o​r​ ​{​l​i​c​e​n​s​e​P​l​a​t​e​}​ ​t​o​ ​c​o​m​p​a​n​y​ ​“​{​f​i​r​m​w​a​r​e​C​o​m​p​a​n​y​I​d​}​”​ ​a​n​d​ ​d​e​v​i​c​e​ ​“​{​f​i​r​m​w​a​r​e​D​e​v​i​c​e​I​d​}​”​?​ ​T​h​i​s​ ​m​u​s​t​ ​m​a​t​c​h​ ​t​h​e​ ​t​r​u​c​k​ ​f​i​r​m​w​a​r​e​.
+			 * @param {string} firmwareCompanyId
+			 * @param {string} firmwareDeviceId
+			 * @param {string} licensePlate
+			 */
+			firmwareIdentityConfirmDescription: RequiredParams<'firmwareCompanyId' | 'firmwareDeviceId' | 'licensePlate'>
+			/**
+			 * U​p​d​a​t​e​ ​I​D​s
+			 */
+			firmwareIdentityConfirm: string
+			/**
+			 * U​p​d​a​t​i​n​g​…
+			 */
+			firmwareIdentityUpdating: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​I​D​s​ ​u​p​d​a​t​e​d​.
+			 */
+			firmwareIdentityUpdated: string
+			/**
+			 * C​o​u​l​d​ ​n​o​t​ ​u​p​d​a​t​e​ ​f​i​r​m​w​a​r​e​ ​I​D​s​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
+			 */
+			firmwareIdentityUpdateFailed: string
 			/**
 			 * A​ ​v​e​h​i​c​l​e​ ​w​i​t​h​ ​t​h​i​s​ ​f​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​ ​p​a​i​r​ ​a​l​r​e​a​d​y​ ​e​x​i​s​t​s​.
 			 */
@@ -5929,9 +6007,45 @@ export type TranslationFunctions = {
 				 */
 				firmwareIdentityDescription: () => LocalizedString
 				/**
+				 * Must match the truck firmware.
+				 */
+				firmwareIdentityEditDescription: () => LocalizedString
+				/**
 				 * Done
 				 */
 				firmwareIdentityDismiss: () => LocalizedString
+				/**
+				 * Edit
+				 */
+				firmwareIdentityEdit: () => LocalizedString
+				/**
+				 * Continue
+				 */
+				firmwareIdentityContinue: () => LocalizedString
+				/**
+				 * Update firmware IDs?
+				 */
+				firmwareIdentityConfirmTitle: () => LocalizedString
+				/**
+				 * Update firmware IDs for {licensePlate} to company “{firmwareCompanyId}” and device “{firmwareDeviceId}”? This must match the truck firmware.
+				 */
+				firmwareIdentityConfirmDescription: (arg: { firmwareCompanyId: string, firmwareDeviceId: string, licensePlate: string }) => LocalizedString
+				/**
+				 * Update IDs
+				 */
+				firmwareIdentityConfirm: () => LocalizedString
+				/**
+				 * Updating…
+				 */
+				firmwareIdentityUpdating: () => LocalizedString
+				/**
+				 * Firmware IDs updated.
+				 */
+				firmwareIdentityUpdated: () => LocalizedString
+				/**
+				 * Could not update firmware IDs. Please try again.
+				 */
+				firmwareIdentityUpdateFailed: () => LocalizedString
 				/**
 				 * A vehicle with this firmware company/device ID pair already exists.
 				 */
@@ -7584,9 +7698,45 @@ export type TranslationFunctions = {
 			 */
 			firmwareIdentityDescription: () => LocalizedString
 			/**
+			 * Must match the truck firmware.
+			 */
+			firmwareIdentityEditDescription: () => LocalizedString
+			/**
 			 * Done
 			 */
 			firmwareIdentityDismiss: () => LocalizedString
+			/**
+			 * Edit
+			 */
+			firmwareIdentityEdit: () => LocalizedString
+			/**
+			 * Continue
+			 */
+			firmwareIdentityContinue: () => LocalizedString
+			/**
+			 * Update firmware IDs?
+			 */
+			firmwareIdentityConfirmTitle: () => LocalizedString
+			/**
+			 * Update firmware IDs for {licensePlate} to company “{firmwareCompanyId}” and device “{firmwareDeviceId}”? This must match the truck firmware.
+			 */
+			firmwareIdentityConfirmDescription: (arg: { firmwareCompanyId: string, firmwareDeviceId: string, licensePlate: string }) => LocalizedString
+			/**
+			 * Update IDs
+			 */
+			firmwareIdentityConfirm: () => LocalizedString
+			/**
+			 * Updating…
+			 */
+			firmwareIdentityUpdating: () => LocalizedString
+			/**
+			 * Firmware IDs updated.
+			 */
+			firmwareIdentityUpdated: () => LocalizedString
+			/**
+			 * Could not update firmware IDs. Please try again.
+			 */
+			firmwareIdentityUpdateFailed: () => LocalizedString
 			/**
 			 * A vehicle with this firmware company/device ID pair already exists.
 			 */

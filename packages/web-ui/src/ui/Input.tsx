@@ -1,34 +1,32 @@
-import {
-  useState,
-  type InputHTMLAttributes,
-  type Ref,
-} from 'react'
-import { useI18nContext } from '@fuel-carrier/i18n/react'
-import { Eye, EyeOff } from '../icons'
-import { cn } from '../utils'
-import { Field } from './Field'
-import { useFieldIds } from './useFieldIds'
+import { useState, type InputHTMLAttributes, type Ref } from "react";
+import { useI18nContext } from "@fuel-carrier/i18n/react";
+import { Eye, EyeOff } from "../icons";
+import { cn } from "../utils";
+import { Field } from "./Field";
+import { useFieldIds } from "./useFieldIds";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
-  error?: string
-  ref?: Ref<HTMLInputElement>
+  label?: string;
+  error?: string;
+  ref?: Ref<HTMLInputElement>;
   /** Skip the Field wrapper when a parent already provides the label and error. */
-  bare?: boolean
+  bare?: boolean;
+  fieldClass?: string;
 }
 
 function isUsernameField(name?: string, autoComplete?: string): boolean {
-  if (autoComplete?.includes('username')) {
-    return true
+  if (autoComplete?.includes("username")) {
+    return true;
   }
 
-  return name === 'username'
+  return name === "username";
 }
 
 export function Input({
   label,
   error,
   className,
+  fieldClass,
   ref,
   type,
   name,
@@ -37,20 +35,20 @@ export function Input({
   bare = false,
   ...props
 }: InputProps) {
-  const { LL } = useI18nContext()
-  const { id, errorId } = useFieldIds({ id: idProp, error })
-  const [passwordVisible, setPasswordVisible] = useState(false)
-  const isPassword = type === 'password'
-  const isLtr = isPassword || isUsernameField(name, autoComplete)
-  const inputType = isPassword && passwordVisible ? 'text' : type
+  const { LL } = useI18nContext();
+  const { id, errorId } = useFieldIds({ id: idProp, error });
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const isPassword = type === "password";
+  const isLtr = isPassword || isUsernameField(name, autoComplete);
+  const inputType = isPassword && passwordVisible ? "text" : type;
   const toggleLabel = passwordVisible
     ? LL.common.hidePassword()
-    : LL.common.showPassword()
+    : LL.common.showPassword();
 
   function handleTogglePasswordVisibility() {
     setPasswordVisible(function toggleVisible(current) {
-      return !current
-    })
+      return !current;
+    });
   }
 
   const input = (
@@ -60,24 +58,24 @@ export function Input({
       name={name}
       autoComplete={autoComplete}
       type={inputType}
-      dir={isLtr ? 'ltr' : undefined}
+      dir={isLtr ? "ltr" : undefined}
       aria-invalid={error ? true : undefined}
       aria-describedby={errorId}
       className={cn(
-        'input input-sm h-10 w-full rounded-lg border bg-base-100/60 text-sm text-base-content tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1',
+        "input input-sm h-10 w-full rounded-lg border bg-base-100/60 text-sm text-base-content tracking-wide placeholder:text-base-content/20 focus:outline-none focus:ring-1",
         error
-          ? 'border-error/60 focus:ring-error/40'
-          : 'border-base-content/10 focus:ring-primary/40',
-        isLtr ? 'px-3 text-left placeholder:text-left' : 'px-3',
-        isPassword && 'pr-10',
+          ? "border-error/60 focus:ring-error/40"
+          : "border-base-content/10 focus:ring-primary/40",
+        isLtr ? "px-3 text-left placeholder:text-left" : "px-3",
+        isPassword && "pr-10",
         className,
       )}
       {...props}
     />
-  )
+  );
 
-  const fieldContent = isLtr ? (
-    <div dir="ltr" className={cn(isPassword && 'relative')}>
+  const fieldContent = (
+    <>
       {input}
       {isPassword ? (
         <button
@@ -94,18 +92,22 @@ export function Input({
           )}
         </button>
       ) : null}
-    </div>
-  ) : (
-    input
-  )
+    </>
+  );
 
   if (bare) {
-    return fieldContent
+    return fieldContent;
   }
 
   return (
-    <Field label={label} error={error} htmlFor={id} errorId={errorId}>
+    <Field
+      className={cn(isPassword && "relative", fieldClass)}
+      label={label}
+      error={error}
+      htmlFor={id}
+      errorId={errorId}
+    >
       {fieldContent}
     </Field>
-  )
+  );
 }
