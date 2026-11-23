@@ -44,11 +44,10 @@ export const TANK_SLOTS = [
 ] as const
 
 /**
- * Horizontal capsule on the one-tank schematic.
- * Measured just inside the printed outline so liquid reaches the ink.
+ * One-tank interior. Rounded rectangle tight to the printed corners.
  */
 export const SINGLE_TANK_SLOTS = [
-  { cx: 387.5, cy: 254, rx: 182, ry: 73 },
+  { cx: 387, cy: 260, rx: 196, ry: 71, endRx: 40 },
 ] as const
 
 export type TankSlot = {
@@ -56,6 +55,8 @@ export type TankSlot = {
   cy: number
   rx: number
   ry: number
+  /** Corner radius. Semicircular ends when omitted. */
+  endRx?: number
   filled: number
   index: number
 }

@@ -6,6 +6,8 @@ export type FuelTankProps = {
   cy: number
   rx: number
   ry: number
+  /** Corner radius. Semicircular ends when omitted. */
+  endRx?: number
   capacity: number
   filled: number
 }
@@ -17,6 +19,7 @@ export function FuelTank({
   cy,
   rx,
   ry,
+  endRx,
   capacity,
   filled,
 }: FuelTankProps) {
@@ -38,7 +41,15 @@ export function FuelTank({
       <defs>
         <clipPath id={clipId}>
           {isCapsule ? (
-            <path d={capsulePath(cx, cy, rx, ry)} />
+            <path
+              d={capsulePath({
+                cx,
+                cy,
+                rx,
+                ry,
+                endRx: endRx ?? ry,
+              })}
+            />
           ) : (
             <ellipse cx={cx} cy={cy} rx={rx} ry={ry} />
           )}
@@ -84,21 +95,31 @@ export function FuelTank({
   )
 }
 
-/** Horizontal stadium: flat top/bottom with semicircular ends. */
-function capsulePath(cx: number, cy: number, rx: number, ry: number) {
+/** Flat sides with rounded corners. `endRx === ry` is a semicircular end. */
+function capsulePath(shape: {
+  cx: number
+  cy: number
+  rx: number
+  ry: number
+  endRx: number
+}) {
+  const { cx, cy, rx, ry, endRx } = shape
   const left = cx - rx
   const right = cx + rx
   const top = cy - ry
   const bottom = cy + ry
-  const flatStart = left + ry
-  const flatEnd = right - ry
+  const radius = Math.min(endRx, rx, ry)
 
   return [
-    `M ${flatStart} ${top}`,
-    `H ${flatEnd}`,
-    `A ${ry} ${ry} 0 0 1 ${flatEnd} ${bottom}`,
-    `H ${flatStart}`,
-    `A ${ry} ${ry} 0 0 1 ${flatStart} ${top}`,
+    `M ${left + radius} ${top}`,
+    `H ${right - radius}`,
+    `A ${radius} ${radius} 0 0 1 ${right} ${top + radius}`,
+    `V ${bottom - radius}`,
+    `A ${radius} ${radius} 0 0 1 ${right - radius} ${bottom}`,
+    `H ${left + radius}`,
+    `A ${radius} ${radius} 0 0 1 ${left} ${bottom - radius}`,
+    `V ${top + radius}`,
+    `A ${radius} ${radius} 0 0 1 ${left + radius} ${top}`,
     'Z',
   ].join(' ')
 }

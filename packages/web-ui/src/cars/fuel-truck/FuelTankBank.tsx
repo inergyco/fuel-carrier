@@ -25,6 +25,7 @@ export function FuelTankBank({ capacity, filled, idPrefix }: FuelTankBankProps) 
             cy={slot.cy}
             rx={slot.rx}
             ry={slot.ry}
+            endRx={slot.endRx}
             capacity={capacity}
             filled={slot.filled}
           />
