@@ -12,3 +12,33 @@
     animation: landing-route-dash 12s linear infinite;
   }
 }
+
+@keyframes landing-card-shine {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes landing-hole-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.25);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(3.2);
+    opacity: 0;
+  }
+}
+
+.landing-hole-ripple {
+  animation: landing-hole-ripple 2.2s ease-out infinite;
+}
+
+.landing-hole-ripple-delay {
+  animation-delay: 0.55s;
+}
+
+.landing-hole-ripple-delay-2 {
+  animation-delay: 1.1s;
+}

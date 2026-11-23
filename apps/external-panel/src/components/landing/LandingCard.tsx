@@ -304,18 +304,6 @@ export function LandingCard({
           <div className="relative z-10 p-7 sm:p-9">{children}</div>
         </article>
       </div>
-
-      <style>{`
-        .landing-hole-ripple {
-          animation: landing-hole-ripple 2.2s ease-out infinite;
-        }
-        .landing-hole-ripple-delay { animation-delay: 0.55s; }
-        .landing-hole-ripple-delay-2 { animation-delay: 1.1s; }
-        @keyframes landing-hole-ripple {
-          0% { transform: translate(-50%, -50%) scale(0.25); opacity: 0.5; }
-          100% { transform: translate(-50%, -50%) scale(3.2); opacity: 0; }
-        }
-      `}</style>
     </div>
   )
 }

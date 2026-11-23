@@ -91,11 +91,6 @@ export function LandingCardShine({
         opacity={0.38}
         className="motion-safe:animate-[landing-card-shine_9s_linear_infinite]"
       />
-      <style>{`
-        @keyframes landing-card-shine {
-          to { stroke-dashoffset: -100; }
-        }
-      `}</style>
     </svg>
   )
 }

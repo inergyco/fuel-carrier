@@ -11,28 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="FC Admin" />
     <title>Fuel Carrier Admin</title>
-    <script>
-      (function () {
-        var themeKey = 'fuel-carrier:internal-panel:theme';
-        var localeKey = 'fuel-carrier:internal-panel:locale';
-        var t = localStorage.getItem(themeKey);
-        var prefersDark = matchMedia('(prefers-color-scheme:dark)').matches;
-        var isDark =
-          t === 'dark' ||
-          ((!t || t === 'system') && prefersDark);
-        document.documentElement.setAttribute(
-          'data-theme',
-          isDark ? 'internal-dark' : 'internal-light'
-        );
-
-        var l = localStorage.getItem(localeKey);
-        var locale =
-          l ||
-          (navigator.language.toLowerCase().indexOf('en') === 0 ? 'en' : 'fa');
-        document.documentElement.lang = locale;
-        document.documentElement.dir = locale === 'fa' ? 'rtl' : 'ltr';
-      })();
-    </script>
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>

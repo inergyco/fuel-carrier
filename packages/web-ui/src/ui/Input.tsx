@@ -75,7 +75,7 @@ export function Input({
   );
 
   const fieldContent = (
-    <>
+    <div className="relative">
       {input}
       {isPassword ? (
         <button
@@ -92,7 +92,7 @@ export function Input({
           )}
         </button>
       ) : null}
-    </>
+    </div>
   );
 
   if (bare) {
@@ -101,7 +101,7 @@ export function Input({
 
   return (
     <Field
-      className={cn(isPassword && "relative", fieldClass)}
+      className={fieldClass}
       label={label}
       error={error}
       htmlFor={id}
