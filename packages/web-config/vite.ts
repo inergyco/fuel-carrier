@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import { defineConfig, type PluginOption, type UserConfig } from "vite";
+import { defineConfig, type Plugin, type PluginOption, type UserConfig } from "vite";
 import { VitePWA, type VitePWAOptions } from "vite-plugin-pwa";
 
 const require = createRequire(import.meta.url);
@@ -54,14 +54,16 @@ export function createPanelViteConfig({
       },
     },
     optimizeDeps: {
+      exclude: [
+        "react-multi-date-picker",
+        "react-multi-date-picker/plugins/time_picker",
+      ],
       include: [
         "workbox-window",
         "@fuel-carrier/web-ui > leaflet",
         "@fuel-carrier/web-ui > react-leaflet",
         "@fuel-carrier/web-ui > maplibre-gl",
         "@fuel-carrier/web-ui > @maplibre/maplibre-gl-leaflet",
-        "@fuel-carrier/web-ui > react-multi-date-picker",
-        "@fuel-carrier/web-ui > react-multi-date-picker/plugins/time_picker",
         "@fuel-carrier/web-ui > react-date-object",
       ],
     },
@@ -92,6 +94,7 @@ export function createPanelViteConfig({
 
 export function createPanelPlugins(pwa: PanelPwaManifest): PluginOption[] {
   return [
+    stripDatePickerStyleInjection(),
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
@@ -102,6 +105,33 @@ export function createPanelPlugins(pwa: PanelPwaManifest): PluginOption[] {
     tailwindcss(),
     VitePWA(createPanelPwaOptions(pwa)),
   ];
+}
+
+function stripDatePickerStyleInjection(): Plugin {
+  const styleInjector =
+    /&&"undefined"!=typeof document(?=\)\{var \w+=document\.head)/g;
+
+  return {
+    name: "strip-date-picker-style-injection",
+    enforce: "pre",
+    transform(code, id) {
+      if (!id.includes("react-multi-date-picker")) {
+        return null;
+      }
+      if (!code.includes('document.createElement("style")')) {
+        return null;
+      }
+
+      const next = code.replace(styleInjector, "&&false");
+      if (next === code) {
+        this.error(
+          "react-multi-date-picker still injects a style tag. Update the CSP stripper.",
+        );
+      }
+
+      return { code: next, map: null };
+    },
+  };
 }
 
 function createPanelPwaOptions(pwa: PanelPwaManifest): Partial<VitePWAOptions> {

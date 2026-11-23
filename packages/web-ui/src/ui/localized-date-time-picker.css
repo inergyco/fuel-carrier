@@ -1,3 +1,5 @@
+@import "./date-picker-library.css";
+
 .localized-date-time-picker-container {
   display: block;
   width: 100%;
