@@ -4,6 +4,7 @@ export * from './companies.schema';
 export * from './company-users.schema';
 export * from './drivers.schema';
 export * from './cars.schema';
+export * from './car-pricing.schema';
 export * from './car-driver-assignments.schema';
 export * from './car-telemetry-history.schema';
 export * from './mqtt-clients.schema';

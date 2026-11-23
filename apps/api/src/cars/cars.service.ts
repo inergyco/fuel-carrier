@@ -3,6 +3,7 @@ import { and, count, desc, eq, isNull } from 'drizzle-orm';
 import type {
   Car,
   CarFleetStats,
+  CarPricing,
   PaginatedResult,
 } from '@fuel-carrier/shared-types';
 import {
@@ -31,6 +32,7 @@ import {
 import { createApiException } from '../common/exceptions/api.exception';
 import { assertUuidParam } from '../common/validation/uuid.utils';
 import { CarTelemetryService } from '../car-telemetry/car-telemetry.service';
+import { carPricing } from '../database/schema/car-pricing.schema';
 import { cars } from '../database/schema/cars.schema';
 import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
@@ -117,7 +119,7 @@ export class CarsService {
 
       const rows = await tx.query.cars.findMany({
         where,
-        with: { driver: true },
+        with: { driver: true, pricing: true },
         orderBy: desc(cars.createdAt),
         limit,
         offset,
@@ -297,6 +299,16 @@ export class CarsService {
           );
         }
 
+        if (
+          dto.companyId !== undefined &&
+          dto.companyId !== existing.companyId
+        ) {
+          await tx
+            .update(carPricing)
+            .set({ companyId: nextCompanyId })
+            .where(eq(carPricing.carId, id));
+        }
+
         const [row] = await tx
           .update(cars)
           .set({
@@ -336,6 +348,55 @@ export class CarsService {
         }
 
         const car = await this.carsReader.getById(tx, row.id);
+        const companyName = await fetchCompanyName(tx, car.companyId);
+
+        await this.auditLogService.record(context, {
+          action: AuditActions.CAR_UPDATED,
+          companyId: car.companyId,
+          entityType: AuditEntityType.CAR,
+          entityId: car.id,
+          metadata: {
+            ...buildAuditContext({
+              companyName,
+              entityLabel: formatAuditCarLabel(car),
+            }),
+            changes: diffAuditChanges(existing, car, CAR_AUDIT_FIELDS),
+          },
+        });
+
+        return car;
+      });
+    } catch (error) {
+      rethrowPostgresError(error, CAR_POSTGRES_MAPPINGS);
+    }
+  }
+
+  async updatePricing(
+    context: ApiTenantContext,
+    id: string,
+    dto: CarPricing,
+  ): Promise<Car> {
+    try {
+      return await this.tenantDb.run(context, async (tx) => {
+        const existing = await this.carsReader.getById(tx, id);
+        const pricingColumns = toCarPricingColumns(dto);
+
+        await tx
+          .insert(carPricing)
+          .values({
+            carId: existing.id,
+            companyId: existing.companyId,
+            ...pricingColumns,
+          })
+          .onConflictDoUpdate({
+            target: carPricing.carId,
+            set: {
+              companyId: existing.companyId,
+              ...pricingColumns,
+            },
+          });
+
+        const car = await this.carsReader.getById(tx, existing.id);
         const companyName = await fetchCompanyName(tx, car.companyId);
 
         await this.auditLogService.record(context, {
@@ -424,6 +485,17 @@ export class CarsService {
     return null;
   }
 }
+
+const toCarPricingColumns = (pricing: CarPricing) => ({
+  petrolPricePerLiter: pricing.petrolPricePerLiter,
+  feeThresholdX: pricing.feeThresholdX,
+  feeThresholdY: pricing.feeThresholdY,
+  feeThresholdZ: pricing.feeThresholdZ,
+  feeUpToX: pricing.feeUpToX,
+  feeXToY: pricing.feeXToY,
+  feeYToZ: pricing.feeYToZ,
+  feeAboveZ: pricing.feeAboveZ,
+});
 
 function emptyToNull(value: string | null | undefined): string | null {
   if (value == null) {

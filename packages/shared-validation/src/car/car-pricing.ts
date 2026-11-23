@@ -1,7 +1,7 @@
-import type { CompanyPricingInput } from '@fuel-carrier/shared-types';
+import type { CarPricing } from '@fuel-carrier/shared-types';
 import { z, type RefinementCtx } from 'zod';
 
-export const COMPANY_PRICING_KEYS = [
+export const CAR_PRICING_KEYS = [
   'petrolPricePerLiter',
   'feeThresholdX',
   'feeThresholdY',
@@ -10,9 +10,9 @@ export const COMPANY_PRICING_KEYS = [
   'feeXToY',
   'feeYToZ',
   'feeAboveZ',
-] as const satisfies readonly (keyof CompanyPricingInput)[];
+] as const satisfies readonly (keyof CarPricing)[];
 
-export type CompanyPricingValidationMessages = {
+export type CarPricingValidationMessages = {
   numberInvalid: string;
   numberNegative: string;
   pricingIncomplete: string;
@@ -40,7 +40,7 @@ function toNullableNumber(value: unknown): unknown {
   return value;
 }
 
-function nullableNonNegativeNumber(messages: CompanyPricingValidationMessages) {
+function nullableNonNegativeNumber(messages: CarPricingValidationMessages) {
   return z.preprocess(
     toNullableNumber,
     z.union([
@@ -52,23 +52,7 @@ function nullableNonNegativeNumber(messages: CompanyPricingValidationMessages) {
   );
 }
 
-/** API PATCH: omit stays undefined; null clears when sent with the full set. */
-function optionalNullableNonNegativeNumber(
-  messages: CompanyPricingValidationMessages,
-) {
-  return z
-    .union([
-      z.null(),
-      z
-        .number({ error: messages.numberInvalid })
-        .nonnegative({ error: messages.numberNegative }),
-    ])
-    .optional();
-}
-
-export function companyPricingObjectSchema(
-  messages: CompanyPricingValidationMessages,
-) {
+export function carPricingObjectSchema(messages: CarPricingValidationMessages) {
   const field = nullableNonNegativeNumber(messages);
 
   return z.object({
@@ -83,38 +67,19 @@ export function companyPricingObjectSchema(
   });
 }
 
-export function optionalCompanyPricingObjectSchema(
-  messages: CompanyPricingValidationMessages,
-) {
-  const field = optionalNullableNonNegativeNumber(messages);
-
-  return z.object({
-    petrolPricePerLiter: field,
-    feeThresholdX: field,
-    feeThresholdY: field,
-    feeThresholdZ: field,
-    feeUpToX: field,
-    feeXToY: field,
-    feeYToZ: field,
-    feeAboveZ: field,
-  });
-}
-
-export function refineCompanyPricing(
-  data: Partial<CompanyPricingInput>,
+export function refineCarPricing(
+  data: Partial<CarPricing>,
   ctx: RefinementCtx,
-  messages: CompanyPricingValidationMessages,
+  messages: CarPricingValidationMessages,
 ): void {
-  const definedKeys = COMPANY_PRICING_KEYS.filter(
-    (key) => data[key] !== undefined,
-  );
+  const definedKeys = CAR_PRICING_KEYS.filter((key) => data[key] !== undefined);
 
   if (definedKeys.length === 0) {
     return;
   }
 
-  if (definedKeys.length < COMPANY_PRICING_KEYS.length) {
-    for (const key of COMPANY_PRICING_KEYS) {
+  if (definedKeys.length < CAR_PRICING_KEYS.length) {
+    for (const key of CAR_PRICING_KEYS) {
       if (data[key] === undefined) {
         ctx.addIssue({
           code: 'custom',
@@ -126,12 +91,12 @@ export function refineCompanyPricing(
     return;
   }
 
-  const values = COMPANY_PRICING_KEYS.map((key) => data[key] as number | null);
+  const values = CAR_PRICING_KEYS.map((key) => data[key] as number | null);
   const anyNonNull = values.some((value) => value !== null);
   const anyNull = values.some((value) => value === null);
 
   if (anyNonNull && anyNull) {
-    for (const key of COMPANY_PRICING_KEYS) {
+    for (const key of CAR_PRICING_KEYS) {
       if (data[key] === null) {
         ctx.addIssue({
           code: 'custom',
@@ -166,15 +131,15 @@ export function refineCompanyPricing(
   }
 }
 
-export function createUpdateCompanyPricingDtoSchema(
-  messages: CompanyPricingValidationMessages,
+export function createUpdateCarPricingDtoSchema(
+  messages: CarPricingValidationMessages,
 ) {
-  return companyPricingObjectSchema(messages).superRefine((data, ctx) => {
-    refineCompanyPricing(data, ctx, messages);
+  return carPricingObjectSchema(messages).superRefine((data, ctx) => {
+    refineCarPricing(data, ctx, messages);
   });
 }
 
-const defaultPricingMessages: CompanyPricingValidationMessages = {
+const defaultPricingMessages: CarPricingValidationMessages = {
   numberInvalid: 'Must be a valid number',
   numberNegative: 'Must be zero or greater',
   pricingIncomplete:
@@ -182,7 +147,11 @@ const defaultPricingMessages: CompanyPricingValidationMessages = {
   feeThresholdOrder: 'Fee thresholds must satisfy 0 < x < y < z',
 };
 
-export const updateCompanyPricingDtoSchema: z.ZodType<CompanyPricingInput> =
-  createUpdateCompanyPricingDtoSchema(defaultPricingMessages);
+export const updateCarPricingDtoSchema: z.ZodType<CarPricing> =
+  createUpdateCarPricingDtoSchema(defaultPricingMessages);
 
-export type UpdateCompanyPricingDto = CompanyPricingInput;
+export type UpdateCarPricingDto = CarPricing;
+
+export type UpdateCarPricingFormInput = z.input<
+  ReturnType<typeof createUpdateCarPricingDtoSchema>
+>;

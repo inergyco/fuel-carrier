@@ -35,14 +35,6 @@ export async function saveCompanyRecord({
       phoneNumber: data.phoneNumber,
       address: data.address,
       note: data.note,
-      petrolPricePerLiter: data.petrolPricePerLiter,
-      feeThresholdX: data.feeThresholdX,
-      feeThresholdY: data.feeThresholdY,
-      feeThresholdZ: data.feeThresholdZ,
-      feeUpToX: data.feeUpToX,
-      feeXToY: data.feeXToY,
-      feeYToZ: data.feeYToZ,
-      feeAboveZ: data.feeAboveZ,
     })
   }
 

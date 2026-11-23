@@ -8,12 +8,7 @@ import { DEFAULT_LIMIT } from "@fuel-carrier/shared-types";
 import type { CreateCompanyDto } from "@fuel-carrier/shared-validation/company/create";
 import type { UpdateCompanyDto } from "@fuel-carrier/shared-validation/company/update";
 import { api } from "@fuel-carrier/web-ui/api";
-import {
-  companyPricingToFormValues,
-  emptyCompanyPricingFormValues,
-  toResourceListFilterSearchParams,
-  type CompanyPricingFormValues,
-} from "@fuel-carrier/web-ui/ui";
+import { toResourceListFilterSearchParams } from "@fuel-carrier/web-ui/ui";
 
 export type CompanyListParams = PaginationParams & {
   search?: string;
@@ -40,7 +35,7 @@ export type CompanyFormValues = {
   address: string;
   note: string;
   logoUrl: string;
-} & CompanyPricingFormValues;
+};
 
 export function companyToFormValues(company?: Company): CompanyFormValues {
   return {
@@ -50,9 +45,6 @@ export function companyToFormValues(company?: Company): CompanyFormValues {
     address: company?.address ?? "",
     note: company?.note ?? "",
     logoUrl: company?.logoUrl ?? "",
-    ...(company
-      ? companyPricingToFormValues(company)
-      : emptyCompanyPricingFormValues()),
   };
 }
 

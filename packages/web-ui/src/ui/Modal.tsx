@@ -10,11 +10,12 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { cn } from '../utils'
 import { Button, type ButtonVariant } from './Button'
 
-type ModalSize = 'sm' | 'lg'
+type ModalSize = 'sm' | 'lg' | 'xl'
 
 const modalSizeClasses: Record<ModalSize, string> = {
   sm: 'max-w-sm',
   lg: 'max-w-lg',
+  xl: 'max-h-[calc(100svh-2rem)] max-w-3xl overflow-y-auto',
 }
 
 const FOCUSABLE_SELECTOR = [

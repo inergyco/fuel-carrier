@@ -1257,6 +1257,10 @@ type RootTranslation = {
 			 */
 			carCustodyEnded: string
 			/**
+			 * P​r​i​c​i​n​g​ ​u​p​d​a​t​e​d​.
+			 */
+			pricingUpdated: string
+			/**
 			 * S​i​g​n​e​d​ ​o​u​t​.
 			 */
 			signedOut: string
@@ -1966,6 +1970,10 @@ type RootTranslation = {
 				 * D​e​a​c​t​i​v​a​t​i​n​g​…
 				 */
 				deleteCarDeleting: string
+				/**
+				 * P​r​i​c​i​n​g
+				 */
+				pricingAction: string
 				/**
 				 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s
 				 */
@@ -2743,7 +2751,7 @@ type RootTranslation = {
 			}
 			bridges: {
 				/**
-				 * E​a​c​h​ ​c​o​m​p​a​n​y​ ​k​e​e​p​s​ ​i​t​s​ ​o​w​n​ ​v​e​h​i​c​l​e​s​ ​a​n​d​ ​i​t​s​ ​o​w​n​ ​f​u​e​l​ ​p​r​i​c​e​.
+				 * E​a​c​h​ ​c​o​m​p​a​n​y​ ​k​e​e​p​s​ ​i​t​s​ ​o​w​n​ ​v​e​h​i​c​l​e​s​.​ ​E​a​c​h​ ​v​e​h​i​c​l​e​ ​k​e​e​p​s​ ​i​t​s​ ​o​w​n​ ​f​u​e​l​ ​p​r​i​c​e​.
 				 */
 				afterHero: string
 				/**
@@ -2755,7 +2763,7 @@ type RootTranslation = {
 				 */
 				afterLive: string
 				/**
-				 * P​e​t​r​o​l​ ​p​r​i​c​e​,​ ​c​o​l​l​e​a​g​u​e​ ​a​c​c​o​u​n​t​s​,​ ​a​n​d​ ​t​h​e​ ​w​o​r​k​ ​r​e​c​o​r​d​ ​s​i​t​ ​t​o​g​e​t​h​e​r​.
+				 * P​e​t​r​o​l​ ​p​r​i​c​e​ ​s​i​t​s​ ​o​n​ ​t​h​e​ ​v​e​h​i​c​l​e​,​ ​n​e​x​t​ ​t​o​ ​c​o​l​l​e​a​g​u​e​ ​a​c​c​o​u​n​t​s​ ​a​n​d​ ​t​h​e​ ​w​o​r​k​ ​r​e​c​o​r​d​.
 				 */
 				afterControl: string
 			}
@@ -3744,6 +3752,10 @@ type RootTranslation = {
 			 * S​e​l​e​c​t​ ​a​ ​d​r​i​v​e​r
 			 */
 			selectDriver: string
+			/**
+			 * P​r​i​c​i​n​g
+			 */
+			pricingAction: string
 			/**
 			 * M​Q​T​T​ ​c​r​e​d​e​n​t​i​a​l​s
 			 */
@@ -5528,6 +5540,10 @@ export type TranslationFunctions = {
 			 */
 			carCustodyEnded: () => LocalizedString
 			/**
+			 * Pricing updated.
+			 */
+			pricingUpdated: () => LocalizedString
+			/**
 			 * Signed out.
 			 */
 			signedOut: () => LocalizedString
@@ -6218,6 +6234,10 @@ export type TranslationFunctions = {
 				 * Deactivating…
 				 */
 				deleteCarDeleting: () => LocalizedString
+				/**
+				 * Pricing
+				 */
+				pricingAction: () => LocalizedString
 				/**
 				 * MQTT credentials
 				 */
@@ -6987,7 +7007,7 @@ export type TranslationFunctions = {
 			}
 			bridges: {
 				/**
-				 * Each company keeps its own vehicles and its own fuel price.
+				 * Each company keeps its own vehicles. Each vehicle keeps its own fuel price.
 				 */
 				afterHero: () => LocalizedString
 				/**
@@ -6999,7 +7019,7 @@ export type TranslationFunctions = {
 				 */
 				afterLive: () => LocalizedString
 				/**
-				 * Petrol price, colleague accounts, and the work record sit together.
+				 * Petrol price sits on the vehicle, next to colleague accounts and the work record.
 				 */
 				afterControl: () => LocalizedString
 			}
@@ -7965,6 +7985,10 @@ export type TranslationFunctions = {
 			 * Select a driver
 			 */
 			selectDriver: () => LocalizedString
+			/**
+			 * Pricing
+			 */
+			pricingAction: () => LocalizedString
 			/**
 			 * MQTT credentials
 			 */

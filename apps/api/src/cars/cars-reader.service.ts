@@ -5,13 +5,26 @@ import { ApiErrorCode } from '@fuel-carrier/shared-types';
 import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import { assertUuidParam } from '../common/validation/uuid.utils';
+import { carPricing } from '../database/schema/car-pricing.schema';
 import { cars } from '../database/schema/cars.schema';
 import { drivers } from '../database/schema/drivers.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
 import { ImageUrlService } from '../uploads/image-url.service';
 
 type CarRow = typeof cars.$inferSelect;
+type CarPricingRow = typeof carPricing.$inferSelect;
 type DriverRow = typeof drivers.$inferSelect;
+
+const EMPTY_CAR_PRICING = {
+  petrolPricePerLiter: null,
+  feeThresholdX: null,
+  feeThresholdY: null,
+  feeThresholdZ: null,
+  feeUpToX: null,
+  feeXToY: null,
+  feeYToZ: null,
+  feeAboveZ: null,
+} as const;
 
 /** Car lookups that run inside an existing tenant (RLS) transaction. */
 @Injectable()
@@ -24,7 +37,7 @@ export class CarsReader {
 
     const row = await tx.query.cars.findFirst({
       where: and(eq(cars.id, id), isNull(cars.deletedAt)),
-      with: { driver: true },
+      with: { driver: true, pricing: true },
     });
 
     if (!row) {
@@ -47,7 +60,7 @@ export class CarsReader {
 
     const row = await tx.query.cars.findFirst({
       where: eq(cars.id, id),
-      with: { driver: true },
+      with: { driver: true, pricing: true },
     });
 
     if (!row) {
@@ -86,7 +99,12 @@ export function mapCarDriverSummary(
   };
 }
 
-export function mapCarRow(row: CarRow, driverRow?: DriverRow | null): Car {
+export function mapCarRow(
+  row: CarRow & { pricing?: CarPricingRow | null },
+  driverRow?: DriverRow | null,
+): Car {
+  const pricing = row.pricing ?? EMPTY_CAR_PRICING;
+
   return {
     id: row.id,
     licensePlate: row.licensePlate,
@@ -99,6 +117,14 @@ export function mapCarRow(row: CarRow, driverRow?: DriverRow | null): Car {
     firmwareCompanyId: row.firmwareCompanyId ?? null,
     firmwareDeviceId: row.firmwareDeviceId ?? null,
     note: row.note,
+    petrolPricePerLiter: pricing.petrolPricePerLiter,
+    feeThresholdX: pricing.feeThresholdX,
+    feeThresholdY: pricing.feeThresholdY,
+    feeThresholdZ: pricing.feeThresholdZ,
+    feeUpToX: pricing.feeUpToX,
+    feeXToY: pricing.feeXToY,
+    feeYToZ: pricing.feeYToZ,
+    feeAboveZ: pricing.feeAboveZ,
     deletedAt: row.deletedAt ? toIsoTimestamp(row.deletedAt) : null,
     createdAt: toIsoTimestamp(row.createdAt),
     updatedAt: toIsoTimestamp(row.updatedAt),

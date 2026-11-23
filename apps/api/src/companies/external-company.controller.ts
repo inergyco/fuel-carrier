@@ -1,22 +1,16 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
-  Patch,
   Post,
   Inject,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserRole, type Company } from '@fuel-carrier/shared-types';
-import {
-  updateCompanyPricingDtoSchema,
-  type UpdateCompanyPricingDto,
-} from '@fuel-carrier/shared-validation/company/pricing';
 import type { FastifyRequest } from 'fastify';
 import { CompanyUserAdminGuard } from '../auth/company-user-admin.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
@@ -24,7 +18,6 @@ import type { AuthSession } from '../auth/auth.types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
-import { parseZodDto } from '../common/validation/zod.utils';
 import { tenantContextFromSession } from '../database/tenant-context.utils';
 import {
   ApiEnvelopeBadRequestResponse,
@@ -32,10 +25,7 @@ import {
   ApiEnvelopeUnauthorizedResponse,
   ApiMultipartFileBody,
 } from '../swagger/decorators/api-envelope.decorator';
-import {
-  CompanyDto,
-  UpdateCompanyPricingRequestDto,
-} from '../swagger/dto/company.dto';
+import { CompanyDto } from '../swagger/dto/company.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import type { ImageStorage } from '../uploads/image-storage';
 import { COMPANY_LOGO_STORAGE } from '../uploads/image-storage.tokens';
@@ -60,27 +50,6 @@ export class ExternalCompanyController {
   @ApiEnvelopeUnauthorizedResponse()
   getCompany(@CurrentUser() user: AuthSession): Promise<Company> {
     return this.companiesService.getById(user.companyId!);
-  }
-
-  @Patch()
-  @ApiOperation({ summary: 'Update petrol price and fee ranges' })
-  @ApiBody({ type: UpdateCompanyPricingRequestDto })
-  @ApiEnvelopeOkResponse(CompanyDto)
-  @ApiEnvelopeBadRequestResponse()
-  @ApiEnvelopeUnauthorizedResponse()
-  updatePricing(
-    @CurrentUser() user: AuthSession,
-    @Body() body: unknown,
-  ): Promise<Company> {
-    const dto: UpdateCompanyPricingDto = parseZodDto(
-      updateCompanyPricingDtoSchema,
-      body,
-    );
-    return this.companiesService.update(
-      tenantContextFromSession(user),
-      user.companyId!,
-      dto,
-    );
   }
 
   @Post('logo')

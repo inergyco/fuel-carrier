@@ -31,6 +31,20 @@ export type Car = {
    */
   firmwareDeviceId: string | null;
   note: string | null;
+  /** Price of petrol per liter; null when this car has no pricing row. */
+  petrolPricePerLiter: number | null;
+  /** Liter breakpoint x for fee bands (0–x / x–y / y–z / above z). */
+  feeThresholdX: number | null;
+  feeThresholdY: number | null;
+  feeThresholdZ: number | null;
+  /** Fee for 0–x liters. */
+  feeUpToX: number | null;
+  /** Fee for x–y liters. */
+  feeXToY: number | null;
+  /** Fee for y–z liters. */
+  feeYToZ: number | null;
+  /** Fee for above z liters. */
+  feeAboveZ: number | null;
   /** ISO-8601 timestamptz when soft-deleted; null while live. */
   deletedAt: string | null;
   /** ISO-8601 timestamptz from the API. */
@@ -39,8 +53,21 @@ export type Car = {
   updatedAt: string;
 };
 
-/** Create/update payload — deletedAt/driver summary are server-managed. */
+/** Pricing fields stored on a `car_pricing` row owned by `carId`. */
+export type CarPricing = Pick<
+  Car,
+  | 'petrolPricePerLiter'
+  | 'feeThresholdX'
+  | 'feeThresholdY'
+  | 'feeThresholdZ'
+  | 'feeUpToX'
+  | 'feeXToY'
+  | 'feeYToZ'
+  | 'feeAboveZ'
+>;
+
+/** Create/update payload — deletedAt, driver summary, and pricing are server-managed. */
 export type CarInput = Omit<
   Car,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'driver'
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'driver' | keyof CarPricing
 >;

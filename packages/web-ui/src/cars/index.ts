@@ -35,6 +35,10 @@ export {
 } from './car-detail-action-class-name'
 export { useCarOutputCommand } from './useCarOutputCommand'
 export {
+  CarPricingModal,
+  type CarPricingModalProps,
+} from './CarPricingModal'
+export {
   CarFirmwareIdentityModal,
   type CarFirmwareIdentityModalLabels,
   type CarFirmwareIdentityModalProps,

@@ -354,6 +354,7 @@ const fa: Translation = {
       carDriverAssigned: "راننده تخصیص داده شد.",
       carDriverChanged: "راننده تغییر کرد.",
       carCustodyEnded: "تخصیص پایان یافت.",
+      pricingUpdated: "قیمت‌گذاری به‌روزرسانی شد.",
       signedOut: "خروج انجام شد.",
       notificationSent: "اعلان برای {count} نفر از کارکنان ارسال شد.",
     },
@@ -546,6 +547,7 @@ const fa: Translation = {
           "خودرو با پلاک «{licensePlate}» غیرفعال می‌شود و از فهرست فعال خارج می‌گردد؛ تاریخچه انتساب در دسترس می‌ماند.",
         deleteCarConfirm: "غیرفعال کردن",
         deleteCarDeleting: "در حال غیرفعال‌سازی…",
+        pricingAction: "قیمت‌گذاری",
         mqttCredentialsAction: "اعتبارنامه MQTT",
         mqttCredentialsConfirmTitle: "صدور اعتبارنامه MQTT؟",
         mqttCredentialsConfirmDescription:
@@ -773,11 +775,13 @@ const fa: Translation = {
         signInShort: "ورود",
       },
       bridges: {
-        afterHero: "هر شرکت، خودروها و قیمت سوخت خودش را جدا دارد.",
+        afterHero:
+          "هر شرکت خودروهای خودش را دارد و هر خودرو قیمت سوخت خودش را.",
         afterFleet: "سپردن راننده و تمام کردن تحویل، در سوابق خودرو می‌ماند.",
         afterLive:
           "برای دانستن موجودی مخزن یا مسیر، لازم نیست به راننده زنگ بزنید.",
-        afterControl: "قیمت بنزین، حساب همکاران و سوابق کار کنار هم است.",
+        afterControl:
+          "قیمت بنزین روی خود خودرو است، کنار حساب همکاران و سوابق کار.",
       },
       footer: {
         tagline: "پرتال شرکت‌های حمل سوخت",
@@ -1059,6 +1063,7 @@ const fa: Translation = {
       transferConfirm: "انتقال به اینجا",
       driverOnOtherVehicle: "روی {licensePlate}",
       selectDriver: "انتخاب راننده",
+      pricingAction: "قیمت‌گذاری",
       mqttCredentialsAction: "اعتبارنامه MQTT",
       mqttCredentialsConfirmTitle: "صدور اعتبارنامه MQTT؟",
       mqttCredentialsConfirmDescription:

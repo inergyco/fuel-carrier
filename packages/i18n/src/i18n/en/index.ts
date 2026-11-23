@@ -362,6 +362,7 @@ const en: BaseTranslation = {
       carDriverAssigned: 'Driver assigned.',
       carDriverChanged: 'Driver changed.',
       carCustodyEnded: 'Custody ended.',
+      pricingUpdated: 'Pricing updated.',
       signedOut: 'Signed out.',
       notificationSent: 'Notification sent to {count:number} staff.',
     },
@@ -552,6 +553,7 @@ const en: BaseTranslation = {
           'This will deactivate {licensePlate:string}. Assignment history stays available; the vehicle leaves active lists.',
         deleteCarConfirm: 'Deactivate',
         deleteCarDeleting: 'Deactivating…',
+        pricingAction: 'Pricing',
         mqttCredentialsAction: 'MQTT credentials',
         mqttCredentialsConfirmTitle: 'Provision MQTT credentials?',
         mqttCredentialsConfirmDescription:
@@ -782,12 +784,13 @@ const en: BaseTranslation = {
         signInShort: 'Login',
       },
       bridges: {
-        afterHero: 'Each company keeps its own vehicles and its own fuel price.',
+        afterHero:
+          'Each company keeps its own vehicles. Each vehicle keeps its own fuel price.',
         afterFleet:
           'Assigning a driver and ending the handoff stays on the vehicle record.',
         afterLive: 'Tank level and route are on the map when you need them.',
         afterControl:
-          'Petrol price, colleague accounts, and the work record sit together.',
+          'Petrol price sits on the vehicle, next to colleague accounts and the work record.',
       },
       footer: {
         tagline: 'The portal for fuel-carrier companies.',
@@ -1072,6 +1075,7 @@ const en: BaseTranslation = {
       transferConfirm: 'Move here',
       driverOnOtherVehicle: 'On {licensePlate:string}',
       selectDriver: 'Select a driver',
+      pricingAction: 'Pricing',
       mqttCredentialsAction: 'MQTT credentials',
       mqttCredentialsConfirmTitle: 'Provision MQTT credentials?',
       mqttCredentialsConfirmDescription:

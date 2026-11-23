@@ -1,23 +1,29 @@
+import { useState } from 'react'
 import type { Car } from '@fuel-carrier/shared-types'
+import type { UpdateCarPricingDto } from '@fuel-carrier/shared-validation/car/pricing'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   CarFirmwareIdentityModal,
   CarOutputToggle,
+  CarPricingModal,
   carDetailActionClassName,
   carDetailActionRowClassName,
   carDetailDriverChipClassName,
 } from '@fuel-carrier/web-ui/cars'
-import { Activity, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import { Activity, Banknote, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   Button,
   ConfirmModal,
   ICON_STROKE_WIDTH,
   iconSmClassName,
+  useToast,
 } from '@fuel-carrier/web-ui/ui'
 import { Link } from '@tanstack/react-router'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'
 import type { CompanyCarCustodyApi } from './custody/useCompanyCarCustody'
+import { carKeys, updateCarPricing } from '../../../lib/api/cars'
 import { useCompanyCarFirmwareIdentity } from './useCompanyCarFirmwareIdentity'
 import { useCompanyCarMqttCredentials } from './useCompanyCarMqttCredentials'
 
@@ -33,11 +39,28 @@ export function CompanyCarDetailHeader({
   const { LL } = useI18nContext()
   const mqtt = useCompanyCarMqttCredentials()
   const firmware = useCompanyCarFirmwareIdentity(car)
+  const queryClient = useQueryClient()
+  const toast = useToast()
+  const [pricingOpen, setPricingOpen] = useState(false)
   const detail = LL.internalPanel.companies.detail
   const driverName = custody.currentDriverName(car)
 
   function handleOpenMqttCredentials() {
     mqtt.openMqttCredentials(car)
+  }
+
+  function handleOpenPricing() {
+    setPricingOpen(true)
+  }
+
+  function handleClosePricing() {
+    setPricingOpen(false)
+  }
+
+  async function handleSavePricing(dto: UpdateCarPricingDto) {
+    await updateCarPricing(car.id, dto)
+    await queryClient.invalidateQueries({ queryKey: carKeys.all })
+    toast.success(LL.internalPanel.toast.pricingUpdated())
   }
 
   const emptyFirmwareLabel = LL.internalPanel.companies.emptyCell()
@@ -58,6 +81,21 @@ export function CompanyCarDetailHeader({
 
       <div className={carDetailActionRowClassName}>
         <CarCustodyActions car={car} custody={custody} />
+        <Button
+          type="button"
+          variant="ghost"
+          className={carDetailActionClassName}
+          onClick={handleOpenPricing}
+        >
+          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
+            <Banknote
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+            {detail.pricingAction()}
+          </span>
+        </Button>
         <CarOutputToggle carId={car.id} licensePlate={car.licensePlate} />
         <Button
           type="button"
@@ -102,6 +140,13 @@ export function CompanyCarDetailHeader({
           {LL.common.carTelemetry.action()}
         </Link>
       </div>
+
+      <CarPricingModal
+        open={pricingOpen}
+        car={car}
+        onClose={handleClosePricing}
+        savePricing={handleSavePricing}
+      />
 
       <CarFirmwareIdentityModal
         open={firmware.open}

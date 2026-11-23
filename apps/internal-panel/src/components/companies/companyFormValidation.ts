@@ -11,7 +11,6 @@ import {
   createCreateCompanyDtoSchema,
   type CreateCompanyValidationMessages,
 } from '@fuel-carrier/shared-validation/company/create'
-import { COMPANY_PRICING_KEYS } from '@fuel-carrier/shared-validation/company/pricing'
 import { IMAGE_UPLOAD_URL_MAX_LENGTH } from '@fuel-carrier/shared-validation/image-upload/constants'
 import type { z } from 'zod'
 
@@ -28,7 +27,6 @@ export const COMPANY_FORM_FIELDS = [
   'address',
   'note',
   'logoUrl',
-  ...COMPANY_PRICING_KEYS,
 ] as const satisfies readonly (keyof CompanyFormInput)[]
 
 export interface CompanyFormProps {
@@ -63,8 +61,4 @@ export const toCompanyFormValidationMessages = (
     max: IMAGE_UPLOAD_URL_MAX_LENGTH,
   }),
   logoUrlInvalid: LL.validation.companyLogoUrlInvalid(),
-  numberInvalid: LL.validation.companyPricingNumberInvalid(),
-  numberNegative: LL.validation.companyPricingNumberNegative(),
-  pricingIncomplete: LL.validation.companyPricingIncomplete(),
-  feeThresholdOrder: LL.validation.companyPricingFeeThresholdOrder(),
 })

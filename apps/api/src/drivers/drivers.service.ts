@@ -27,6 +27,7 @@ import { createApiException } from '../common/exceptions/api.exception';
 import { toIsoTimestamp } from '../common/iso-timestamp.utils';
 import type { CompanyScopedListParams } from '../common/types/company-scoped-list-params';
 import { assertUuidParam } from '../common/validation/uuid.utils';
+import { carPricing } from '../database/schema/car-pricing.schema';
 import { cars } from '../database/schema/cars.schema';
 import { drivers } from '../database/schema/drivers.schema';
 import {
@@ -120,7 +121,7 @@ export class DriversService {
 
       const rows = await tx.query.drivers.findMany({
         where,
-        with: { car: true },
+        with: { car: { with: { pricing: true } } },
         orderBy: desc(drivers.createdAt),
         limit,
         offset,
@@ -141,7 +142,7 @@ export class DriversService {
     return this.tenantDb.run(context, async (tx) => {
       const row = await tx.query.drivers.findFirst({
         where: and(eq(drivers.id, id), isNull(drivers.deletedAt)),
-        with: { car: true },
+        with: { car: { with: { pricing: true } } },
       });
 
       if (!row) {
@@ -431,7 +432,11 @@ export class DriversService {
 }
 
 type DriverWithCar = typeof drivers.$inferSelect & {
-  car: typeof cars.$inferSelect | null;
+  car:
+    | (typeof cars.$inferSelect & {
+        pricing: typeof carPricing.$inferSelect | null;
+      })
+    | null;
 };
 
 function _mapDriver(row: typeof drivers.$inferSelect): Driver {

@@ -33,6 +33,10 @@ import {
   type UpdateExternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create';
 import {
+  updateCarPricingDtoSchema,
+  type UpdateCarPricingDto,
+} from '@fuel-carrier/shared-validation/car/pricing';
+import {
   carOutputCommandDtoSchema,
   type CarOutputCommandDto,
 } from '@fuel-carrier/shared-validation/car/output-command';
@@ -69,6 +73,7 @@ import {
   CarOutputCommandRequestDto,
   CarOutputCommandResultDto,
 } from '../swagger/dto/car-output-command.dto';
+import { UpdateCarPricingRequestDto } from '../swagger/dto/car-pricing.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { redactFirmwareIdentity } from './cars-reader.service';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
@@ -231,6 +236,31 @@ export class ExternalCarsController {
       ...dto,
       companyId: user.companyId!,
     });
+    return redactFirmwareIdentity(car);
+  }
+
+  @Patch(':id/pricing')
+  @UseGuards(CompanyUserAdminGuard)
+  @ApiOperation({
+    summary: 'Update petrol price and fee ranges for a company car',
+  })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: UpdateCarPricingRequestDto })
+  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  async updatePricing(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateCarPricingDtoSchema))
+    dto: UpdateCarPricingDto,
+  ): Promise<Car> {
+    const car = await this.carsService.updatePricing(
+      tenantContextFromSession(user),
+      id,
+      dto,
+    );
     return redactFirmwareIdentity(car);
   }
 

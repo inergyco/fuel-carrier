@@ -35,4 +35,12 @@ export const CAR_AUDIT_FIELDS = [
   'firmwareCompanyId',
   'firmwareDeviceId',
   'note',
+  'petrolPricePerLiter',
+  'feeThresholdX',
+  'feeThresholdY',
+  'feeThresholdZ',
+  'feeUpToX',
+  'feeXToY',
+  'feeYToZ',
+  'feeAboveZ',
 ] as const satisfies readonly (keyof Car)[];

@@ -9,7 +9,6 @@ import {
 import { getRouteApi, useRouter } from "@tanstack/react-router";
 import { authKeys, fetchMe } from "../../lib/api/auth";
 import { removeCompanyLogo, uploadCompanyLogo } from "../../lib/api/company";
-import { CompanyPricingSettings } from "./CompanyPricingSettings";
 
 const panelRoute = getRouteApi("/panel");
 
@@ -47,16 +46,13 @@ export function SettingsPage() {
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-4">
       <AppearanceSettings />
       {canManageCompany ? (
-        <>
-          <CompanyPricingSettings />
-          <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl sm:p-6">
-            <CompanyLogoUploader
-              logoUrl={meQuery.data?.companyLogoUrl}
-              onUploadFile={handleUploadLogo}
-              onRemove={handleRemoveLogo}
-            />
-          </section>
-        </>
+        <section className="rounded-2xl border border-base-content/8 bg-panel-card p-4 backdrop-blur-xl sm:p-6">
+          <CompanyLogoUploader
+            logoUrl={meQuery.data?.companyLogoUrl}
+            onUploadFile={handleUploadLogo}
+            onRemove={handleRemoveLogo}
+          />
+        </section>
       ) : null}
     </div>
   );

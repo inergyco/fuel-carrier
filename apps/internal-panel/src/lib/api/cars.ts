@@ -12,6 +12,7 @@ import type {
   CreateInternalCarDto,
   UpdateInternalCarDto,
 } from "@fuel-carrier/shared-validation/car/create";
+import type { UpdateCarPricingDto } from "@fuel-carrier/shared-validation/car/pricing";
 import { api, fetchAllPaginated } from "@fuel-carrier/web-ui/api";
 import { toResourceListFilterSearchParams } from "@fuel-carrier/web-ui/ui";
 
@@ -105,6 +106,13 @@ export async function updateCar(
   dto: UpdateInternalCarDto,
 ): Promise<Car> {
   return api.patch(`cars/${id}`, { json: dto }).json<Car>();
+}
+
+export async function updateCarPricing(
+  id: string,
+  dto: UpdateCarPricingDto,
+): Promise<Car> {
+  return api.patch(`cars/${id}/pricing`, { json: dto }).json<Car>();
 }
 
 export async function deleteCar(id: string): Promise<void> {

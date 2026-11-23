@@ -34,6 +34,10 @@ import {
   type UpdateInternalCarDto,
 } from '@fuel-carrier/shared-validation/car/create';
 import {
+  updateCarPricingDtoSchema,
+  type UpdateCarPricingDto,
+} from '@fuel-carrier/shared-validation/car/pricing';
+import {
   carOutputCommandDtoSchema,
   type CarOutputCommandDto,
 } from '@fuel-carrier/shared-validation/car/output-command';
@@ -68,6 +72,7 @@ import {
   CarOutputCommandRequestDto,
   CarOutputCommandResultDto,
 } from '../swagger/dto/car-output-command.dto';
+import { UpdateCarPricingRequestDto } from '../swagger/dto/car-pricing.dto';
 import { AUTH_COOKIE_SCHEME } from '../swagger/swagger.constants';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { CarsService } from './cars.service';
@@ -210,6 +215,23 @@ export class InternalCarsController {
     dto: CreateInternalCarDto,
   ): Promise<Car> {
     return this.carsService.create(internalTenantContext(user), dto);
+  }
+
+  @Patch(':id/pricing')
+  @ApiOperation({ summary: 'Update petrol price and fee ranges for a car' })
+  @ApiParam({ name: 'id', format: 'uuid' })
+  @ApiBody({ type: UpdateCarPricingRequestDto })
+  @ApiEnvelopeOkResponse(Object)
+  @ApiEnvelopeBadRequestResponse()
+  @ApiEnvelopeNotFoundResponse()
+  @ApiEnvelopeUnauthorizedResponse()
+  updatePricing(
+    @CurrentUser() user: AuthSession,
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateCarPricingDtoSchema))
+    dto: UpdateCarPricingDto,
+  ): Promise<Car> {
+    return this.carsService.updatePricing(internalTenantContext(user), id, dto);
   }
 
   @Patch(':id')

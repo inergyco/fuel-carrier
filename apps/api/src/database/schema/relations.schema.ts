@@ -3,6 +3,7 @@ import { admins } from './admins.schema';
 import { auditLogs } from './audit-logs.schema';
 import { carDriverAssignments } from './car-driver-assignments.schema';
 import { carTelemetryHistory } from './car-telemetry-history.schema';
+import { carPricing } from './car-pricing.schema';
 import { cars } from './cars.schema';
 import { companies } from './companies.schema';
 import { companyUsers } from './company-users.schema';
@@ -93,8 +94,23 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
     fields: [cars.id],
     references: [mqttClients.carId],
   }),
+  pricing: one(carPricing, {
+    fields: [cars.id],
+    references: [carPricing.carId],
+  }),
   conditionAlerts: many(carConditionAlerts),
   notifications: many(notifications),
+}));
+
+export const carPricingRelations = relations(carPricing, ({ one }) => ({
+  car: one(cars, {
+    fields: [carPricing.carId],
+    references: [cars.id],
+  }),
+  company: one(companies, {
+    fields: [carPricing.companyId],
+    references: [companies.id],
+  }),
 }));
 
 export const mqttClientsRelations = relations(mqttClients, ({ one, many }) => ({

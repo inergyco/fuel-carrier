@@ -68,55 +68,6 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
     },
   ]
 
-  const priceFields: DetailFieldItem[] = [
-    {
-      key: 'petrolPricePerLiter',
-      label: LL.common.companyPricing.petrolPricePerLiter(),
-      value: formatPricingValue(company.petrolPricePerLiter),
-    },
-  ]
-
-  const thresholdFields: DetailFieldItem[] = [
-    {
-      key: 'feeThresholdX',
-      label: LL.common.companyPricing.feeThresholdX(),
-      value: formatPricingValue(company.feeThresholdX),
-    },
-    {
-      key: 'feeThresholdY',
-      label: LL.common.companyPricing.feeThresholdY(),
-      value: formatPricingValue(company.feeThresholdY),
-    },
-    {
-      key: 'feeThresholdZ',
-      label: LL.common.companyPricing.feeThresholdZ(),
-      value: formatPricingValue(company.feeThresholdZ),
-    },
-  ]
-
-  const feeFields: DetailFieldItem[] = [
-    {
-      key: 'feeUpToX',
-      label: LL.common.companyPricing.feeUpToX(),
-      value: formatPricingValue(company.feeUpToX),
-    },
-    {
-      key: 'feeXToY',
-      label: LL.common.companyPricing.feeXToY(),
-      value: formatPricingValue(company.feeXToY),
-    },
-    {
-      key: 'feeYToZ',
-      label: LL.common.companyPricing.feeYToZ(),
-      value: formatPricingValue(company.feeYToZ),
-    },
-    {
-      key: 'feeAboveZ',
-      label: LL.common.companyPricing.feeAboveZ(),
-      value: formatPricingValue(company.feeAboveZ),
-    },
-  ]
-
   function renderDetailField(field: DetailFieldItem) {
     return (
       <DetailField
@@ -128,21 +79,6 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
     )
   }
 
-  function renderPricingGroup(
-    title: string,
-    fields: DetailFieldItem[],
-    columnsClassName?: string,
-  ) {
-    return (
-      <div className="flex flex-col gap-3 rounded-2xl border border-base-content/8 bg-base-100/30 p-4">
-        <p className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-          {title}
-        </p>
-        <div className={columnsClassName}>{fields.map(renderDetailField)}</div>
-      </div>
-    )
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <CompanyLogoUploader
@@ -151,31 +87,9 @@ export function CompanyDetailCard({ company }: CompanyDetailCardProps) {
         onRemove={handleRemoveLogo}
       />
       {companyFields.map(renderDetailField)}
-      <div className="flex flex-col gap-4 border-t border-base-content/8 pt-4">
-        <span className="text-xs font-medium tracking-widest text-base-content/40 uppercase">
-          {LL.common.companyPricing.title()}
-        </span>
-        {renderPricingGroup(
-          LL.common.companyPricing.priceGroup(),
-          priceFields,
-        )}
-        {renderPricingGroup(
-          LL.common.companyPricing.thresholdsGroup(),
-          thresholdFields,
-          'grid grid-cols-1 gap-4 sm:grid-cols-3',
-        )}
-        {renderPricingGroup(
-          LL.common.companyPricing.feesGroup(),
-          feeFields,
-          'grid grid-cols-1 gap-4 sm:grid-cols-2',
-        )}
-      </div>
     </div>
   )
 }
-
-const formatPricingValue = (value: number | null): string | null =>
-  value === null ? null : String(value)
 
 function DetailField({
   label,

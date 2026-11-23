@@ -2,7 +2,6 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   Button,
   CompanyLogoUploader,
-  CompanyPricingFields,
   FormInput,
   FormTextarea,
 } from '@fuel-carrier/web-ui/ui'
@@ -81,8 +80,6 @@ export function CompanyFormFields({
         rows={4}
         placeholder={LL.internalPanel.companies.notePlaceholder()}
       />
-
-      <CompanyPricingFields />
 
       {serverError ? (
         <div className="rounded-lg border border-error/20 bg-error/8 px-3 py-2 text-xs text-error">
