@@ -69,7 +69,7 @@ export function CompanyCarDetailHeader({
   return (
     <div className="mb-6 flex flex-col gap-4">
       <div
-        className={cn(carDetailDriverChipClassName, 'w-full py-1 pe-1 sm:w-full')}
+        className={cn(carDetailDriverChipClassName, 'py-1 pe-1')}
       >
         <User
           className={iconSmClassName}
