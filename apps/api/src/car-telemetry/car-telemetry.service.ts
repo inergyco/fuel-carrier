@@ -1,10 +1,12 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ApiErrorCode } from '@fuel-carrier/shared-types/api-error-code';
+import type { CarFuelMovement } from '@fuel-carrier/shared-types/car-fuel-movement';
 import {
   CarTelemetrySocketEvents,
   type CarTelemetry,
   type CarTelemetryMarker,
 } from '@fuel-carrier/shared-types/car-telemetry';
+import type { PaginatedResult } from '@fuel-carrier/shared-types/pagination';
 import type { TenantContext } from '@fuel-carrier/shared-types/tenant-context';
 import Redis from 'ioredis';
 import { CarsReader } from '../cars/cars-reader.service';
@@ -16,6 +18,7 @@ import { TenantDbService } from '../database/tenant-db.service';
 import { CarConditionAlertService } from '../notifications/car-condition-alert.service';
 import { REDIS } from '../redis/redis.tokens';
 import { CarTelemetryRealtimeService } from './car-telemetry-realtime.service';
+import { listCarFuelMovements } from './car-fuel-movement.utils';
 import {
   CarTelemetryUtils,
   type FleetCar,
@@ -35,14 +38,22 @@ type IngestDeviceTelemetryInput = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
+  pricePerLiter?: number;
+  wage?: number;
   mode?: CarTelemetryMode;
   resistance?: RecordCarTelemetryInput['resistance'];
+  transactionId?: number;
 };
 
 type ListCarTelemetryHistoryInput = {
   carId: string;
   start?: Date;
   end?: Date;
+};
+
+type ListCarFuelMovementsInput = ListCarTelemetryHistoryInput & {
+  page: number;
+  limit: number;
 };
 
 @Injectable()
@@ -132,8 +143,11 @@ export class CarTelemetryService {
         speed: input.speed,
         remainFuel: input.remainFuel,
         fuelAmount: input.fuelAmount,
+        pricePerLiter: input.pricePerLiter,
+        wage: input.wage,
         mode: input.mode,
         resistance: input.resistance,
+        transactionId: input.transactionId,
       });
     } catch (error) {
       if (isNotFoundApiException(error)) {
@@ -165,6 +179,22 @@ export class CarTelemetryService {
     });
 
     return this._listMarkersForCompanies(context, companyIds);
+  }
+
+  async listFuelMovements(
+    context: TenantContext,
+    input: ListCarFuelMovementsInput,
+  ): Promise<PaginatedResult<CarFuelMovement>> {
+    return this.tenantDb.run(context, (tx) =>
+      listCarFuelMovements(tx, {
+        companyId: context.companyId,
+        carId: input.carId,
+        start: input.start,
+        end: input.end,
+        page: input.page,
+        limit: input.limit,
+      }),
+    );
   }
 
   async listHistory(

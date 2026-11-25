@@ -54,15 +54,6 @@ export function CarTelemetryRecordCards({
                 })}
               />
               <RecordField
-                label={labels.fuelAmount()}
-                value={formatMeasure({
-                  value: record.fuelAmount,
-                  format: formatVolume,
-                  unit: labels.volumeUnit(),
-                  empty: labels.emptyCell(),
-                })}
-              />
-              <RecordField
                 label={labels.latitude()}
                 value={formatCoordinate(record.latitude)}
               />

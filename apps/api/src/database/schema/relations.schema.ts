@@ -3,6 +3,10 @@ import { admins } from './admins.schema';
 import { auditLogs } from './audit-logs.schema';
 import { carDriverAssignments } from './car-driver-assignments.schema';
 import { carTelemetryHistory } from './car-telemetry-history.schema';
+import {
+  carFuelMovements,
+  carFuelTransactionCursors,
+} from './car-fuel-movement.schema';
 import { carPricing } from './car-pricing.schema';
 import { cars } from './cars.schema';
 import { companies } from './companies.schema';
@@ -46,6 +50,8 @@ export const companiesRelations = relations(companies, ({ many }) => ({
   auditLogs: many(auditLogs),
   carDriverAssignments: many(carDriverAssignments),
   carTelemetryHistory: many(carTelemetryHistory),
+  carFuelMovements: many(carFuelMovements),
+  carFuelTransactionCursors: many(carFuelTransactionCursors),
   notificationDeliveries: many(notificationDeliveries),
   notificationPushSubscriptions: many(notificationPushSubscriptions),
   carConditionAlerts: many(carConditionAlerts),
@@ -90,6 +96,11 @@ export const carsRelations = relations(cars, ({ one, many }) => ({
   }),
   driverAssignments: many(carDriverAssignments),
   telemetryHistory: many(carTelemetryHistory),
+  fuelMovements: many(carFuelMovements),
+  fuelTransactionCursor: one(carFuelTransactionCursors, {
+    fields: [cars.id],
+    references: [carFuelTransactionCursors.carId],
+  }),
   mqttClient: one(mqttClients, {
     fields: [cars.id],
     references: [mqttClients.carId],
@@ -146,6 +157,34 @@ export const carDriverAssignmentsRelations = relations(
     assignedByUser: one(users, {
       fields: [carDriverAssignments.assignedByUserId],
       references: [users.id],
+    }),
+  }),
+);
+
+export const carFuelMovementRelations = relations(
+  carFuelMovements,
+  ({ one }) => ({
+    car: one(cars, {
+      fields: [carFuelMovements.carId],
+      references: [cars.id],
+    }),
+    company: one(companies, {
+      fields: [carFuelMovements.companyId],
+      references: [companies.id],
+    }),
+  }),
+);
+
+export const carFuelTransactionCursorRelations = relations(
+  carFuelTransactionCursors,
+  ({ one }) => ({
+    car: one(cars, {
+      fields: [carFuelTransactionCursors.carId],
+      references: [cars.id],
+    }),
+    company: one(companies, {
+      fields: [carFuelTransactionCursors.companyId],
+      references: [companies.id],
     }),
   }),
 );

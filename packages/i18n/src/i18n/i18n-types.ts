@@ -250,10 +250,6 @@ type RootTranslation = {
 			 */
 			remainFuel: string
 			/**
-			 * D​i​s​p​e​n​s​e​d
-			 */
-			fuelAmount: string
-			/**
 			 * L​a​t​i​t​u​d​e
 			 */
 			latitude: string
@@ -289,6 +285,60 @@ type RootTranslation = {
 			 * O​p​e​n​ ​l​i​n​e
 			 */
 			resistanceOpenLine: string
+			/**
+			 * —
+			 */
+			emptyCell: string
+		}
+		carFuelMovements: {
+			/**
+			 * F​u​e​l​ ​m​o​v​e​m​e​n​t​s
+			 */
+			action: string
+			/**
+			 * F​u​e​l​ ​m​o​v​e​m​e​n​t​s
+			 */
+			title: string
+			/**
+			 * L​i​t​e​r​s​ ​l​o​a​d​e​d​ ​o​r​ ​d​i​s​p​e​n​s​e​d​ ​w​h​e​n​ ​t​h​e​ ​d​e​v​i​c​e​ ​t​r​a​n​s​a​c​t​i​o​n​ ​a​d​v​a​n​c​e​s
+			 */
+			subtitle: string
+			/**
+			 * L​o​a​d​i​n​g​ ​f​u​e​l​ ​m​o​v​e​m​e​n​t​s​…
+			 */
+			loading: string
+			/**
+			 * N​o​ ​f​u​e​l​ ​w​a​s​ ​l​o​a​d​e​d​ ​o​r​ ​d​i​s​p​e​n​s​e​d​ ​i​n​ ​t​h​e​ ​s​e​l​e​c​t​e​d​ ​t​i​m​e​ ​r​a​n​g​e​.
+			 */
+			empty: string
+			/**
+			 * N​o​ ​f​u​e​l​ ​m​o​v​e​m​e​n​t​s​ ​h​a​v​e​ ​b​e​e​n​ ​r​e​c​o​r​d​e​d​ ​f​o​r​ ​t​h​i​s​ ​v​e​h​i​c​l​e​.
+			 */
+			emptyAll: string
+			/**
+			 * D​a​t​e​ ​a​n​d​ ​t​i​m​e
+			 */
+			recordedAt: string
+			/**
+			 * M​o​d​e
+			 */
+			mode: string
+			/**
+			 * L​i​t​e​r​s
+			 */
+			liters: string
+			/**
+			 * P​r​i​c​e​ ​p​e​r​ ​l​i​t​e​r
+			 */
+			pricePerLiter: string
+			/**
+			 * F​e​e
+			 */
+			wage: string
+			/**
+			 * L
+			 */
+			volumeUnit: string
 			/**
 			 * —
 			 */
@@ -4612,10 +4662,6 @@ export type TranslationFunctions = {
 			 */
 			remainFuel: () => LocalizedString
 			/**
-			 * Dispensed
-			 */
-			fuelAmount: () => LocalizedString
-			/**
 			 * Latitude
 			 */
 			latitude: () => LocalizedString
@@ -4651,6 +4697,60 @@ export type TranslationFunctions = {
 			 * Open line
 			 */
 			resistanceOpenLine: () => LocalizedString
+			/**
+			 * —
+			 */
+			emptyCell: () => LocalizedString
+		}
+		carFuelMovements: {
+			/**
+			 * Fuel movements
+			 */
+			action: () => LocalizedString
+			/**
+			 * Fuel movements
+			 */
+			title: () => LocalizedString
+			/**
+			 * Liters loaded or dispensed when the device transaction advances
+			 */
+			subtitle: () => LocalizedString
+			/**
+			 * Loading fuel movements…
+			 */
+			loading: () => LocalizedString
+			/**
+			 * No fuel was loaded or dispensed in the selected time range.
+			 */
+			empty: () => LocalizedString
+			/**
+			 * No fuel movements have been recorded for this vehicle.
+			 */
+			emptyAll: () => LocalizedString
+			/**
+			 * Date and time
+			 */
+			recordedAt: () => LocalizedString
+			/**
+			 * Mode
+			 */
+			mode: () => LocalizedString
+			/**
+			 * Liters
+			 */
+			liters: () => LocalizedString
+			/**
+			 * Price per liter
+			 */
+			pricePerLiter: () => LocalizedString
+			/**
+			 * Fee
+			 */
+			wage: () => LocalizedString
+			/**
+			 * L
+			 */
+			volumeUnit: () => LocalizedString
 			/**
 			 * —
 			 */

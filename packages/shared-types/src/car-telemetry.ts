@@ -72,8 +72,6 @@ export type CarTelemetry = {
   speed?: number;
   /** Remaining fuel volume in liters (`fuel.remainFuel` from device packet). */
   remainFuel?: number;
-  /** Last dispensed amount in liters (`fuel.fuelAmount`). */
-  fuelAmount?: number;
   /** Insulation / bonding resistances from the device packet (ohms). */
   resistance?: TankResistanceReadings;
 };

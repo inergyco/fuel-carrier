@@ -54,6 +54,8 @@ describe('mqtt-telemetry.utils', () => {
       speed: 12.5,
       remainFuel: 1140,
       fuelAmount: 14.76,
+      pricePerLiter: 5000,
+      wage: 250,
       mode: 'loading',
       companyId: 'COMPANY_001',
       deviceId: 'TRUCK_12',

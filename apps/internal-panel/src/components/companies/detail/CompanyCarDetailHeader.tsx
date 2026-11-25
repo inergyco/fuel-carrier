@@ -8,7 +8,7 @@ import {
   CarPricingModal,
   carDetailDriverChipClassName,
 } from '@fuel-carrier/web-ui/cars'
-import { Activity, Banknote, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
+import { Activity, Banknote, Cpu, Droplets, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
   ConfirmModal,
@@ -137,6 +137,22 @@ export function CompanyCarDetailHeader({
               />
               <span className="min-w-0 truncate">
                 {LL.common.carTelemetry.action()}
+              </span>
+            </Link>
+            <Link
+              to="/companies/$companyId/cars/$carId/fuel-movements"
+              params={{ companyId: car.companyId, carId: car.id }}
+              role="menuitem"
+              tabIndex={-1}
+              className={contextMenuItemClassName()}
+            >
+              <Droplets
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+              <span className="min-w-0 truncate">
+                {LL.common.carFuelMovements.action()}
               </span>
             </Link>
           </ContextMenu>

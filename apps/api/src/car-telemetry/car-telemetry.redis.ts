@@ -15,7 +15,6 @@ type RedisCarTelemetryPayload = {
   mode: CarTelemetryMode;
   speed?: number;
   remainFuel?: number;
-  fuelAmount?: number;
   resistance?: ResistanceReadings;
 };
 
@@ -56,9 +55,6 @@ export function serializeCarTelemetry(
   }
   if (telemetry.remainFuel != null) {
     payload.remainFuel = telemetry.remainFuel;
-  }
-  if (telemetry.fuelAmount != null) {
-    payload.fuelAmount = telemetry.fuelAmount;
   }
 
   const resistance = parseResistance(telemetry.resistance);
@@ -112,9 +108,6 @@ export function parseCarTelemetry(
     }
     if (typeof record.remainFuel === 'number') {
       telemetry.remainFuel = record.remainFuel;
-    }
-    if (typeof record.fuelAmount === 'number') {
-      telemetry.fuelAmount = record.fuelAmount;
     }
 
     const resistance = parseResistance(record.resistance);

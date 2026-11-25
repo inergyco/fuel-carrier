@@ -7,6 +7,7 @@ export * from './cars.schema';
 export * from './car-pricing.schema';
 export * from './car-driver-assignments.schema';
 export * from './car-telemetry-history.schema';
+export * from './car-fuel-movement.schema';
 export * from './mqtt-clients.schema';
 export * from './mqtt-acls.schema';
 export * from './audit-logs.schema';

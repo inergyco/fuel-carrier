@@ -37,7 +37,6 @@ export function CarTelemetryRecordTable({
           <DataTableHeaderCell>{labels.mode()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.speed()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.remainFuel()}</DataTableHeaderCell>
-          <DataTableHeaderCell>{labels.fuelAmount()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.latitude()}</DataTableHeaderCell>
           <DataTableHeaderCell>{labels.longitude()}</DataTableHeaderCell>
           <DataTableHeaderCell>
@@ -72,14 +71,6 @@ export function CarTelemetryRecordTable({
               <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
                 {formatMeasure({
                   value: record.remainFuel,
-                  format: formatVolume,
-                  unit: labels.volumeUnit(),
-                  empty: labels.emptyCell(),
-                })}
-              </DataTableCell>
-              <DataTableCell className="whitespace-nowrap font-mono tabular-nums">
-                {formatMeasure({
-                  value: record.fuelAmount,
                   format: formatVolume,
                   unit: labels.volumeUnit(),
                   empty: labels.emptyCell(),

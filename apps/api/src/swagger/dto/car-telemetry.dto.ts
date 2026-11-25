@@ -47,9 +47,6 @@ export class CarTelemetryMarkerDto {
   @ApiPropertyOptional({ example: 1140 })
   remainFuel?: number;
 
-  @ApiPropertyOptional({ example: 14.76 })
-  fuelAmount?: number;
-
   @ApiPropertyOptional({
     example: {
       tankToGround: 5.34,
@@ -89,9 +86,6 @@ export class CarTelemetryDto {
   @ApiPropertyOptional({ example: 1140 })
   remainFuel?: number;
 
-  @ApiPropertyOptional({ example: 14.76 })
-  fuelAmount?: number;
-
   @ApiPropertyOptional({
     example: {
       tankToGround: 5.34,
@@ -104,4 +98,33 @@ export class CarTelemetryDto {
     tankToNozzle: number;
     groundToVehicle: number;
   };
+}
+
+export class CarFuelMovementDto {
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  id!: string;
+
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+  carId!: string;
+
+  @ApiProperty({ example: '2026-07-22T10:19:48.680Z' })
+  recordedAt!: string;
+
+  @ApiProperty({
+    enum: carTelemetryModes,
+    example: 'dispensing',
+  })
+  mode!: CarTelemetryMode;
+
+  @ApiPropertyOptional({ example: 14.76 })
+  liters?: number;
+
+  @ApiPropertyOptional({ example: 5000 })
+  pricePerLiter?: number;
+
+  @ApiPropertyOptional({ example: 250 })
+  wage?: number;
+
+  @ApiProperty({ example: 126 })
+  transactionId!: number;
 }

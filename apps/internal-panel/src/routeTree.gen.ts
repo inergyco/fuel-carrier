@@ -31,6 +31,7 @@ import { Route as AuthenticatedCompaniesCompanyIdCarsIndexRouteImport } from './
 import { Route as AuthenticatedCompaniesCompanyIdCarsCarIdRouteImport } from './routes/_authenticated/companies.$companyId.cars.$carId'
 import { Route as AuthenticatedCompaniesCompanyIdCarsCarIdIndexRouteImport } from './routes/_authenticated/companies.$companyId.cars.$carId.index'
 import { Route as AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRouteImport } from './routes/_authenticated/companies.$companyId.cars.$carId.telemetry'
+import { Route as AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRouteImport } from './routes/_authenticated/companies.$companyId.cars.$carId.fuel-movements'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -156,6 +157,12 @@ const AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute =
     path: '/telemetry',
     getParentRoute: () => AuthenticatedCompaniesCompanyIdCarsCarIdRoute,
   } as any)
+const AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute =
+  AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRouteImport.update({
+    id: '/fuel-movements',
+    path: '/fuel-movements',
+    getParentRoute: () => AuthenticatedCompaniesCompanyIdCarsCarIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/companies/$companyId/': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/companies/$companyId/cars/$carId': typeof AuthenticatedCompaniesCompanyIdCarsCarIdRouteWithChildren
   '/companies/$companyId/cars/': typeof AuthenticatedCompaniesCompanyIdCarsIndexRoute
+  '/companies/$companyId/cars/$carId/fuel-movements': typeof AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute
   '/companies/$companyId/cars/$carId/telemetry': typeof AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute
   '/companies/$companyId/cars/$carId/': typeof AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute
 }
@@ -196,6 +204,7 @@ export interface FileRoutesByTo {
   '/companies/$companyId/users': typeof AuthenticatedCompaniesCompanyIdUsersRoute
   '/companies/$companyId': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/companies/$companyId/cars': typeof AuthenticatedCompaniesCompanyIdCarsIndexRoute
+  '/companies/$companyId/cars/$carId/fuel-movements': typeof AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute
   '/companies/$companyId/cars/$carId/telemetry': typeof AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute
   '/companies/$companyId/cars/$carId': typeof AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute
 }
@@ -221,6 +230,7 @@ export interface FileRoutesById {
   '/_authenticated/companies/$companyId/': typeof AuthenticatedCompaniesCompanyIdIndexRoute
   '/_authenticated/companies/$companyId/cars/$carId': typeof AuthenticatedCompaniesCompanyIdCarsCarIdRouteWithChildren
   '/_authenticated/companies/$companyId/cars/': typeof AuthenticatedCompaniesCompanyIdCarsIndexRoute
+  '/_authenticated/companies/$companyId/cars/$carId/fuel-movements': typeof AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute
   '/_authenticated/companies/$companyId/cars/$carId/telemetry': typeof AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute
   '/_authenticated/companies/$companyId/cars/$carId/': typeof AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute
 }
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/companies/$companyId/'
     | '/companies/$companyId/cars/$carId'
     | '/companies/$companyId/cars/'
+    | '/companies/$companyId/cars/$carId/fuel-movements'
     | '/companies/$companyId/cars/$carId/telemetry'
     | '/companies/$companyId/cars/$carId/'
   fileRoutesByTo: FileRoutesByTo
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/companies/$companyId/users'
     | '/companies/$companyId'
     | '/companies/$companyId/cars'
+    | '/companies/$companyId/cars/$carId/fuel-movements'
     | '/companies/$companyId/cars/$carId/telemetry'
     | '/companies/$companyId/cars/$carId'
   id:
@@ -289,6 +301,7 @@ export interface FileRouteTypes {
     | '/_authenticated/companies/$companyId/'
     | '/_authenticated/companies/$companyId/cars/$carId'
     | '/_authenticated/companies/$companyId/cars/'
+    | '/_authenticated/companies/$companyId/cars/$carId/fuel-movements'
     | '/_authenticated/companies/$companyId/cars/$carId/telemetry'
     | '/_authenticated/companies/$companyId/cars/$carId/'
   fileRoutesById: FileRoutesById
@@ -454,16 +467,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRouteImport
       parentRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdRoute
     }
+    '/_authenticated/companies/$companyId/cars/$carId/fuel-movements': {
+      id: '/_authenticated/companies/$companyId/cars/$carId/fuel-movements'
+      path: '/fuel-movements'
+      fullPath: '/companies/$companyId/cars/$carId/fuel-movements'
+      preLoaderRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRouteImport
+      parentRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdRoute
+    }
   }
 }
 
 interface AuthenticatedCompaniesCompanyIdCarsCarIdRouteChildren {
+  AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute
   AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute
   AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute: typeof AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute
 }
 
 const AuthenticatedCompaniesCompanyIdCarsCarIdRouteChildren: AuthenticatedCompaniesCompanyIdCarsCarIdRouteChildren =
   {
+    AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute:
+      AuthenticatedCompaniesCompanyIdCarsCarIdFuelMovementsRoute,
     AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute:
       AuthenticatedCompaniesCompanyIdCarsCarIdTelemetryRoute,
     AuthenticatedCompaniesCompanyIdCarsCarIdIndexRoute:

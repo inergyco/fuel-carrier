@@ -44,7 +44,7 @@ export function CarTelemetryRecordsPage({
       return (
         <ResourceListSkeleton
           variant={isMdUp ? 'table' : 'cards'}
-          columns={isMdUp ? 10 : 4}
+          columns={isMdUp ? 9 : 4}
           label={labels.loading()}
         />
       )

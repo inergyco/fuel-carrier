@@ -6,6 +6,7 @@ export * from "./car";
 export * from "./car-fleet-stats";
 export * from "./car-driver-assignment";
 export * from "./car-telemetry";
+export * from "./car-fuel-movement";
 export * from "./company";
 export * from "./company-user";
 export * from "./driver";

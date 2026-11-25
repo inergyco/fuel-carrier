@@ -281,6 +281,34 @@
       "when": 1795100000000,
       "tag": "0039_car_pricing",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1795200000000,
+      "tag": "0040_car_fuel_movements",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1795300000000,
+      "tag": "0041_drop_telemetry_fuel_amount",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1795400000000,
+      "tag": "0042_car_fuel_movement_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1795500000000,
+      "tag": "0043_car_fuel_movement_price_wage",
+      "breakpoints": true
     }
   ]
 }

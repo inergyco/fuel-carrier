@@ -82,7 +82,6 @@ export function toHistoryMarker({
     | 'updatedAt'
     | 'speed'
     | 'remainFuel'
-    | 'fuelAmount'
     | 'resistance'
     | 'mode'
   >;
@@ -101,7 +100,6 @@ export function toHistoryMarker({
     mode: point.mode,
     speed: point.speed,
     remainFuel: point.remainFuel,
-    fuelAmount: point.fuelAmount,
     resistance: point.resistance,
   };
 }

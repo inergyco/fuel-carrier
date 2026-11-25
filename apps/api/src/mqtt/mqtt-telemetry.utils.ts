@@ -73,6 +73,10 @@ export type TelemetrySample = {
   speed?: number;
   remainFuel?: number;
   fuelAmount?: number;
+  /** `fuel.pricePerLiter` from this packet. Stored on the sampled fuel movement. */
+  pricePerLiter?: number;
+  /** `fuel.wage` from this packet. Stored on the sampled fuel movement. */
+  wage?: number;
   /** Derived from `status.fuelMode` / `status.dispenseMode`. */
   mode: CarTelemetryMode;
   resistance?: ResistanceReadings;
@@ -127,6 +131,8 @@ export function parseTelemetryPayload(
     speed: parsed.data.location.speed,
     remainFuel: parsed.data.fuel?.remainFuel,
     fuelAmount: parsed.data.fuel?.fuelAmount,
+    pricePerLiter: parsed.data.fuel?.pricePerLiter,
+    wage: parsed.data.fuel?.wage,
     mode: resolveTelemetryMode(parsed.data.status),
     companyId: parsed.data.company?.id,
     deviceId: parsed.data.device?.deviceId,

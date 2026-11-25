@@ -14,6 +14,7 @@ import {
   type CarTelemetryMode,
 } from '../database/schema/car-telemetry-history.schema';
 import type { TenantTransaction } from '../database/tenant-db.types';
+import { captureCarFuelMovement } from './car-fuel-movement.utils';
 
 type RemovedTelemetryCar = {
   companyId: string;
@@ -65,6 +66,17 @@ export class CarTelemetryUtils {
         set: written,
       });
 
+    await captureCarFuelMovement(tx, {
+      carId: input.carId,
+      companyId: input.companyId,
+      recordedAt: options.recordedAt,
+      mode: options.mode,
+      liters: input.fuelAmount,
+      pricePerLiter: input.pricePerLiter,
+      wage: input.wage,
+      transactionId: input.transactionId,
+    });
+
     return {
       licensePlate: car.licensePlate,
       hasHighGrade: car.hasHighGrade,
@@ -86,7 +98,6 @@ export class CarTelemetryUtils {
       createdAt: options.ingestedAt.toISOString(),
       speed: input.speed,
       remainFuel: input.remainFuel,
-      fuelAmount: input.fuelAmount,
       mode: options.mode,
     };
 
@@ -134,7 +145,6 @@ export class CarTelemetryUtils {
         updatedAt: carTelemetryHistory.time,
         speed: carTelemetryHistory.speed,
         remainFuel: carTelemetryHistory.remainFuel,
-        fuelAmount: carTelemetryHistory.fuelAmount,
         mode: carTelemetryHistory.mode,
         resistanceTankToGround: carTelemetryHistory.resistanceTankToGround,
         resistanceTankToNozzle: carTelemetryHistory.resistanceTankToNozzle,
@@ -240,7 +250,6 @@ export class CarTelemetryUtils {
       longitude: options.input.longitude,
       speed: options.input.speed,
       remainFuel: options.input.remainFuel,
-      fuelAmount: options.input.fuelAmount,
       mode: options.mode,
       resistanceTankToGround: options.input.resistance?.tankToGround,
       resistanceTankToNozzle: options.input.resistance?.tankToNozzle,
@@ -261,7 +270,6 @@ export class CarTelemetryUtils {
       updatedAt: toIsoTimestamp(row.updatedAt),
       speed: row.speed ?? undefined,
       remainFuel: row.remainFuel ?? undefined,
-      fuelAmount: row.fuelAmount ?? undefined,
       mode: row.mode,
       resistance: CarTelemetryUtils.toHistoryResistance(row),
     };
@@ -294,9 +302,16 @@ export type RecordCarTelemetryInput = {
   recordedAt?: Date;
   speed?: number;
   remainFuel?: number;
+  /** Liters on this sample. Stored on a fuel movement when the transaction id increases. */
   fuelAmount?: number;
+  /** Price per liter on this sample. Stored on a fuel movement with the liters. */
+  pricePerLiter?: number;
+  /** Wage on this sample. Stored on a fuel movement with the liters. */
+  wage?: number;
   mode?: CarTelemetryMode;
   resistance?: TankResistanceReadings;
+  /** Device transaction id. An increase samples one fuel movement. */
+  transactionId?: number;
 };
 
 type PersistCarTelemetryOptions = {
@@ -328,7 +343,6 @@ type HistorySelectRow = {
   updatedAt: Date | string;
   speed: number | null;
   remainFuel: number | null;
-  fuelAmount: number | null;
   mode: CarTelemetryMode;
   resistanceTankToGround: number | null;
   resistanceTankToNozzle: number | null;

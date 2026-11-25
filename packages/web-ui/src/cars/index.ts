@@ -53,6 +53,7 @@ export {
   type CarDriverAssignmentHistoryLabelScope,
   type CarDriverAssignmentHistorySectionProps,
 } from './CarDriverAssignmentHistorySection'
+export { CarFuelMovementRecordsPage } from './fuel-movements/CarFuelMovementRecordsPage'
 export { CarTelemetryRecordsPage } from './telemetry-records/CarTelemetryRecordsPage'
 export {
   parseCarTelemetryRecordsSearch,

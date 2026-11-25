@@ -42,8 +42,6 @@ export const carTelemetryHistory = pgTable(
     speed: doublePrecision('speed'),
     /** Remaining fuel volume in liters. */
     remainFuel: doublePrecision('remain_fuel'),
-    /** Last dispensed amount in liters. */
-    fuelAmount: doublePrecision('fuel_amount'),
     /**
      * Operating mode from the device status flags.
      * Fuel mode stores loading, dispense mode stores dispensing, otherwise idle.
