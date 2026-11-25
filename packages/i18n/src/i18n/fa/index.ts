@@ -169,6 +169,7 @@ const fa: Translation = {
     copyFailed: "کپی در کلیپ‌بورد ممکن نشد.",
     dismiss: "بستن",
     close: "بستن",
+    moreActions: "اقدام‌های بیشتر",
     cancel: "انصراف",
     carAlerts: {
       lowFuelTitle: "سوخت کم",

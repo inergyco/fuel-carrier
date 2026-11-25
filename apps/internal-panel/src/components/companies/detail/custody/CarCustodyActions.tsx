@@ -4,6 +4,7 @@ import { UserRoundPen } from '@fuel-carrier/web-ui/icons'
 import { carDetailPrimaryActionClassName } from '@fuel-carrier/web-ui/cars'
 import {
   Button,
+  ContextMenuItem,
   ICON_STROKE_WIDTH,
   dataTableEditActionClassName,
   iconSmClassName,
@@ -13,7 +14,7 @@ import type { CompanyCarCustodyApi } from './useCompanyCarCustody'
 type CarCustodyActionsProps = {
   car: Car
   custody: CompanyCarCustodyApi
-  layout?: 'header' | 'compact'
+  layout?: 'header' | 'compact' | 'menu'
 }
 
 /** Cars always have a driver (required at create) — only change is offered. */
@@ -29,6 +30,22 @@ export function CarCustodyActions({
     custody.openChange(car)
   }
 
+  const icon = (
+    <UserRoundPen
+      className={iconSmClassName}
+      strokeWidth={ICON_STROKE_WIDTH}
+      aria-hidden
+    />
+  )
+
+  if (layout === 'menu') {
+    return (
+      <ContextMenuItem tone="primary" icon={icon} onClick={handleChange}>
+        {detail.changeDriver()}
+      </ContextMenuItem>
+    )
+  }
+
   if (layout === 'compact') {
     return (
       <Button
@@ -38,11 +55,7 @@ export function CarCustodyActions({
         onClick={handleChange}
         aria-label={detail.changeDriver()}
       >
-        <UserRoundPen
-          className={iconSmClassName}
-          strokeWidth={ICON_STROKE_WIDTH}
-          aria-hidden
-        />
+        {icon}
       </Button>
     )
   }
@@ -54,11 +67,7 @@ export function CarCustodyActions({
       onClick={handleChange}
     >
       <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-        <UserRoundPen
-          className={iconSmClassName}
-          strokeWidth={ICON_STROKE_WIDTH}
-          aria-hidden
-        />
+        {icon}
         {detail.changeDriver()}
       </span>
     </Button>

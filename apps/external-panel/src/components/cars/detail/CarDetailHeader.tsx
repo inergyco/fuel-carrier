@@ -5,18 +5,19 @@ import { useI18nContext } from '@fuel-carrier/i18n/react'
 import {
   CarOutputToggle,
   CarPricingModal,
-  carDetailActionClassName,
-  carDetailActionRowClassName,
   carDetailDriverChipClassName,
 } from '@fuel-carrier/web-ui/cars'
 import { Activity, Banknote, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
-  Button,
+  ContextMenu,
+  ContextMenuItem,
+  contextMenuItemClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
   useToast,
 } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import { Link } from '@tanstack/react-router'
 import { carKeys, updateCarPricing } from '../../../lib/api/cars'
 import { CarMqttCredentialsModals } from '../CarMqttCredentialsModals'
@@ -62,69 +63,72 @@ export function CarDetailHeader({
 
   return (
     <div className="mb-6 flex flex-col gap-4">
-      <p className={carDetailDriverChipClassName}>
+      <div
+        className={cn(carDetailDriverChipClassName, 'py-1 pe-1 w-full')}
+      >
         <User
           className={iconSmClassName}
           strokeWidth={ICON_STROKE_WIDTH}
           aria-hidden
         />
-        <span className="min-w-0 truncate">
+        <span className="min-w-0 flex-1 truncate">
           <span className="text-base-content/45">
             {LL.externalPanel.cars.driver()}:{' '}
           </span>
           <span className="font-medium">{driverName}</span>
         </span>
-      </p>
-
-      <div className={carDetailActionRowClassName}>
-        {canManage ? (
-          <>
-            <CarCustodyActions car={car} custody={custody} />
-            <Button
-              type="button"
-              variant="ghost"
-              className={carDetailActionClassName}
-              onClick={handleOpenPricing}
-            >
-              <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-                <Banknote
-                  className={iconSmClassName}
-                  strokeWidth={ICON_STROKE_WIDTH}
-                  aria-hidden
+        <ContextMenu label={LL.common.moreActions()} className="shrink-0">
+            {canManage ? (
+              <>
+                <CarCustodyActions car={car} custody={custody} layout="menu" />
+                <ContextMenuItem
+                  icon={
+                    <Banknote
+                      className={iconSmClassName}
+                      strokeWidth={ICON_STROKE_WIDTH}
+                      aria-hidden
+                    />
+                  }
+                  onClick={handleOpenPricing}
+                >
+                  {LL.externalPanel.cars.pricingAction()}
+                </ContextMenuItem>
+                <CarOutputToggle
+                  carId={car.id}
+                  licensePlate={car.licensePlate}
+                  presentation="menu"
                 />
-                {LL.externalPanel.cars.pricingAction()}
-              </span>
-            </Button>
-            <CarOutputToggle carId={car.id} licensePlate={car.licensePlate} />
-            <Button
-              type="button"
-              variant="ghost"
-              className={carDetailActionClassName}
-              onClick={handleOpenMqttCredentials}
+                <ContextMenuItem
+                  icon={
+                    <KeyRound
+                      className={iconSmClassName}
+                      strokeWidth={ICON_STROKE_WIDTH}
+                      aria-hidden
+                    />
+                  }
+                  onClick={handleOpenMqttCredentials}
+                >
+                  {LL.externalPanel.cars.mqttCredentialsAction()}
+                </ContextMenuItem>
+              </>
+            ) : null}
+            <Link
+              to="/panel/cars/$carId/telemetry"
+              params={{ carId: car.id }}
+              role="menuitem"
+              tabIndex={-1}
+              className={contextMenuItemClassName()}
             >
-              <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-                <KeyRound
-                  className={iconSmClassName}
-                  strokeWidth={ICON_STROKE_WIDTH}
-                  aria-hidden
-                />
-                {LL.externalPanel.cars.mqttCredentialsAction()}
+              <Activity
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+              <span className="min-w-0 truncate">
+                {LL.common.carTelemetry.action()}
               </span>
-            </Button>
-          </>
-        ) : null}
-        <Link
-          to="/panel/cars/$carId/telemetry"
-          params={{ carId: car.id }}
-          className={`btn btn-ghost inline-flex items-center justify-center gap-2 font-normal normal-case tracking-normal ${carDetailActionClassName}`}
-        >
-          <Activity
-            className={iconSmClassName}
-            strokeWidth={ICON_STROKE_WIDTH}
-            aria-hidden
-          />
-          {LL.common.carTelemetry.action()}
-        </Link>
+            </Link>
+          </ContextMenu>
       </div>
 
       {canManage ? (

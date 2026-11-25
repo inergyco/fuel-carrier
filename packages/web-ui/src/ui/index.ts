@@ -76,6 +76,12 @@ export {
 export { Modal, ModalActions } from './Modal'
 export { Popover } from './Popover'
 export {
+  ContextMenu,
+  ContextMenuItem,
+  contextMenuItemClassName,
+} from './ContextMenu'
+export type { ContextMenuTone } from './ContextMenu'
+export {
   Pagination,
   getPaginationRange,
   type PaginationLabels,

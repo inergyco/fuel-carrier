@@ -54,11 +54,12 @@ export function createPanelViteConfig({
       },
     },
     optimizeDeps: {
-      exclude: [
-        "react-multi-date-picker",
-        "react-multi-date-picker/plugins/time_picker",
-      ],
+      // CommonJS. Prebundling is what adds the ESM default export the pickers
+      // import. The rolldown plugin strips the injected <style> in that bundle;
+      // the Vite plugin covers production builds.
       include: [
+        "@fuel-carrier/web-ui > react-multi-date-picker",
+        "@fuel-carrier/web-ui > react-multi-date-picker/plugins/time_picker",
         "workbox-window",
         "@fuel-carrier/web-ui > leaflet",
         "@fuel-carrier/web-ui > react-leaflet",
@@ -66,6 +67,9 @@ export function createPanelViteConfig({
         "@fuel-carrier/web-ui > @maplibre/maplibre-gl-leaflet",
         "@fuel-carrier/web-ui > react-date-object",
       ],
+      rolldownOptions: {
+        plugins: [stripDatePickerStyleInjection()],
+      },
     },
     server: {
       ...(port != null ? { port, strictPort: true } : {}),

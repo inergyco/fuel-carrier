@@ -1,6 +1,11 @@
 import { useI18nContext } from '@fuel-carrier/i18n/react'
 import { Power, PowerOff } from '../icons'
-import { Button, ICON_STROKE_WIDTH, iconSmClassName } from '../ui'
+import {
+  Button,
+  ContextMenuItem,
+  ICON_STROKE_WIDTH,
+  iconSmClassName,
+} from '../ui'
 import { cn } from '../utils'
 import { carDetailActionClassName } from './car-detail-action-class-name'
 
@@ -10,6 +15,7 @@ export type CarOutputControlsProps = {
   pending: boolean
   disabled?: boolean
   onToggle: () => void
+  presentation?: 'toolbar' | 'menu'
 }
 
 /** Single toggle for truck GPIO outputs — label is the next action. */
@@ -18,6 +24,7 @@ export function CarOutputControls({
   pending,
   disabled = false,
   onToggle,
+  presentation = 'toolbar',
 }: CarOutputControlsProps) {
   const { LL } = useI18nContext()
   const labels = LL.common.carOutput
@@ -26,6 +33,27 @@ export function CarOutputControls({
   const Icon = willDisable ? PowerOff : Power
   const label = willDisable ? labels.disable() : labels.enable()
   const loadingLabel = willDisable ? labels.disabling() : labels.enabling()
+  const icon = (
+    <Icon
+      className={iconSmClassName}
+      strokeWidth={ICON_STROKE_WIDTH}
+      aria-hidden
+    />
+  )
+
+  if (presentation === 'menu') {
+    return (
+      <ContextMenuItem
+        tone={willDisable ? 'danger' : 'success'}
+        disabled={disabled || pending}
+        aria-pressed={active}
+        icon={icon}
+        onClick={onToggle}
+      >
+        {pending ? loadingLabel : label}
+      </ContextMenuItem>
+    )
+  }
 
   return (
     <Button
@@ -44,11 +72,7 @@ export function CarOutputControls({
       onClick={onToggle}
     >
       <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-        <Icon
-          className={iconSmClassName}
-          strokeWidth={ICON_STROKE_WIDTH}
-          aria-hidden
-        />
+        {icon}
         {label}
       </span>
     </Button>

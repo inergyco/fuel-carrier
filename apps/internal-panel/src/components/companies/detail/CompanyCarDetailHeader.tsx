@@ -6,19 +6,20 @@ import {
   CarFirmwareIdentityModal,
   CarOutputToggle,
   CarPricingModal,
-  carDetailActionClassName,
-  carDetailActionRowClassName,
   carDetailDriverChipClassName,
 } from '@fuel-carrier/web-ui/cars'
 import { Activity, Banknote, Cpu, KeyRound, User } from '@fuel-carrier/web-ui/icons'
 import { useQueryClient } from '@fuel-carrier/web-ui/query'
 import {
-  Button,
   ConfirmModal,
+  ContextMenu,
+  ContextMenuItem,
+  contextMenuItemClassName,
   ICON_STROKE_WIDTH,
   iconSmClassName,
   useToast,
 } from '@fuel-carrier/web-ui/ui'
+import { cn } from '@fuel-carrier/web-ui/utils'
 import { Link } from '@tanstack/react-router'
 import { CarMqttCredentialsModals } from './CarMqttCredentialsModals'
 import { CarCustodyActions } from './custody/CarCustodyActions'
@@ -67,78 +68,78 @@ export function CompanyCarDetailHeader({
 
   return (
     <div className="mb-6 flex flex-col gap-4">
-      <p className={carDetailDriverChipClassName}>
+      <div
+        className={cn(carDetailDriverChipClassName, 'w-full py-1 pe-1 sm:w-full')}
+      >
         <User
           className={iconSmClassName}
           strokeWidth={ICON_STROKE_WIDTH}
           aria-hidden
         />
-        <span className="min-w-0 truncate">
+        <span className="min-w-0 flex-1 truncate">
           <span className="text-base-content/45">{detail.driver()}: </span>
           <span className="font-medium">{driverName}</span>
         </span>
-      </p>
-
-      <div className={carDetailActionRowClassName}>
-        <CarCustodyActions car={car} custody={custody} />
-        <Button
-          type="button"
-          variant="ghost"
-          className={carDetailActionClassName}
-          onClick={handleOpenPricing}
-        >
-          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-            <Banknote
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
+        <ContextMenu label={LL.common.moreActions()} className="shrink-0">
+            <CarCustodyActions car={car} custody={custody} layout="menu" />
+            <ContextMenuItem
+              icon={
+                <Banknote
+                  className={iconSmClassName}
+                  strokeWidth={ICON_STROKE_WIDTH}
+                  aria-hidden
+                />
+              }
+              onClick={handleOpenPricing}
+            >
+              {detail.pricingAction()}
+            </ContextMenuItem>
+            <CarOutputToggle
+              carId={car.id}
+              licensePlate={car.licensePlate}
+              presentation="menu"
             />
-            {detail.pricingAction()}
-          </span>
-        </Button>
-        <CarOutputToggle carId={car.id} licensePlate={car.licensePlate} />
-        <Button
-          type="button"
-          variant="ghost"
-          className={carDetailActionClassName}
-          onClick={firmware.openModal}
-        >
-          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-            <Cpu
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-            {detail.firmwareIdentityAction()}
-          </span>
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          className={carDetailActionClassName}
-          onClick={handleOpenMqttCredentials}
-        >
-          <span className="flex items-center justify-center gap-2 whitespace-nowrap">
-            <KeyRound
-              className={iconSmClassName}
-              strokeWidth={ICON_STROKE_WIDTH}
-              aria-hidden
-            />
-            {detail.mqttCredentialsAction()}
-          </span>
-        </Button>
-        <Link
-          to="/companies/$companyId/cars/$carId/telemetry"
-          params={{ companyId: car.companyId, carId: car.id }}
-          className={`btn btn-ghost inline-flex items-center justify-center gap-2 font-normal normal-case tracking-normal ${carDetailActionClassName}`}
-        >
-          <Activity
-            className={iconSmClassName}
-            strokeWidth={ICON_STROKE_WIDTH}
-            aria-hidden
-          />
-          {LL.common.carTelemetry.action()}
-        </Link>
+            <ContextMenuItem
+              icon={
+                <Cpu
+                  className={iconSmClassName}
+                  strokeWidth={ICON_STROKE_WIDTH}
+                  aria-hidden
+                />
+              }
+              onClick={firmware.openModal}
+            >
+              {detail.firmwareIdentityAction()}
+            </ContextMenuItem>
+            <ContextMenuItem
+              icon={
+                <KeyRound
+                  className={iconSmClassName}
+                  strokeWidth={ICON_STROKE_WIDTH}
+                  aria-hidden
+                />
+              }
+              onClick={handleOpenMqttCredentials}
+            >
+              {detail.mqttCredentialsAction()}
+            </ContextMenuItem>
+            <Link
+              to="/companies/$companyId/cars/$carId/telemetry"
+              params={{ companyId: car.companyId, carId: car.id }}
+              role="menuitem"
+              tabIndex={-1}
+              className={contextMenuItemClassName()}
+            >
+              <Activity
+                className={iconSmClassName}
+                strokeWidth={ICON_STROKE_WIDTH}
+                aria-hidden
+              />
+              <span className="min-w-0 truncate">
+                {LL.common.carTelemetry.action()}
+              </span>
+            </Link>
+          </ContextMenu>
       </div>
 
       <CarPricingModal

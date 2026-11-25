@@ -579,6 +579,10 @@ type RootTranslation = {
 		 */
 		close: string
 		/**
+		 * M​o​r​e​ ​a​c​t​i​o​n​s
+		 */
+		moreActions: string
+		/**
 		 * C​a​n​c​e​l
 		 */
 		cancel: string
@@ -4932,6 +4936,10 @@ export type TranslationFunctions = {
 		 * Close
 		 */
 		close: () => LocalizedString
+		/**
+		 * More actions
+		 */
+		moreActions: () => LocalizedString
 		/**
 		 * Cancel
 		 */

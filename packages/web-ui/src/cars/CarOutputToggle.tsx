@@ -7,6 +7,7 @@ export type CarOutputToggleProps = {
   carId: string
   licensePlate: string
   disabled?: boolean
+  presentation?: 'toolbar' | 'menu'
 }
 
 /** Enable/disable truck outputs with an explicit confirmation step. */
@@ -14,6 +15,7 @@ export function CarOutputToggle({
   carId,
   licensePlate,
   disabled = false,
+  presentation = 'toolbar',
 }: CarOutputToggleProps) {
   const { LL } = useI18nContext()
   const outputs = useCarOutputCommand()
@@ -30,6 +32,7 @@ export function CarOutputToggle({
         active={outputs.active}
         pending={outputs.isPending}
         disabled={disabled}
+        presentation={presentation}
         onToggle={handleRequestToggle}
       />
       <ConfirmModal

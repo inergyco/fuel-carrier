@@ -168,6 +168,7 @@ const en: BaseTranslation = {
     copyFailed: 'Could not copy to clipboard.',
     dismiss: 'Dismiss',
     close: 'Close',
+    moreActions: 'More actions',
     cancel: 'Cancel',
     carAlerts: {
       lowFuelTitle: 'Low fuel',
