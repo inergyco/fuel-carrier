@@ -9,6 +9,7 @@ const fa: Translation = {
     languageEn: "EN",
     languageFa: "FA",
     appearance: {
+      open: "ظاهر",
       language: "زبان",
       languageHint: "انگلیسی یا فارسی",
       theme: "پوسته",

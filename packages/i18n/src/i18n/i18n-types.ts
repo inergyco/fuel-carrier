@@ -41,6 +41,10 @@ type RootTranslation = {
 		languageFa: string
 		appearance: {
 			/**
+			 * A​p​p​e​a​r​a​n​c​e
+			 */
+			open: string
+			/**
 			 * L​a​n​g​u​a​g​e
 			 */
 			language: string
@@ -4403,6 +4407,10 @@ export type TranslationFunctions = {
 		 */
 		languageFa: () => LocalizedString
 		appearance: {
+			/**
+			 * Appearance
+			 */
+			open: () => LocalizedString
 			/**
 			 * Language
 			 */

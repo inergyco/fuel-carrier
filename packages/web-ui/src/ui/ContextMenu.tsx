@@ -36,9 +36,17 @@ type ContextMenuProps = {
   label: string
   children: ReactNode
   className?: string
+  panelClassName?: string
+  icon?: ReactNode
 }
 
-export function ContextMenu({ label, children, className }: ContextMenuProps) {
+export function ContextMenu({
+  label,
+  children,
+  className,
+  panelClassName,
+  icon,
+}: ContextMenuProps) {
   const [open, setOpen] = useState(false)
   const menuId = useId()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -167,11 +175,13 @@ export function ContextMenu({ label, children, className }: ContextMenuProps) {
           onClick={handleTriggerClick}
           onKeyDown={handleTriggerKeyDown}
         >
-          <EllipsisVertical
-            className={iconSmClassName}
-            strokeWidth={ICON_STROKE_WIDTH}
-            aria-hidden
-          />
+          {icon ?? (
+            <EllipsisVertical
+              className={iconSmClassName}
+              strokeWidth={ICON_STROKE_WIDTH}
+              aria-hidden
+            />
+          )}
         </IconButton>
         <div
           ref={menuRef}
@@ -187,6 +197,7 @@ export function ContextMenu({ label, children, className }: ContextMenuProps) {
             'absolute end-0 z-30 mt-2 w-[min(12rem,calc(100vw-2rem))] flex-col gap-1.5 overflow-y-auto rounded-2xl border border-base-content/8 bg-base-100/95 p-1.5 shadow-lg backdrop-blur-xl',
             'max-h-[min(24rem,calc(100svh-6rem))]',
             open ? 'flex' : 'hidden',
+            panelClassName,
           )}
         >
           {children}

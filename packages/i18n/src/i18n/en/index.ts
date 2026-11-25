@@ -9,6 +9,7 @@ const en: BaseTranslation = {
     languageEn: 'EN',
     languageFa: 'FA',
     appearance: {
+      open: 'Appearance',
       language: 'Language',
       languageHint: 'Choose English or Persian',
       theme: 'Theme',
