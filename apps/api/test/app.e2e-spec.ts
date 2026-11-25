@@ -41,7 +41,7 @@ describe('AppController (e2e)', () => {
     await app.register(fastifyCookie);
     app.setGlobalPrefix('api');
     app.useGlobalInterceptors(new ApiResponseInterceptor());
-    app.useGlobalFilters(new ApiExceptionFilter());
+    app.useGlobalFilters(app.get(ApiExceptionFilter));
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });

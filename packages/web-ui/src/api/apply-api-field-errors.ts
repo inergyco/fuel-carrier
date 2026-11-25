@@ -7,6 +7,8 @@ type ApplyApiFieldErrorsOptions<TFieldValues extends FieldValues> = {
   fields: readonly Path<TFieldValues>[]
   /** Localized messages for known duplicate/conflict fields. */
   messages?: Partial<Record<Path<TFieldValues>, () => string>>
+  /** Localized messages keyed by the API field-error code. */
+  codes?: Partial<Record<string, () => string>>
   fallbackMessage: string
 }
 
@@ -19,6 +21,7 @@ export function applyApiFieldErrors<TFieldValues extends FieldValues>({
   setError,
   fields,
   messages,
+  codes,
   fallbackMessage,
 }: ApplyApiFieldErrorsOptions<TFieldValues>): string | null {
   if (!isApiClientError(error)) {
@@ -34,7 +37,7 @@ export function applyApiFieldErrors<TFieldValues extends FieldValues>({
     }
 
     const path = fieldError.field as Path<TFieldValues>
-    const localize = messages?.[path]
+    const localize = messages?.[path] ?? codes?.[fieldError.message]
 
     setError(path, {
       type: 'server',

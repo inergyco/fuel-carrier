@@ -16,6 +16,7 @@ import {
   DEFAULT_TANK_CAPACITY_LITERS,
   DEFAULT_TANK_COUNT,
 } from '@fuel-carrier/shared-types/car-fleet-stats';
+import { CAR_PRICING_KEYS } from '@fuel-carrier/shared-validation/car/pricing';
 import { AuditLogService } from '../audit-logs/audit-log.service';
 import {
   buildAuditContext,
@@ -38,6 +39,7 @@ import { mqttClients } from '../database/schema/mqtt-clients.schema';
 import { rethrowPostgresError } from '../database/postgres-error.utils';
 import { TenantDbService } from '../database/tenant-db.service';
 import type { ApiTenantContext } from '../database/tenant-context.types';
+import { MqttFuelConfigCommandService } from '../mqtt/mqtt-fuel-config-command.service';
 import { CarDriverAssignmentsService } from './car-driver-assignments.service';
 import { applyCarFuelLevelFilter } from './apply-car-fuel-level-filter';
 import { assertDriverAssignableToCompany } from './assert-driver-assignable';
@@ -72,6 +74,7 @@ export class CarsService {
     private readonly carsReader: CarsReader,
     private readonly carDriverAssignmentsService: CarDriverAssignmentsService,
     private readonly carTelemetryService: CarTelemetryService,
+    private readonly fuelConfigCommandService: MqttFuelConfigCommandService,
   ) {}
 
   async list(
@@ -376,8 +379,16 @@ export class CarsService {
     id: string,
     dto: CarPricing,
   ): Promise<Car> {
+    const fuelConfigCommand = hasPricing(dto)
+      ? await this.fuelConfigCommandService.prepareFuelConfig({
+          context,
+          carId: id,
+          pricing: dto,
+        })
+      : null;
+
     try {
-      return await this.tenantDb.run(context, async (tx) => {
+      const car = await this.tenantDb.run(context, async (tx) => {
         const existing = await this.carsReader.getById(tx, id);
         const pricingColumns = toCarPricingColumns(dto);
 
@@ -396,25 +407,33 @@ export class CarsService {
             },
           });
 
-        const car = await this.carsReader.getById(tx, existing.id);
-        const companyName = await fetchCompanyName(tx, car.companyId);
+        const updated = await this.carsReader.getById(tx, existing.id);
+        const companyName = await fetchCompanyName(tx, updated.companyId);
 
         await this.auditLogService.record(context, {
           action: AuditActions.CAR_UPDATED,
-          companyId: car.companyId,
+          companyId: updated.companyId,
           entityType: AuditEntityType.CAR,
-          entityId: car.id,
+          entityId: updated.id,
           metadata: {
             ...buildAuditContext({
               companyName,
-              entityLabel: formatAuditCarLabel(car),
+              entityLabel: formatAuditCarLabel(updated),
             }),
-            changes: diffAuditChanges(existing, car, CAR_AUDIT_FIELDS),
+            changes: diffAuditChanges(existing, updated, CAR_AUDIT_FIELDS),
           },
         });
 
-        return car;
+        return updated;
       });
+
+      if (fuelConfigCommand) {
+        await this.fuelConfigCommandService.publishFuelConfig(
+          fuelConfigCommand,
+        );
+      }
+
+      return car;
     } catch (error) {
       rethrowPostgresError(error, CAR_POSTGRES_MAPPINGS);
     }
@@ -485,6 +504,9 @@ export class CarsService {
     return null;
   }
 }
+
+const hasPricing = (pricing: CarPricing) =>
+  CAR_PRICING_KEYS.some((key) => pricing[key] != null);
 
 const toCarPricingColumns = (pricing: CarPricing) => ({
   petrolPricePerLiter: pricing.petrolPricePerLiter,

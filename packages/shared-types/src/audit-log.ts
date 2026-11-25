@@ -26,6 +26,7 @@ export const AuditActions = {
   CAR_MQTT_CREDENTIALS_ROTATED: 'car.mqtt_credentials_rotated',
   CAR_OUTPUT_ENABLED: 'car.output_enabled',
   CAR_OUTPUT_DISABLED: 'car.output_disabled',
+  CAR_FUEL_CONFIG_SENT: 'car.fuel_config_sent',
   AUTH_LOGIN_SUCCEEDED: 'auth.login_succeeded',
   AUTH_LOGIN_FAILED: 'auth.login_failed',
   AUTH_LOGOUT: 'auth.logout',

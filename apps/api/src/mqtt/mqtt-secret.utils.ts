@@ -49,6 +49,11 @@ export function buildMqttOutputCommandTopic(carId: string): string {
   return `command/${carId}/output`;
 }
 
+/** Exact topic for `setFuelConfig` commands (SDD §19). */
+export function buildMqttFuelConfigCommandTopic(carId: string): string {
+  return `command/${carId}/fuel-config`;
+}
+
 /** Topic pattern the device may subscribe to for remote commands. */
 export function buildMqttCommandSubscribeTopic(carId: string): string {
   return `command/${carId}/#`;

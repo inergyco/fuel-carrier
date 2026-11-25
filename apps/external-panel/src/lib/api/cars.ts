@@ -86,7 +86,9 @@ export async function updateCarPricing(
   id: string,
   dto: UpdateCarPricingDto,
 ): Promise<Car> {
-  return api.patch(`cars/${id}/pricing`, { json: dto }).json<Car>()
+  return api
+    .patch(`cars/${id}/pricing`, { json: dto, timeout: 35_000 })
+    .json<Car>()
 }
 
 export async function deleteCar(id: string): Promise<void> {

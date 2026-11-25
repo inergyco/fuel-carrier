@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
+import type { TranslationFunctions } from '@fuel-carrier/i18n'
 import { useI18nContext } from '@fuel-carrier/i18n/react'
+import { CarFuelConfigFieldErrors } from '@fuel-carrier/shared-types'
 import type { Car } from '@fuel-carrier/shared-types'
 import {
   CAR_PRICING_KEYS,
@@ -7,7 +9,8 @@ import {
   type UpdateCarPricingDto,
   type UpdateCarPricingFormInput,
 } from '@fuel-carrier/shared-validation/car/pricing'
-import { applyApiFieldErrors } from '../api'
+import type { UseFormSetError } from 'react-hook-form'
+import { applyApiFieldErrors, isApiClientError } from '../api'
 import {
   Form,
   useForm,
@@ -39,14 +42,13 @@ export function CarPricingModal({
   const labels = LL.common.companyPricing
 
   const pricingSchema = useMemo(
-    function createSchema() {
-      return createUpdateCarPricingDtoSchema({
+    () =>
+      createUpdateCarPricingDtoSchema({
         numberInvalid: LL.validation.companyPricingNumberInvalid(),
         numberNegative: LL.validation.companyPricingNumberNegative(),
         pricingIncomplete: LL.validation.companyPricingIncomplete(),
         feeThresholdOrder: LL.validation.companyPricingFeeThresholdOrder(),
-      })
-    },
+      }),
     [LL],
   )
 
@@ -85,14 +87,7 @@ export function CarPricingModal({
       setServerError(null)
       onClose()
     } catch (error) {
-      setServerError(
-        applyApiFieldErrors({
-          error,
-          setError,
-          fields: CAR_PRICING_KEYS,
-          fallbackMessage: labels.saveFailed(),
-        }),
-      )
+      setServerError(applyPricingSaveError(error, setError, LL))
     }
   }
 
@@ -134,3 +129,37 @@ export function CarPricingModal({
     </Modal>
   )
 }
+
+function applyPricingSaveError(
+  error: unknown,
+  setError: UseFormSetError<UpdateCarPricingFormInput>,
+  LL: TranslationFunctions,
+): string | null {
+  if (hasFirmwareIdentityError(error)) {
+    return LL.common.companyPricing.firmwareIdentityRequired()
+  }
+
+  return applyApiFieldErrors({
+    error,
+    setError,
+    fields: CAR_PRICING_KEYS,
+    codes: {
+      [CarFuelConfigFieldErrors.INCOMPLETE]: () =>
+        LL.validation.companyPricingIncomplete(),
+      [CarFuelConfigFieldErrors.PRICE_RANGE]:
+        LL.common.companyPricing.priceRange,
+      [CarFuelConfigFieldErrors.WAGE_RANGE]: LL.common.companyPricing.wageRange,
+      [CarFuelConfigFieldErrors.THRESHOLD_RANGE]:
+        LL.common.companyPricing.thresholdRange,
+      [CarFuelConfigFieldErrors.THRESHOLD_ORDER]: () =>
+        LL.validation.companyPricingFeeThresholdOrder(),
+    },
+    fallbackMessage: LL.common.companyPricing.saveFailed(),
+  })
+}
+
+const hasFirmwareIdentityError = (error: unknown) =>
+  isApiClientError(error) &&
+  (error.apiError.fields ?? []).some(
+    (field) => field.field === 'firmwareIdentity',
+  )

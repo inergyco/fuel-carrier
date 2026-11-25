@@ -144,6 +144,11 @@ const en: BaseTranslation = {
       save: 'Save pricing',
       saving: 'Saving…',
       saveFailed: 'Could not save pricing. Please try again.',
+      firmwareIdentityRequired:
+        'Firmware company/device IDs are not set — add them on the vehicle, or wait for telemetry.',
+      priceRange: 'Price must be greater than 0 and at most 1,000,000.',
+      wageRange: 'Fee must be a whole number from 1 to 10,000.',
+      thresholdRange: 'Threshold must be a whole number from 1 to 10,000.',
     },
     driverImage: {
       label: 'Photo',
@@ -674,6 +679,7 @@ const en: BaseTranslation = {
           carMqttCredentialsRotated: 'MQTT credentials rotated',
           carOutputEnabled: 'Truck outputs enabled',
           carOutputDisabled: 'Truck outputs disabled',
+          carFuelConfigSent: 'Fuel price sent to truck',
           authLoginSucceeded: 'Login succeeded',
           authLoginFailed: 'Login failed',
           authLogout: 'Logout',
@@ -1200,6 +1206,7 @@ const en: BaseTranslation = {
         carMqttCredentialsRotated: 'MQTT credentials rotated',
         carOutputEnabled: 'Truck outputs enabled',
         carOutputDisabled: 'Truck outputs disabled',
+        carFuelConfigSent: 'Fuel price sent to truck',
         authLoginSucceeded: 'Login succeeded',
         authLoginFailed: 'Login failed',
         authLogout: 'Logout',

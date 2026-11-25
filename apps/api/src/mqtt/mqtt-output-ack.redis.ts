@@ -7,10 +7,6 @@ export type MqttOutputAckEvent = CarOutputCommandResult & {
   carId: string;
 };
 
-export function serializeOutputAckEvent(event: MqttOutputAckEvent): string {
-  return JSON.stringify(event);
-}
-
 export function parseOutputAckEvent(
   raw: string | null | undefined,
 ): MqttOutputAckEvent | null {

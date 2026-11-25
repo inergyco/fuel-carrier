@@ -495,6 +495,22 @@ type RootTranslation = {
 			 * C​o​u​l​d​ ​n​o​t​ ​s​a​v​e​ ​p​r​i​c​i​n​g​.​ ​P​l​e​a​s​e​ ​t​r​y​ ​a​g​a​i​n​.
 			 */
 			saveFailed: string
+			/**
+			 * F​i​r​m​w​a​r​e​ ​c​o​m​p​a​n​y​/​d​e​v​i​c​e​ ​I​D​s​ ​a​r​e​ ​n​o​t​ ​s​e​t​ ​—​ ​a​d​d​ ​t​h​e​m​ ​o​n​ ​t​h​e​ ​v​e​h​i​c​l​e​,​ ​o​r​ ​w​a​i​t​ ​f​o​r​ ​t​e​l​e​m​e​t​r​y​.
+			 */
+			firmwareIdentityRequired: string
+			/**
+			 * P​r​i​c​e​ ​m​u​s​t​ ​b​e​ ​g​r​e​a​t​e​r​ ​t​h​a​n​ ​0​ ​a​n​d​ ​a​t​ ​m​o​s​t​ ​1​,​0​0​0​,​0​0​0​.
+			 */
+			priceRange: string
+			/**
+			 * F​e​e​ ​m​u​s​t​ ​b​e​ ​a​ ​w​h​o​l​e​ ​n​u​m​b​e​r​ ​f​r​o​m​ ​1​ ​t​o​ ​1​0​,​0​0​0​.
+			 */
+			wageRange: string
+			/**
+			 * T​h​r​e​s​h​o​l​d​ ​m​u​s​t​ ​b​e​ ​a​ ​w​h​o​l​e​ ​n​u​m​b​e​r​ ​f​r​o​m​ ​1​ ​t​o​ ​1​0​,​0​0​0​.
+			 */
+			thresholdRange: string
 		}
 		driverImage: {
 			/**
@@ -2412,6 +2428,10 @@ type RootTranslation = {
 					 */
 					carOutputDisabled: string
 					/**
+					 * F​u​e​l​ ​p​r​i​c​e​ ​s​e​n​t​ ​t​o​ ​t​r​u​c​k
+					 */
+					carFuelConfigSent: string
+					/**
 					 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 					 */
 					authLoginSucceeded: string
@@ -4230,6 +4250,10 @@ type RootTranslation = {
 				 */
 				carOutputDisabled: string
 				/**
+				 * F​u​e​l​ ​p​r​i​c​e​ ​s​e​n​t​ ​t​o​ ​t​r​u​c​k
+				 */
+				carFuelConfigSent: string
+				/**
 				 * L​o​g​i​n​ ​s​u​c​c​e​e​d​e​d
 				 */
 				authLoginSucceeded: string
@@ -4825,6 +4849,22 @@ export type TranslationFunctions = {
 			 * Could not save pricing. Please try again.
 			 */
 			saveFailed: () => LocalizedString
+			/**
+			 * Firmware company/device IDs are not set — add them on the vehicle, or wait for telemetry.
+			 */
+			firmwareIdentityRequired: () => LocalizedString
+			/**
+			 * Price must be greater than 0 and at most 1,000,000.
+			 */
+			priceRange: () => LocalizedString
+			/**
+			 * Fee must be a whole number from 1 to 10,000.
+			 */
+			wageRange: () => LocalizedString
+			/**
+			 * Threshold must be a whole number from 1 to 10,000.
+			 */
+			thresholdRange: () => LocalizedString
 		}
 		driverImage: {
 			/**
@@ -6668,6 +6708,10 @@ export type TranslationFunctions = {
 					 */
 					carOutputDisabled: () => LocalizedString
 					/**
+					 * Fuel price sent to truck
+					 */
+					carFuelConfigSent: () => LocalizedString
+					/**
 					 * Login succeeded
 					 */
 					authLoginSucceeded: () => LocalizedString
@@ -8454,6 +8498,10 @@ export type TranslationFunctions = {
 				 * Truck outputs disabled
 				 */
 				carOutputDisabled: () => LocalizedString
+				/**
+				 * Fuel price sent to truck
+				 */
+				carFuelConfigSent: () => LocalizedString
 				/**
 				 * Login succeeded
 				 */

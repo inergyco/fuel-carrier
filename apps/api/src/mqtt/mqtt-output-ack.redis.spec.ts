@@ -1,7 +1,4 @@
-import {
-  parseOutputAckEvent,
-  serializeOutputAckEvent,
-} from './mqtt-output-ack.redis';
+import { parseOutputAckEvent } from './mqtt-output-ack.redis';
 
 describe('mqtt-output-ack.redis', () => {
   it('round-trips an output-ack event', () => {
@@ -15,7 +12,7 @@ describe('mqtt-output-ack.redis', () => {
       deviceTime: '2026-11-13T16:05:01+03:30',
     };
 
-    expect(parseOutputAckEvent(serializeOutputAckEvent(event))).toEqual(event);
+    expect(parseOutputAckEvent(JSON.stringify(event))).toEqual(event);
   });
 
   it('rejects invalid payloads', () => {

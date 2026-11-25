@@ -145,6 +145,11 @@ const fa: Translation = {
       save: "ذخیره قیمت‌گذاری",
       saving: "در حال ذخیره…",
       saveFailed: "ذخیره قیمت‌گذاری انجام نشد. لطفاً دوباره تلاش کنید.",
+      firmwareIdentityRequired:
+        "شناسه‌های میان‌افزار شرکت/دستگاه تنظیم نشده‌اند — آن‌ها را روی خودرو ثبت کنید یا منتظر تله‌متری بمانید.",
+      priceRange: "قیمت باید بزرگ‌تر از صفر و حداکثر ۱٬۰۰۰٬۰۰۰ باشد.",
+      wageRange: "کارمزد باید عدد صحیح از ۱ تا ۱۰٬۰۰۰ باشد.",
+      thresholdRange: "آستانه باید عدد صحیح از ۱ تا ۱۰٬۰۰۰ باشد.",
     },
     driverImage: {
       label: "تصویر",
@@ -666,6 +671,7 @@ const fa: Translation = {
           carMqttCredentialsRotated: "چرخش اعتبارنامه MQTT",
           carOutputEnabled: "فعال‌سازی خروجی‌های خودرو",
           carOutputDisabled: "غیرفعال‌سازی خروجی‌های خودرو",
+          carFuelConfigSent: "ارسال قیمت سوخت به خودرو",
           authLoginSucceeded: "ورود موفق",
           authLoginFailed: "ورود ناموفق",
           authLogout: "خروج",
@@ -1190,6 +1196,7 @@ const fa: Translation = {
         carMqttCredentialsRotated: "اعتبارنامه MQTT چرخانده شد",
         carOutputEnabled: "فعال‌سازی خروجی‌های خودرو",
         carOutputDisabled: "غیرفعال‌سازی خروجی‌های خودرو",
+        carFuelConfigSent: "ارسال قیمت سوخت به خودرو",
         authLoginSucceeded: "ورود موفق",
         authLoginFailed: "ورود ناموفق",
         authLogout: "خروج",

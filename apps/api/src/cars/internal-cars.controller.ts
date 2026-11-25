@@ -218,7 +218,9 @@ export class InternalCarsController {
   }
 
   @Patch(':id/pricing')
-  @ApiOperation({ summary: 'Update petrol price and fee ranges for a car' })
+  @ApiOperation({
+    summary: 'Save petrol price and fee ranges and program them on the truck',
+  })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiBody({ type: UpdateCarPricingRequestDto })
   @ApiEnvelopeOkResponse(Object)

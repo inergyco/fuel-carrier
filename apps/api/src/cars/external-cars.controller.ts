@@ -242,7 +242,8 @@ export class ExternalCarsController {
   @Patch(':id/pricing')
   @UseGuards(CompanyUserAdminGuard)
   @ApiOperation({
-    summary: 'Update petrol price and fee ranges for a company car',
+    summary:
+      'Save petrol price and fee ranges for a company car and program them on the truck',
   })
   @ApiParam({ name: 'id', format: 'uuid' })
   @ApiBody({ type: UpdateCarPricingRequestDto })
